@@ -1,0 +1,936 @@
+Windows PowerShell
+版权所有 (C) Microsoft Corporation。保留所有权利。
+
+尝试新的跨平台 PowerShell https://aka.ms/pscore6
+
+PS E:\Dev\CAI\411> python -m venv caienv
+PS E:\Dev\CAI\411> .\caienv\Scripts\activate
+(caienv) PS E:\Dev\CAI\411> pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+Writing to C:\Users\Administrator\AppData\Roaming\pip\pip.ini
+(caienv) PS E:\Dev\CAI\411> pip install cai-framework
+Looking in indexes: https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+Collecting cai-framework
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ec/18/682f085757b30dc5120af1b66c5a3f02ef01cdcdb11fa6016a56e665a81f/cai_framework-0.5.10-py3-none-any.whl (616 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 616.6/616.6 kB 6.1 MB/s  0:00:00
+Collecting dnspython (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ba/5a/18ad964b0086c6e62e2e7500f7edc89e3faa45033c71c1893d34eed2b2de/dnspython-2.8.0-py3-none-any.whl (331 kB)
+Collecting dotenv>=0.9.9 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b2/b7/545d2c10c1fc15e48653c91efde329a790f2eecfbbf2bd16003b5db2bab0/dotenv-0.9.9-py2.py3-none-any.whl (1.9 kB)
+Collecting flask (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/7f/9c/34f6962f9b9e9c71f6e5ed806e0d0ff03c9d1b0b2340088a0cf4bce09b18/flask-3.1.3-py3-none-any.whl (103 kB)
+Collecting folium<1,>=0.15.0 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b5/a8/5f764f333204db0390362a4356d03a43626997f26818a0e9396f1b3bd8c9/folium-0.20.0-py2.py3-none-any.whl (113 kB)
+Collecting griffe<2,>=1.5.6 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/9c/83/3b1d03d36f224edded98e9affd0467630fc09d766c0e56fb1498cbb04a9b/griffe-1.15.0-py3-none-any.whl (150 kB)
+Collecting litellm>=1.63.7 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/da/71/deb6637475253b83eb4577c058863eec4b4ddaef2d08dcd93981b1aa4209/litellm-1.88.0-py3-none-any.whl (15.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.3/15.3 MB 11.5 MB/s  0:00:01
+Collecting mako>=1.3.8 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/bc/b1/a0ec7a5a9db730a08daef1fdfb8090435b82465abbf758a596f0ea88727e/mako-1.3.12-py3-none-any.whl (78 kB)
+Collecting matplotlib<4,>=3.0 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c5/e0/0840fd2f93da988ec660b8ad1984abe9f25d2aed22a5e394ff1c68c88307/matplotlib-3.10.9-cp313-cp313-win_amd64.whl (8.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.2/8.2 MB 11.6 MB/s  0:00:00
+Collecting mcp (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c9/11/252c6f971dc4f16af1d98a1c469d8ba523aab00d1bb76b4d3bc1ff32eacc/mcp-1.27.2-py3-none-any.whl (220 kB)
+Collecting mkdocs-material>=9.6.0 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/2c/01/bc663630c510822c95c47a66af9fa7a443c295b47d5f041e5e6ae62ef659/mkdocs_material-9.7.6-py3-none-any.whl (9.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.3/9.3 MB 11.2 MB/s  0:00:00
+Collecting mkdocs>=1.6.0 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/22/5b/dbc6a8cddc9cfa9c4971d59fb12bb8d42e161b7e7f8cc89e49137c5b279c/mkdocs-1.6.1-py3-none-any.whl (3.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.9/3.9 MB 11.3 MB/s  0:00:00
+Collecting networkx (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/9e/c9/b2622292ea83fbb4ec318f5b9ab867d0a28ab43c5717bb85b0a5f6b3b0a4/networkx-3.6.1-py3-none-any.whl (2.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 14.2 MB/s  0:00:00
+Collecting numpy<3,>=1.21 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b5/cd/9cc4dc876fb065d5c220aae4d5e14826b2715331bb7618ce1fb07a679d99/numpy-2.4.6-cp313-cp313-win_amd64.whl (12.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 11.3 MB/s  0:00:01
+Collecting openai==1.75.0 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/80/9a/f34f163294345f123673ed03e77c33dee2534f3ac1f9d18120384457304d/openai-1.75.0-py3-none-any.whl (646 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 647.0/647.0 kB 9.3 MB/s  0:00:00
+Collecting openinference-instrumentation-openai>=0.1.22 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/12/07/c60a4c8fc6cdf45a7e34077d091052affba770a23441f44aaccb7cd5d77e/openinference_instrumentation_openai-0.1.51-py3-none-any.whl (30 kB)
+Collecting pandas<3,>=1.3 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/4f/c7/e54682c96a895d0c808453269e0b5928a07a127a15704fedb643e9b0a4c8/pandas-2.3.3-cp313-cp313-win_amd64.whl (11.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.0/11.0 MB 11.6 MB/s  0:00:00
+Collecting paramiko>=3.5.1 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/82/5b/eadf6d45de38d30ab603f49393b6cd2cbe7e233af8cf90197e32782b68a9/paramiko-5.0.0-py3-none-any.whl (208 kB)
+Collecting prompt-toolkit>=3.0.39 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/84/03/0d3ce49e2505ae70cf43bc5bb3033955d2fc9f932163e84dc0779cc47f48/prompt_toolkit-3.0.52-py3-none-any.whl (391 kB)
+Collecting pydantic<3,>=2.10 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/fd/7b/122376b1fd3c62c1ed9dc80c931ace4844b3c55407b6fb2d199377c9736f/pydantic-2.13.4-py3-none-any.whl (472 kB)
+Collecting pypdf2 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/8e/5e/c86a5643653825d3c913719e788e41386bee415c2b87b4f955432f2de6b2/pypdf2-3.0.1-py3-none-any.whl (232 kB)
+Collecting requests<3,>=2.0 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/a0/f4/c67b0b3f1b9245e8d266f0f112c500d50e5b4e83cb6f3b71b6528104182a/requests-2.34.2-py3-none-any.whl (73 kB)
+Collecting rich>=13.9.4 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/82/3b/64d4899d73f91ba49a8c18a8ff3f0ea8f1c1d75481760df8c68ef5235bf5/rich-15.0.0-py3-none-any.whl (310 kB)
+Collecting types-requests<3,>=2.0 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/1c/bc/b139710a3b6018f7fb2b9508b35c8af564e61bf2bf4fa619d088f3e16f85/types_requests-2.33.0.20260518-py3-none-any.whl (21 kB)
+Collecting typing-extensions<5,>=4.12.2 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/18/67/36e9267722cc04a6b9f15c7f3441c2363321a3ea07da7ae0c0707beb2a9c/typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+Collecting wasabi>=1.1.3 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/06/7c/34330a89da55610daa5f245ddce5aab81244321101614751e7537f125133/wasabi-1.1.3-py3-none-any.whl (27 kB)
+Collecting anyio<5,>=3.5.0 (from openai==1.75.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/da/42/e921fccf5015463e32a3cf6ee7f980a6ed0f395ceeaa45060b61d86486c2/anyio-4.13.0-py3-none-any.whl (114 kB)
+Collecting distro<2,>=1.7.0 (from openai==1.75.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/12/b3/231ffd4ab1fc9d679809f356cebee130ac7daa00d6d6f3206dd4fd137e9e/distro-1.9.0-py3-none-any.whl (20 kB)
+Collecting httpx<1,>=0.23.0 (from openai==1.75.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/2a/39/e50c7c3a983047577ee07d2a9e53faf5a69493943ec3f6a384bdc792deb2/httpx-0.28.1-py3-none-any.whl (73 kB)
+Collecting jiter<1,>=0.4.0 (from openai==1.75.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/4b/23/5c20d9ad6f02c493e4023e5d2d09e1c1f15fe2753c9102c544aff068a88e/jiter-0.15.0-cp313-cp313-win_amd64.whl (196 kB)
+Collecting sniffio (from openai==1.75.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl (10 kB)
+Collecting tqdm>4 (from openai==1.75.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/47/aa/218a0eb34de1f753c83e4d0d1c8e7c4cef27f20dcb8342e024f63a80dc86/tqdm-4.68.1-py3-none-any.whl (78 kB)
+Collecting idna>=2.8 (from anyio<5,>=3.5.0->openai==1.75.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/1e/5e/d4e9f1a599fb8e573b7b87160658329fbf28d19eac2718f51fc3def3aa5a/idna-3.18-py3-none-any.whl (65 kB)
+Collecting branca>=0.6.0 (from folium<1,>=0.15.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/7e/50/fc9680058e63161f2f63165b84c957a0df1415431104c408e8104a3a18ef/branca-0.8.2-py3-none-any.whl (26 kB)
+Collecting jinja2>=2.9 (from folium<1,>=0.15.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl (134 kB)
+Collecting xyzservices (from folium<1,>=0.15.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/a8/a9/d23012099dc88ec69a29c6407b41d89681cb674c2043cd5b467c7e299c08/xyzservices-2026.3.0-py3-none-any.whl (94 kB)
+Collecting colorama>=0.4 (from griffe<2,>=1.5.6->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Collecting certifi (from httpx<1,>=0.23.0->openai==1.75.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/59/8c/57e832b7af6d7c5abe66eb3fbe3a3a32f4d11ea23a1aa7131371035be991/certifi-2026.5.20-py3-none-any.whl (134 kB)
+Collecting httpcore==1.* (from httpx<1,>=0.23.0->openai==1.75.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/7e/f5/f66802a942d491edb555dd61e3a9961140fd64c90bce1eafd741609d334d/httpcore-1.0.9-py3-none-any.whl (78 kB)
+Collecting h11>=0.16 (from httpcore==1.*->httpx<1,>=0.23.0->openai==1.75.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/04/4b/29cac41a4d98d144bf5f6d33995617b185d14b22401f75ca86f384e87ff1/h11-0.16.0-py3-none-any.whl (37 kB)
+Collecting contourpy>=1.0.1 (from matplotlib<4,>=3.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/18/0b/0098c214843213759692cc638fce7de5c289200a830e5035d1791d7a2338/contourpy-1.3.3-cp313-cp313-win_amd64.whl (226 kB)
+Collecting cycler>=0.10 (from matplotlib<4,>=3.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e7/05/c19819d5e3d95294a6f5947fb9b9629efb316b96de511b418c53d245aae6/cycler-0.12.1-py3-none-any.whl (8.3 kB)
+Collecting fonttools>=4.22.0 (from matplotlib<4,>=3.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/92/46/5177b01f3b4abfdd4409f31cca4ab279c9343a26efbe9ec78c97fc612e02/fonttools-4.63.0-cp313-cp313-win_amd64.whl (2.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 MB 11.2 MB/s  0:00:00
+Collecting kiwisolver>=1.3.1 (from matplotlib<4,>=3.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/be/8a/be60e3bbcf513cc5a50f4a3e88e1dcecebb79c1ad607a7222877becaa101/kiwisolver-1.5.0-cp313-cp313-win_amd64.whl (73 kB)
+Collecting packaging>=20.0 (from matplotlib<4,>=3.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/df/b2/87e62e8c3e2f4b32e5fe99e0b86d576da1312593b39f47d8ceef365e95ed/packaging-26.2-py3-none-any.whl (100 kB)
+Collecting pillow>=8 (from matplotlib<4,>=3.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/3f/82/8a3739a5e470b3c6cbb1d21d315800d8e16bff503d1f16b03a4ec3212786/pillow-12.2.0-cp313-cp313-win_amd64.whl (7.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 11.5 MB/s  0:00:00
+Collecting pyparsing>=3 (from matplotlib<4,>=3.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/10/bd/c038d7cc38edc1aa5bf91ab8068b63d4308c66c4c8bb3cbba7dfbc049f9c/pyparsing-3.3.2-py3-none-any.whl (122 kB)
+Collecting python-dateutil>=2.7 (from matplotlib<4,>=3.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Collecting pytz>=2020.1 (from pandas<3,>=1.3->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ec/dd/96da98f892250475bdf2328112d7468abdd4acc7b902b6af23f4ed958ea0/pytz-2026.2-py2.py3-none-any.whl (510 kB)
+Collecting tzdata>=2022.7 (from pandas<3,>=1.3->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ce/e4/dccd7f47c4b64213ac01ef921a1337ee6e30e8c6466046018326977efd95/tzdata-2026.2-py2.py3-none-any.whl (349 kB)
+Collecting annotated-types>=0.6.0 (from pydantic<3,>=2.10->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl (13 kB)
+Collecting pydantic-core==2.46.4 (from pydantic<3,>=2.10->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/7e/e8/cff247591966f2d22ec8c003cd7587e27b7ba7b81ab2fb888e3ab75dc285/pydantic_core-2.46.4-cp313-cp313-win_amd64.whl (2.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 11.3 MB/s  0:00:00
+Collecting typing-inspection>=0.4.2 (from pydantic<3,>=2.10->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/dc/9b/47798a6c91d8bdb567fe2698fe81e0c6b7cb7ef4d13da4114b41d239f65d/typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+Collecting charset_normalizer<4,>=2 (from requests<3,>=2.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/5d/78/1b74c5bbb3f99b77a1715c91b3e0b5bdb6fe302d95ace4f5b1bec37b0167/charset_normalizer-3.4.7-cp313-cp313-win_amd64.whl (158 kB)
+Collecting urllib3<3,>=1.26 (from requests<3,>=2.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/7f/3e/5db95bcf282c52709639744ca2a8b149baccf648e39c8cc87553df9eae0c/urllib3-2.7.0-py3-none-any.whl (131 kB)
+Collecting python-dotenv (from dotenv>=0.9.9->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/0b/d7/1959b9648791274998a9c3526f6d0ec8fd2233e4d4acce81bbae76b44b2a/python_dotenv-1.2.2-py3-none-any.whl (22 kB)
+Collecting MarkupSafe>=2.0 (from jinja2>=2.9->folium<1,>=0.15.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/05/73/c4abe620b841b6b791f2edc248f556900667a5a1cf023a6646967ae98335/markupsafe-3.0.3-cp313-cp313-win_amd64.whl (15 kB)
+Collecting fastuuid<1.0,>=0.14.0 (from litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/22/1d/5573ef3624ceb7abf4a46073d3554e37191c868abc3aecd5289a72f9810a/fastuuid-0.14.0-cp313-cp313-win_amd64.whl (156 kB)
+INFO: pip is looking at multiple versions of litellm to determine which version is compatible with other requirements. This could take a while.
+Collecting litellm>=1.63.7 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ff/18/8275c95ef09e81ab0c01a162c7b780ce3fbc49066b5d532c6b6ab3dc0118/litellm-1.87.1-py3-none-any.whl (17.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.1/17.1 MB 11.9 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/98/20/88a372fa7e50fc2c33458c6eef94a79afcf7bdfa43610079531b82b484a3/litellm-1.87.0-py3-none-any.whl (17.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.1/17.1 MB 11.5 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/3b/47/ad9cd76da945b3ba0cbe499170402d9dd01caf97b01d25862fb248aa424d/litellm-1.86.4-py3-none-any.whl (17.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.0/17.0 MB 10.0 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/72/65/1336b928007931fae7e65da43134172e6fd5cdd12dbd162edd278eed458b/litellm-1.86.3-py3-none-any.whl (17.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.0/17.0 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/4d/37/4da1dd67157aaa11477d6c63e4725216bfc46b4661e581b490d17e5b2831/litellm-1.86.2-py3-none-any.whl (17.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.0/17.0 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/76/47/e6e874857f45ff47762c6c29ec3dad9ea4757300e034400642cab90e4982/litellm-1.86.1-py3-none-any.whl (17.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.0/17.0 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ff/0b/9a044c061a69e801de042e962c34f5bc2e094810e28b49ce0b3bedee9327/litellm-1.86.0-py3-none-any.whl (17.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.0/17.0 MB 11.5 MB/s  0:00:01
+INFO: pip is still looking at multiple versions of litellm to determine which version is compatible with other requirements. This could take a while.
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d1/95/11d405f6841f3ddfa4f20229a119bc8e4210ba4842dc1b206d473ccb7e14/litellm-1.85.4-py3-none-any.whl (17.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.0/17.0 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b3/6f/4445675ac98431270c3188fdf3fd566665f2c1fd8b7b09e2abd16f041ff9/litellm-1.85.3-py3-none-any.whl (17.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.0/17.0 MB 11.6 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/85/89/d8c1566085dcf2274374094abdee3b76b84623b46a0cf01115d078a7bd9d/litellm-1.85.2-py3-none-any.whl (17.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.0/17.0 MB 10.0 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/17/a0/263a13c2253201aa11563a69d9a87f3510030aa765a16f57fc40ceefcdf5/litellm-1.85.1-py3-none-any.whl (17.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.0/17.0 MB 11.4 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/1c/38/e6a4abb062e039d18d59538cc4e6fc370c2c10cd2bff4a2e546acb69dcb9/litellm-1.85.0-py3-none-any.whl (17.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.0/17.0 MB 11.7 MB/s  0:00:01
+INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/30/45/b4a6f2defbb2c59afc0ee595e145d254459396af86a6986387f5ebd23231/litellm-1.84.5-py3-none-any.whl (16.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 11.6 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d6/db/70f2b12127b3db98d19146bd974e1a53bfcbd8755a5bac7667e02753c3cf/litellm-1.84.4-py3-none-any.whl (16.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 11.5 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ba/6f/c55e534afbcc14e72e5c41508158c9cf319657880dfd9c6d3ff3a3cce2af/litellm-1.84.3-py3-none-any.whl (16.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 11.3 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/a9/9c/58a4f9f189a8d9821a14844c0bcfbadc33477c663087a3fb9d2baba731be/litellm-1.84.2-py3-none-any.whl (16.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 11.6 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/1d/b0/11913b4b4d02f1fde11a2331b4122b090bd635a79cedbeeb70ef4f8f03b9/litellm-1.84.1-py3-none-any.whl (16.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/01/a6/77fa1bbf5e42eb596b06318b3f7e6af5d0f44028046d1d598c6a595d028f/litellm-1.84.0-py3-none-any.whl (16.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 9.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/7f/5c/1b5691575420135e90578543b2bf219497caa33cfd0af64cb38f30288450/litellm-1.83.14-py3-none-any.whl (16.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.5/16.5 MB 11.6 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c5/57/99d553839018ba4c1b94fbe540f218fefb725fba79ecc2abf462cd39d719/litellm-1.83.13-py3-none-any.whl (16.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.4/16.4 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/a2/4c/93c0d7c65ac110e27f53febd4e3e249bc6a0df6cf8024cd5e0817bc1fedd/litellm-1.83.12-py3-none-any.whl (16.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.4/16.4 MB 11.4 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/61/90/55095f450803ee7ea1b66961a33ba69e3c980e171d3cfad9eeec91c08f94/litellm-1.83.11-py3-none-any.whl (16.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.4/16.4 MB 11.6 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/6f/58/8dd69d5b1ab11f206a9c9f21b6fd191bcdd4fb3ed90b8efbf3a1291fd47c/litellm-1.83.10-py3-none-any.whl (16.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.3/16.3 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/f8/54/8e288b0a5ac203dfe75210e694d75ddc27a87aa91ed769bf8eb97bb787e8/litellm-1.83.9-py3-none-any.whl (16.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.4/16.4 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/f0/02/ee86522b2cb359079596d224db9b23dc12c02d7eeaf3d458abd7a0c54444/litellm-1.83.8-py3-none-any.whl (16.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.3/16.3 MB 9.9 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/75/80/caeb4cdcad96451ba83ad3ba2a9da08b1e1a915fa845c489f56ea044488b/litellm-1.83.7-py3-none-any.whl (16.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.1/16.1 MB 11.7 MB/s  0:00:01
+Collecting aiohttp==3.13.5 (from litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c0/1b/ac685a8882896acf0f6b31d689e3792199cfe7aba37969fa91da63a7fa27/aiohttp-3.13.5-cp313-cp313-win_amd64.whl (458 kB)
+Collecting click==8.1.8 (from litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/7e/d4/7ebdbd03970677812aac39c869717059dbb71a4cfc033ca6e5221787892c/click-8.1.8-py3-none-any.whl (98 kB)
+Collecting importlib-metadata==8.5.0 (from litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/a0/d9/a1e041c5e7caa9a05c925f4bdbdfb7f006d1f74996af53467bc394c97be7/importlib_metadata-8.5.0-py3-none-any.whl (26 kB)
+Collecting jsonschema==4.23.0 (from litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/69/4a/4f9dbeb84e8850557c02365a0eee0649abe5eb1d84af92a25731c6c0f922/jsonschema-4.23.0-py3-none-any.whl (88 kB)
+Collecting litellm>=1.63.7 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/9c/64/e97def4d7a0434b0d921a6ef6120f417a40e8ca46a81526a85406c2ef297/litellm-1.83.6-py3-none-any.whl (16.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.0/16.0 MB 11.6 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/16/8d/296a89452f71637099157d89419fe2a4cf68ccaf7cb8c7cc1d191948a5f4/litellm-1.83.5-py3-none-any.whl (16.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.0/16.0 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b8/bd/df19d3f8f6654535ee343a341fd921f81c411abf601a53e3eaef58129b02/litellm-1.83.4-py3-none-any.whl (16.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.0/16.0 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/7a/cc/626df09cd4c31a13d5c6df097a228cac155f3739e0fa54dd0abc3479c88e/litellm-1.83.3-py3-none-any.whl (16.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.0/16.0 MB 11.6 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/1c/65/ad643a729fea25a3905a854e10962353edd028c653bb7c63ea6278c959b7/litellm-1.83.2-py3-none-any.whl (15.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.6/15.6 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/95/ee/8dca6781464160a8ad856fb8d2e89ac1d918731323d5523b681f3c2ccc92/litellm-1.83.1-py3-none-any.whl (15.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.6/15.6 MB 9.9 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/19/2c/a670cc050fcd6f45c6199eb99e259c73aea92edba8d5c2fc1b3686d36217/litellm-1.83.0-py3-none-any.whl (15.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.6/15.6 MB 11.7 MB/s  0:00:01
+Collecting aiohttp>=3.10 (from litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/7b/d9/0bf1a19362c32f06229da5e7ddfcec91f93474d6307f7a2d3135e9c674dc/aiohttp-3.14.1-cp313-cp313-win_amd64.whl (479 kB)
+Collecting click (from litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c7/0d/67e5b4109ea4a837e80daa87c2c696711955e40449a97e8926672534def2/click-8.4.1-py3-none-any.whl (116 kB)
+Collecting importlib-metadata>=6.8.0 (from litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/38/3d/2d244233ac4f76e38533cfcb2991c9eb4c7bf688ae0a036d30725b8faafe/importlib_metadata-9.0.0-py3-none-any.whl (27 kB)
+Collecting jsonschema<5.0.0,>=4.23.0 (from litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/69/90/f63fb5873511e014207a475e2bb4e8b2e570d655b00ac19a9a0ca0a385ee/jsonschema-4.26.0-py3-none-any.whl (90 kB)
+Collecting litellm>=1.63.7 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/02/6c/5327667e6dbe9e98cbfbd4261c8e91386a52e38f41419575854248bbab6a/litellm-1.82.6-py3-none-any.whl (15.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.6/15.6 MB 11.6 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/68/1f/b6c8043eec81eade53a4d0e15a50b788ab0e82661e01a25e0b8536a4dca0/litellm-1.82.5-py3-none-any.whl (15.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.6/15.6 MB 12.0 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ec/ad/7eaa1121c6b191f2f5f2e8c7379823ece6ec83741a4b3c81b82fe2832401/litellm-1.82.4-py3-none-any.whl (15.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.6/15.6 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/5a/3a/590d58dee65a238f7f3d5c37f8f9f9021ecaf27fe379a393b4259324b56e/litellm-1.82.3-py3-none-any.whl (15.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.6/15.6 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/96/e4/87e3ca82a8bf6e6bfffb42a539a1350dd6ced1b7169397bd439ba56fde10/litellm-1.82.2-py3-none-any.whl (15.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.5/15.5 MB 11.5 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/57/77/0c6eca2cb049793ddf8ce9cdcd5123a35666c4962514788c4fc90edf1d3b/litellm-1.82.1-py3-none-any.whl (15.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.3/15.3 MB 9.8 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/28/89/eb28bfcf97d6b045c400e72eb047c381594467048c237dbb6c227764084c/litellm-1.82.0-py3-none-any.whl (14.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.9/14.9 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/1f/1e/0022cde913bac87a493e4a182b8768f75e7ae90b64d4e11acb009b18311f/litellm-1.81.16-py3-none-any.whl (14.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.8/14.8 MB 11.3 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/78/fd/da11826dda0d332e360b9ead6c0c992d612ecb85b00df494823843cfcda3/litellm-1.81.15-py3-none-any.whl (14.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.7/14.7 MB 11.6 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d8/b3/e8fe151c1b81666575552835a3a79127c5aa6bd460fcecc51e032d2f4019/litellm-1.81.14-py3-none-any.whl (14.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.6/14.6 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/be/f3/fffb7932870163cea7addc392165647a9a8a5489967de486c854226f1141/litellm-1.81.13-py3-none-any.whl (14.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.6/14.6 MB 11.6 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ed/bc/d104d30c9970ee1855233919eb79ef62555217c1b3230e873f450f5817a6/litellm-1.81.12-py3-none-any.whl (14.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.6/14.6 MB 11.6 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/96/b5/9ab657ef5cc61bea0054c2a829282c1a2b7528ea4e64ada57b3fe36686a6/litellm-1.81.11-py3-none-any.whl (14.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.5/14.5 MB 9.8 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b1/bb/3f3cc3d79657bc9daaa1319ec3a9d75e4889fc88d07e327f0ac02cd2ac7d/litellm-1.81.10-py3-none-any.whl (14.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.5/14.5 MB 11.4 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/0b/8b/672fc06c8a2803477e61e0de383d3c6e686e0f0fc62789c21f0317494076/litellm-1.81.9-py3-none-any.whl (14.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.4/14.4 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d8/5a/6f391c2f251553dae98b6edca31c070d7e2291cef6153ae69e0688159093/litellm-1.81.8-py3-none-any.whl (12.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/60/95/8cecc7e6377171e4ac96f23d65236af8706d99c1b7b71a94c72206672810/litellm-1.81.7-py3-none-any.whl (12.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e6/05/3516cc7386b220d388aa0bd833308c677e94eceb82b2756dd95e06f6a13f/litellm-1.81.6-py3-none-any.whl (12.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.2/12.2 MB 11.1 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/74/0f/5312b944208efeec5dcbf8e0ed956f8f7c430b0c6458301d206380c90b56/litellm-1.81.5-py3-none-any.whl (12.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.0/12.0 MB 11.2 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/9c/98/3a29bf2381ffd6d67a7cab68ad668a43960e0eceadb785cb0f16127a27f7/litellm-1.81.4-py3-none-any.whl (11.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.9/11.9 MB 11.7 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/83/62/d3f53c665261fdd5bb2401246e005a4ea8194ad1c4d8c663318ae3d638bf/litellm-1.81.3-py3-none-any.whl (11.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.9/11.9 MB 11.4 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/59/73/8d100c4e48935f6a381df60f894ca9c063ea412ce354fbe7a17770ad4092/litellm-1.81.1-py3-none-any.whl (11.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.8/11.8 MB 9.1 MB/s  0:00:01
+Collecting grpcio!=1.68.*,!=1.69.*,!=1.70.*,!=1.71.0,!=1.71.1,!=1.72.0,!=1.72.1,!=1.73.0,>=1.62.3 (from litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/a9/a7/932f2f748511a32e641a2aba0d30dded3ed6e8bc330e0924e4d5d86853e6/grpcio-1.81.0-cp313-cp313-win_amd64.whl (4.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.9/4.9 MB 10.9 MB/s  0:00:00
+Collecting litellm>=1.63.7 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/f7/2b/b8168f707c7c0ed15e70a17597c51499112f44d2efab3b4e371046bbed3d/litellm-1.81.0-py3-none-any.whl (11.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.8/11.8 MB 11.2 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/11/32/6673e1250c6a5fe8b5ebb9b6ad039f4c7ce5b66cb6f94056bdef582fd1af/litellm-1.80.17-py3-none-any.whl (11.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.7/11.7 MB 11.3 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/53/4d/73fdb12223bdb01889134eb75525fcc768b1724255f2b87072dd6743c6e1/litellm-1.80.16-py3-none-any.whl (11.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.7/11.7 MB 11.7 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/df/3b/b1bd693721ccb3c9a37c8233d019a643ac57bef5a93f279e5a63839ee4db/litellm-1.80.15-py3-none-any.whl (11.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.7/11.7 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/a6/90/e8e0ad7f57d3a56c3411b3867e02768f9722b5975a263c8aaaaba6693d91/litellm-1.80.13-py3-none-any.whl (11.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.6/11.6 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/2b/34/57b06609b0b637bd1b2d68ed5282a4dfa1d2c35535202de70d36352ea4d4/litellm-1.80.12-py3-none-any.whl (11.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.5/11.5 MB 11.7 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/97/0b/9e637344f24f3fe0e8039cd2337389fe05e0d31f518bc3e0a5cdbe45784a/litellm-1.80.11-py3-none-any.whl (11.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.5/11.5 MB 11.7 MB/s  0:00:00
+Collecting grpcio<1.68.0,>=1.62.3 (from litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/5a/96/44759eca966720d0f3e1b105c43f8ad4590c97bf8eb3cd489656e9590baa/grpcio-1.67.1-cp313-cp313-win_amd64.whl (4.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.3/4.3 MB 11.5 MB/s  0:00:00
+Collecting litellm>=1.63.7 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/8c/a9/4814b6aa58f6705df2831eaadeb5bc8240684c8c9d5964245212f85049d1/litellm-1.80.10-py3-none-any.whl (11.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.3/11.3 MB 11.6 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/0d/02/85f4b50d39d82dcf39bf1fbf2648cb01311866eb2ef2462666348b5ef1fe/litellm-1.80.9-py3-none-any.whl (11.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.1/11.1 MB 11.2 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/0b/54/0371456cf5317c1ebb95824ad38d607efa9e878adc1670f743c2de8953d8/litellm-1.80.8-py3-none-any.whl (11.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.0/11.0 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/54/e0/2e60a0c09235fd7b55297390c557923f3c35a9cf001914222c26a7857d2b/litellm-1.80.7-py3-none-any.whl (10.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.8/10.8 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/0e/7a/2d7783921d690687ce75d3b5f32dbaf33de282a23ede4c9c669dfb7cc279/litellm-1.80.6-py3-none-any.whl (10.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.8/10.8 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/bd/af/1d4693746ff9fbbe27a6e7d6394b801acf234e00c83f45ad1cb5bf2eaa6c/litellm-1.80.5-py3-none-any.whl (10.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.7/10.7 MB 11.7 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ea/53/aa31e4d057b3746b3c323ca993003d6cf15ef987e7fe7ceb53681695ae87/litellm-1.80.0-py3-none-any.whl (10.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.5/10.5 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/41/ad/3e030c925c99b9a2f1573bf376259338b502ed1aa25ae768bf1f79d8b1bf/litellm-1.79.3-py3-none-any.whl (10.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.4/10.4 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/30/b8/2a429e05bb709fc297201b37c6e039a4a1dfbcfd04a7e032a75864ed12b8/litellm-1.79.2-py3-none-any.whl (10.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.4/10.4 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/2f/e4/ac5905dfe9c0c195e59c36ea431277090dd2aa1acbcc514f781fa87a5903/litellm-1.79.1-py3-none-any.whl (10.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.3/10.3 MB 11.7 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c5/26/a5fef380af5d6a2f47cda979d88561af1e1a8efc07da2ef72c0e8cb6842c/litellm-1.79.0-py3-none-any.whl (10.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.2/10.2 MB 9.0 MB/s  0:00:01
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ce/9e/c240c28bc6d80cbbe320c1190ed1c1f8dd2cc26488edc0665fb007992201/litellm-1.78.7-py3-none-any.whl (9.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.9/9.9 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/1b/06/fd4c387565483ac98dd71be8ad4c8f630264ed6e739472324f149de6f871/litellm-1.78.6-py3-none-any.whl (9.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.8/9.8 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e6/f6/6aeedf8c6e75bfca08b9c73385186016446e8286803b381fcb9cac9c1594/litellm-1.78.5-py3-none-any.whl (9.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.8/9.8 MB 11.5 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/23/43/928467ec3358cd7c77a78d4b083ab0d5328d6d92461272d8731a96114492/litellm-1.78.4-py3-none-any.whl (9.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.8/9.8 MB 11.1 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/06/4c/e25ec72723c88ed2efec5bed591256307289936e2fd13b78b67a1732a10f/litellm-1.78.3-py3-none-any.whl (9.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.8/9.8 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b1/79/e8c57380e8e62bad39924878c4e6d9bee43d595e870533a1fdda20e8b62f/litellm-1.78.2-py3-none-any.whl (9.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.8/9.8 MB 11.7 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/fc/fb/38a48efe3e05a8e9a9765b991740282e0358a83fb896ec00d70bf1448791/litellm-1.78.0-py3-none-any.whl (9.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.7/9.7 MB 12.0 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/86/50/53df2244d4aca2af73d2f2c6ad21c731cf24bd0dbe89d896184a1eaa874f/litellm-1.77.7-py3-none-any.whl (9.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.2/9.2 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/94/4c/89553f7e375ef39497d86f2266a0cdb37371a07e9e0aa8949f33c15a4198/litellm-1.77.5-py3-none-any.whl (9.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.2/9.2 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/3c/32/90f8587818d146d604ed6eec95f96378363fda06b14817399cc68853383e/litellm-1.77.4-py3-none-any.whl (9.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.1/9.1 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/81/b2/122602255b582fdcf630f8e44b5c9175391abe10be5e2f4db6a7d4173df1/litellm-1.77.3-py3-none-any.whl (9.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.1/9.1 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/a2/7a/251187abf82dd1bcc98bf91ecc36c52206b3bb5a277c8081d3d4488d6781/litellm-1.77.2.post1.tar.gz (10.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.2/10.2 MB 11.6 MB/s  0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/bb/dc/ff4f119cd4d783742c9648a03e0ba5c2b52fc385b2ae9f0d32acf3a78241/litellm-1.77.1-py3-none-any.whl (9.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.1/9.1 MB 11.4 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/46/fa/f4f9cd0d04ef9d80dfb5c171ed80e40edc7bca331bca82c6eb31d88193e4/litellm-1.77.0-py3-none-any.whl (9.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.0/9.0 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d0/d9/5f8ed27241b487f51f04573b8ba06d4460ebed9f792ff5cc148649fbf862/litellm-1.76.3-py3-none-any.whl (9.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.0/9.0 MB 11.5 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/79/f4/980cc81c21424026dcb48a541654fd6f4286891825a3d0dd51f02b65cbc3/litellm-1.76.2-py3-none-any.whl (9.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.0/9.0 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d9/d3/16423b6d399540eeff357f00abc85f62dc337d347a0c98ccadc448a61df5/litellm-1.76.1-py3-none-any.whl (9.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.0/9.0 MB 11.4 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/86/f2/891b4b6c09021046d7f5bcff57178b18f352a67b032d35cc693d79b38620/litellm-1.76.0-py3-none-any.whl (9.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.0/9.0 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/5d/b2/f21db9636d9fcd67b2c557c58aafb8a6e9b53864f7a40d645e09c2e3ab98/litellm-1.75.9-py3-none-any.whl (8.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 11.4 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/5e/82/c4d00fbeafd93c00dab6ea03f33cadd6a97adeb720ba1d89fc319e5cb10b/litellm-1.75.8-py3-none-any.whl (8.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 11.5 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/eb/0c/623f7e3b6dd658fa261161e8a54a0d545fa11310a63a405e84c8b76e4192/litellm-1.75.7-py3-none-any.whl (8.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 11.5 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/38/e3/32232902e6ea56367eff99e6b3cec8b586a996ae4ec1a953921d475ce757/litellm-1.75.6-py3-none-any.whl (8.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/90/eb/5da45f5c79bca742d7171a0aec8661efe266a15a08b4583ddf94ed0fe914/litellm-1.75.5.post2-py3-none-any.whl (8.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 11.4 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/8f/76/780f68a3b26227136a5147c76860aacedcae9bf1b7afc1c991ec9cad11bc/litellm-1.75.5.post1-py3-none-any.whl (8.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/14/6e/eae32255d63c5bacbe2af085a2904f6f7ee989f4a2ab2e76cd099b34e758/litellm-1.75.4-py3-none-any.whl (8.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/dd/1e/8ef7e7ac7d33f900ae44e9e3a33d668783034e414aa4d7191ae3e4068ec5/litellm-1.75.3-py3-none-any.whl (8.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 11.6 MB/s  0:00:00
+Collecting tiktoken>=0.7.0 (from litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/42/a6/c1936d16055436cb32e6c6128d68629622e00f4768562f55653752d34768/tiktoken-0.13.0-cp313-cp313-win_amd64.whl (874 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 874.8/874.8 kB 10.8 MB/s  0:00:00
+Collecting tokenizers (from litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/97/c9/2553f72aaf65a2797d4229e37fa7fbe38ffbf3e32912d31bdd78b3323e59/tokenizers-0.23.1-cp310-abi3-win_amd64.whl (2.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.8/2.8 MB 9.6 MB/s  0:00:00
+Collecting attrs>=22.2.0 (from jsonschema<5.0.0,>=4.23.0->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/64/b4/17d4b0b2a2dc85a6df63d1157e028ed19f90d4cd97c36717afef2bc2f395/attrs-26.1.0-py3-none-any.whl (67 kB)
+Collecting jsonschema-specifications>=2023.03.6 (from jsonschema<5.0.0,>=4.23.0->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/41/45/1a4ed80516f02155c51f51e8cedb3c1902296743db0bbc66608a0db2814f/jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+Collecting referencing>=0.28.4 (from jsonschema<5.0.0,>=4.23.0->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/2c/58/ca301544e1fa93ed4f80d724bf5b194f6e4b945841c5bfd555878eea9fcb/referencing-0.37.0-py3-none-any.whl (26 kB)
+Collecting rpds-py>=0.25.0 (from jsonschema<5.0.0,>=4.23.0->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/70/ec/a2aca432db9c7359b40fa393eeeaa0d166c2f70175be956e75fa24197c44/rpds_py-2026.5.1-cp313-cp313-win_amd64.whl (228 kB)
+Collecting aiohappyeyeballs>=2.5.0 (from aiohttp>=3.10->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/5f/fc/a7bf5b6e4e617b45f90f2d9d2a68519c249c81dd4fc2658c7a2a61c4f4b7/aiohappyeyeballs-2.6.2-py3-none-any.whl (15 kB)
+Collecting aiosignal>=1.4.0 (from aiohttp>=3.10->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/fb/76/641ae371508676492379f16e2fa48f4e2c11741bd63c48be4b12a6b09cba/aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+Collecting frozenlist>=1.1.1 (from aiohttp>=3.10->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d8/cf/174c91dbc9cc49bc7b7aab74d8b734e974d1faa8f191c74af9b7e80848e6/frozenlist-1.8.0-cp313-cp313-win_amd64.whl (43 kB)
+Collecting multidict<7.0,>=4.5 (from aiohttp>=3.10->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b2/35/e994121b0e90e46134673422dd564623f93304614f5d11886b1b3e06f503/multidict-6.7.1-cp313-cp313-win_amd64.whl (45 kB)
+Collecting propcache>=0.2.0 (from aiohttp>=3.10->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/1c/fd/3f0f10dba4dabad3bf53102be007abf55481067952bde0fdddff439e7c61/propcache-0.5.2-cp313-cp313-win_amd64.whl (41 kB)
+Collecting yarl<2.0,>=1.17.0 (from aiohttp>=3.10->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/92/dd/3ae5fe417e9d1c353a548553326eb9935e76b6b727161563b424cc296df3/yarl-1.24.2-cp313-cp313-win_amd64.whl (92 kB)
+Collecting zipp>=3.20 (from importlib-metadata>=6.8.0->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/3a/13/547360d81e6d88d58492968ffda9f9542854f11310ee556fef14260cc886/zipp-4.1.0-py3-none-any.whl (10 kB)
+INFO: pip is looking at multiple versions of litellm[proxy] to determine which version is compatible with other requirements. This could take a while.
+INFO: pip is still looking at multiple versions of litellm[proxy] to determine which version is compatible with other requirements. This could take a while.
+INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+Collecting PyJWT==2.12.1 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e5/7a/8dd906bd22e79e47397a61742927f6747fe93242ef86645ee9092e610244/pyjwt-2.12.1-py3-none-any.whl (29 kB)
+Collecting apscheduler==3.11.2 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/9f/64/2e54428beba8d9992aa478bb8f6de9e4ecaa5f8f513bcfd567ed7fb0262d/apscheduler-3.11.2-py3-none-any.whl (64 kB)
+Collecting azure-identity==1.25.3 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/49/9a/417b3a533e01953a7c618884df2cb05a71e7b68bdbce4fbdb62349d2a2e8/azure_identity-1.25.3-py3-none-any.whl (192 kB)
+Collecting azure-storage-blob==12.28.0 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d8/3a/6ef2047a072e54e1142718d433d50e9514c999a58f51abfff7902f3a72f8/azure_storage_blob-12.28.0-py3-none-any.whl (431 kB)
+Collecting backoff==2.2.1 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/df/73/b6e24bd22e6720ca8ee9a85a0c4a2971af8497d8f3193fa05390cbd46e09/backoff-2.2.1-py3-none-any.whl (15 kB)
+Collecting boto3==1.42.80 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/5c/3d/a36837ddfcd08e2506b34a6cb785885923f49c9e20559a832681a5e8228d/boto3-1.42.80-py3-none-any.whl (140 kB)
+Collecting cryptography==43.0.3 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/87/5c/3dab83cc4aba1f4b0e733e3f0c3e7d4386440d660ba5b1e3ff995feb734d/cryptography-43.0.3-cp39-abi3-win_amd64.whl (3.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.1/3.1 MB 11.1 MB/s  0:00:00
+Collecting fastapi==0.124.4 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/3e/57/aa70121b5008f44031be645a61a7c4abc24e0e888ad3fc8fda916f4d188e/fastapi-0.124.4-py3-none-any.whl (113 kB)
+Collecting fastapi-sso==0.16.0 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/72/84/df15745ff06c1b44e478b72759d5cf48e4583e221389d4cdea76c472dd1c/fastapi_sso-0.16.0-py3-none-any.whl (23 kB)
+Collecting gunicorn==23.0.0 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/cb/7d/6dac2a6e1eba33ee43f318edbed4ff29151a49b5d37f080aad1e6469bca4/gunicorn-23.0.0-py3-none-any.whl (85 kB)
+Collecting litellm-enterprise==0.1.37 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e3/2c/1eb2921ecc49ea1015e3fd17987eb7d55fdcc8a58920820441551bbba5b0/litellm_enterprise-0.1.37-py3-none-any.whl (125 kB)
+Collecting litellm-proxy-extras==0.4.65 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/4e/90/d0cc4d0a614494cd3b9153584e11f8f1d06045706de92901dafaf1b12403/litellm_proxy_extras-0.4.65-py3-none-any.whl (78 kB)
+Collecting mcp (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/fd/d9/eaa1f80170d2b7c5ba23f3b59f766f3a0bb41155fbc32a69adfa1adaaef9/mcp-1.26.0-py3-none-any.whl (233 kB)
+Collecting litellm-enterprise==0.1.36 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/03/fa/d9e4c0d959062082fb890c2186913ebacf81df4c447ea67117143496280a/litellm_enterprise-0.1.36-py3-none-any.whl (124 kB)
+Collecting litellm-enterprise==0.1.35 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ef/fa/39efe3dfa680ca5bc5795b9c904c914b09a65278c2970c8fece6e0e30e47/litellm_enterprise-0.1.35-py3-none-any.whl (122 kB)
+Collecting litellm-proxy-extras==0.4.64 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/1c/5f/02278c36ff7bcf5348c5333f40358e1122f946bd230ae23dedcd813dfd84/litellm_proxy_extras-0.4.64-py3-none-any.whl (77 kB)
+Collecting litellm-proxy-extras==0.4.63 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/89/18/01444a51e9d7fddb4d20440877e3eae71ab139c4360b812816e7ca567205/litellm_proxy_extras-0.4.63-py3-none-any.whl (76 kB)
+Collecting PyJWT<3.0.0,>=2.12.0 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/a3/5e/ecf12fdb62546d64385c158514e9b2b671f7832108ef2ecd2020ce0af2d1/pyjwt-2.13.0-py3-none-any.whl (31 kB)
+Collecting azure-storage-blob<13.0.0,>=12.25.1 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c2/2c/6ddee6a3e42d0236ba9259e4df7fa97fdc415ff0802b736c634baaf4b285/azure_storage_blob-12.29.0-py3-none-any.whl (434 kB)
+Collecting boto3<2.0.0,>=1.40.76 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/59/b7/e66c9b37b96153aa371fe48d24194151293f6577dd3eaa1fc146c281456d/boto3-1.43.24-py3-none-any.whl (140 kB)
+Collecting cryptography (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/f4/ac/8ac51b4a5fc5932eb7ee5c517ba7dc8cd834f0048962b6b352f00f41ebf9/cryptography-48.0.0-cp311-abi3-win_amd64.whl (3.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.8/3.8 MB 10.7 MB/s  0:00:00
+Collecting fastapi>=0.120.1 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e0/82/45359b62a067409bd929ae8a56b8ed13e5a8c8a61194b3c236920999ab83/fastapi-0.136.3-py3-none-any.whl (117 kB)
+Collecting litellm-proxy-extras<0.5.0,>=0.4.62 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/39/fb/a5f7cc9a091c528a473d1cbfedc55c15828b8f2a49f7e3804b2dffce4ea4/litellm_proxy_extras-0.4.74-py3-none-any.whl (121 kB)
+Collecting litellm-enterprise<0.2.0,>=0.1.33 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/0a/45/a6a56c510779b633e18fc5403aa82388fd6f0833132725bcb756d68cb0f5/litellm_enterprise-0.1.42-py3-none-any.whl (137 kB)
+Collecting boto3==1.40.76 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/90/8e/966263696eb441e8d1c4daa5fdfb3b4be10a96a23c418cc74c80b0b03d4e/boto3-1.40.76-py3-none-any.whl (139 kB)
+Collecting litellm-enterprise==0.1.33 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/cd/b2/ed897ae1ec379868634d44d5184a950f76fd3bcdced1efde8ede0b403543/litellm_enterprise-0.1.33-py3-none-any.whl (120 kB)
+Collecting litellm-proxy-extras==0.4.50 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/35/75/79485f4d5a0bc29ee115391d06a3d6bf4ef7678b98e1553daa6a266e84d7/litellm_proxy_extras-0.4.50-py3-none-any.whl (67 kB)
+Collecting litellm-enterprise==0.1.32 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/f0/df/1d928e4f46a2136297020ab873d343e9e2c8015a6873200101a3e7dca2f4/litellm_enterprise-0.1.32-py3-none-any.whl (117 kB)
+Collecting litellm-proxy-extras==0.4.48 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/4a/22/7ee216638ede46fd2a09b9655ae4b0a0eb3987b79855f748f70c64ea5f67/litellm_proxy_extras-0.4.48-py3-none-any.whl (65 kB)
+Collecting litellm-proxy-extras==0.4.47 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/4d/6d/f147ff929f2079fdda10ff461816679c4cc18d49495cce3c0ef658696a91/litellm_proxy_extras-0.4.47-py3-none-any.whl (63 kB)
+Collecting litellm-proxy-extras==0.4.46 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e6/49/07f64e8ced7a89b248d8cddd00f4697030515b327f6096d9daec52e36853/litellm_proxy_extras-0.4.46-py3-none-any.whl (61 kB)
+Collecting litellm-proxy-extras==0.4.40 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/88/55/939f6f7bbbc66be6388b3a59d63500ddac77ed030b1cc9bf6f7cf239397c/litellm_proxy_extras-0.4.40-py3-none-any.whl (57 kB)
+Collecting litellm-proxy-extras==0.4.39 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/06/9d/6f9ed000a5bb4e09951edbaac9946b5f00d1289129535cd02e55d3184a42/litellm_proxy_extras-0.4.39-py3-none-any.whl (56 kB)
+Collecting litellm-enterprise==0.1.31 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/be/8a/1e06af78b18d62e1dbb457f60cc78a82543217db81cb780af080b4dd985d/litellm_enterprise-0.1.31-py3-none-any.whl (112 kB)
+Collecting litellm-proxy-extras==0.4.35 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/4d/fc/0538c800e0f32fe1bca85f2e9edfc4c3f9efb622889f8902425b2ba2fe84/litellm_proxy_extras-0.4.35-py3-none-any.whl (53 kB)
+Collecting litellm-proxy-extras==0.4.34 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/21/71/a32bdfa74c598dde072d860ba1facaa522b4ef75c07c894c614999e73d75/litellm_proxy_extras-0.4.34-py3-none-any.whl (53 kB)
+Collecting litellm-proxy-extras==0.4.33 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b7/c0/b9960391b983306c39f1fa28e2eedf5d0e2048879fde8707a2d80896ed10/litellm_proxy_extras-0.4.33-py3-none-any.whl (52 kB)
+Collecting litellm-enterprise==0.1.27 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/7e/23/ec61a6aa76b6938d3de8cad206875b0500e1df234fa3535b282b1a4850b5/litellm_enterprise-0.1.27-py3-none-any.whl (108 kB)
+Collecting litellm-proxy-extras==0.4.30 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/bd/80/5b7ae7b39a79ca79722dd9049b3b4227b4540cb97006c8ef26c43af74db8/litellm_proxy_extras-0.4.30-py3-none-any.whl (51 kB)
+Collecting litellm-proxy-extras==0.4.29 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b0/d6/7393367fdf4b65d80ba0c32d517743a7aa8975a36b32cc70a0352b9514aa/litellm_proxy_extras-0.4.29-py3-none-any.whl (50 kB)
+Collecting litellm-proxy-extras==0.4.27 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/50/c8/508b5a277e5d56e71ef51c5fe8111c7ec045ffd98f126089af803171ccc6/litellm_proxy_extras-0.4.27-py3-none-any.whl (50 kB)
+Collecting litellm-proxy-extras==0.4.25 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/4b/50/6a59c33eb5fdcdd4f8c121af576dac8d1c0f337c0d222bedd835e66d4b98/litellm_proxy_extras-0.4.25-py3-none-any.whl (48 kB)
+Collecting boto3==1.36.0 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c0/36/b91f560a0ed11f7f90ac59554cbc52340158ce24db879a7c8faa68ff1cef/boto3-1.36.0-py3-none-any.whl (139 kB)
+Collecting litellm-proxy-extras==0.4.23 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/15/72/946f7dc9163560bd901ba5341aa7a2889d5e4137b2ad2e531818c7447eda/litellm_proxy_extras-0.4.23-py3-none-any.whl (49 kB)
+Collecting litellm-proxy-extras==0.4.21 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/f2/26/920d1a89196fe0ffb55d054312dbf5c2110cbffabbc77c71df0f0455c270/litellm_proxy_extras-0.4.21-py3-none-any.whl (47 kB)
+Collecting litellm-proxy-extras==0.4.20 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d4/f5/eb350c49e7cf09db5b335aaeef410c2094e19c84bfe51733cab8470dc011/litellm_proxy_extras-0.4.20-py3-none-any.whl (46 kB)
+Collecting litellm-proxy-extras==0.4.18 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/af/60/2465d2d58625af9ffc80c3933b43cf63e94f1722078b5da197398b0705de/litellm_proxy_extras-0.4.18-py3-none-any.whl (45 kB)
+Collecting litellm-proxy-extras==0.4.16 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/49/54/b2ccbd4905583fef466e26f0777b9e4ff7a6e6f6996e564c24637cc7d459/litellm_proxy_extras-0.4.16-py3-none-any.whl (44 kB)
+Collecting litellm-enterprise==0.1.25 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/8b/b2/31ac8e551216a6a92e6d47b6d9e3e49d8957ee6da15abf73eeb9aaeec1f3/litellm_enterprise-0.1.25-py3-none-any.whl (104 kB)
+Collecting litellm-proxy-extras==0.4.14 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/6e/61/67f9d39afda151e3f37d2f1426fd797675a2af0d2c1045764b598476a4a9/litellm_proxy_extras-0.4.14-py3-none-any.whl (43 kB)
+Collecting litellm-enterprise==0.1.23 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/33/5b/a1b4e1c61a5002ae2ec62940c4851affabfdcfc14d2aacd728212fc3e264/litellm_enterprise-0.1.23-py3-none-any.whl (103 kB)
+Collecting litellm-proxy-extras==0.4.11 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ab/48/4846c7fbad846e0d8893129a8e135e8eb369dcdea54501c7b22f322aa3f7/litellm_proxy_extras-0.4.11-py3-none-any.whl (40 kB)
+Collecting litellm-enterprise==0.1.22 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ce/6a/9f20e3142235afce0dd47dba2b34728cf6cb5ca62c21859d777967796062/litellm_enterprise-0.1.22-py3-none-any.whl (105 kB)
+Collecting litellm-proxy-extras==0.4.9 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/0b/ad/4494b78f5af9257dd712d96b3846af08d9cc9508c2e6051c53a98cc29386/litellm_proxy_extras-0.4.9-py3-none-any.whl (39 kB)
+Collecting litellm-proxy-extras==0.4.6 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/9b/18/78720f3743fa88d8f80dd8da8d21eec507073624288471bb52ff0dfcdc22/litellm_proxy_extras-0.4.6-py3-none-any.whl (37 kB)
+Collecting litellm-enterprise==0.1.21 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ad/d4/0aa480b636307a8e1c2dcfd5be2d045d500967c04db00f50189a572329ab/litellm_enterprise-0.1.21-py3-none-any.whl (107 kB)
+Collecting litellm-proxy-extras==0.4.5 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/97/05/70783bb4dbbb2a57d97c0d0b91122f1b83b8471a654a6dcd66cbb67ca83a/litellm_proxy_extras-0.4.5-py3-none-any.whl (36 kB)
+Collecting litellm-enterprise==0.1.20 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/6b/e2/3d113fe5262577d92ca2ace2454ad042be9c01c62bf1e44be4e2d12b2cc5/litellm_enterprise-0.1.20-py3-none-any.whl (120 kB)
+Collecting litellm-proxy-extras==0.4.3 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/de/d6/954a8ce8810d7daee5ec1334d74bbc3da889d89cba9825a4750fab7f1187/litellm_proxy_extras-0.4.3-py3-none-any.whl (35 kB)
+Collecting litellm-proxy-extras==0.2.31 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e4/5f/6a0add2cac34a370da62d3bf7476035f5f10519740dfe78410256f8945b1/litellm_proxy_extras-0.2.31-py3-none-any.whl (34 kB)
+Collecting fastapi<0.116.0,>=0.115.5 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/53/50/b1222562c6d270fea83e9c9075b8e8600b8479150a18e4516a6138b980d1/fastapi-0.115.14-py3-none-any.whl (95 kB)
+Collecting litellm-proxy-extras==0.2.29 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d1/70/c8ec18235f4bbe3c8486b2909c3d5fc23cdbd08b2c7504ae8c02ed813c83/litellm_proxy_extras-0.2.29-py3-none-any.whl (33 kB)
+Collecting litellm-proxy-extras==0.2.27 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/cc/7f/397941d29f470213a31e8d2928cc55dea5f4596207b06e3182e0df85a4e0/litellm_proxy_extras-0.2.27-py3-none-any.whl (32 kB)
+Collecting litellm-proxy-extras==0.2.26 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/17/75/179560f8ee79fc8aad76ef689d3ac7df3cb363a6858d01c9d02157f8e69a/litellm_proxy_extras-0.2.26-py3-none-any.whl (32 kB)
+Collecting litellm-proxy-extras==0.2.25 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e4/1d/e7c297bf64b105e2d55959340c5922e57cb1f7461c5b992ef1c771955d2d/litellm_proxy_extras-0.2.25-py3-none-any.whl (31 kB)
+Collecting litellm-proxy-extras==0.2.22 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/21/5e/5fc548be77a1552d08825bf9edcee1d93253504ff8302dfa87d43a214916/litellm_proxy_extras-0.2.22-py3-none-any.whl (30 kB)
+Collecting litellm-proxy-extras==0.2.19 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ec/51/88b42718c31eda948f1302096f06150e1dc3205f883c34548ce9c44ab01a/litellm_proxy_extras-0.2.19-py3-none-any.whl (30 kB)
+Collecting litellm-enterprise==0.1.19 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/59/4c/397d0bc405f7df2cc7f6e3ce1c217980ae10a8c442a0206f57e031495e79/litellm_enterprise-0.1.19-py3-none-any.whl (122 kB)
+Collecting litellm-proxy-extras==0.2.18 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/97/c8/95f0aa38ffffbe89a0dac4c8e443f2e90f858fb347df8c99441994083a2b/litellm_proxy_extras-0.2.18-py3-none-any.whl (29 kB)
+Collecting litellm-proxy-extras==0.2.17 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d0/91/44a471452457ede7f4c8b270bb598d81c44453951f9685ff01d73113a495/litellm_proxy_extras-0.2.17-py3-none-any.whl (29 kB)
+Collecting boto3==1.34.34 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/0e/78/d505b8c71139d234e34df1c4a18d0567287494ce63f690337aa2af23219c/boto3-1.34.34-py3-none-any.whl (139 kB)
+Collecting litellm-proxy-extras==0.2.16 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/f1/79/323d614508e7f9293105a45f0cb78f0c3e167f6a27c00f1b9aa532059d65/litellm_proxy_extras-0.2.16-py3-none-any.whl (29 kB)
+Collecting orjson<4.0.0,>=3.9.7 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/67/bd/2775ff28bfe883b9aa1ff348300542eb2ef1ee18d8ae0e3a49846817a865/orjson-3.11.9-cp313-cp313-win_amd64.whl (127 kB)
+Collecting polars<2.0.0,>=1.31.0 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/1f/22/28f62d24f7db56ac4343588f9362d49b7b4177e55ac47a466fe696b0099b/polars-1.41.2-py3-none-any.whl (833 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 833.4/833.4 kB 10.0 MB/s  0:00:00
+Collecting pynacl<2.0.0,>=1.5.0 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/41/ad/334600e8cacc7d86587fe5f565480fde569dfb487389c8e1be56ac21d8ac/pynacl-1.6.2-cp38-abi3-win_amd64.whl (239 kB)
+Collecting python-multipart<0.0.19,>=0.0.18 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/13/6b/b60f47101ba2cac66b4a83246630e68ae9bbe2e614cbae5f4465f46dee13/python_multipart-0.0.18-py3-none-any.whl (24 kB)
+Collecting pyyaml<7.0.0,>=6.0.1 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/97/c9/39d5b874e8b28845e4ec2202b5da735d0199dbe5b8fb85f91398814a9a46/pyyaml-6.0.3-cp313-cp313-win_amd64.whl (154 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e9/b4/68655f0eb049483ff0f5efdc2ecf9fba41957a05019465241222d94a824a/litellm-1.75.2-py3-none-any.whl (8.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 11.2 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/db/43/e10905870d42e927de3b095a9248f2764156c7eb45ec172d72be35cd2bb4/litellm-1.75.0-py3-none-any.whl (8.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 11.3 MB/s  0:00:00
+Collecting litellm-enterprise==0.1.17 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/2a/5b/b6833b3a2726fac3863f60813ee500f125fe4971c06acb65943d28f65373/litellm_enterprise-0.1.17-py3-none-any.whl (121 kB)
+Collecting litellm-proxy-extras==0.2.15 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/f0/8e/19cadb5490bf3c5a02219dbf9579a092cbde9dc4077b29dc6e2ff9290c8b/litellm_proxy_extras-0.2.15-py3-none-any.whl (29 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/8b/03/2a89d9280f595fe293c64adcc3bfbefe7a3677ec0210d293bfac63ae17dc/litellm-1.74.15.post2.tar.gz (9.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.7/9.7 MB 11.6 MB/s  0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting litellm-enterprise==0.1.16 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/dd/29/8d63aa67baf273ece8917fcc51baa8fcb19fee59451d4b7f1a841888c702/litellm_enterprise-0.1.16-py3-none-any.whl (121 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/3e/fc/02bfc7dcf6276fbbd5acf0ebcb188f824cf6d4ee8013d7150458c77c7047/litellm-1.74.15.post1.tar.gz (9.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.7/9.7 MB 11.6 MB/s  0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting litellm-proxy-extras==0.2.14 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/11/d8/2b5b554e84291cd79074f81b27e92a12814b7b98c0a65df5b789dd8121ba/litellm_proxy_extras-0.2.14-py3-none-any.whl (28 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b9/9c/f4dd62d790d65c924699450d8789df437e63c8d99229e95bd7467ce7b82a/litellm-1.74.15-py3-none-any.whl (8.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.8/8.8 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c4/ad/e7f20769b6860881da864562d58ded0f4f6d49abc3bf2c214483b27b453d/litellm-1.74.14-py3-none-any.whl (8.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.8/8.8 MB 11.5 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/22/1d/5745632d7a8c7f9bd588a956421e4514ae98d1895eec7eaece99d15ffa7f/litellm-1.74.12-py3-none-any.whl (8.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.8/8.8 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/23/da/2c32ba2bc9ea5a094c7195ee514fd556bc6ae7a9a54329a41f8374dd1594/litellm-1.74.9.post2-py3-none-any.whl (8.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.7/8.7 MB 8.6 MB/s  0:00:01
+Collecting litellm-proxy-extras==0.2.12 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/31/50/0b177162871623d301825d430fc285d232e34e0c3918b22c34d4f2cd82d8/litellm_proxy_extras-0.2.12-py3-none-any.whl (28 kB)
+Collecting mcp (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/0f/52/e1c43c4b5153465fd5d3b4b41bf2d4c7731475e9f668f38d68f848c25c9a/mcp-1.10.0-py3-none-any.whl (150 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/31/0b/3951fc38b726a1a72fa806ab46fc64bbf2b92cbed69be856dd768196e16a/litellm-1.74.9.post1-py3-none-any.whl (8.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.7/8.7 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/5f/e4/f1546746049c99c6b8b247e2f34485b9eae36faa9322b84e2a17262e6712/litellm-1.74.9-py3-none-any.whl (8.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.7/8.7 MB 11.4 MB/s  0:00:00
+Collecting litellm-proxy-extras==0.2.11 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/3d/91/f7d6fc285425bd69e4c652d436891433fa77c0f20384d4b413952560e071/litellm_proxy_extras-0.2.11-py3-none-any.whl (28 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/af/4a/eba1b617acb7fa597d169cdd1b5ce98502bd179138f130721a2367d2deb8/litellm-1.74.8-py3-none-any.whl (8.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.7/8.7 MB 11.6 MB/s  0:00:00
+Collecting litellm-enterprise==0.1.15 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/53/ae/0c516d285f5b7050527c7ae7cfe3c7f3e5df5fa4b64062316735ffd800da/litellm_enterprise-0.1.15-py3-none-any.whl (121 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/0f/1e/ac19562be22c81b7cd9993038cc921375e8d1802c8f07850b1ab90daf8dc/litellm-1.74.7.post2.tar.gz (9.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.6/9.6 MB 11.6 MB/s  0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/6f/68/a33b5fa15b0fa6c8dc4bab217216d279564f9e4951ba88b6fc81b3b67f02/litellm-1.74.7.post1.tar.gz (9.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.6/9.6 MB 11.6 MB/s  0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/1c/54/eb5fee089d3e5e07a6d60b2565f798c66d43f46ba8f339e77f78cee98462/litellm-1.74.7-py3-none-any.whl (8.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.7/8.7 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/cf/2d/bcfd998134d35445e9bdcbfe999081892b84eb34901863717b3ac456344e/litellm-1.74.6-py3-none-any.whl (8.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.6/8.6 MB 11.6 MB/s  0:00:00
+Collecting litellm-enterprise==0.1.14 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/de/42/0b5e6c5e329bf48f19118ca36fb5b5df48aff2c303eac92c9ace75d26542/litellm_enterprise-0.1.14-py3-none-any.whl (121 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/21/0c/88df53727c28c006b2fb36616f93a036cde7fb9e37f016f60f02422f52ae/litellm-1.74.4-py3-none-any.whl (8.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.6/8.6 MB 10.9 MB/s  0:00:00
+Collecting litellm-enterprise==0.1.13 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/90/cc/9eecccc52e95483c3221005d1cffa5acf8033d6c86c0e8523c297dd27f0b/litellm_enterprise-0.1.13-py3-none-any.whl (105 kB)
+Collecting litellm-proxy-extras==0.2.10 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c7/a9/781d43db277bb03b6face55305ecc334deb6802bdb7e5802ce557f1ff264/litellm_proxy_extras-0.2.10-py3-none-any.whl (27 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/19/55/437ea0c3b9c5f6d60212e25dc8a9570ece4e1b5dc08f0ad0f8cb3919e1e4/litellm-1.74.3.post1.tar.gz (9.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.4/9.4 MB 11.5 MB/s  0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/14/6f/07735b5178f32e28daf8a30ed6ad3e2c8c06ac374dc06aecde007110470f/litellm-1.74.3-py3-none-any.whl (8.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.6/8.6 MB 11.6 MB/s  0:00:00
+Collecting litellm-enterprise==0.1.12 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c1/43/ded89a379f5a5bea3ca06a409c5c322e5edc1652894f8d7525eb07d03c63/litellm_enterprise-0.1.12-py3-none-any.whl (104 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/2a/f7/67689245f48b9e79bcd2f3a10a3690cb1918fb99fffd5a623ed2496bca66/litellm-1.74.2-py3-none-any.whl (8.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.6/8.6 MB 8.7 MB/s  0:00:00
+Collecting litellm-proxy-extras==0.2.9 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/da/7a/ce1ea41f0cd25b2a29282ffedf4e6b2cd1615aa951486843bf3487632999/litellm_proxy_extras-0.2.9-py3-none-any.whl (27 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b9/3e/440c4ea5088c2c251ea711930e7bb4b1021b091fb3cbf512ca426af16f1e/litellm-1.74.1-py3-none-any.whl (8.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.6/8.6 MB 11.3 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ea/50/b3ff7a9b959c617abf7bb380392e42f9ba90dbfd4e039b0dd201713e5c6a/litellm-1.74.0.post2.tar.gz (9.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.0/9.0 MB 11.4 MB/s  0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting litellm-enterprise==0.1.11 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/85/c6/6fa1ffe5c34b88c310a11adc373c711cc78bc3ff749d4b3a3dc7a02e174d/litellm_enterprise-0.1.11-py3-none-any.whl (102 kB)
+Collecting litellm-proxy-extras==0.2.6 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/a3/b6/2c916eebf3e920ffeeba86fb173aea5f3147fa94c27e3f4857c0c0034fdb/litellm_proxy_extras-0.2.6-py3-none-any.whl (26 kB)
+Collecting mcp (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/79/45/823ad05504bea55cb0feb7470387f151252127ad5c72f8882e8fe6cf5c0e/mcp-1.9.3-py3-none-any.whl (131 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/4d/68/a58b31f25c42fe052d7e7a0fc27d96d20c88b171070acc7b5d3cd553db0e/litellm-1.74.0.post1.tar.gz (9.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.0/9.0 MB 7.0 MB/s  0:00:01
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/8b/28/ada87d58dc4dfaf8a1858df712b9c21c3775d6c7d303598e9ab3a57a63cf/litellm-1.74.0-py3-none-any.whl (8.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.6/8.6 MB 11.1 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/8a/f5/af2ad579bccd25e9de81829124df61628769bf9f69df896118d926bda144/litellm-1.73.7-py3-none-any.whl (8.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.6/8.6 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/a6/34/0068ea25da50072d4f36a78299395afa3b3ed1c475be925fe33f8296c977/litellm-1.73.6.post1-py3-none-any.whl (8.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.5/8.5 MB 11.6 MB/s  0:00:00
+Collecting litellm-enterprise==0.1.10 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b7/22/5c870a7834c901db2953ccbc0836d42b340198bf2a061e606c4c18e083cf/litellm_enterprise-0.1.10-py3-none-any.whl (102 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/81/be/3e9a3097c3b25bd1bc24073afdf5e6316120d8f4127e38bd6dcc3e193f55/litellm-1.73.6-py3-none-any.whl (8.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.5/8.5 MB 11.6 MB/s  0:00:00
+Collecting litellm-enterprise==0.1.9 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/a4/71/0ae998f20ebb5b22da3a71004af0971ce2f9a044b9488c3e2b87452f7cb8/litellm_enterprise-0.1.9-py3-none-any.whl (92 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/90/88/0e6b39d64b5dad133f9fae9bfe7168cfef6eb6c59f8fce31eb953a764b0d/litellm-1.73.2-py3-none-any.whl (8.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.4/8.4 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ca/c6/a82c14d4dabc0ced101a44d9c6b2224f4405fae03e3bff4817ae73237f0c/litellm-1.73.1-py3-none-any.whl (8.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.4/8.4 MB 11.6 MB/s  0:00:00
+Collecting litellm-proxy-extras==0.2.5 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/df/43/879931aedf468f884a65a4a25528852d2812daecbc8ef1636fda94312e14/litellm_proxy_extras-0.2.5-py3-none-any.whl (25 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/14/2b/11a354390d39f0e961fbe149f6af4c61894fc22e241cfd6c503d17c87b1e/litellm-1.73.0.post1.tar.gz (8.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.5/8.5 MB 11.6 MB/s  0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting litellm-enterprise==0.1.8 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b7/ad/90be5c9d302d623d72e9b165d5c943ccd23a80700b2059cb2f0e2f6f9c29/litellm_enterprise-0.1.8-py3-none-any.whl (91 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/8c/ef/a788e2aca00e1afa97e07a14e85b9a1189498bbd424be7e1aea57cc5a831/litellm-1.73.0-py3-none-any.whl (8.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.4/8.4 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/2d/75/c53d65a5797852ce42edfa93050f4e914e67c31ce531844b756e4721de8e/litellm-1.72.9-py3-none-any.whl (8.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.4/8.4 MB 11.7 MB/s  0:00:00
+Collecting litellm-enterprise==0.1.7 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/88/5e/64aa4b1d0a3d9f2856d8f4d8dc1388894ca4d046687a1597b21573836960/litellm_enterprise-0.1.7-py3-none-any.whl (90 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ec/55/78455fac9172a9b668c01b85df27e340d71df8e18771590fa45a04aec14e/litellm-1.72.7-py3-none-any.whl (8.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.3/8.3 MB 11.7 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/8f/50/e594d8978362796e44c9643befac6dd27dcc113aa700723697bae849ed72/litellm-1.72.6.post2.tar.gz (8.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.4/8.4 MB 11.6 MB/s  0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting litellm-proxy-extras==0.2.3 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/90/a8/8ac27ff1601ff5c4e399bcfdf5ccba9aaef4e214d31976bd87b3a5f5c7b7/litellm_proxy_extras-0.2.3-py3-none-any.whl (24 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/18/d9/d6cbfe107e240a2206e34197f76ab73e0bc8312970b61b56452351da11aa/litellm-1.72.6.post1-py3-none-any.whl (8.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.3/8.3 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/96/c9/4aae0b77632279eef9716dbcb98edd8b36c08a9da070e2470ca9c410c0f8/litellm-1.72.6-py3-none-any.whl (8.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.3/8.3 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/6f/0d/0f86db9724b9bd63d057b912aa6aa532a76e6e707f9bb75abbd3b0a0401a/litellm-1.72.4-py3-none-any.whl (8.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.0/8.0 MB 8.5 MB/s  0:00:00
+Collecting mcp (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c1/d1/3ff566ecf322077d861f1a68a1ff025cad337417bd66ad22a7c6f7dfcfaf/mcp-1.5.0-py3-none-any.whl (73 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/de/74/bf12d3176abf2e2e7e24fbca3b9af59709c679fafa7a36a41834a051cb81/litellm-1.72.3-py3-none-any.whl (8.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.0/8.0 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/bf/cb/7df349cf61002a0ece2db999d2f7564cab8c5546dcf00485c88bee3f7637/litellm-1.72.2.post1-py3-none-any.whl (8.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.0/8.0 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d0/1d/40a3f5d7c7a91b4aafce4b516e14eaef64d0f9ac7d9852560757bb074b97/litellm-1.72.2-py3-none-any.whl (8.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.0/8.0 MB 11.5 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/10/2d/48dee9e0cc782a74d7361a3a1acf70d9ac8a9278a4fa8d2dcf2ac7359ed8/litellm-1.72.1-py3-none-any.whl (8.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.0/8.0 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c2/98/bec08f5a3e504013db6f52b5fd68375bd92b463c91eb454d5a6460e957af/litellm-1.72.0-py3-none-any.whl (8.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.0/8.0 MB 11.6 MB/s  0:00:00
+Collecting litellm-proxy-extras==0.2.2 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/64/fa/01aada5467f75025e68ac82bd2ef8badc8d867d60a23d2278411a7769acf/litellm_proxy_extras-0.2.2-py3-none-any.whl (23 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c6/30/963359cbacb9ed4816677751f3a58f725f50bc460cde4547561ed8e784a9/litellm-1.71.3-py3-none-any.whl (8.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.0/8.0 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b1/b2/7fc4bbda2af925b75a77aa506e6d94df70d4e1295a6db805cbff8a3fb8a6/litellm-1.71.2-py3-none-any.whl (7.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.9/7.9 MB 11.6 MB/s  0:00:00
+Collecting litellm-enterprise==0.1.6 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e8/ff/a8a2bb4585e2f7ae125fe98c26a5f9b28f6319d0fbd738bd8f052553a932/litellm_enterprise-0.1.6-py3-none-any.whl (88 kB)
+Collecting litellm-proxy-extras==0.2.1 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/07/1b/c41d3bbc4371b14c8e3f023b0dd00f280e4f38205779c8784181de8383d0/litellm_proxy_extras-0.2.1-py3-none-any.whl (23 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/34/0e/328e077a66726dc1d4cfee37c67548b151a33a6d196a32737c85a034712b/litellm-1.71.1-py3-none-any.whl (7.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.9/7.9 MB 11.7 MB/s  0:00:00
+Collecting httpx-aiohttp>=0.1.4 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/16/8d/85c9701e9af72ca132a1783e2a54364a90c6da832304416a30fc11196ab2/httpx_aiohttp-0.1.12-py3-none-any.whl (6.4 kB)
+Collecting litellm-proxy-extras==0.2.0 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/30/20/f1133685711ae9b502f7c54901b21503519bd982f17ab9fac999dbae9b5b/litellm_proxy_extras-0.2.0-py3-none-any.whl (23 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/8b/32/7e4a97b127947613d6c8ac95221d01144a6992d5ec29c3e562549a1fddf2/litellm-1.71.0-py3-none-any.whl (7.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.9/7.9 MB 11.6 MB/s  0:00:00
+Collecting litellm-enterprise==0.1.5 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c5/e1/773560d87a2687a8f525fb3e3610b5136073e63ef911a52be6d59420042a/litellm_enterprise-0.1.5-py3-none-any.whl (83 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/cc/8f/0b26ecb08b8282ae0fdfa2223b5df8263579c9e3c75ca96bb7fb7cbc632c/litellm-1.70.4-py3-none-any.whl (7.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.9/7.9 MB 11.6 MB/s  0:00:00
+Collecting litellm-proxy-extras==0.1.21 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d4/f7/c909542e7146868d0bbb74a8c9ee4bcf3a04b236baf1f2ce1218e1d93e49/litellm_proxy_extras-0.1.21-py3-none-any.whl (22 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e5/76/9173b68dd6db6d7e150ad3f535ef441832054e68220d48edda08394cde49/litellm-1.70.2-py3-none-any.whl (7.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.9/7.9 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/56/59/e28db726addb57a207dec6617eb0d69d7e46e701bc1e6a7d69971371c84f/litellm-1.70.0-py3-none-any.whl (7.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.9/7.9 MB 11.3 MB/s  0:00:00
+Collecting litellm-enterprise==0.1.3 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/07/62/c8d0c6fba507176a05755c3a5c391893ed6adcb0a0a1828210f0fb291412/litellm_enterprise-0.1.3-py3-none-any.whl (75 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/aa/c0/d1538ca18a32adb2669312342e11066e3ddb7dffdf328c1fad3027f78b3e/litellm-1.69.3-py3-none-any.whl (7.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.8/7.8 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/a8/48/7f713426ce831bf4ac1e97c0293da0b92f045a3ac2a462692ba55fdc6dd7/litellm-1.69.2-py3-none-any.whl (7.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.7/7.7 MB 11.6 MB/s  0:00:00
+Collecting litellm-enterprise==0.1.2 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/1a/47/5e79d707d193e9203b0fcd792374514d7a4a1863442605949fbd9d67b763/litellm_enterprise-0.1.2-py3-none-any.whl (11 kB)
+Collecting litellm-proxy-extras==0.1.20 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/1f/6e/b58b9a930d008d53812a2078fa52d03bac8f22ae67c6bd35c770efa1e185/litellm_proxy_extras-0.1.20-py3-none-any.whl (21 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/78/ce/2016bd46dc3d73d138a6ae2893277d2778100c21012688c0bdc7488e445b/litellm-1.69.1-py3-none-any.whl (7.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.7/7.7 MB 11.6 MB/s  0:00:00
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/10/8e/7a3812586581304e0aa5e8555bf21f00c6b576fe98ce17ed42d66caa2c47/litellm-1.69.0-py3-none-any.whl (7.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.7/7.7 MB 11.6 MB/s  0:00:00
+Collecting litellm-enterprise==0.1.1 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/6e/29/f91fd12d6e4688860149f476d267991503f4d717bd01b948c22585774144/litellm_enterprise-0.1.1-py3-none-any.whl (10 kB)
+Collecting litellm-proxy-extras==0.1.19 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/75/86/01ee7e4d0fc5db010a77b316578f7ce8ac32347e026555d318bdadbed1d1/litellm_proxy_extras-0.1.19-py3-none-any.whl (21 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/09/43/c3d7939d5852679b5d2fcb85b9ee5ba3286129f9b2e171f826e3c1db2867/litellm-1.68.2-py3-none-any.whl (7.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.7/7.7 MB 11.6 MB/s  0:00:00
+Collecting litellm-proxy-extras==0.1.17 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/34/dd/b6e345a751743d03c3af43eee06d247c72e90ce1288aaf4035fd697b8be0/litellm_proxy_extras-0.1.17-py3-none-any.whl (20 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ce/e4/df0dfe14be3d1625ca9b1d84abe17edf101a97429ca28c3a3b8ac99094ed/litellm-1.68.1-py3-none-any.whl (7.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.7/7.7 MB 11.6 MB/s  0:00:00
+Collecting litellm-proxy-extras==0.1.15 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/78/eb/d85f375f12fa7cba9415d617d289ae969c461df918ce2c63fb22df5c77ef/litellm_proxy_extras-0.1.15-py3-none-any.whl (18 kB)
+Collecting litellm[proxy]>=1.63.7 (from cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/10/af/1e344bc8aee41445272e677d802b774b1f8b34bdc3bb5697ba30f0fb5d52/litellm-1.68.0-py3-none-any.whl (7.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.7/7.7 MB 11.6 MB/s  0:00:00
+Collecting rq (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/77/ae/99335807dde9ce8402d31666d385122a20ecd710a1fd62e5d7014265b783/rq-2.9.1-py3-none-any.whl (120 kB)
+Collecting uvicorn<0.30.0,>=0.29.0 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/73/f5/cbb16fcbe277c1e0b8b3ddd188f2df0e0947f545c49119b589643632d156/uvicorn-0.29.0-py3-none-any.whl (60 kB)
+Collecting websockets<14.0.0,>=13.1.0 (from litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/41/d8/63d6194aae711d7263df4498200c690a9c39fb437ede10f3e157a6343e0d/websockets-13.1-cp313-cp313-win_amd64.whl (159 kB)
+Collecting botocore<1.35.0,>=1.34.34 (from boto3==1.34.34->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/bc/47/e35f788047c91110f48703a6254e5c84e33111b3291f7b57a653ca00accf/botocore-1.34.162-py3-none-any.whl (12.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.5/12.5 MB 11.7 MB/s  0:00:01
+Collecting jmespath<2.0.0,>=0.7.1 (from boto3==1.34.34->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/14/2f/967ba146e6d58cf6a652da73885f52fc68001525b4197effc174321d70b4/jmespath-1.1.0-py3-none-any.whl (20 kB)
+Collecting s3transfer<0.11.0,>=0.10.0 (from boto3==1.34.34->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/66/05/7957af15543b8c9799209506df4660cba7afc4cf94bfb60513827e96bed6/s3transfer-0.10.4-py3-none-any.whl (83 kB)
+Collecting httpx-sse>=0.4 (from mcp->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d2/fd/6668e5aec43ab844de6fc74927e155a3b37bf40d7c3790e49fc0406b6578/httpx_sse-0.4.3-py3-none-any.whl (9.0 kB)
+Collecting pydantic-settings>=2.5.2 (from mcp->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ae/8d/f1af3832f5e6eb13ba94ee809e72b8ecb5eef226d27ee0bef7d963d943c7/pydantic_settings-2.14.1-py3-none-any.whl (60 kB)
+Collecting sse-starlette>=1.6.1 (from mcp->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/dc/67/805710444ea8cc75fbf70b920ed431a560c4bf9c57f7d5a3117213189399/sse_starlette-3.4.4-py3-none-any.whl (16 kB)
+Collecting starlette>=0.27 (from mcp->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/1c/54/196d0c1db10af76baa4f64894448505d60d3cdf70ef92cbb35f46a4e4c71/starlette-1.2.1-py3-none-any.whl (73 kB)
+Collecting tzlocal>=3.0 (from apscheduler==3.11.2->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c2/14/e2a54fabd4f08cd7af1c07030603c3356b74da07f7cc056e600436edfa17/tzlocal-5.3.1-py3-none-any.whl (18 kB)
+Collecting cffi>=1.12 (from cryptography==43.0.3->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/37/18/6519e1ee6f5a1e579e04b9ddb6f1676c17368a7aba48299c3759bbc3c8b3/cffi-2.0.0-cp313-cp313-win_amd64.whl (183 kB)
+Collecting starlette>=0.27 (from mcp->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/8b/0c/9d30a4ebeb6db2b25a841afbb80f6ef9a854fc3b41be131d249a977b4959/starlette-0.46.2-py3-none-any.whl (72 kB)
+Collecting oauthlib>=3.1.0 (from fastapi-sso==0.16.0->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/be/9c/92789c596b8df838baa98fa71844d84283302f7604ed565dafe5a6b5041a/oauthlib-3.3.1-py3-none-any.whl (160 kB)
+Collecting six>=1.5 (from python-dateutil>=2.7->matplotlib<4,>=3.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl (11 kB)
+Collecting pycparser (from cffi>=1.12->cryptography==43.0.3->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/0c/c3/44f3fbbfa403ea2a7c779186dc20772604442dde72947e7d01069cbe98e3/pycparser-3.0-py3-none-any.whl (48 kB)
+Collecting ghp-import>=1.0 (from mkdocs>=1.6.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/f7/ec/67fbef5d497f86283db54c22eec6f6140243aae73265799baaaa19cd17fb/ghp_import-2.1.0-py3-none-any.whl (11 kB)
+Collecting markdown>=3.3.6 (from mkdocs>=1.6.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/de/1f/77fa3081e4f66ca3576c896ae5d31c3002ac6607f9747d2e3aa49227e464/markdown-3.10.2-py3-none-any.whl (108 kB)
+Collecting mergedeep>=1.3.4 (from mkdocs>=1.6.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/2c/19/04f9b178c2d8a15b076c8b5140708fa6ffc5601fb6f1e975537072df5b2a/mergedeep-1.3.4-py3-none-any.whl (6.4 kB)
+Collecting mkdocs-get-deps>=0.2.0 (from mkdocs>=1.6.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/88/29/744136411e785c4b0b744d5413e56555265939ab3a104c6a4b719dad33fd/mkdocs_get_deps-0.2.2-py3-none-any.whl (9.6 kB)
+Collecting pathspec>=0.11.1 (from mkdocs>=1.6.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/f1/d9/7fb5aa316bc299258e68c73ba3bddbc499654a07f151cba08f6153988714/pathspec-1.1.1-py3-none-any.whl (57 kB)
+Collecting pyyaml-env-tag>=0.1 (from mkdocs>=1.6.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/04/11/432f32f8097b03e3cd5fe57e88efb685d964e2e5178a48ed61e841f7fdce/pyyaml_env_tag-1.1-py3-none-any.whl (4.7 kB)
+Collecting watchdog>=2.0 (from mkdocs>=1.6.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/db/d9/c495884c6e548fce18a8f40568ff120bc3a4b7b99813081c8ac0c936fa64/watchdog-6.0.0-py3-none-win_amd64.whl (79 kB)
+Collecting platformdirs>=2.2.0 (from mkdocs-get-deps>=0.2.0->mkdocs>=1.6.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/81/e6/cd9575ac904136b3cbf7aa7ee819ef86eedb7274e46f230e94ea4342e729/platformdirs-4.10.0-py3-none-any.whl (22 kB)
+Collecting babel>=2.10 (from mkdocs-material>=9.6.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/77/f5/21d2de20e8b8b0408f0681956ca2c69f1320a3848ac50e6e7f39c6159675/babel-2.18.0-py3-none-any.whl (10.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.2/10.2 MB 11.7 MB/s  0:00:00
+Collecting backrefs>=5.7.post1 (from mkdocs-material>=9.6.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/00/bb/90ba423612b6aa0adccc6b1874bcd4a9b44b660c0c16f346611e00f64ac3/backrefs-7.0-py313-none-any.whl (400 kB)
+Collecting mkdocs-material-extensions>=1.3 (from mkdocs-material>=9.6.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/5b/54/662a4743aa81d9582ee9339d4ffa3c8fd40a4965e033d77b9da9774d3960/mkdocs_material_extensions-1.3.1-py3-none-any.whl (8.7 kB)
+Collecting paginate>=0.5 (from mkdocs-material>=9.6.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/90/96/04b8e52da071d28f5e21a805b19cb9390aa17a47462ac87f5e2696b9566d/paginate-0.5.7-py2.py3-none-any.whl (13 kB)
+Collecting pygments>=2.16 (from mkdocs-material>=9.6.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/f4/7e/a72dd26f3b0f4f2bf1dd8923c85f7ceb43172af56d63c7383eb62b332364/pygments-2.20.0-py3-none-any.whl (1.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 11.1 MB/s  0:00:00
+Collecting pymdown-extensions>=10.2 (from mkdocs-material>=9.6.0->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/7e/85/545a951eecc270fcd688288c600017e2050a1aacb56c711d208586d3e470/pymdown_extensions-10.21.3-py3-none-any.whl (269 kB)
+Collecting openinference-instrumentation>=0.1.51 (from openinference-instrumentation-openai>=0.1.22->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/13/bb/01262d9945c476e15aa21bb9ca05b18604e525d73d9761cadb677f485198/openinference_instrumentation-0.1.53-py3-none-any.whl (40 kB)
+Collecting openinference-semantic-conventions>=0.1.29 (from openinference-instrumentation-openai>=0.1.22->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b6/76/5b7e78cf0de38589b821bbe8e9c29c59a6e76edfb980488d0854cbb90f7c/openinference_semantic_conventions-0.1.30-py3-none-any.whl (10 kB)
+Collecting opentelemetry-api (from openinference-instrumentation-openai>=0.1.22->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/a3/ca/9520cc1f3dfbbd03ac5903bbf55833e257bc64b1cf30fa8b0d6df374d821/opentelemetry_api-1.42.1-py3-none-any.whl (61 kB)
+Collecting opentelemetry-instrumentation (from openinference-instrumentation-openai>=0.1.22->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/35/a1/9314e621c143e4d82a5bf7a43c2ff7a745d31023506336857607c8c543cc/opentelemetry_instrumentation-0.63b1-py3-none-any.whl (35 kB)
+Collecting opentelemetry-semantic-conventions (from openinference-instrumentation-openai>=0.1.22->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/cb/7a/7fe66f5f3682b1dd47d88cc4e11f1c6c0966b737de2d16671146e23c39a5/opentelemetry_semantic_conventions-0.63b1-py3-none-any.whl (203 kB)
+Collecting wrapt (from openinference-instrumentation-openai>=0.1.22->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/97/73/ce10f0e71c0cfaa1a65faadb8efd4852028b3bb9ba28932b8889df769d38/wrapt-2.2.1-cp313-cp313-win_amd64.whl (80 kB)
+Collecting opentelemetry-sdk (from openinference-instrumentation>=0.1.51->openinference-instrumentation-openai>=0.1.22->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/8f/6b/4287766cfbde577ae2272e8884abac325aeaac0d64f41c61d5b8cc595105/opentelemetry_sdk-1.42.1-py3-none-any.whl (170 kB)
+Collecting bcrypt>=3.2 (from paramiko>=3.5.1->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/9f/b9/9d9a641194a730bda138b3dfe53f584d61c58cd5230e37566e83ec2ffa0d/bcrypt-5.0.0-cp39-abi3-win_amd64.whl (150 kB)
+Collecting invoke>=2.0 (from paramiko>=3.5.1->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/5a/de/bbc12563bbf979618d17625a4e753ff7a078523e28d870d3626daa97261a/invoke-3.0.3-py3-none-any.whl (160 kB)
+Collecting wcwidth (from prompt-toolkit>=3.0.39->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/fb/17/c68b6cbcfeadbf420b3c3edaf8fda51335bc9c38732adb2d3ba8984dc607/wcwidth-0.8.0-py3-none-any.whl (324 kB)
+Collecting email-validator>=2.0.0 (from pydantic[email]>=1.8.0->fastapi-sso==0.16.0->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/de/15/545e2b6cf2e3be84bc1ed85613edd75b8aea69807a71c26f4ca6a9258e82/email_validator-2.3.0-py3-none-any.whl (35 kB)
+Collecting markdown-it-py>=2.2.0 (from rich>=13.9.4->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b3/81/4da04ced5a082363ecfa159c010d200ecbd959ae410c10c0264a38cac0f5/markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=13.9.4->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+INFO: pip is looking at multiple versions of sse-starlette to determine which version is compatible with other requirements. This could take a while.
+Collecting sse-starlette>=1.6.1 (from mcp->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/fe/a4/c888212b19dd432110d4a78dbc5e6c1bc7476e5fff2f2df2ea9f298b0003/sse_starlette-3.4.3-py3-none-any.whl (16 kB)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/c1/27/351c71e803c56090d8d3bf9520422debeb8ed938871fd4f7ef519805a6c5/sse_starlette-3.4.2-py3-none-any.whl (16 kB)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/ff/07/45c21ed03d708c477367305726b89919b020a3a2a01f72aaf5ad941caf35/sse_starlette-3.4.1-py3-none-any.whl (16 kB)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/f8/7f/3de5402f39890ac5660b86bcf5c03f9d855dad5c4ed764866d7b592b46fd/sse_starlette-3.3.4-py3-none-any.whl (14 kB)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/78/e2/b8cff57a67dddf9a464d7e943218e031617fb3ddc133aeeb0602ff5f6c85/sse_starlette-3.3.3-py3-none-any.whl (14 kB)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/61/28/8cb142d3fe80c4a2d8af54ca0b003f47ce0ba920974e7990fa6e016402d1/sse_starlette-3.3.2-py3-none-any.whl (14 kB)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e0/c1/d9d8fec0a3d36c211e53c8dafe96747d23b76207595845cf87c6b54a7137/sse_starlette-3.3.1-py3-none-any.whl (14 kB)
+INFO: pip is still looking at multiple versions of sse-starlette to determine which version is compatible with other requirements. This could take a while.
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b6/7a/e3ff499eaee52cf4c78bbf483a3ec536b0b04290e482d5a740cd2729fdcb/sse_starlette-3.3.0-py3-none-any.whl (14 kB)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/5a/d0/100318516956f387f156e4a41c3c32d9c24bd429f1e68f14504dac00c36a/sse_starlette-3.2.1-py3-none-any.whl (14 kB)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/96/7f/832f015020844a8b8f7a9cbc103dd76ba8e3875004c41e08440ea3a2b41a/sse_starlette-3.2.0-py3-none-any.whl (12 kB)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/b7/95/8c4b76eec9ae574474e5d2997557cebf764bcd3586458956c30631ae08f4/sse_starlette-3.1.2-py3-none-any.whl (12 kB)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e3/31/4c281581a0f8de137b710a07f65518b34bcf333b201cfa06cfda9af05f8a/sse_starlette-3.1.1-py3-none-any.whl (12 kB)
+INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/95/ee/37e36df16c89b8bf0ed508c4c9de2886c7b0605c9856ad3268b84f1c433e/sse_starlette-3.1.0-py3-none-any.whl (12 kB)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/71/22/8ab1066358601163e1ac732837adba3672f703818f693e179b24e0d3b65c/sse_starlette-3.0.4-py3-none-any.whl (11 kB)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/23/a0/984525d19ca5c8a6c33911a0c164b11490dd0f90ff7fd689f704f84e9a11/sse_starlette-3.0.3-py3-none-any.whl (11 kB)
+Collecting regex (from tiktoken>=0.7.0->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e6/1d/861a93719fb9ee7dbfc3761b3797b7a3e112a5d42c6129459d2d741be9b5/regex-2026.5.9-cp313-cp313-win_amd64.whl (277 kB)
+Collecting blinker>=1.9.0 (from flask->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/10/cb/f2ad4230dc2eb1a74edf38f1a38b9b52277f75bef262d8908e60d957e13c/blinker-1.9.0-py3-none-any.whl (8.5 kB)
+Collecting itsdangerous>=2.2.0 (from flask->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/04/96/92447566d16df59b2a776c0fb82dbc4d9e07cd95062562af01e408583fc4/itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+Collecting werkzeug>=3.1.0 (from flask->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/93/8c/2e650f2afeb7ee576912636c23ddb621c91ac6a98e66dc8d29c3c69446e1/werkzeug-3.1.8-py3-none-any.whl (226 kB)
+Collecting croniter (from rq->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d0/39/783980e78cb92c2d7bdb1fc7dbc86e94ccc6d58224d76a7f1f51b6c51e30/croniter-6.2.2-py3-none-any.whl (45 kB)
+Collecting redis!=6,>=3.5 (from rq->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/27/e3/b519734372d305bd547534a9f32e4ce9f98552af753dce72cf3483a0ff0b/redis-8.0.0-py3-none-any.whl (499 kB)
+Collecting huggingface-hub<2.0,>=0.16.4 (from tokenizers->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/0b/03/40a05316cb6616e5b7efd7773656441ab04b4b022c2199e79bb4622a92a3/huggingface_hub-1.18.0-py3-none-any.whl (684 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 684.4/684.4 kB 10.1 MB/s  0:00:00
+Collecting filelock>=3.10.0 (from huggingface-hub<2.0,>=0.16.4->tokenizers->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/4c/a0/614c5fe402fd88951df45f4dda2fa3b4e17a99ecd92340771929169b3b95/filelock-3.29.1-py3-none-any.whl (40 kB)
+Collecting fsspec>=2023.5.0 (from huggingface-hub<2.0,>=0.16.4->tokenizers->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/d5/0c/043d5e551459da400957a1395e0febbf771446ff34291afcbe3d8be2a279/fsspec-2026.4.0-py3-none-any.whl (203 kB)
+Collecting hf-xet<2.0.0,>=1.4.3 (from huggingface-hub<2.0,>=0.16.4->tokenizers->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/af/37/1b6def445c567286b50aa3b33828158e135b1be44938dde59f11382a500c/hf_xet-1.5.0-cp37-abi3-win_amd64.whl (4.0 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.0/4.0 MB 11.5 MB/s  0:00:00
+Collecting typer<0.26.0,>=0.20.0 (from huggingface-hub<2.0,>=0.16.4->tokenizers->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/3f/f9/2b3ff4e56e5fa7debfaf9eb135d0da96f3e9a1d5b27222223c7296336e5f/typer-0.25.1-py3-none-any.whl (58 kB)
+Collecting shellingham>=1.3.0 (from typer<0.26.0,>=0.20.0->huggingface-hub<2.0,>=0.16.4->tokenizers->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/e0/f9/0595336914c5619e5f28a1fb793285925a8cd4b432c9da0a987836c7f822/shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+Collecting annotated-doc>=0.0.2 (from typer<0.26.0,>=0.20.0->huggingface-hub<2.0,>=0.16.4->tokenizers->litellm>=1.63.7->litellm[proxy]>=1.63.7->cai-framework)
+  Downloading https://mirrors.tuna.tsinghua.edu.cn/pypi/web/packages/1e/d3/26bf1008eb3d2daa8ef4cacc7f3bfdc11818d111f7e2d0201bc6e3b49d45/annotated_doc-0.0.4-py3-none-any.whl (5.3 kB)
+Installing collected packages: pytz, paginate, zipp, xyzservices, wrapt, websockets, wcwidth, watchdog, urllib3, tzdata, typing-extensions, sniffio, six, shellingham, rpds-py, regex, redis, pyyaml, python-multipart, python-dotenv, pypdf2, pyparsing, PyJWT, pygments, pycparser, propcache, platformdirs, pillow, pathspec, packaging, orjson, openinference-semantic-conventions, oauthlib, numpy, networkx, multidict, mkdocs-material-extensions, mergedeep, mdurl, MarkupSafe, markdown, litellm-proxy-extras, kiwisolver, jmespath, jiter, itsdangerous, invoke, idna, httpx-sse, hf-xet, h11, fsspec, frozenlist, fonttools, filelock, dnspython, distro, cycler, colorama, charset_normalizer, certifi, blinker, bcrypt, backrefs, backoff, babel, attrs, annotated-types, annotated-doc, aiohappyeyeballs, yarl, werkzeug, wasabi, tzlocal, typing-inspection, types-requests, tqdm, requests, referencing, pyyaml-env-tag, python-dateutil, pymdown-extensions, pydantic-core, prompt-toolkit, opentelemetry-api, mkdocs-get-deps, markdown-it-py, mako, jinja2, importlib-metadata, httpcore, gunicorn, griffe, email-validator, dotenv, contourpy, click, cffi, anyio, aiosignal, uvicorn, tiktoken, starlette, sse-starlette, rich, pynacl, pydantic, pandas, opentelemetry-semantic-conventions, matplotlib, jsonschema-specifications, httpx, ghp-import, flask, cryptography, croniter, branca, botocore, apscheduler, aiohttp, typer, s3transfer, rq, pydantic-settings, paramiko, opentelemetry-sdk, opentelemetry-instrumentation, openai, mkdocs, jsonschema, folium, fastapi, openinference-instrumentation, mkdocs-material, mcp, huggingface-hub, fastapi-sso, boto3, tokenizers, openinference-instrumentation-openai, litellm, cai-framework
+   ━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━  41/142 [litellm-proxy-e

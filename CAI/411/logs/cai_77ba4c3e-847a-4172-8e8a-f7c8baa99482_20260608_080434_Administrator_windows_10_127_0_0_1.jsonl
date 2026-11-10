@@ -1,0 +1,2 @@
+{"event": "session_start", "timestamp": "2026-06-08T08:04:34.510283+02:00", "session_id": "77ba4c3e-847a-4172-8e8a-f7c8baa99482", "alias_api_key": ""}
+{"event": "session_end", "timestamp": "2026-06-08T08:05:40.543166+02:00", "session_id": "77ba4c3e-847a-4172-8e8a-f7c8baa99482", "timing_metrics": {"active_time_seconds": 0.0, "idle_time_seconds": 67.7463059425354, "total_time_seconds": 67.7463059425354, "active_percentage": 0.0}, "cost": {"total_cost": 0.0}}
