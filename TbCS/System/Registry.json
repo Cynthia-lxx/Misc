@@ -1,0 +1,25 @@
+{
+  "system_settings": {
+    "refresh_rate": 10.0,
+    "theme": "dark",
+    "language": "zh-CN",
+    "screen_width": 80,
+    "screen_height": 24
+  },
+  "window_manager": {
+    "default_width": 60,
+    "default_height": 20,
+    "allow_resizing": true,
+    "enable_animations": false
+  },
+  "input_system": {
+    "keyboard_repeat_delay": 500,
+    "keyboard_repeat_rate": 30,
+    "mouse_enabled": true,
+    "mouse_sensitivity": 1.0
+  },
+  "programs": {
+    "startup_programs": [],
+    "recent_programs": []
+  }
+}

@@ -1,0 +1,9 @@
+LICENSE.txt
+README.md
+setup.py
+ses_conda/__init__.py
+ses_conda.egg-info/PKG-INFO
+ses_conda.egg-info/SOURCES.txt
+ses_conda.egg-info/dependency_links.txt
+ses_conda.egg-info/requires.txt
+ses_conda.egg-info/top_level.txt

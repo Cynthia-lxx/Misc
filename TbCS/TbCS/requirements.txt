@@ -1,0 +1,5 @@
+# TbCS (Terminal-based Computer Simulator) 项目依赖
+colorama==0.4.4
+windows-curses>=2.0
+urwid>=3.0.0
+pyte>=0.8.0

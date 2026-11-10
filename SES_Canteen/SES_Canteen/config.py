@@ -1,0 +1,23 @@
+"""
+配置文件，包含模拟器的基本设置
+"""
+
+# 屏幕设置
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 800
+FPS = 60
+
+# 颜色定义
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
+PURPLE = (128, 0, 128)
+ORANGE = (255, 165, 0)
+
+# 模拟设置
+PERSON_RADIUS = 5
+PERSON_SPEED = 2
+CANTEEN_POSITION = (800, 400)
