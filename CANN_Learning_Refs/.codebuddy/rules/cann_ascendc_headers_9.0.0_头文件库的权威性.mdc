@@ -1,0 +1,21 @@
+---
+description: 
+alwaysApply: true
+enabled: true
+updatedAt: 2026-09-05T14:55:55.748Z
+provider: 
+---
+
+描述： cann_ascendc_headers_9.0.0 是 CANN 9.0.0（aarch64-linux）真实运行时 Ascend C 头文件库的本地副本，即 bisheng/云端编译实际搜索的头文件。它是 Ascend C kernel API 签名、参数顺序、count/mask 语义与枚举取值的最终权威。
+
+规则内容：
+
+位置与只读：库位于 p:\Dev\CANN_Learning_Refs\cann_ascendc_headers_9.0.0\（含 asc\ 与 ascendc\include\ 两棵同构头树，共 2697 个 .h）。为只读参考资产：禁止修改、移动、删除其中任何文件，禁止提交进任何 git 仓库。
+
+写码前必查：编写、修改或静态自检任何 Ascend C kernel 代码前，凡涉及 API 调用，必须先在该头库检索确认真实签名（函数重载、参数顺序、元素计数 vs repeat/mask 语义、枚举取值、平台分支），再据此核对代码。典型对象：Cast、ReduceSum/ReduceMax、Add/Mul/Duplicate、DataCopyPad、SetFixSplit/GetTiling、RoundMode 等。
+
+权威性分级：该头文件库 > 官方教程源码与示例（Documentation_for_Developers、CANN_Learning_Hub 等）> 官方博客/笔记 > 外部文档 > AI 训练知识。与头文件声明冲突的教程/博客一律视为简化层或过时表述，不得照抄；代码以头文件为准，并在注释中记录出处。
+
+分层阅读规则：basic_api/ 接口层（含 Level2 元素计数重载）决定可调用形态；实现层 basic_api/impl 按 __NPU_ARCH__ 条件 #include 平台实现（910B 系 = dav_c220，__NPU_ARCH__==2201）决定真实行为；两者结论冲突时以平台实现层为准。
+
+结论沉淀：经头库核实得到的 API 结论（例如「Cast Level2 = Cast(dst, src, roundMode, count)，4 参元素计数模式」）应写入 .codebuddy 记忆文档并注明「已与 cann_ascendc_headers_9.0.0 核对」，避免日后重复检索。

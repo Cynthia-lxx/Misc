@@ -1,0 +1,42 @@
+/**
+* Copyright (c) 2025 Huawei Technologies Co., Ltd.
+* This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+* CANN Open Software License Agreement Version 2.0 (the "License").
+* Please refer to the License for details. You may not use this file except in compliance with the License.
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+* See LICENSE in the root of the software repository for the full text of the License.
+*/
+
+/*!
+ * \file quantize_tiling.h
+ * \brief
+ */
+#ifndef LIB_QUANTIZATION_QUANTIZE_TILING_H
+#define LIB_QUANTIZATION_QUANTIZE_TILING_H
+#include <cstdint>
+
+#include "graph/tensor.h"
+namespace AscendC {
+/*
+ * @ingroup GetQuantizeMaxMinTmpSize
+ * @brief This interface is used to obtain the maximum and minimum temporary space reserved or applied.
+ *  The developer selects a proper space size based on this range as the tiling parameter.
+ * @param [in] srcShape : input src Tensor shape
+ * @param [in] typeSize : src tensor dtype size
+ * @param [out] maxValue: max temporary local space size
+ * @param [out] minValue: min temporary local space size
+ */
+void GetQuantizeMaxMinTmpSize(const ge::Shape& srcShape, const uint32_t typeSize, uint32_t& maxValue, uint32_t& minValue);
+
+/*!
+ * \brief The calculation of the Quantize interface requires the developer to reserve or apply for temporary space.
+ * The relationship between the maximum temporary space (maxTmpBuffer) and the space occupied by the input (inputSize x
+ * typeSize) is as follows: maxTmpBuffer = maxLiveNodeCount * inputSize * typeSize + extraBuf
+ * This interface is used to obtain maxLiveNodeCount and extraBuf.
+ * \param [out] maxLiveNodeCount, the multiple of the maximum temporary space to the input occupied space
+ * \param [out] extraBuf, the size of the extra temporary space
+ */
+void GetQuantizeTmpBufferFactorSize(uint32_t& maxLiveNodeCount, uint32_t& extraBuf);
+} // namespace AscendC
+#endif // LIB_QUANTIZATION_QUANTIZE_TILING_H

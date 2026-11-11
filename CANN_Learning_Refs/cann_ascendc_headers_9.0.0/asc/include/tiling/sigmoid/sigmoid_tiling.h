@@ -1,0 +1,36 @@
+/**
+* Copyright (c) 2025 Huawei Technologies Co., Ltd.
+* This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+* CANN Open Software License Agreement Version 2.0 (the "License").
+* Please refer to the License for details. You may not use this file except in compliance with the License.
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+* See LICENSE in the root of the software repository for the full text of the License.
+*/
+
+/*!
+ * \file sigmoid_tiling_intf.h
+ * \brief
+ */
+#ifndef TILING_ACTIVATION_SIGMOID_TILING_H
+#define TILING_ACTIVATION_SIGMOID_TILING_H
+#include <cstdint>
+
+#include "graph/tensor.h"
+
+namespace AscendC {
+/*
+ * @ingroup GetSigmoidMaxMinTmpSize
+ * @brief This interface is used to obtain the maximum and minimum temporary space reserved or applied.
+ *  The developer selects a proper space size based on this range as the tiling parameter.
+ * @param [in] srcShape : input src Tensor shape
+ * @param [in] typeSize : src tensor dtype size
+ * @param [in] isReuseSource: whether to reuse the input space of the source operand
+ * @param [out] maxValue: max temporary local space size
+ * @param [out] minValue: min temporary local space size
+ */
+void GetSigmoidMaxMinTmpSize(const ge::Shape& srcShape, const uint32_t typeSize, bool isReuseSource,
+    uint32_t& maxValue, uint32_t& minValue);
+
+} // namespace AscendC
+#endif // TILING_ACTIVATION_SIGMOID_TILING_H

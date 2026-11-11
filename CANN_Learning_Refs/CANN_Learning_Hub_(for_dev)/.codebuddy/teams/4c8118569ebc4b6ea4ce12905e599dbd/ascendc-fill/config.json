@@ -1,0 +1,43 @@
+{
+  "name": "ascendc-fill",
+  "mainConversationId": "4c8118569ebc4b6ea4ce12905e599dbd",
+  "workspacePath": "p:/Dev/CANN_Learning_Hub",
+  "createdAt": "2026-09-03T14:27:07.723Z",
+  "options": {
+    "workspacePath": "p:/Dev/CANN_Learning_Hub",
+    "isAutoTeam": false
+  },
+  "isAutoTeam": false,
+  "members": [
+    {
+      "memberId": "fill-light-0303@ascendc-fill",
+      "name": "fill-light-0303",
+      "role": "补全 light 03.03 matmul",
+      "sessionId": "43e6a28c454c4773b7f8621be1310e48"
+    },
+    {
+      "memberId": "fill-light-030506@ascendc-fill",
+      "name": "fill-light-030506",
+      "role": "补全 light 03.05/03.06",
+      "sessionId": "59a1fddfa152468c9d74ecdb223d5fa3"
+    },
+    {
+      "memberId": "fill-light-030701@ascendc-fill",
+      "name": "fill-light-030701",
+      "role": "补全 light 03.07/03.01",
+      "sessionId": "5517ba200ad14e2ab02df10f6faf521e"
+    },
+    {
+      "memberId": "fill-full-0203@ascendc-fill",
+      "name": "fill-full-0203",
+      "role": "补全 full 02/03 测试",
+      "sessionId": "368fed8a07f9492aa4ea84b3e361c165"
+    },
+    {
+      "memberId": "fill-full-rest@ascendc-fill",
+      "name": "fill-full-rest",
+      "role": "补全 full 04-09 练习",
+      "sessionId": "57b87c5d2b2043daba9a637380f6d5f7"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+op_type: AscTry
+soc_version: ascend910b4
+inputs:
+- name: A
+  param_type: required
+  format:
+  - ND
+  type:
+  - float
+- name: B
+  param_type: required
+  format:
+  - ND
+  type:
+  - float
+outputs:
+- name: C
+  param_type: required
+  format:
+  - ND
+  type:
+  - float
+expr: A + 2/sigmoid(B) = C

@@ -1,0 +1,13 @@
+---
+description: 
+alwaysApply: true
+enabled: true
+updatedAt: 2026-09-04T13:34:30.979Z
+provider: 
+---
+
+项目使用的Python解释器为Embedded Python (3.14)。
+Python解释器核心位于P:\python-3.14.5-embed-amd64\，其中含有少量常用的site-packages，如rich、matplotlib等。
+平时调用Python解释器时，要么使用完整的绝对路径，要么通过P:\python.ps1或者P:\python.cmd，这两个脚本内部封装了Python调用和参数传递，可以当作常规的python命令来用。
+
+项目使用虚拟环境，虚拟环境位于\penv\（没有句点，不是\.penv\），已配置好，所有的项目独有PIP包往里装。进行冒烟测试、脚本功能验证时，优先使用venv。如果venv无法调用，则提供测试命令给用户，让用户手动执行并发回命令输出。
