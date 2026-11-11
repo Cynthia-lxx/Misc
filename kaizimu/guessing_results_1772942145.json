@@ -1,0 +1,31 @@
+{
+  "guessedLetters": "esao",
+  "patterns": [
+    "***** o* ******s",
+    "*s**a***e",
+    "*e*so* *o Sa*e****e",
+    "**a*****",
+    "***s*** *o ***a*o",
+    "*a*s**e **** *o S*o*s***s*",
+    "***os******",
+    "*e**o**e ***E**E**"
+  ],
+  "totalMatches": 3,
+  "matches": [
+    {
+      "pattern": "***** o* ******s",
+      "song": "Hyacinth",
+      "artist": "sion."
+    },
+    {
+      "pattern": "*s**a***e",
+      "song": "Hyacinth",
+      "artist": "GMDrocket"
+    },
+    {
+      "pattern": "*e*so* *o Sa*e****e",
+      "song": "Platinum",
+      "artist": "Human Servant"
+    }
+  ]
+}

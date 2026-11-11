@@ -1,0 +1,77 @@
+{
+  "guessed_chars": [
+    "e",
+    "n",
+    "N",
+    "O",
+    "E",
+    "i",
+    "(",
+    "T",
+    "t",
+    "a",
+    "o",
+    "I",
+    ")",
+    "A"
+  ],
+  "revealed_songs": [
+    1,
+    4,
+    6,
+    7,
+    8
+  ],
+  "answers": [
+    {
+      "name": "Russian Roulette",
+      "artist": "Porter Robinson",
+      "aliases": []
+    },
+    {
+      "name": "QR2",
+      "artist": "Sean Lenard B., Martix Lenard)",
+      "aliases": []
+    },
+    {
+      "name": "XYBERR//DRACOO",
+      "artist": "Camellia (かめりあ)",
+      "aliases": []
+    },
+    {
+      "name": "Rainbow Magic!!",
+      "artist": "ARForest",
+      "aliases": []
+    },
+    {
+      "name": "Excuse My Rudeness, But Could You Please RIP? (ReeK's \"Dude Whats A Genre\" Remix)",
+      "artist": "ReeK, Mori Calliope",
+      "aliases": []
+    },
+    {
+      "name": "Lawn on Unknown",
+      "artist": "Plant Guy",
+      "aliases": []
+    },
+    {
+      "name": "Running Out of Time",
+      "artist": "nu11",
+      "aliases": []
+    },
+    {
+      "name": "Operation Evolution",
+      "artist": "Dimrain47",
+      "aliases": []
+    },
+    {
+      "name": "Precious Song Dedicated to the Stars (feat. Matatabi S/S & Friends)",
+      "artist": "Kobaryo",
+      "aliases": []
+    },
+    {
+      "name": "Activate挧 (feat. 蛇塚透花)",
+      "artist": "Srezcat",
+      "aliases": []
+    }
+  ]
+}
