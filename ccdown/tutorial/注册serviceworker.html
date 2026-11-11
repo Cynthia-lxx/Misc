@@ -1,0 +1,19 @@
+<!-- @shc 这是一个成品代码，用于破解github的这类iframe限制。请将这个代码和它用到的脚本整合到之前的搜索引擎中-->
+<!-- 这部分应该放在HTML的head里面-->
+<!-- 还有第7行，注意会引用脚本。Cloudflare CDN不一定支持中文文件名。
+    请将JS文件重命名为sw.js，并替换这一行中的文件名-->
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/注册程序会用到这个脚本.js')//注意这里，引用JS脚本
+      .then(registration => {
+        console.log('Service Worker 注册成功:', registration);
+      })
+      .catch(error => {
+        console.log('Service Worker 注册失败:', error);
+        alert("你的浏览器不支持Service Worker代理！部分对iframe进行了X-Frame-Options或CSP限制的网站将拒绝我们的请求。搜索结果可能会不完整。如果必要，请使用开发者工具（F12 DevTools）查看错误信息，或者升级或更换浏览器。:)");
+      });
+  }
+  else {
+    alert("你的浏览器不支持Service Worker代理！部分对iframe进行了X-Frame-Options或CSP限制的网站将拒绝我们的请求。搜索结果可能会不完整。如果必要，请使用开发者工具（F12 DevTools）查看错误信息，或者升级或更换浏览器。:)");
+  }
+</script>

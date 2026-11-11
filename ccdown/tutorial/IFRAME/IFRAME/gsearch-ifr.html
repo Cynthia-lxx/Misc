@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索引擎</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0 auto;
+            padding: 0 10%;
+        }
+        h1 {
+            text-align: center;
+        }
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 60%;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            margin-left: 10px;
+            border: none;
+            background-color: #0073e6;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005bb5;
+        }
+        .results-container {
+            margin-top: 20px;
+        }
+        .result-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>搜索引擎</h1>
+    <div class="search-box">
+        <input type="text" id="searchQuery" placeholder="输入检索词...">
+        <button onclick="search()">检索</button>
+    </div>
+    <div class="results-container" id="resultsContainer"></div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => {
+                    console.log('Service Worker 注册成功:', registration);
+                })
+                .catch(error => {
+                    console.log('Service Worker 注册失败:', error);
+                    alert("你的浏览器不支持Service Worker代理！部分对iframe进行了X-Frame-Options或CSP限制的网站将拒绝我们的请求。搜索结果可能会不完整。如果必要，请使用开发者工具（F12 DevTools）查看错误信息，或者升级或更换浏览器。");
+                });
+        } else {
+            alert("你的浏览器不支持Service Worker代理！部分对iframe进行了X-Frame-Options或CSP限制的网站将拒绝我们的请求。搜索结果可能会不完整。如果必要，请使用开发者工具（F12 DevTools）查看错误信息，或者升级或更换浏览器。");
+        }
+
+        function search() {
+            const query = document.getElementById("searchQuery").value.trim();
+            const resultsContainer = document.getElementById("resultsContainer");
+
+            if (query) {
+                fetch(`https://api.github.com/search/repositories?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        resultsContainer.innerHTML = '';
+                        data.items.forEach(item => {
+                            const resultItem = document.createElement('div');
+                            resultItem.className = 'result-item';
+                            resultItem.innerHTML = `
+                                <h3>${item.full_name}</h3>
+                                <p>${item.description}</p>
+                                <a href="${item.html_url}" target="_blank">查看详情</a>
+                            `;
+                            resultsContainer.appendChild(resultItem);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('搜索失败:', error);
+                        resultsContainer.innerHTML = '<p>搜索失败，请检查网络连接或稍后再试。</p>';
+                    });
+            } else {
+                resultsContainer.innerHTML = '';
+            }
+        }
+    </script>
+</body>
+</html>

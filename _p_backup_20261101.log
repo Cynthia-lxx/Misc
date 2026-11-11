@@ -1,0 +1,1021 @@
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : 2026111 23:24:34
+   Source : P:\Dev\ComfyUI_Refs\
+     Dest : F:\Dev\ComfyUI_Refs_P_full_backup_20261101\
+
+    Files : *.*
+	    
+  Options : *.* /NDL /NFL /TEE /S /E /DCOPY:DA /COPY:DAT /NP /XJ /MT:16 /R:1 /W:1 
+
+------------------------------------------------------------------------------
+
+2026/11/01 23:26:35 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\models\configs\v1-inference_clip_skip_2.yaml
+The system cannot find the file specified.
+
+2026/11/01 23:27:40 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyUI_Docs_Work\ja\custom-nodes\help_page.mdx
+The system cannot find the file specified.
+
+2026/11/01 23:28:37 ERROR 1392 (0x00000570) Copying Directory P:\Dev\ComfyUI_Refs\ComfyDL_UI\comfy\ldm\cogvideo\__pycache__\
+The file or directory is corrupted and unreadable.
+
+2026/11/01 23:28:37 ERROR 1392 (0x00000570) Copying Directory P:\Dev\ComfyUI_Refs\ComfyDL_UI\comfy\ldm\ideogram4\__pycache__\
+The file or directory is corrupted and unreadable.
+
+2026/11/01 23:28:37 ERROR 1392 (0x00000570) Copying Directory P:\Dev\ComfyUI_Refs\ComfyDL_UI\comfy\ldm\krea2\__pycache__\
+The file or directory is corrupted and unreadable.
+
+2026/11/01 23:28:44 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\homepage\ui\images\gemini.svg
+The system cannot find the file specified.
+
+2026/11/01 23:29:10 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyUI_Docs_Work\ja\custom-nodes\backend\images_and_masks.mdx
+The system cannot find the file specified.
+
+2026/11/01 23:29:10 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyUI_Docs_Work\ja\custom-nodes\backend\lifecycle.mdx
+The system cannot find the file specified.
+
+2026/11/01 23:29:35 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\anima-prompt-plus-widget.test.mjs
+The system cannot find the file specified.
+
+2026/11/01 23:29:35 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\civitai-oauth-timeout.test.mjs
+The system cannot find the file specified.
+
+2026/11/01 23:29:36 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\configure-app-mode.test.mjs
+The system cannot find the file specified.
+
+2026/11/01 23:29:36 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\create-subgraph-verify.test.mjs
+The system cannot find the file specified.
+
+2026/11/01 23:29:36 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\duplicate-panel-guard.test.mjs
+The system cannot find the file specified.
+
+2026/11/01 23:29:36 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\fixtures-1706-definitions-renumber.json
+The system cannot find the file specified.
+
+2026/11/01 23:29:36 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\graph-mutation-context.test.mjs
+The system cannot find the file specified.
+
+2026/11/01 23:29:36 ERROR 1392 (0x00000570) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\ideogram4-prompt-builder.test.mjs
+The file or directory is corrupted and unreadable.
+
+2026/11/01 23:29:36 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\live-combo-availability.test.mjs
+The system cannot find the file specified.
+
+2026/11/01 23:29:37 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\manager-queue-stall.test.mjs
+The system cannot find the file specified.
+
+2026/11/01 23:29:37 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\missing-asset-scope.test.mjs
+The system cannot find the file specified.
+
+2026/11/01 23:29:37 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\node-scope-locator.test.mjs
+The system cannot find the file specified.
+
+2026/11/01 23:29:37 ERROR 1392 (0x00000570) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\open-completed-restore.test.mjs
+The file or directory is corrupted and unreadable.
+
+2026/11/01 23:29:39 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\resolve-comfy-app.test.mjs
+The system cannot find the file specified.
+
+2026/11/01 23:29:39 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\run-completion-route-rehydrate.test.mjs
+The system cannot find the file specified.
+
+2026/11/01 23:29:39 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\save-as-identity.test.mjs
+The system cannot find the file specified.
+
+2026/11/01 23:29:39 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\test_civitai_proxy.py
+The system cannot find the file specified.
+
+2026/11/01 23:29:40 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\upload-bound.test.mjs
+The system cannot find the file specified.
+
+2026/11/01 23:30:18 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\comfy\ldm\ace\__pycache__\attention.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:30:18 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\comfy\ldm\kandinsky5\__pycache__\model.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:31:44 ERROR 1392 (0x00000570) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torchvision_broken\_meta_registrations.py
+The file or directory is corrupted and unreadable.
+
+2026/11/01 23:32:46 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\av\__pycache__\error.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:34:21 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\jit\_script.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:35:00 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\tzdata\zoneinfo\Factory
+The system cannot find the file specified.
+
+2026/11/01 23:35:08 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\flash-attention-sm120-fix\training\configs\experiment\owt\gpt2m-flash.yaml
+The system cannot find the file specified.
+
+2026/11/01 23:35:08 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\flash-attention-sm120-fix\training\configs\experiment\pile\gpt3-2.7B-flash-rotary.yaml
+The system cannot find the file specified.
+
+2026/11/01 23:35:35 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\alembic\templates\generic\alembic.ini.mako
+The system cannot find the file specified.
+
+2026/11/01 23:35:45 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\ComfyMathExpression\pt-BR.md
+The system cannot find the file specified.
+
+2026/11/01 23:35:45 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\ComfyNotNode\pt-BR.md
+The system cannot find the file specified.
+
+2026/11/01 23:35:46 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\ConditioningStableAudio\zh-TW.md
+The system cannot find the file specified.
+
+2026/11/01 23:35:47 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\ContextWindowsManual\fr.md
+The system cannot find the file specified.
+
+2026/11/01 23:35:47 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\ControlNetInpaintingAliMamaApply\ru.md
+The system cannot find the file specified.
+
+2026/11/01 23:35:47 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\ConvertArrayToString\es.md
+The system cannot find the file specified.
+
+2026/11/01 23:35:47 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\ConvertDictionaryToString\en.md
+The system cannot find the file specified.
+
+2026/11/01 23:35:48 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\CreateCameraInfo\fa.md
+The system cannot find the file specified.
+
+2026/11/01 23:37:31 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\gym\wrappers\__pycache__\normalize.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:37:31 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\gym\wrappers\__pycache__\transform_observation.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:38:30 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\setuptools\command\__pycache__\_requirestxt.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:38:56 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\torch\extension.h
+The system cannot find the file specified.
+
+2026/11/01 23:40:19 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\alembic\testing\plugin\__pycache__\bootstrap.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:40:19 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\alembic\testing\suite\__pycache__\test_autogen_identity.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:40:21 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\fontTools\svgLib\path\__pycache__\shapes.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:40:21 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\fontTools\ttLib\tables\__pycache__\C_B_D_T_.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:40:21 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\fontTools\ttLib\tables\__pycache__\V_V_A_R_.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:40:21 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\fontTools\ttLib\tables\__pycache__\_g_v_a_r.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:40:22 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\fontTools\varLib\instancer\__pycache__\solver.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:41:02 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\designer\CubeMapTextureSpecifics.qml
+The system cannot find the file specified.
+
+2026/11/01 23:41:03 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\designer\quick3d.metainfo
+The system cannot find the file specified.
+
+2026/11/01 23:41:03 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\designer\ReflectionProbeSpecifics.qml
+The system cannot find the file specified.
+
+2026/11/01 23:41:03 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\designer\SpotLightSection.qml
+The system cannot find the file specified.
+
+2026/11/01 23:41:04 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\plugins.qmltypes
+The system cannot find the file specified.
+
+2026/11/01 23:41:04 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\qmldir
+The system cannot find the file specified.
+
+2026/11/01 23:41:04 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Xr\plugins.qmltypes
+The system cannot find the file specified.
+
+2026/11/01 23:41:04 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\SpatialAudio\plugins.qmltypes
+The system cannot find the file specified.
+
+2026/11/01 23:41:04 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\SpatialAudio\qmldir
+The system cannot find the file specified.
+
+2026/11/01 23:41:28 ERROR 1392 (0x00000570) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\ao\ns\__pycache__\_numeric_suite_fx.cpython-314.pyc
+The file or directory is corrupted and unreadable.
+
+2026/11/01 23:41:30 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\distributed\checkpoint\__pycache__\_async_process_executor.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:41:32 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\distributed\_sharded_tensor\__pycache__\__init__.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:41:33 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\distributed\_tools\__pycache__\__init__.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:42:18 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\ATen\ops\_addmm_activation_ops.h
+The system cannot find the file specified.
+
+2026/11/01 23:42:18 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\ATen\ops\_add_batch_dim_native.h
+The system cannot find the file specified.
+
+2026/11/01 23:42:18 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\ATen\ops\_amp_update_scale_cpu_dispatch.h
+The system cannot find the file specified.
+
+2026/11/01 23:42:19 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\ATen\ops\_autocast_to_reduced_precision_ops.h
+The system cannot find the file specified.
+
+2026/11/01 23:42:19 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\ATen\ops\_batch_norm_no_update_native.h
+The system cannot find the file specified.
+
+2026/11/01 23:42:37 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\pybind11\detail\pybind11_namespace_macros.h
+The system cannot find the file specified.
+
+2026/11/01 23:42:43 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_export\db\__pycache__\logging.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:42:43 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_export\passes\__pycache__\lift_constants_pass.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:44:07 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Helpers\impl\qtquick3dhelpersimplplugin.dll
+The system cannot find the file specified.
+
+2026/11/01 23:44:08 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\designer\ModelBlendParticle3DSection.qml
+The system cannot find the file specified.
+
+2026/11/01 23:44:08 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\designer\ParticleSystem3DSection.qml
+The system cannot find the file specified.
+
+2026/11/01 23:44:09 ERROR 1392 (0x00000570) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\designer\VectorDirection3DSection.qml
+The file or directory is corrupted and unreadable.
+
+2026/11/01 23:44:18 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\ao\quantization\backend_config\__pycache__\executorch.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:44:19 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\distributed\checkpoint\_experimental\__pycache__\types.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:44:31 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutedsl\__pycache__\cutedsl_op_overrides.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:44:31 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutedsl\__pycache__\cutedsl_template.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:44:31 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutlass\__pycache__\cache.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:44:32 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\autoheuristic\artifacts\__pycache__\_MixedMMA100.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:44:32 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\autoheuristic\artifacts\__pycache__\_MMRankingA100.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:45:00 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\__init__.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:17 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Helpers\designer\images\proceduralskytexturedata.png
+The system cannot find the file specified.
+
+2026/11/01 23:45:17 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Helpers\designer\images\wasdcontroller@2x.png
+The system cannot find the file specified.
+
+2026/11/01 23:45:17 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\designer\source\particlesystem_template.qml
+The system cannot find the file specified.
+
+2026/11/01 23:45:18 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\designer\images\scale-affector-16px.png
+The system cannot find the file specified.
+
+2026/11/01 23:45:18 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\designer\images\vector-direction-24px.png
+The system cannot find the file specified.
+
+2026/11/01 23:45:20 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\ao\pruning\_experimental\data_sparsifier\__pycache__\quantization_utils.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:45:25 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\torch\csrc\jit\passes\peephole.h
+The system cannot find the file specified.
+
+2026/11/01 23:45:28 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutlass\lib_extensions\__pycache__\evt_extensions.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:45:28 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutlass\lib_extensions\__pycache__\__init__.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:45:45 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\cell\read_only.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:45 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\cell\text.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:45 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\cell\_writer.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:45 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\chart\error_bar.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:45 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\chart\series_factory.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:45 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\chart\text.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:45 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\chart\trendline.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:45 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\chart\__init__.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:45 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\chartsheet\relation.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:46 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\comments\author.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:46 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\comments\comments.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:46 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\descriptors\namespace.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:46 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\descriptors\slots.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:46 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\drawing\connector.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:46 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\utils\cell.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:46 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\utils\datetime.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:47 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\utils\indexed_list.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:47 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\utils\protection.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:47 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\workbook\defined_name.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:47 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\workbook\_writer.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:47 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\styles\table.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:45:47 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\worksheet\print_settings.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:46:16 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\torch\csrc\api\include\torch\xpu.h
+The system cannot find the file specified.
+
+2026/11/01 23:46:34 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutlass\lib_extensions\cutlass_mock_imports\pydot\__pycache__\__init__.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:46:34 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutlass\lib_extensions\cutlass_mock_imports\cuda\__pycache__\cudart.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:46:34 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutlass\lib_extensions\cutlass_mock_imports\cuda\__pycache__\__init__.cpython-314.pyc
+The system cannot find the file specified.
+
+2026/11/01 23:46:35 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\oauthlib\oauthlib\openid\connect\core\__init__.pyi
+The system cannot find the file specified.
+
+2026/11/01 23:46:36 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\torch\csrc\api\include\torch\data\datasets\base.h
+The system cannot find the file specified.
+Waiting 1 seconds...
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\models\configs\v1-inference_clip_skip_2.yaml
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyUI_Docs_Work\ja\custom-nodes\help_page.mdx
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 1392 (0x00000570) Copying Directory P:\Dev\ComfyUI_Refs\ComfyDL_UI\comfy\ldm\cogvideo\__pycache__\
+The file or directory is corrupted and unreadable.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying Directory P:\Dev\ComfyUI_Refs\ComfyDL_UI\comfy\ldm\ideogram4\__pycache__\
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying Directory P:\Dev\ComfyUI_Refs\ComfyDL_UI\comfy\ldm\krea2\__pycache__\
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\homepage\ui\images\gemini.svg
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyUI_Docs_Work\ja\custom-nodes\backend\images_and_masks.mdx
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyUI_Docs_Work\ja\custom-nodes\backend\lifecycle.mdx
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\anima-prompt-plus-widget.test.mjs
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\civitai-oauth-timeout.test.mjs
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\configure-app-mode.test.mjs
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\create-subgraph-verify.test.mjs
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\duplicate-panel-guard.test.mjs
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\fixtures-1706-definitions-renumber.json
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\graph-mutation-context.test.mjs
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 1392 (0x00000570) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\ideogram4-prompt-builder.test.mjs
+The file or directory is corrupted and unreadable.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\live-combo-availability.test.mjs
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\manager-queue-stall.test.mjs
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\missing-asset-scope.test.mjs
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\node-scope-locator.test.mjs
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 1392 (0x00000570) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\open-completed-restore.test.mjs
+The file or directory is corrupted and unreadable.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\resolve-comfy-app.test.mjs
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\run-completion-route-rehydrate.test.mjs
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\save-as-identity.test.mjs
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\test_civitai_proxy.py
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\comfyui-mcp-panel\browser_tests\unit\upload-bound.test.mjs
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\comfy\ldm\ace\__pycache__\attention.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\comfy\ldm\kandinsky5\__pycache__\model.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torchvision_broken\_meta_registrations.py
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\av\__pycache__\error.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\jit\_script.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\tzdata\zoneinfo\Factory
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\flash-attention-sm120-fix\training\configs\experiment\owt\gpt2m-flash.yaml
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\Refs\flash-attention-sm120-fix\training\configs\experiment\pile\gpt3-2.7B-flash-rotary.yaml
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\alembic\templates\generic\alembic.ini.mako
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\ComfyMathExpression\pt-BR.md
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\ComfyNotNode\pt-BR.md
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\ConditioningStableAudio\zh-TW.md
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\ContextWindowsManual\fr.md
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\ControlNetInpaintingAliMamaApply\ru.md
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\ConvertArrayToString\es.md
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\ConvertDictionaryToString\en.md
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\comfyui_embedded_docs\docs\CreateCameraInfo\fa.md
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\gym\wrappers\__pycache__\normalize.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\gym\wrappers\__pycache__\transform_observation.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\setuptools\command\__pycache__\_requirestxt.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\torch\extension.h
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\alembic\testing\plugin\__pycache__\bootstrap.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\alembic\testing\suite\__pycache__\test_autogen_identity.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\fontTools\svgLib\path\__pycache__\shapes.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\fontTools\ttLib\tables\__pycache__\C_B_D_T_.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\fontTools\ttLib\tables\__pycache__\V_V_A_R_.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\fontTools\ttLib\tables\__pycache__\_g_v_a_r.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\fontTools\varLib\instancer\__pycache__\solver.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\designer\CubeMapTextureSpecifics.qml
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\designer\quick3d.metainfo
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\designer\ReflectionProbeSpecifics.qml
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\designer\SpotLightSection.qml
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\plugins.qmltypes
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\qmldir
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Xr\plugins.qmltypes
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\SpatialAudio\plugins.qmltypes
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\SpatialAudio\qmldir
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 1392 (0x00000570) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\ao\ns\__pycache__\_numeric_suite_fx.cpython-314.pyc
+The file or directory is corrupted and unreadable.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\distributed\checkpoint\__pycache__\_async_process_executor.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\distributed\_sharded_tensor\__pycache__\__init__.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\distributed\_tools\__pycache__\__init__.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\ATen\ops\_addmm_activation_ops.h
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\ATen\ops\_add_batch_dim_native.h
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\ATen\ops\_amp_update_scale_cpu_dispatch.h
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\ATen\ops\_autocast_to_reduced_precision_ops.h
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\ATen\ops\_batch_norm_no_update_native.h
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\pybind11\detail\pybind11_namespace_macros.h
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_export\db\__pycache__\logging.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_export\passes\__pycache__\lift_constants_pass.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Helpers\impl\qtquick3dhelpersimplplugin.dll
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\designer\ModelBlendParticle3DSection.qml
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\designer\ParticleSystem3DSection.qml
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 1392 (0x00000570) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\designer\VectorDirection3DSection.qml
+The file or directory is corrupted and unreadable.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\ao\quantization\backend_config\__pycache__\executorch.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\distributed\checkpoint\_experimental\__pycache__\types.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutedsl\__pycache__\cutedsl_op_overrides.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutedsl\__pycache__\cutedsl_template.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutlass\__pycache__\cache.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\autoheuristic\artifacts\__pycache__\_MixedMMA100.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\autoheuristic\artifacts\__pycache__\_MMRankingA100.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\__init__.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Helpers\designer\images\proceduralskytexturedata.png
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Helpers\designer\images\wasdcontroller@2x.png
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\designer\source\particlesystem_template.qml
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\designer\images\scale-affector-16px.png
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\PySide6\qml\QtQuick3D\Particles3D\designer\images\vector-direction-24px.png
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\ao\pruning\_experimental\data_sparsifier\__pycache__\quantization_utils.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\torch\csrc\jit\passes\peephole.h
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutlass\lib_extensions\__pycache__\evt_extensions.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutlass\lib_extensions\__pycache__\__init__.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\cell\read_only.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\cell\text.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\cell\_writer.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\chart\error_bar.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\chart\series_factory.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\chart\text.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\chart\trendline.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\chart\__init__.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\chartsheet\relation.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\comments\author.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\comments\comments.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\descriptors\namespace.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\descriptors\slots.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\drawing\connector.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\utils\cell.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\utils\datetime.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\utils\indexed_list.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\utils\protection.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\workbook\defined_name.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\workbook\_writer.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\styles\table.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\openpyxl\openpyxl\worksheet\print_settings.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\torch\csrc\api\include\torch\xpu.h
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutlass\lib_extensions\cutlass_mock_imports\pydot\__pycache__\__init__.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutlass\lib_extensions\cutlass_mock_imports\cuda\__pycache__\cudart.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\_inductor\codegen\cutlass\lib_extensions\cutlass_mock_imports\cuda\__pycache__\__init__.cpython-314.pyc
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\jedi\third_party\typeshed\stubs\oauthlib\oauthlib\openid\connect\core\__init__.pyi
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+2026/11/01 23:46:38 ERROR 2 (0x00000002) Copying File P:\Dev\ComfyUI_Refs\ComfyDL_UI\penv\Lib\site-packages\torch\include\torch\csrc\api\include\torch\data\datasets\base.h
+The system cannot find the file specified.
+
+ERROR: RETRY LIMIT EXCEEDED.
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :     11532     11529         0         0         9         0
+   Files :     93590     93437        32         0       121         0
+   Bytes :   8.320 g   8.299 g   21.13 m         0   972.2 k         0
+   Times :   5:44:31   0:20:39                       0:00:00   0:01:24
+
+
+   Speed :           7,191,598 Bytes/sec.
+   Speed :             411.507 MegaBytes/min.
+   Ended : 2026111 23:46:38
+
