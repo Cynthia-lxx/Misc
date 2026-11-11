@@ -1,0 +1,15 @@
+.dui-dialog .bd { padding: 40px; font-size: 10pt; }
+.dui-dialog .ft { background: #e4e4e4; height: 40px; }
+.dui-dialog .ft div { padding-top: 15px; }
+.dui-dialog .dui-dialog-prompt { float: left; }
+.dui-dialog.group-promote-dialog .bn-flat { color: #ffffff; float:right; width: 50px; cursor:pointer;}
+.dui-dialog .btn-ok { background: #6fb45d; }
+.dui-dialog .btn-cancel { background: #999999; }
+.aside .mod { margin-bottom: 20px; }
+
+.topic-doc,.reply-doc{position: relative;}
+.topic-doc .via,.reply-doc .via{color: #bbb;position: absolute;left: 0;bottom: 0;font-size: 12px;}
+.topic-doc .via a,.reply-doc .via a{color:#bbb;}
+.topic-doc .via a:hover,.reply-doc .via a:hover{color: #FFF;background-color: #bbb;}
+.topic-doc .fix{bottom:-40px;}
+.topic-reply li .reply-doc p{padding-bottom:10px;}

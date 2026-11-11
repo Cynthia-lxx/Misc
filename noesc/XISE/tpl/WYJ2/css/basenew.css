@@ -1,0 +1,127 @@
+/************************************
+ * @website                         *
+ * @author��http://web.admin5.com   *
+ ************************************/
+
+.left{
+	float: left; 
+	clear: none;
+}
+.right{
+	float: right;
+	clear: none;
+}
+.leftx{
+	float: left; 
+	clear: none;
+}
+.right{
+	float: right;
+	clear: none;
+}
+a{ 
+	blr:expression(this.onFocus=this.blur());
+	outline:none;
+}
+a{ text-decoration: none;color:#2e2e2e;}
+a:link,a:visited,a:active{ text-decoration: none; }
+a:hover { text-decoration: underline; color:#f00;}
+
+.hide{ display: none; }
+.show{ display:block; }
+
+.clear{display:block; clear:both; height:0; overflow:hidden; visibility:hidden; border:0; padding:0; line-height:0;}
+.divauto{width:960px; margin:auto; overflow: hidden; background:#FFF;}
+.clearh10{display:block; clear:both; height:10px; overflow:hidden; visibility:hidden; border:0; padding:0; line-height:10px;}
+
+/* color */
+.c9c9c9c,.c9c9c9c a{color:#9c9c9c;}
+.c9c9c9c a:hover{color:#f00;}
+.c555 a{color:#555;}
+.c555 a:hover{color:#f00;}
+.c0071bc a{color:#0071bc;}
+.c0071bc a:hover{color:#f00;}
+
+.mt6{ margin-top:5px;}
+.m10{ margin:0 9px;}
+
+.f12{ font-size:12px;}
+.f14{ font-size:14px;}
+.f16{ font-size:16px;}
+
+
+/* header logo logo_right */
+#top{ height:32px; line-height:32px; border-bottom:1px solid #ddd; padding:0 10px;}
+#top .left,#top .left a{ color:#636363}
+#top .left a{ margin:0 10px;}
+#top .right,#top .right a{ color:#0071bc}
+#top .right a.w{ margin:0 4px;}
+#top a:hover{ color:#f00;}
+
+#logo{ height:70px; overflow:hidden;}
+#header{ width:960px; margin:0 auto; }
+#header .logo{ float:left; padding-left:10px; padding-top:6px;}
+#header .ad1{float:right;padding-top:16px; padding-left:5px;}
+#header .ad2{ float:left; padding-top:16px; padding-left:10px;}
+
+/* header menu sub_menu*/
+.menu{ width:960px; height:31px; overflow:hidden;}
+.menu span{ display:block; float:left; height:74px;overflow:hidden; background:url(../images/top_menuBg.gif) no-repeat;}
+.menu .menu_nav{ width:960px; height:31px; }
+.menu .menu_nav ul{ height:31px; line-height:31px;}
+.menu .menu_nav li{ float:left;}
+.menu .menu_nav li a{ padding:0 19px; color:#FFF; font-size:14px; font-weight:bold;}
+.search {
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 1px;
+    height: 24px;
+    line-height: 24px;
+    overflow: hidden;
+    padding: 2px 2px 2px 0px;
+}
+.search INPUT {
+    display: inline;
+    float: right;
+}
+.search .button {
+    background: url("../images/search.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border-color: #F6BE68;
+    border-style: solid;
+    border-width: 1px;
+    color: #990000;
+    font-weight: bold;
+    height: 22px;
+    width: 48px;
+}
+.search .text {
+    background: url("../images/text.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 1px;
+    height: 20px;
+    line-height: 16px;
+    margin-right: 4px;
+    padding-left: 24px;
+    width: 164px;
+}
+
+.smenu{ width:920px; padding:0 16px; height:36px; display:inline-block; line-height:36px; overflow:hidden; }
+.smenu b{ color:#279adc; float:left; width:80px;}
+.smenu .tx{ display:block; float:left; width:840px; height:36px; overflow:hidden;}
+#shangfan{ line-height:36px; height:36px; width:840px;overflow:hidden;}
+.smenu a{ color:#707070; white-space:nowrap; padding-right:20px;}
+.smenu a:hover{ color:#f00;}
+
+/* footer */
+#footer { padding:10px 10px; width:960px; display:inline-block;text-align:center;}
+#footer h6{ float:left; padding-left:20px;}
+#footer p{ float:left; padding-left:10px; padding-top:6px; line-height:24px;}
+#footer p a{ color:#013caa}
+#footer p a:hover{ color:#f00}
+/*.like{width:930px;}
+.like ul{margin:0px;padding:0px;height:120px;width:930px;}
+.like ul li{display:inline;width:300px;line-height:30px;height:30px;float:left;}*/
+
+.like td{height:30px;line-height:30px;text-align:left;}
+.like td a{float:left;}

@@ -1,0 +1,3 @@
+XISE\tpl   模板目录
+XISE\keyword  关键词目录
+XISE/content.txt  文章库
