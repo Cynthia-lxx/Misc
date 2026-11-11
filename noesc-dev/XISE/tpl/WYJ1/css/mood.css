@@ -1,0 +1,23 @@
+﻿.mood{font:bold 14px/30px "宋体";color:#333;margin:20px 20px 0 20px;clear:both;}
+#mood{margin:10px auto 10px auto;padding:0;width:480px;overflow:hidden;}
+#mood ul{margin:0 auto;padding:0;list-style:none;}
+#mood ul li{float:left;width:11%;margin:0;padding:0;text-align:center;font-family:verdana; overflow:hidden;}
+#mood ul li .bar{border:1px solid #DADADA;width:8px;height:50px;height:50px;position:relative; margin:auto;}
+#mood ul li .bg{margin:0;padding:0;height:0;background:url(../images/bar_bg.gif) repeat;width:8px;position:absolute;left:0px;bottom:0px;line-height:0;font-size:0;}
+#mood ul li .md a{background:url(../images/mood.gif) no-repeat;margin:5px 0 0 0;width:50px;height:50px;display:block;}
+#mood ul li .mood1 a{background-position:0 -56px;}
+#mood ul li .mood1 a:hover{background-position:0 0;}
+#mood ul li .mood2 a{background-position:-63px -56px;}
+#mood ul li .mood2 a:hover{background-position:-63px 0;}
+#mood ul li .mood3 a{background-position:-125px -56px;}
+#mood ul li .mood3 a:hover{background-position:-125px 0;}
+#mood ul li .mood4 a{background-position:-188px -56px;}
+#mood ul li .mood4 a:hover{background-position:-188px 0;}
+#mood ul li .mood5 a{background-position:-250px -56px;}
+#mood ul li .mood5 a:hover{background-position:-250px 0;}
+#mood ul li .mood6 a{background-position:-314px -56px;}
+#mood ul li .mood6 a:hover{background-position:-314px 0;}
+#mood ul li .mood7 a{background-position:-375px -56px;}
+#mood ul li .mood7 a:hover{background-position:-375px 0;}
+#mood ul li .mood8 a{background-position:-437px -56px;}
+#mood ul li .mood8 a:hover{background-position:-437px 0;}

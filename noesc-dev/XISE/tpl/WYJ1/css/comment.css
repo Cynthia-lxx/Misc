@@ -1,0 +1,28 @@
+@charset "utf-8";
+.info_intro{padding:0 0 20px 0;line-height:22px;color:#666;}
+.info_intro p{margin:0 0 5px 0;padding:0;}
+.info_intro .red{color:#f30;margin:0 5px;}
+
+.comment{overflow:hidden;clear:both;margin-bottom:20px;}
+.comment .face{float:left;width:60px;height:60px;}
+.comment .text{border:1px solid #dadada;margin-left:70px;}
+.comment .text .div{padding:10px 20px;}
+.comment .text .div .icon{position:absolute;width:20px;height:20px;margin:6px 0 0 -40px;background:url(../images/dot.gif) no-repeat top right;}
+.comment .text .div .base{font-family:verdana;color:#000;border-bottom:1px dashed #ccc;line-height:30px;margin-bottom:10px;}
+.comment .text .div .base span{float:right;color:#999;}
+.comment .text .div .CQ3n7j{line-height:20px;}
+.comment .text .div .reply{font-family:verdana;border-top:1px dashed #ccc;line-height:30px;margin-top:10px;color:#000;padding-top:5px;}
+.comment .text .div .reply strong{color:#f60;}
+
+.commentadd{margin:10px 0;overflow:hidden;clear:both;}
+.commentadd .face{float:left;width:60px;height:60px;}
+.commentadd .text{overflow:hidden;margin-left:70px;}
+.commentadd .text .div{padding:0 5px 0 0;}
+.commentadd .text .div textarea{width:100%;_width:98%;border:1px solid #ccc;height:70px;overflow:auto;}
+.commentadd .text span{color:#999;line-height:22px;clear:both;}
+.commentadd .text #commentlen{color:#f30;}
+.commentadd .input{margin:10px 0;font-size:14px;}
+.commentadd .input a{color:#666;font-size:12px;}
+.commentadd .input a:hover{color:#f30;font-size:12px;}
+.commentadd .input .send{float:right;border:1px solid #ccc;background:#fff;padding:5px 10px;_padding:3px 10px;margin:0;_margin:0 9px 0 0;vertical-align:middle;width:80px;}
+.commentadd .input .ip{border:1px solid #ccc;width:80px;padding:5px 10px;vertical-align:middle;}

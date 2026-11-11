@@ -1,0 +1,1044 @@
+.truths-answer {
+	MARGIN-TOP: 30px
+}
+.truths-answer .truths-answer-content {
+	LINE-HEIGHT: 28px; COLOR: #666; FONT-SIZE: 14px
+}
+.wgt-truths-ask {
+	Z-INDEX: 1; POSITION: relative; LINE-HEIGHT: 28px; BACKGROUND: #f4f4f4; FONT-SIZE: 14px; border-radius: 5px
+}
+.wgt-truths-ask .truths-title {
+	BORDER-BOTTOM: #e0e0e0 1px solid; LINE-HEIGHT: 54px; TEXT-INDENT: 10px; MARGIN-LEFT: 30px; FONT-SIZE: 18px
+}
+.wgt-truths-ask .truths-title SPAN {
+	LINE-HEIGHT: 32px; WIDTH: 560px; DISPLAY: inline-block; VERTICAL-ALIGN: middle; OVERFLOW: hidden; -moz-box-orient: vertical
+}
+.wgt-truths-ask .truths-badge {
+	POSITION: absolute; TOP: 0px; LEFT: -30px
+}
+.wgt-truths-ask .truths-false {
+	MARGIN: 24px 30px 0px 20px; HEIGHT: 53px; OVERFLOW: hidden
+}
+.wgt-truths-ask HR.line {
+	BORDER-BOTTOM: #e0e0e0 1px solid; BORDER-TOP: 0px
+}
+.wgt-truths-ask .truths-true {
+	PADDING-BOTTOM: 26px; MARGIN: 20px 30px 0px 20px
+}
+.wgt-truths-ask .truths-extend {
+	POSITION: relative; LEFT: 556px
+}
+.wgt-banner {
+	BORDER-BOTTOM: #ebebeb 1px solid; BACKGROUND-REPEAT: repeat-x; HEIGHT: 350px
+}
+.wgt-banner-main {
+	POSITION: relative; MARGIN: 0px auto; WIDTH: 980px; BACKGROUND: url(../images/banner-back_80aefa4.png) no-repeat 65px 33px; HEIGHT: 350px
+}
+.wgt-banner-main .banner-search-form {
+	POSITION: absolute; TOP: 52px; LEFT: 283px
+}
+.wgt-banner-main .banner-search-form .banner-search-txt {
+	BORDER-BOTTOM: #ccc 1px solid; BORDER-LEFT: #ccc 1px solid; PADDING-BOTTOM: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 15px; OUTLINE-WIDTH: 0px; WIDTH: 447px; PADDING-RIGHT: 15px; HEIGHT: 49px; FONT-SIZE: 20px; BORDER-TOP: #ccc 1px solid; BORDER-RIGHT: #ccc 1px solid; PADDING-TOP: 0px
+}
+.wgt-banner-main .banner-search-form .banner-search-submit {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; OUTLINE-WIDTH: 0px; WIDTH: 123px; DISPLAY: inline-block; BACKGROUND-REPEAT: no-repeat; HEIGHT: 51px; COLOR: #fff; MARGIN-LEFT: 10px; FONT-SIZE: 20px; VERTICAL-ALIGN: top; BORDER-TOP: 0px; CURSOR: pointer; BORDER-RIGHT: 0px; -moz-box-orient: vertical
+}
+.wgt-banner-main .auth-liuyan-nums {
+	POSITION: absolute; BOTTOM: 79px; RIGHT: 169px
+}
+.wgt-banner-main .auth-liuyan-nums SPAN {
+	COLOR: #fff; MARGIN-LEFT: 21px
+}
+.wgt-comment {
+	COLOR: #323232; CLEAR: both; BORDER-TOP: #e7e7e7 1px solid; PADDING-TOP: 32px
+}
+.wgt-comment .comment-head {
+	BORDER-BOTTOM: silver 2px solid; PADDING-BOTTOM: 24px; COLOR: #353535; FONT-SIZE: 20px; FONT-WEIGHT: 900
+}
+.wgt-comment .comment-action-bar {
+	BORDER-BOTTOM: #efefef 1px solid; PADDING-BOTTOM: 21px; BACKGROUND-COLOR: #f8f8f8; PADDING-LEFT: 21px; PADDING-RIGHT: 21px; OVERFLOW: hidden; PADDING-TOP: 21px; box-shadow: 0 1px 3px #efefef; _zoom: 1
+}
+.wgt-comment .comment-action-bar .mini-editor {
+	PADDING-BOTTOM: 5px; PADDING-LEFT: 5px; WIDTH: 540px; PADDING-RIGHT: 5px; FLOAT: left; PADDING-TOP: 5px; border-radius: 5px
+}
+.wgt-comment .comment-action-bar .comment-action {
+	FLOAT: left; MARGIN-LEFT: 14px
+}
+.wgt-comment .comment-action-bar .comment-action .comment-submit {
+	BORDER-BOTTOM: #e1e1e1 1px solid; TEXT-ALIGN: center; BORDER-LEFT: #e1e1e1 1px solid; PADDING-BOTTOM: 0px; LINE-HEIGHT: 35px; BACKGROUND-COLOR: #3eb62e; MARGIN: 0px; PADDING-LEFT: 0px; WIDTH: 106px; PADDING-RIGHT: 0px; DISPLAY: block; LETTER-SPACING: 0.2em; HEIGHT: 35px; COLOR: #fff; FONT-SIZE: 14px; BORDER-TOP: #e1e1e1 1px solid; CURSOR: pointer; FONT-WEIGHT: 700; BORDER-RIGHT: #e1e1e1 1px solid; PADDING-TOP: 0px; border-radius: 5px
+}
+.wgt-comment .comment-action-bar .comment-action .comment-submit:hover {
+	TEXT-DECORATION: none
+}
+.wgt-comment .comment-body {
+	MARGIN-TOP: 3px
+}
+.wgt-comment .comment-body .comment-entry {
+	BORDER-BOTTOM: #eee 1px solid; PADDING-BOTTOM: 18px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; COLOR: #000; FONT-SIZE: 14px; OVERFLOW: hidden; PADDING-TOP: 18px
+}
+.wgt-comment .comment-body .comment-entry .details SPAN {
+	COLOR: #8b8b8b; FONT-SIZE: 14px
+}
+.wgt-comment .comment-body .comment-entry .f-light {
+	COLOR: #2d64b6; FONT-SIZE: 14px
+}
+.wgt-comment .comment-body .comment-entry .reply-comment {
+	FLOAT: right; COLOR: #2d64b6; fonts-size: 12px
+}
+.wgt-comment .comment-pager {
+	PADDING-BOTTOM: 38px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 32px
+}
+.btn-28-white {
+	BORDER-BOTTOM: #e1e1e1 1px solid; TEXT-ALIGN: center; BORDER-LEFT: #e1e1e1 1px solid; PADDING-BOTTOM: 0px; LINE-HEIGHT: 26px; BACKGROUND-COLOR: #fff; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 21px; OUTLINE-WIDTH: 0px; PADDING-RIGHT: 21px; DISPLAY: inline-block; FONT-FAMILY: Microsoft Yahei; HEIGHT: 26px; FONT-SIZE: 14px; BORDER-TOP: #e1e1e1 1px solid; CURSOR: pointer; BORDER-RIGHT: #e1e1e1 1px solid; PADDING-TOP: 0px; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px
+}
+.btn-28-white:hover {
+	TEXT-DECORATION: none
+}
+.btn-28-white:active {
+	TEXT-DECORATION: none
+}
+.btn-28-white {
+	COLOR: #4b4b4b; TEXT-DECORATION: none
+}
+.btn-28-white:link {
+	COLOR: #4b4b4b; TEXT-DECORATION: none
+}
+.btn-28-white:visited {
+	COLOR: #4b4b4b; TEXT-DECORATION: none
+}
+.btn-28-white:hover {
+	BORDER-BOTTOM-COLOR: #dbdbdb; BACKGROUND-COLOR: #fff; BORDER-TOP-COLOR: #dbdbdb; BACKGROUND-REPEAT: repeat-x; BORDER-RIGHT-COLOR: #dbdbdb; BORDER-LEFT-COLOR: #dbdbdb; -webkit-box-shadow: 0 1px 1px #eee; -moz-box-shadow: 0 1px 1px #eee; box-shadow: 0 1px 1px #eee
+}
+.btn-praise {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 10px; LINE-HEIGHT: 34px; MARGIN-TOP: -10px; PADDING-LEFT: 50px; WIDTH: 126px; PADDING-RIGHT: 0px; DISPLAY: inline-block; BACKGROUND: #74cc5d; HEIGHT: 34px; COLOR: #fff; FONT-SIZE: 16px; VERTICAL-ALIGN: middle; BORDER-TOP: 0px; CURSOR: pointer; FONT-WEIGHT: 400; BORDER-RIGHT: 0px; TEXT-DECORATION: none; PADDING-TOP: 10px; -moz-box-orient: vertical; border-radius: 50px
+}
+.btn-praise B {
+	WIDTH: 37px; BACKGROUND-REPEAT: no-repeat; FLOAT: left; HEIGHT: 37px; MARGIN-LEFT: -42px
+}
+.praise-over.btn-praise {
+	LINE-HEIGHT: 1.2; BACKGROUND: silver; FONT-SIZE: 14px; CURSOR: default; TEXT-DECORATION: none
+}
+.praise-over.btn-praise B {
+	BACKGROUND-REPEAT: no-repeat; MARGIN-RIGHT: 15px
+}
+BODY {
+	FONT-FAMILY: "Microsoft YaHei", SimHei, arial, "ËÎÌו"; BACKGROUND: #f3f3f3
+}
+.userbar-new {
+	TOP: 14px
+}
+#footer {
+	BORDER-TOP: #eee 1px solid; PADDING-TOP: 54px
+}
+.i-ask {
+	WIDTH: 47px; DISPLAY: inline-block; BACKGROUND-REPEAT: no-repeat; HEIGHT: 43px; VERTICAL-ALIGN: middle; -moz-box-orient: vertical
+}
+.i-sigh {
+	WIDTH: 47px; DISPLAY: inline-block; BACKGROUND-REPEAT: no-repeat; HEIGHT: 43px; VERTICAL-ALIGN: middle; -moz-box-orient: vertical
+}
+.i-xx {
+	WIDTH: 47px; DISPLAY: inline-block; BACKGROUND-REPEAT: no-repeat; HEIGHT: 43px; VERTICAL-ALIGN: middle; -moz-box-orient: vertical
+}
+.i-mini-pop {
+	WIDTH: 15px; DISPLAY: inline-block; BACKGROUND-REPEAT: no-repeat; HEIGHT: 16px; VERTICAL-ALIGN: middle; -moz-box-orient: vertical
+}
+.i-round-red {
+	BORDER-BOTTOM: #ff5400 2px solid; TEXT-ALIGN: center; BORDER-LEFT: #ff5400 2px solid; FONT-STYLE: normal; WIDTH: 22px; DISPLAY: inline-block; HEIGHT: 22px; COLOR: #ff5400; FONT-SIZE: 16px; VERTICAL-ALIGN: middle; BORDER-TOP: #ff5400 2px solid; BORDER-RIGHT: #ff5400 2px solid; -moz-box-orient: vertical; border-radius: 50px
+}
+.i-round-yellow {
+	BORDER-BOTTOM: #ff5400 2px solid; TEXT-ALIGN: center; BORDER-LEFT: #ff5400 2px solid; FONT-STYLE: normal; WIDTH: 22px; DISPLAY: inline-block; HEIGHT: 22px; COLOR: #ff5400; FONT-SIZE: 16px; VERTICAL-ALIGN: middle; BORDER-TOP: #ff5400 2px solid; BORDER-RIGHT: #ff5400 2px solid; -moz-box-orient: vertical; border-radius: 50px
+}
+.i-round-yellow {
+	BORDER-BOTTOM-COLOR: #f5a82f; BORDER-TOP-COLOR: #f5a82f; COLOR: #f5a82f; BORDER-RIGHT-COLOR: #f5a82f; BORDER-LEFT-COLOR: #f5a82f
+}
+.i-true {
+	WIDTH: 60px; DISPLAY: inline-block; BACKGROUND-REPEAT: no-repeat; HEIGHT: 57px; VERTICAL-ALIGN: middle; -moz-box-orient: vertical
+}
+.i-false {
+	WIDTH: 60px; DISPLAY: inline-block; BACKGROUND-REPEAT: no-repeat; HEIGHT: 57px; VERTICAL-ALIGN: middle; -moz-box-orient: vertical
+}
+.i-other {
+	WIDTH: 60px; DISPLAY: inline-block; BACKGROUND-REPEAT: no-repeat; HEIGHT: 57px; VERTICAL-ALIGN: middle; -moz-box-orient: vertical
+}
+.i-plusbox {
+	WIDTH: 11px; DISPLAY: inline-block; BACKGROUND-REPEAT: no-repeat; HEIGHT: 11px; VERTICAL-ALIGN: middle; -moz-box-orient: vertical
+}
+.i-line {
+	BACKGROUND-COLOR: #66cc52; WIDTH: 4px; DISPLAY: inline-block; HEIGHT: 18px; VERTICAL-ALIGN: middle; OVERFLOW: hidden; -moz-box-orient: vertical
+}
+.i-style-a {
+	Z-INDEX: 1; POSITION: relative; LINE-HEIGHT: 22px; BACKGROUND-COLOR: #acacac; DISPLAY: inline-block; HEIGHT: 17px; COLOR: #fff; FONT-SIZE: 10px; VERTICAL-ALIGN: middle; OVERFLOW: hidden; -moz-box-orient: vertical; border-radius: 8px
+}
+.i-style-a I {
+	Z-INDEX: 2; POSITION: absolute; TEXT-ALIGN: center; BACKGROUND-COLOR: #fff; FONT-STYLE: normal; MARGIN: 2px; WIDTH: 22px; DISPLAY: inline-block; FONT-FAMILY: arial; HEIGHT: 22px; COLOR: #f3a428; FONT-SIZE: 18px; VERTICAL-ALIGN: middle; TOP: -4px; LEFT: 2px; -moz-box-orient: vertical; border-radius: 10px
+}
+.i-style-a EM {
+	LINE-HEIGHT: 17px; MARGIN-TOP: 1px; TEXT-INDENT: 35px; PADDING-RIGHT: 6px; DISPLAY: inline-block; HEIGHT: 18px; VERTICAL-ALIGN: top; -moz-box-orient: vertical
+}
+.i-praise {
+	LINE-HEIGHT: 16px; BACKGROUND-COLOR: #ffa439; DISPLAY: inline-block; HEIGHT: 17px; COLOR: #fff; FONT-SIZE: 10px; VERTICAL-ALIGN: top; OVERFLOW: hidden; -moz-box-orient: vertical; border-radius: 8px
+}
+.i-praise I {
+	BACKGROUND-COLOR: #fff; TEXT-INDENT: -99999px; MARGIN: 2px; WIDTH: 13px; DISPLAY: inline-block; BACKGROUND-REPEAT: no-repeat; HEIGHT: 13px; FONT-SIZE: 0px; VERTICAL-ALIGN: middle; -moz-box-orient: vertical; border-radius: 10px
+}
+.i-praise EM {
+	MARGIN-TOP: 1px; PADDING-RIGHT: 6px; DISPLAY: inline-block; VERTICAL-ALIGN: middle; -moz-box-orient: vertical
+}
+.arrow-fcf-up {
+	BORDER-BOTTOM: #f5fcf0 10px solid; BORDER-LEFT: transparent 8px solid; LINE-HEIGHT: 0; TEXT-INDENT: -99999px; WIDTH: 0px; DISPLAY: inline-block; HEIGHT: 0px; FONT-SIZE: 0px; VERTICAL-ALIGN: middle; BORDER-TOP: transparent 0px solid; BORDER-RIGHT: transparent 8px solid; -moz-box-orient: vertical; _border-top-color: #f5fcf0; _border-bottom-color: #f5fcf0
+}
+.tip-green {
+	Z-INDEX: 1; POSITION: relative; PADDING-BOTTOM: 0px; LINE-HEIGHT: 20px; PADDING-LEFT: 5px; PADDING-RIGHT: 5px; BACKGROUND: #ccf5cb; FONT-SIZE: 12px; PADDING-TOP: 0px; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px
+}
+.tip-green .arrow-up {
+	Z-INDEX: 2; POSITION: absolute
+}
+.tip-green .arrow-left {
+	Z-INDEX: 2; POSITION: absolute
+}
+.tip-green .arrow-right {
+	Z-INDEX: 2; POSITION: absolute
+}
+.tip-green .arrow-down {
+	Z-INDEX: 2; POSITION: absolute
+}
+.tip-green .arrow-up {
+	BORDER-BOTTOM: #ccf5cb 7px solid; BORDER-LEFT: transparent 4px solid; LINE-HEIGHT: 0; TEXT-INDENT: -99999px; WIDTH: 0px; DISPLAY: inline-block; HEIGHT: 0px; FONT-SIZE: 0px; VERTICAL-ALIGN: middle; BORDER-TOP: transparent 0px solid; TOP: -7px; BORDER-RIGHT: transparent 4px solid; LEFT: 29px; -moz-box-orient: vertical; _border-top-color: #ccf5cb; _border-bottom-color: #ccf5cb
+}
+.tip-pink {
+	Z-INDEX: 1; POSITION: relative; PADDING-BOTTOM: 0px; LINE-HEIGHT: 20px; PADDING-LEFT: 5px; PADDING-RIGHT: 5px; BACKGROUND: #ffe6d5; FONT-SIZE: 12px; PADDING-TOP: 0px; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px
+}
+.tip-pink .arrow-up {
+	Z-INDEX: 2; POSITION: absolute
+}
+.tip-pink .arrow-left {
+	Z-INDEX: 2; POSITION: absolute
+}
+.tip-pink .arrow-right {
+	Z-INDEX: 2; POSITION: absolute
+}
+.tip-pink .arrow-down {
+	Z-INDEX: 2; POSITION: absolute
+}
+.tip-pink .arrow-up {
+	BORDER-BOTTOM: #ffe6d5 7px solid; BORDER-LEFT: transparent 4px solid; LINE-HEIGHT: 0; TEXT-INDENT: -99999px; WIDTH: 0px; DISPLAY: inline-block; HEIGHT: 0px; FONT-SIZE: 0px; VERTICAL-ALIGN: middle; BORDER-TOP: transparent 0px solid; TOP: -7px; BORDER-RIGHT: transparent 4px solid; LEFT: 29px; -moz-box-orient: vertical; _border-top-color: #ffe6d5; _border-bottom-color: #ffe6d5
+}
+.tip-yellow {
+	Z-INDEX: 1; POSITION: relative; PADDING-BOTTOM: 0px; LINE-HEIGHT: 20px; PADDING-LEFT: 5px; PADDING-RIGHT: 5px; BACKGROUND: #e1e1e1; FONT-SIZE: 12px; PADDING-TOP: 0px; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px
+}
+.tip-yellow .arrow-up {
+	Z-INDEX: 2; POSITION: absolute
+}
+.tip-yellow .arrow-left {
+	Z-INDEX: 2; POSITION: absolute
+}
+.tip-yellow .arrow-right {
+	Z-INDEX: 2; POSITION: absolute
+}
+.tip-yellow .arrow-down {
+	Z-INDEX: 2; POSITION: absolute
+}
+.tip-yellow .arrow-up {
+	BORDER-BOTTOM: #e1e1e1 7px solid; BORDER-LEFT: transparent 4px solid; LINE-HEIGHT: 0; TEXT-INDENT: -99999px; WIDTH: 0px; DISPLAY: inline-block; HEIGHT: 0px; FONT-SIZE: 0px; VERTICAL-ALIGN: middle; BORDER-TOP: transparent 0px solid; TOP: -7px; BORDER-RIGHT: transparent 4px solid; LEFT: 29px; -moz-box-orient: vertical; _border-top-color: #e1e1e1; _border-bottom-color: #e1e1e1
+}
+.container-wide {
+	MARGIN: auto; WIDTH: 1100px
+}
+.truths-home {
+	BACKGROUND: #fff
+}
+.truths-home .container {
+	BACKGROUND-COLOR: #fafafa
+}
+.truths-home .container article {
+	BACKGROUND-COLOR: #fff; BORDER-RIGHT: #ebebeb 1px solid
+}
+.truths-home .wgt-title {
+	MARGIN: 8px 0px 12px; FONT-FAMILY: Microsoft Yahei; COLOR: #000; FONT-SIZE: 25px; FONT-WEIGHT: 100
+}
+.truths-home .wgt-title SPAN {
+	VERTICAL-ALIGN: middle
+}
+.truths-home .wgt-title A {
+	FONT-SIZE: 12px
+}
+.truths-home .wgt-title I.i-line {
+	MARGIN-TOP: 5px; VERTICAL-ALIGN: top
+}
+.truths-home .truths-content {
+	MARGIN: 0px; WIDTH: 667px; PADDING-RIGHT: 12px
+}
+.truths-home .truths-content .wgt-truths-misunder .truths-misunder-list {
+	MARGIN-BOTTOM: 30px
+}
+.truths-home .truths-content .wgt-truths-misunder .truths-misunder-list UL {
+	WIDTH: 323px
+}
+.truths-home .truths-content .wgt-truths-misunder .truths-misunder-list UL LI {
+	MARGIN: 15px 0px
+}
+.truths-home .truths-content .wgt-truths-misunder .truths-misunder-list A {
+	COLOR: #5e5e5e; VERTICAL-ALIGN: middle
+}
+.truths-home .truths-content .wgt-middle-banner {
+	MARGIN: 22px 0px 33px; DISPLAY: block; OVERFLOW: hidden
+}
+.truths-home .truths-aside {
+	PADDING-LEFT: 15px; WIDTH: 274px; PADDING-RIGHT: 10px
+}
+.truths-home .truths-aside .wgt-newbulletin .wgt-title {
+	MARGIN: 36px 0px 14px; FONT-SIZE: 20px
+}
+.truths-home .truths-aside .wgt-newbulletin UL LI {
+	MARGIN: 8px 0px
+}
+.truths-home .truths-aside .wgt-newbulletin UL LI A {
+	COLOR: #737373
+}
+.truths-home .truths-aside .wgt-survey-team .wgt-title {
+	MARGIN: 33px 0px 21px; FONT-SIZE: 20px
+}
+.truths-home .truths-aside .wgt-survey-team .survey-team-item {
+	MARGIN-BOTTOM: 25px
+}
+.truths-home .truths-aside .wgt-survey-team .survey-team-item .survey-team-avatar IMG {
+	WIDTH: 70px; FLOAT: left; HEIGHT: 70px
+}
+.truths-home .truths-aside .wgt-survey-team .survey-team-item .survey-team-name {
+	COLOR: #2c2c2c; FONT-SIZE: 18px
+}
+.truths-home .truths-aside .wgt-survey-team .survey-team-item .survey-team-desc {
+	COLOR: #737373; FONT-SIZE: 13px
+}
+.truths-search {
+	BACKGROUND: #fff
+}
+.truths-search .container {
+	MARGIN-TOP: 17px; WIDTH: 1100px
+}
+.truths-search .section-bg {
+	BACKGROUND: #fafafa
+}
+.truths-search .section-bg .truths-content {
+	WIDTH: 650px; PADDING-RIGHT: 30px; BACKGROUND: #fff
+}
+.truths-search .truths-section {
+	BACKGROUND: #fcfcfc
+}
+.truths-search .truths-content {
+	MARGIN-TOP: 0px; MIN-HEIGHT: 568px; WIDTH: 740px; PADDING-RIGHT: 40px; BACKGROUND: #fff; PADDING-TOP: 27px
+}
+.truths-search .truths-content .pager {
+	TEXT-ALIGN: center
+}
+.truths-search .truths-aside {
+	MARGIN-TOP: 0px; WIDTH: 260px; PADDING-TOP: 25px
+}
+.truths-search .wgt-search-list .i-praise {
+	MARGIN-TOP: 3px
+}
+.truths-search .wgt-search-list .search-title {
+	MARGIN-BOTTOM: 5px
+}
+.truths-search .wgt-search-list .search-title A {
+	FONT-FAMILY: Microsoft Yahei; COLOR: #000; FONT-SIZE: 20px; TEXT-DECORATION: none
+}
+.truths-search .wgt-search-list .search-des {
+	LINE-HEIGHT: 26px; COLOR: #737373; FONT-SIZE: 13px
+}
+.truths-search .wgt-search-list .search-des STRONG {
+	COLOR: #424242
+}
+.truths-search .wgt-search-list .search-item {
+	BORDER-BOTTOM: #ebebeb 1px solid; PADDING-BOTTOM: 20px; MARGIN-BOTTOM: 20px
+}
+.truths-search .truths-aside .wgt-hot-ci A {
+	COLOR: #02b02b; TEXT-DECORATION: none
+}
+.truths-search .truths-aside .wgt-hot-ci .f-back {
+	BACKGROUND: #02b02b; COLOR: #fff
+}
+.truths-search .truths-aside .wgt-hot-ci .f-13 {
+	FONT-SIZE: 13px
+}
+.truths-search .truths-aside .wgt-hot-ci .f-17 {
+	FONT-SIZE: 17px
+}
+.truths-search .truths-aside .wgt-hot-ci .f-italic {
+	FONT-STYLE: italic
+}
+.truths-search .truths-aside .wgt-truths-rank {
+	MARGIN-TOP: 40px
+}
+.truths-search .truths-aside .wgt-truths-rank H1 {
+	MARGIN-BOTTOM: 10px; COLOR: #000; FONT-SIZE: 20px; FONT-WEIGHT: 100
+}
+.truths-search .truths-aside .wgt-truths-rank .i-xh {
+	TEXT-ALIGN: center; LINE-HEIGHT: 20px; FONT-STYLE: inherit; MARGIN-TOP: 7px; WIDTH: 19px; DISPLAY: inline-block; BACKGROUND: #c5c5c5; HEIGHT: 19px; COLOR: #f6f6f6; FONT-SIZE: 14px; VERTICAL-ALIGN: top; -moz-box-orient: vertical; border-radius: 10px
+}
+.truths-search .truths-aside .wgt-truths-rank A {
+	LINE-HEIGHT: 30px; MARGIN: 10px 0px; DISPLAY: block
+}
+.truths-search .truths-aside .wgt-truths-rank .i-line {
+	MARGIN-TOP: 5px; VERTICAL-ALIGN: top
+}
+.truths-view .container {
+	MARGIN-TOP: 17px; WIDTH: 1100px
+}
+.truths-view .truths-content-wp {
+	WIDTH: 780px; BACKGROUND: #fff; -webkit-box-shadow: 0 0 1px #e9e9e9; -moz-box-shadow: 0 0 1px #e9e9e9; box-shadow: 0 0 1px #e9e9e9
+}
+.truths-view .truths-content {
+	PADDING-BOTTOM: 35px; PADDING-LEFT: 32px; PADDING-RIGHT: 32px; PADDING-TOP: 35px
+}
+.truths-view .truths-aside-wp {
+	WIDTH: 290px; BACKGROUND: #fff; -webkit-box-shadow: 0 0 1px #e9e9e9; -moz-box-shadow: 0 0 1px #e9e9e9; box-shadow: 0 0 1px #e9e9e9
+}
+.truths-view .truths-aside {
+	PADDING-BOTTOM: 40px; PADDING-LEFT: 20px; PADDING-RIGHT: 20px; PADDING-TOP: 40px
+}
+.wgt-daily {
+	Z-INDEX: 1; POSITION: relative; MARGIN-TOP: 30px; WIDTH: 250px; HEIGHT: 165px; CLEAR: both; _zoom: 1
+}
+.wgt-daily:after {
+	DISPLAY: block; HEIGHT: 0px; VISIBILITY: hidden; CLEAR: both; OVERFLOW: hidden; CONTENT: "\0020"
+}
+.wgt-daily .daily-line {
+	TEXT-ALIGN: center; LINE-HEIGHT: 20px; HEIGHT: 20px; FONT-SIZE: 14px
+}
+.wgt-daily .daily-line H3 {
+	LINE-HEIGHT: 20px; FONT-FAMILY: "Microsoft Yahei"; HEIGHT: 20px; FONT-WEIGHT: 400
+}
+.wgt-daily .daily-line SPAN {
+	FONT-FAMILY: Tahoma; COLOR: #999; MARGIN-LEFT: 35px
+}
+.wgt-daily #daily-carousel {
+	HEIGHT: 140px
+}
+.wgt-daily #daily-carousel .carousel-control {
+	Z-INDEX: 1; POSITION: absolute; FILTER: alpha(opacity=80); WIDTH: 25px; BOTTOM: 0px; DISPLAY: none; HEIGHT: 140px; opacity: .8; -khtml-opacity: .8; -moz-opacity: .8
+}
+.wgt-daily #daily-carousel .carousel-control-left {
+	BACKGROUND-REPEAT: no-repeat; LEFT: 0px
+}
+.wgt-daily #daily-carousel .carousel-control-left:hover {
+	FILTER: alpha(opacity=80); BACKGROUND-REPEAT: no-repeat; opacity: 1; -khtml-opacity: 1; -moz-opacity: 1
+}
+.wgt-daily #daily-carousel .carousel-control-right {
+	BACKGROUND-REPEAT: no-repeat; RIGHT: 0px
+}
+.wgt-daily #daily-carousel .carousel-control-right:hover {
+	FILTER: alpha(opacity=80); BACKGROUND-REPEAT: no-repeat; opacity: 1; -khtml-opacity: 1; -moz-opacity: 1
+}
+.wgt-daily .wgt-daily-wall {
+	Z-INDEX: 1; POSITION: absolute; TEXT-ALIGN: center; LINE-HEIGHT: 30px; WIDTH: 250px; BOTTOM: 0px; HEIGHT: 30px; LEFT: 0px
+}
+.wgt-daily .wgt-daily-wall EM {
+	COLOR: #fff; FONT-SIZE: 12px
+}
+.wgt-daily .wgt-daily-wall S {
+	Z-INDEX: -1; POSITION: absolute; FILTER: alpha(opacity=30); WIDTH: 250px; BOTTOM: 0px; DISPLAY: block; BACKGROUND: #000; HEIGHT: 30px; LEFT: 0px; opacity: .3; -khtml-opacity: .3; -moz-opacity: .3
+}
+.wgt-daily .daily-content {
+	LINE-HEIGHT: 28px
+}
+.wgt-daily .daily-content A {
+	DISPLAY: block
+}
+.wgt-daily .daily-content .i-daily-box {
+	WIDTH: 5px; DISPLAY: inline-block; BACKGROUND: #ccc; HEIGHT: 5px; VERTICAL-ALIGN: middle; -moz-box-orient: vertical
+}
+.daily-split {
+	POSITION: absolute; WIDTH: 289px; HEIGHT: 0px; BORDER-TOP: #ebebeb 1px solid; TOP: 195px; LEFT: 0px
+}
+.header-wp {
+	BORDER-BOTTOM: #ededed 1px solid; BACKGROUND: #fff; HEIGHT: 40px; COLOR: #bcbcbc; FONT-SIZE: 18px
+}
+.header-wp .header {
+	PADDING-TOP: 5px
+}
+.header-wp .logo {
+	TEXT-INDENT: -9999px; WIDTH: 93px; BACKGROUND-REPEAT: no-repeat; FLOAT: left; HEIGHT: 30px
+}
+.header-wp .liuyan-logo {
+	MARGIN-TOP: 7px; FLOAT: left; COLOR: #bcbcbc; TEXT-DECORATION: none
+}
+.header-wp .separator {
+	MARGIN: 7px 10px; FLOAT: left
+}
+.wgt-hot-truths H1 {
+	MARGIN: 32px 0px 15px; COLOR: #000; FONT-SIZE: 25px; FONT-WEIGHT: 100
+}
+.wgt-hot-truths H1 SPAN {
+	VERTICAL-ALIGN: middle
+}
+.wgt-hot-truths .hot-truths-list UL {
+	WIDTH: 316px; OVERFLOW: hidden
+}
+.wgt-hot-truths .hot-truths-list UL LI A {
+	COLOR: #5e5e5e; VERTICAL-ALIGN: middle
+}
+.wgt-hot-truths .hot-truths-list UL LI {
+	MARGIN: 15px 0px
+}
+.wgt-truths-nav {
+	LINE-HEIGHT: 40px; BACKGROUND-REPEAT: repeat-x; HEIGHT: 36px
+}
+.wgt-truths-nav .wgt-bread {
+	Z-INDEX: 2; POSITION: relative; MARGIN: 0px auto; WIDTH: 980px; HEIGHT: 36px
+}
+.wgt-truths-nav .wgt-bread A {
+	COLOR: #555; TEXT-DECORATION: none
+}
+.wgt-truths-nav .wgt-bread SPAN {
+	COLOR: #888
+}
+.wgt-truths-nav .wgt-bread .f-pipe {
+	MARGIN: 0px 5px; COLOR: #999
+}
+.wgt-nav2 {
+	BACKGROUND: #7a7a7a
+}
+.wgt-nav2 nav {
+	PADDING-BOTTOM: 12px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 12px
+}
+.wgt-nav2 .nav-wp {
+	LINE-HEIGHT: 22px; MARGIN: 9px 124px 0px 30px; FLOAT: left; FONT-SIZE: 18px
+}
+.wgt-nav2 .nav-wp A {
+	COLOR: #fff
+}
+.wgt-nav2 .nav-wp .home B {
+	WIDTH: 23px; DISPLAY: inline-block; BACKGROUND-REPEAT: no-repeat; HEIGHT: 22px; VERTICAL-ALIGN: bottom; MARGIN-RIGHT: 8px; -moz-box-orient: vertical
+}
+.wgt-nav2 .hdi {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 12px; PADDING-LEFT: 12px; WIDTH: 445px; PADDING-RIGHT: 12px; HEIGHT: 15px; FONT-SIZE: 15px; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 12px
+}
+.wgt-nav2 .btn-global {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; TEXT-INDENT: -9999px; WIDTH: 112px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 39px; MARGIN-LEFT: -4px; VERTICAL-ALIGN: bottom; BORDER-TOP: 0px; CURSOR: pointer; BORDER-RIGHT: 0px
+}
+.wgt-nav2 .btn-global:hover {
+	BACKGROUND-REPEAT: no-repeat
+}
+.wgt-new-truths {
+	BORDER-BOTTOM: #ebebeb 1px solid
+}
+.wgt-new-truths .i-praise I {
+	BACKGROUND-REPEAT: no-repeat
+}
+.wgt-new-truths .wgt-title {
+	MARGIN: 25px 0px 24px
+}
+.wgt-new-truths .new-truths-item {
+	POSITION: relative; WIDTH: 650px; MARGIN-BOTTOM: 40px
+}
+.wgt-new-truths .new-truths-item .new-truths-pic IMG {
+	WIDTH: 223px; HEIGHT: 152px; MARGIN-RIGHT: 28px
+}
+.wgt-new-truths .new-truths-item .new-truths-title A {
+	FONT-FAMILY: Microsoft Yahei; COLOR: #2c2c2c; TEXT-DECORATION: none
+}
+.wgt-new-truths .new-truths-item .new-truths-des {
+	LINE-HEIGHT: 23px; COLOR: #737373
+}
+.wgt-new-truths .new-truths-item .new-truths-ac {
+	POSITION: absolute; WIDTH: 398px; BOTTOM: 0px; FONT-SIZE: 13px; LEFT: 250px
+}
+.wgt-new-truths .new-truths-item .new-truths-ac .comment-num {
+	POSITION: absolute; DISPLAY: inline-block; MARGIN-LEFT: 40px; VERTICAL-ALIGN: middle; LEFT: 170px; -moz-box-orient: vertical
+}
+.wgt-new-truths .new-truths-item .new-truths-ac .comment-num .i-mini-pop {
+	MARGIN-TOP: 3px; VERTICAL-ALIGN: top
+}
+.wgt-new-truths .new-truths-item .new-truths-ac .truths-hot .i-praise {
+	MARGIN-TOP: 2px; BACKGROUND: #7add6a
+}
+.wgt-new-truths .new-truths-item .new-truths-ac .truths-hot .i-praise I {
+	COLOR: #7add6a
+}
+.wgt-new-truths .new-truths-item .new-truths-ac .truths-hot .i-praise A {
+	COLOR: #fff; TEXT-DECORATION: none
+}
+.wgt-new-truths .new-truths-item .f-959 {
+	COLOR: #959595; TEXT-DECORATION: none
+}
+.wgt-new-truths .new-truths-item .f-959 A {
+	COLOR: #959595; TEXT-DECORATION: none
+}
+.wgt-cooperation {
+	BACKGROUND: #fff; CLEAR: both; OVERFLOW: hidden; BORDER-TOP: #e7e7e7 1px solid
+}
+.wgt-cooperation .wgt-title {
+	MARGIN: 27px 0px 17px
+}
+.wgt-cooperation A {
+	BORDER-BOTTOM: #ccc 1px solid; BORDER-LEFT: #ccc 1px solid; DISPLAY: inline-block; MARGIN-BOTTOM: 10px; VERTICAL-ALIGN: middle; OVERFLOW: hidden; BORDER-TOP: #ccc 1px solid; MARGIN-RIGHT: 8px; BORDER-RIGHT: #ccc 1px solid; -moz-box-orient: vertical
+}
+.wgt-cooperation A.clearm {
+	MARGIN-RIGHT: 0px
+}
+.wgt-cooperation IMG {
+	MARGIN-TOP: -1px; MARGIN-LEFT: -1px
+}
+.wgt-none {
+	WIDTH: 688px; BACKGROUND: url(../images/train_e5c291e.jpg) no-repeat 0px 240px; HEIGHT: 430px; OVERFLOW: hidden
+}
+.wgt-none .pos-main {
+	MARGIN: 43px 0px 0px 169px
+}
+.wgt-none .pos-main .pos-title {
+	LINE-HEIGHT: 46px; FONT-FAMILY: Microsoft Yahei; COLOR: #5f5f5f; FONT-SIZE: 30px
+}
+.wgt-none .pos-main .pos-sub-title {
+	COLOR: #737373; FONT-SIZE: 14px
+}
+.wgt-none .pos-main .pos-sub-title EM {
+	COLOR: #30a119
+}
+.wgt-none .search-none.pos-main {
+	MARGIN: 23px 0px 0px 89px
+}
+.wgt-none .search-none.pos-main .pos-title {
+	FONT-FAMILY: Microsoft Yahei; PADDING-TOP: 35px
+}
+.wgt-none .btn-41-green {
+	TEXT-ALIGN: center; LINE-HEIGHT: 40px; MARGIN-TOP: 16px; WIDTH: 105px; DISPLAY: inline-block; FONT-FAMILY: Microsoft Yahei; BACKGROUND: url(../images/btn-green-back_1d7b638.png) no-repeat; HEIGHT: 41px; COLOR: #fff; MARGIN-LEFT: 50px; FONT-SIZE: 18px; VERTICAL-ALIGN: middle; CURSOR: pointer; TEXT-DECORATION: none; -moz-box-orient: vertical
+}
+.wgt-question {
+	POSITION: relative
+}
+.wgt-question .question-title {
+	PADDING-BOTTOM: 25px
+}
+.wgt-question .question-title SPAN {
+	COLOR: #353535; MARGIN-LEFT: 13px
+}
+.wgt-question .question-content {
+	LINE-HEIGHT: 28px; COLOR: #353535; FONT-SIZE: 16px
+}
+.wgt-question .question-content .question-proof {
+	Z-INDEX: 1; POSITION: relative; OVERFLOW: hidden
+}
+.wgt-question .question-content .question-proof STRONG {
+	FONT-WEIGHT: 100
+}
+.wgt-question .question-content .question-proof I {
+	FONT-STYLE: normal
+}
+.wgt-question .i-ask {
+	WIDTH: 33px; DISPLAY: inline-block; BACKGROUND-REPEAT: no-repeat; HEIGHT: 33px; VERTICAL-ALIGN: middle; -moz-box-orient: vertical
+}
+.wgt-question .f-25 {
+	LINE-HEIGHT: 25px; FONT-SIZE: 25px
+}
+.wgt-question .f-28 {
+	LINE-HEIGHT: 30px; FONT-SIZE: 28px
+}
+.wgt-question .wgt-more {
+	Z-INDEX: 2; POSITION: absolute; TEXT-ALIGN: right; WIDTH: 170px; BOTTOM: 0px; DISPLAY: block; BACKGROUND: #fff; HEIGHT: 28px; MARGIN-LEFT: 10px; FONT-SIZE: 12px; RIGHT: 0px
+}
+.wgt-question .none {
+	DISPLAY: none
+}
+.wgt-reasoning {
+	COLOR: #353535; CLEAR: both; WORD-BREAK: break-all; BORDER-TOP: #e9e9e9 1px solid; PADDING-TOP: 26px
+}
+.wgt-reasoning .reasoning-title {
+	MARGIN-BOTTOM: 26px; COLOR: #353535; FONT-SIZE: 20px; FONT-WEIGHT: 900
+}
+.wgt-reasoning PRE {
+	COLOR: #7a7979
+}
+.wgt-reasoning DIV H2 {
+	MARGIN: 1em 0px; FONT-SIZE: 16px
+}
+.wgt-reasoning DIV H3 {
+	MARGIN: 1em 0px; FONT-SIZE: 16px
+}
+.wgt-reasoning DIV H4 {
+	MARGIN: 1em 0px; FONT-SIZE: 16px
+}
+.wgt-reasoning DIV I {
+	FONT-STYLE: normal
+}
+.wgt-reasoning DIV P {
+	TEXT-INDENT: 0px !important; MARGIN-BOTTOM: 1em
+}
+.wgt-survey {
+	Z-INDEX: 1; POSITION: relative; BACKGROUND-COLOR: #f6fff6; MARGIN-TOP: 10px
+}
+.wgt-survey .survey-options {
+	PADDING-BOTTOM: 38px
+}
+.wgt-survey .survey-options .survey-btns {
+	TEXT-ALIGN: center; MARGIN-LEFT: 28px
+}
+.wgt-survey .survey-options .survey-btns A {
+	MARGIN-RIGHT: 32px
+}
+.wgt-survey .text {
+	COLOR: #353535; FONT-SIZE: 20px; MARGIN-RIGHT: 25px
+}
+.wgt-survey .btn-77-true {
+	TEXT-INDENT: -99999px; WIDTH: 96px; DISPLAY: inline-block; BACKGROUND-REPEAT: no-repeat; HEIGHT: 96px; FONT-SIZE: 0px; VERTICAL-ALIGN: middle; CURSOR: pointer; -moz-box-orient: vertical
+}
+.wgt-survey .btn-77-false {
+	TEXT-INDENT: -99999px; WIDTH: 96px; DISPLAY: inline-block; BACKGROUND-REPEAT: no-repeat; HEIGHT: 96px; FONT-SIZE: 0px; VERTICAL-ALIGN: middle; CURSOR: pointer; -moz-box-orient: vertical
+}
+.wgt-survey .btn-77-true {
+	BACKGROUND-REPEAT: no-repeat
+}
+.wgt-survey .btn-77-true:hover {
+	BACKGROUND-REPEAT: no-repeat
+}
+.wgt-survey .btn-77-false {
+	BACKGROUND-REPEAT: no-repeat
+}
+.wgt-survey .btn-77-false:hover {
+	BACKGROUND-REPEAT: no-repeat
+}
+.wgt-survey .btn-77-other {
+	COLOR: #8b8b8b; FONT-SIZE: 20px; CURSOR: pointer
+}
+.wgt-survey .wgt-arrow {
+	Z-INDEX: 2; POSITION: absolute; TOP: -8px; LEFT: 45px
+}
+.wgt-survey .survey-proportion {
+	PADDING-BOTTOM: 36px
+}
+.wgt-survey .survey-proportion .f-pink {
+	COLOR: #eb6767
+}
+.wgt-survey .survey-proportion .title {
+	TEXT-ALIGN: center; COLOR: #353535; FONT-SIZE: 20px
+}
+.wgt-survey .survey-proportion .survey-progressbar {
+	PADDING-BOTTOM: 0px; MARGIN: 26px auto auto; PADDING-LEFT: 30px; WIDTH: 640px; PADDING-RIGHT: 30px; HEIGHT: 62px; PADDING-TOP: 0px
+}
+.wgt-survey .survey-proportion .survey-progressbar .wgt-progressbar {
+	BORDER-BOTTOM: #fff 1px solid; POSITION: relative; MIN-WIDTH: 30px; TEXT-ALIGN: center; BORDER-LEFT: #fff 1px solid; DISPLAY: inline-block; HEIGHT: 34px; VERTICAL-ALIGN: middle; BORDER-TOP: #fff 1px solid; BORDER-RIGHT: #fff 1px solid; -moz-box-orient: vertical
+}
+.wgt-survey .survey-proportion .survey-progressbar .wgt-progressbar .progress-txt {
+	LINE-HEIGHT: 34px
+}
+.wgt-survey .survey-proportion .survey-progressbar .wgt-progressbar .progress-tip {
+	BORDER-BOTTOM: 0px; POSITION: absolute; BORDER-LEFT: 0px; PADDING-BOTTOM: 4px; PADDING-LEFT: 5px; WIDTH: 57px; PADDING-RIGHT: 5px; FONT-SIZE: 12px; BORDER-TOP: 0px; TOP: 47px; BORDER-RIGHT: 0px; PADDING-TOP: 4px; border-radius: 3px
+}
+.wgt-survey .survey-proportion .survey-progressbar .wgt-progressbar .progress-tip .arrow-up {
+	LEFT: 31px
+}
+.wgt-survey .survey-proportion .survey-progressbar .progressbar-green {
+	BORDER-BOTTOM-COLOR: #bae8b9; BORDER-TOP-COLOR: #bae8b9; BACKGROUND: #ccf5cb; COLOR: #36a803; BORDER-RIGHT-COLOR: #bae8b9; BORDER-LEFT-COLOR: #bae8b9
+}
+.wgt-survey .survey-proportion .survey-progressbar .minwidth.progressbar-green {
+	MARGIN-LEFT: -30px
+}
+.wgt-survey .survey-proportion .survey-progressbar .progressbar-pink {
+	BORDER-BOTTOM-COLOR: #f7d8c3; BORDER-TOP-COLOR: #f7d8c3; MARGIN: 0px 3px; BACKGROUND: #ffe6d5; COLOR: #ff5334; BORDER-RIGHT-COLOR: #f7d8c3; BORDER-LEFT-COLOR: #f7d8c3
+}
+.wgt-survey .survey-proportion .survey-progressbar .progressbar-yellow {
+	BORDER-BOTTOM-COLOR: #ebebeb; BORDER-TOP-COLOR: #ebebeb; BACKGROUND: #e1e1e1; COLOR: #676767; BORDER-RIGHT-COLOR: #ebebeb; BORDER-LEFT-COLOR: #ebebeb
+}
+.wgt-survey .survey-proportion .survey-progressbar .minwidth.progressbar-yellow {
+	MARGIN-RIGHT: -30px
+}
+.wgt-survey .survey-proportion .result {
+	POSITION: absolute; BOTTOM: -50px; COLOR: #8b8b8b; FONT-SIZE: 14px
+}
+.wgt-survey .survey-proportion .result SPAN {
+	COLOR: #ff5334
+}
+.icon-stamp {
+	Z-INDEX: 9; BORDER-BOTTOM: 0px; POSITION: absolute; BORDER-LEFT: 0px; WIDTH: 609px; HEIGHT: 387px; BORDER-TOP: 0px; TOP: -50px; RIGHT: -50px; BORDER-RIGHT: 0px
+}
+.wgt-related-question {
+	MARGIN-TOP: 50px
+}
+.wgt-related-question H1 {
+	LINE-HEIGHT: 24px; FONT-SIZE: 20px; VERTICAL-ALIGN: top
+}
+.wgt-related-question .related-list LI {
+	PADDING-BOTTOM: 10px; LINE-HEIGHT: 16px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; FONT-SIZE: 16px; PADDING-TOP: 10px
+}
+.search-box {
+	MARGIN: 15px auto 20px; WIDTH: 980px; OVERFLOW: hidden
+}
+.search-box A.f-gray {
+	COLOR: #666; TEXT-DECORATION: none
+}
+.search-box .logo {
+	MARGIN: 0px; WIDTH: 107px; BACKGROUND-REPEAT: no-repeat; FLOAT: left; HEIGHT: 33px
+}
+.search-box .f-18 {
+	FONT-SIZE: 18px
+}
+.search-box .f-pipe {
+	MARGIN: 10px 10px 0px
+}
+.search-box .header-intro {
+	WIDTH: 434px; DISPLAY: inline-block; BACKGROUND-REPEAT: no-repeat; HEIGHT: 22px; VERTICAL-ALIGN: middle; -moz-box-orient: vertical
+}
+.search-box .search-form {
+	MARGIN: 7px 0px 0px 62px; WIDTH: 483px; DISPLAY: inline-block; HEIGHT: 33px; FONT-SIZE: 12px; VERTICAL-ALIGN: middle; -moz-box-orient: vertical
+}
+.search-box .search-form .box {
+	POSITION: relative
+}
+.search-box .search-form .search-box-bg {
+	BORDER-BOTTOM: #b6b6b6 1px solid; POSITION: absolute; BORDER-LEFT: #7b7b7b 1px solid; WIDTH: 365px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 30px; BORDER-TOP: #7b7b7b 1px solid; TOP: 0px; BORDER-RIGHT: #b6b6b6 1px solid; LEFT: 0px
+}
+.search-box .search-form .hdi {
+	BORDER-BOTTOM: 0px; POSITION: relative; BORDER-LEFT: 0px; PADDING-BOTTOM: 4px; LINE-HEIGHT: 24px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 8px; OUTLINE-WIDTH: 0px; WIDTH: 349px; PADDING-RIGHT: 8px; FONT-FAMILY: Arial; BACKGROUND: none transparent scroll repeat 0% 0%; FLOAT: left; HEIGHT: 24px; FONT-SIZE: 16px; BORDER-TOP: 0px; MARGIN-RIGHT: 5px; BORDER-RIGHT: 0px; PADDING-TOP: 4px; -webkit-appearance: none
+}
+.search-box .search-form .btn-wrap {
+	WIDTH: 77px; BACKGROUND-REPEAT: no-repeat; FLOAT: left; HEIGHT: 34px; MARGIN-RIGHT: 8px
+}
+.search-box .search-form .btn-global {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; PADDING-BOTTOM: 0px; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; PADDING-LEFT: 0px; OUTLINE-WIDTH: 0px; WIDTH: 75px; PADDING-RIGHT: 0px; BACKGROUND-REPEAT: no-repeat; HEIGHT: 32px; FONT-SIZE: 14px; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 2px
+}
+.search-box .search-form .f-14 {
+	FONT-SIZE: 14px
+}
+.search-box .search-form A.f-14 {
+	FONT-SIZE: 14px
+}
+.search-box .search-form .btn-hover {
+	BACKGROUND-REPEAT: no-repeat
+}
+.search-box .search-form .btn-active {
+	BACKGROUND-REPEAT: no-repeat
+}
+.wgt-share {
+	COLOR: #8b8b8b; FONT-SIZE: 14px
+}
+.wgt-share SPAN {
+	MARGIN-TOP: 9px
+}
+.bdsharebuttonbox {
+	FLOAT: left
+}
+.wgt-supplier H1 {
+	FONT-SIZE: 20px
+}
+.wgt-supplier .supplier-icon {
+	WIDTH: 152px; HEIGHT: 52px
+}
+.wgt-supplier .supplier-icon A {
+	BORDER-BOTTOM: #dedede 1px solid; BORDER-LEFT: #dedede 1px solid; WIDTH: 150px; DISPLAY: block; HEIGHT: 50px; OVERFLOW: hidden; BORDER-TOP: #dedede 1px solid; BORDER-RIGHT: #dedede 1px solid
+}
+.wgt-supplier .supplier-icon IMG {
+	MARGIN-TOP: -1px; FLOAT: left; MARGIN-LEFT: -1px
+}
+.wgt-supplier .supplier-num {
+	LINE-HEIGHT: 16px; COLOR: #7a7979; FONT-SIZE: 14px
+}
+.wgt-banner {
+	BACKGROUND-POSITION: 0px 0px
+}
+.wgt-truths-nav {
+	BACKGROUND-POSITION: 0px -355px
+}
+.wgt-banner {
+	BACKGROUND-IMAGE: url(../images/module_x_4c1e322.png)
+}
+.wgt-truths-nav {
+	BACKGROUND-IMAGE: url(../images/module_x_4c1e322.png)
+}
+.wgt-banner-main .banner-search-form .banner-search-submit {
+	BACKGROUND-POSITION: -311px 0px
+}
+.btn-praise B {
+	BACKGROUND-POSITION: -397px -56px
+}
+.praise-over.btn-praise B {
+	BACKGROUND-POSITION: -397px -98px
+}
+.i-ask {
+	BACKGROUND-POSITION: -387px -140px
+}
+.i-sigh {
+	BACKGROUND-POSITION: -387px -188px
+}
+.i-xx {
+	BACKGROUND-POSITION: -387px -236px
+}
+.i-mini-pop {
+	BACKGROUND-POSITION: -419px -284px
+}
+.i-true {
+	BACKGROUND-POSITION: -231px -305px
+}
+.i-false {
+	BACKGROUND-POSITION: -231px -439px
+}
+.i-other {
+	BACKGROUND-POSITION: -231px -573px
+}
+.i-plusbox {
+	BACKGROUND-POSITION: -423px -707px
+}
+.i-praise I {
+	BACKGROUND-POSITION: -427px -720px
+}
+.wgt-daily #daily-carousel .carousel-control-left {
+	BACKGROUND-POSITION: -409px -736px
+}
+.wgt-daily #daily-carousel .carousel-control-left:hover {
+	BACKGROUND-POSITION: -409px -881px
+}
+.wgt-daily #daily-carousel .carousel-control-right {
+	BACKGROUND-POSITION: -409px -1026px
+}
+.wgt-daily #daily-carousel .carousel-control-right:hover {
+	BACKGROUND-POSITION: -409px -1171px
+}
+.header-wp .logo {
+	BACKGROUND-POSITION: -341px -1316px
+}
+.wgt-nav2 .nav-wp .home B {
+	BACKGROUND-POSITION: -411px -1351px
+}
+.wgt-nav2 .btn-global {
+	BACKGROUND-POSITION: -322px -1378px
+}
+.wgt-nav2 .btn-global:hover {
+	BACKGROUND-POSITION: -322px -1422px
+}
+.wgt-new-truths .i-praise I {
+	BACKGROUND-POSITION: -427px -1464px
+}
+.wgt-question .i-ask {
+	BACKGROUND-POSITION: -401px -1479px
+}
+.wgt-survey .btn-77-true {
+	BACKGROUND-POSITION: -338px -1517px
+}
+.wgt-survey .btn-77-true:hover {
+	BACKGROUND-POSITION: -338px -1618px
+}
+.wgt-survey .btn-77-false {
+	BACKGROUND-POSITION: -338px -1719px
+}
+.wgt-survey .btn-77-false:hover {
+	BACKGROUND-POSITION: -338px -1820px
+}
+.search-box .logo {
+	BACKGROUND-POSITION: -327px -1921px
+}
+.search-box .header-intro {
+	BACKGROUND-POSITION: 0px -1959px
+}
+.search-box .search-form .search-box-bg {
+	BACKGROUND-POSITION: -69px -1986px
+}
+.search-box .search-form .btn-wrap {
+	BACKGROUND-POSITION: -358px -2021px
+}
+.search-box .search-form .btn-global {
+	BACKGROUND-POSITION: -358px -2021px
+}
+.search-box .search-form .btn-hover {
+	BACKGROUND-POSITION: -358px -2060px
+}
+.search-box .search-form .btn-active {
+	BACKGROUND-POSITION: -358px -2099px
+}
+.wgt-banner-main .banner-search-form .banner-search-submit {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.btn-praise B {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.praise-over.btn-praise B {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.i-ask {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.i-sigh {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.i-xx {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.i-mini-pop {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.i-true {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.i-false {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.i-other {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.i-plusbox {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.i-praise I {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.wgt-daily #daily-carousel .carousel-control-left {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.wgt-daily #daily-carousel .carousel-control-left:hover {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.wgt-daily #daily-carousel .carousel-control-right {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.wgt-daily #daily-carousel .carousel-control-right:hover {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.header-wp .logo {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.wgt-nav2 .nav-wp .home B {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.wgt-nav2 .btn-global {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.wgt-nav2 .btn-global:hover {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.wgt-new-truths .i-praise I {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.wgt-question .i-ask {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.wgt-survey .btn-77-true {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.wgt-survey .btn-77-true:hover {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.wgt-survey .btn-77-false {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.wgt-survey .btn-77-false:hover {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.search-box .logo {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.search-box .header-intro {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.search-box .search-form .search-box-bg {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.search-box .search-form .btn-wrap {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.search-box .search-form .btn-global {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.search-box .search-form .btn-hover {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}
+.search-box .search-form .btn-active {
+	BACKGROUND-IMAGE: url(../images/module_z_ef11c13.png)
+}

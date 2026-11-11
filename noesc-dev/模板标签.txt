@@ -1,0 +1,23 @@
+
+
+寄生虫标签使用说明
+
+{ip}  随机变异IP地址转换（需要在生成界面设置）
+{tmkeyword} 主关键词标签
+{keyword2} 固定关键词标签
+{keyword3} 固定关键词标签
+{domain}  SHELL目录地址
+{skeyword}  随机关键词标签
+{title}   关键词+随机句子组合标签
+{ncontent}  随机正文标签（由关键词、句子、视频、图片组成的随机性正文）
+{content}  随机句子标签
+{time}  当前时间标签
+{link}  随机链接标签
+{slink}  随机对应关键词超链标签
+{number}  随机1~3个数字标签
+{char}   随机3~6个字符标签
+{pinyin} 随机1~3个汉字拼音标签
+{video}  随机视频链接标签
+{ylinks}  友链标签，调用外部链接
+{newslist}  目录页目录链接
+{page}  目录页页数链接
