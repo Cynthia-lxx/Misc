@@ -1,0 +1,28 @@
+# Troll-vs-Troll Project Requirements
+
+# Core library for UNIHIKER M10 board control (for actual hardware deployment)
+# unihiker>=0.0.29
+
+# Hardware control library (for actual hardware deployment)
+# pinpong>=0.0.8
+
+# Data processing and analysis
+pandas>=1.3.0
+numpy>=1.21.0
+
+# Machine learning libraries
+scikit-learn>=1.0.0
+matplotlib>=3.4.0
+
+# For potential computer vision
+opencv-python>=4.5.0
+
+# For potential web connectivity and IoT features
+requests>=2.25.0
+paho-mqtt>=1.6.0
+
+# For potential audio processing
+pyaudio>=0.2.11
+
+# Web framework for local simulation
+bottle>=0.12.0

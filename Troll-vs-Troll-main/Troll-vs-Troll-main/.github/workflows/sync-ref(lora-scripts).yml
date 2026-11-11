@@ -1,0 +1,44 @@
+name: Sync lora-scripts
+
+on:
+  workflow_dispatch:          # 允许手动触发
+  schedule:
+    - cron: '0 0 * * *'       # 每天 UTC 时间 00:00 运行（北京时间早上 8 点）
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target repo
+        uses: actions/checkout@v3
+
+      - name: Clone lora-scripts into ref/lora-scripts
+        run: |
+          set -e  # 遇到错误立即退出
+          echo "Cleaning up existing directory..."
+          rm -rf ref/lora-scripts
+          
+          echo "Cloning repository..."
+          git clone https://github.com/Akegarasu/lora-scripts.git ref/lora-scripts
+          
+          echo "Removing .git folder to detach from source..."
+          rm -rf ref/lora-scripts/.git
+          
+          echo "Configuring git user..."
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          echo "Checking status..."
+          git status
+          
+          echo "Adding changes..."
+          git add ref/lora-scripts
+          
+          echo "Committing..."
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Sync lora-scripts to ref/lora-scripts"
+            echo "Pushing changes..."
+            git push
+          fi

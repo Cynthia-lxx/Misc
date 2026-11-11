@@ -1,0 +1,67 @@
+{
+  "system": {
+    "name": "Troll-vs-Troll Anti-Rollover System",
+    "version": "1.3.2",
+    "description": "Electronic differential anti-rollover system for pull-handle carriers"
+  },
+  "physical_parameters": {
+    "bag_dimensions": {
+      "length": 0.5,
+      "width": 0.3,
+      "height": 0.7
+    },
+    "center_of_gravity": {
+      "height": 0.4
+    },
+    "wheel_parameters": {
+      "radius": 0.1,
+      "mass": 0.5
+    },
+    "total_mass": 5.0
+  },
+  "sensor_parameters": {
+    "sampling_rate": 100,
+    "acceleration_range": 16.0,
+    "gyroscope_range": 2000.0
+  },
+  "control_parameters": {
+    "gravity_strength": 0.08,
+    "damping_factor": 0.1,
+    "max_rotation_angles": {
+      "pitch": 30,
+      "roll": 45
+    },
+    "rollover_threshold": 15
+  },
+  "ml_parameters": {
+    "feature_names": [
+      "mean_accel_x", "mean_accel_y", "mean_accel_z",
+      "std_accel_x", "std_accel_y", "std_accel_z",
+      "mean_gyro_x", "mean_gyro_y", "mean_gyro_z",
+      "std_gyro_x", "std_gyro_y", "std_gyro_z",
+      "max_roll", "max_pitch", "duration",
+      "accel_magnitude_var", "gyro_magnitude_mean"
+    ],
+    "training_settings": {
+      "test_size": 0.2,
+      "random_state": 42
+    }
+  },
+  "ui_settings": {
+    "scene_width": 400,
+    "scene_height": 400,
+    "auto_send_interval": 200,
+    "data_polling_intervals": {
+      "sensor_data_update": 50,
+      "visualization_refresh": 500,
+      "learning_mode_polling": 200,
+      "performance_report_update": 1000,
+      "control_effectiveness_eval": 100
+    },
+    "api_timeouts": {
+      "sensor_data_request": 5000,
+      "training_request": 30000,
+      "model_update": 10000
+    }
+  }
+}

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)https://www.unihiker.com.cn/wiki/m10/burner -->
+<html dir="ltr" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><title>行空板官方文档-固件烧录</title><link rel="icon" type="image/x-icon" href="https://www.unihiker.com.cn/unihiker/favicon.ico"><link rel="stylesheet" href="./行空板官方文档-固件烧录_files/github-markdown.css"><link rel="stylesheet" href="./行空板官方文档-固件烧录_files/bootstrap.min.css"><link rel="stylesheet" href="./行空板官方文档-固件烧录_files/style.css"><link rel="canonical" href="https://www.unihiker.com.cn/burner"><script src="./行空板官方文档-固件烧录_files/md5.min.js.下载" ssr="true"></script><script src="./行空板官方文档-固件烧录_files/jquery-2.1.1.min.js.下载" ssr="true"></script><script src="./行空板官方文档-固件烧录_files/bootstrap.min.js.下载" ssr="true"></script><script src="./行空板官方文档-固件烧录_files/ga.js.下载" async="" ssr="false"></script><script type="text/javascript" src="./行空板官方文档-固件烧录_files/js" ssr="true" mode="client"></script><link rel="preload" href="./行空板官方文档-固件烧录_files/328c8aa.js.下载" as="script"><link rel="preload" href="./行空板官方文档-固件烧录_files/aa9438b.js.下载" as="script"><link rel="preload" href="./行空板官方文档-固件烧录_files/ca129b3.js.下载" as="script"><link rel="preload" href="./行空板官方文档-固件烧录_files/b7e4c3b.css" as="style"><link rel="preload" href="./行空板官方文档-固件烧录_files/b8c9955.js.下载" as="script"><link rel="preload" href="./行空板官方文档-固件烧录_files/1feb59e.js.下载" as="script"><link rel="stylesheet" href="./行空板官方文档-固件烧录_files/b7e4c3b.css">
+  <link data-n-head="ssr" rel="icon" type="image/x-icon" href="https://www.unihiker.com.cn/unihiker/favicon.ico"><link data-n-head="ssr" rel="stylesheet" href="./行空板官方文档-固件烧录_files/github-markdown.css"><link data-n-head="ssr" rel="stylesheet" href="./行空板官方文档-固件烧录_files/bootstrap.min.css"><link data-n-head="ssr" rel="stylesheet" href="./行空板官方文档-固件烧录_files/style.css"><link data-n-head="ssr" rel="canonical" href="https://www.unihiker.com.cn/burner"><meta data-n-head="ssr" name="viewport" content="width=device-width, initial-scale=1"><meta data-n-head="ssr" data-hid="keywords" name="keywords" content="行空板,固件烧录,系统更新"><meta data-n-head="ssr" data-hid="description" name="description" content="本文讲解行空板如何烧录系统镜像"><script data-n-head="ssr" src="./行空板官方文档-固件烧录_files/md5.min.js.下载" ssr="true"></script><script data-n-head="ssr" src="./行空板官方文档-固件烧录_files/jquery-2.1.1.min.js.下载" ssr="true"></script><script data-n-head="ssr" src="./行空板官方文档-固件烧录_files/bootstrap.min.js.下载" ssr="true"></script><script data-n-head="ssr" src="./行空板官方文档-固件烧录_files/ga.js.下载" async="" ssr="false"></script><script data-n-head="ssr" type="text/javascript" src="./行空板官方文档-固件烧录_files/js" ssr="true" mode="client"></script></head>
+  <body>
+    <div id="__nuxt"><!----><div id="__layout"><div><div data-v-1fc16f07=""><div data-v-1fc16f07=""><div class="hidden-print hidden-xs hidden-sm"><nav class="navbar-inverse affix pc-navbar"><div class="navbar-header logoImg"><a href="https://www.unihiker.com.cn/" target="_blank" class="navbar-brand logo"><img src="./行空板官方文档-固件烧录_files/906eaedaeb15ba929c26597ca7d8bd51.png" alt="logo"></a></div> <div id="bs-example-navbar-collapse-9" class="collapse navbar-collapse"><ul class="nav navbar-nav" style="padding-left: 74px;"><li><a href="https://www.unihiker.com.cn/" target="" class="nav-item">首页</a></li><li class="active"><a href="https://www.unihiker.com.cn/wiki/m10" target="" class="nav-item">M10教程</a></li><li><a href="https://www.unihiker.com.cn/wiki/k10" target="" class="nav-item">K10教程</a></li><li><a href="https://mc.dfrobot.com.cn/forum-221-1.html" target="" class="nav-item">论坛</a></li><li><a href="https://www.dfrobot.com.cn/goods-3404.html" target="" class="nav-item">购买</a></li></ul></div></nav> <div style="height: 60px;"></div></div> <div class="mobile hidden-lg hidden-md"><nav class="navbar-inverse hidden-print affix mobile-navbar"><div class="sub-navbar-box"><a href="https://www.unihiker.com.cn/" target="_blank" class="logo"><img src="./行空板官方文档-固件烧录_files/906eaedaeb15ba929c26597ca7d8bd51.png" alt="logo"></a></div> <div class="navbar-header"><div id="show-bs-docs-sidebar" href="#this" class="navbar-brand" style="padding: 14px;"><i class="glyphicon glyphicon-list"></i></div></div></nav></div></div> <div class="leftMenu" data-v-1fc16f07=""><div class="menu"><div id="leftNavigate" role="complementary" class="col-md-3 bs-docs-sidebar hiidden-prnt"><div class="search"><i class="glyphicon glyphicon-search"></i> <input type="text" placeholder="搜索" value="" class="form-control"> <i class="glyphicon glyphicon-remove"></i></div> <ul class="nav bs-docs-sidenav"><li id="get-started" class=""><a title="行空板官方文档-行空板快速上手教程 " href="https://www.unihiker.com.cn/wiki/m10/get-started">0-快速使用教程(学习指南)</a> <!----></li><li id="FAQ" class=""><a title="行空板官方文档-常见问题" href="https://www.unihiker.com.cn/wiki/m10/FAQ">FAQ常见问题</a> <!----></li><li id="" class="active"><a href="javascript:;"><span>一、行空板通用功能</span> <i class="glyphicon glyphicon-menu-down"></i></a> <ul class="nav"><li id="jianjie" class=""><a title="行空板官方文档 - 硬件介绍" href="https://www.unihiker.com.cn/wiki/m10/jianjie">1.1-硬件介绍</a> <!----></li><li id="networking" class=""><a title="行空板官方文档-连接说明" href="https://www.unihiker.com.cn/wiki/m10/networking">1.2-连接方式说明</a> <!----></li><li id="homemenu" class=""><a title="行空板官方文档-Home菜单" href="https://www.unihiker.com.cn/wiki/m10/homemenu">1.3-板载Home菜单</a> <!----></li><li id="webmenu" class=""><a title="行空板官方文档-本地Web主页" href="https://www.unihiker.com.cn/wiki/m10/webmenu">1.4-本地Web主页</a> <!----></li><li id="samba" class=""><a title="行空板官方文档-samba文件共享" href="https://www.unihiker.com.cn/wiki/m10/samba">1.5-SMB文件共享</a> <!----></li><li id="vnc" class=""><a title="本地Web主页-屏幕共享功能" href="https://www.unihiker.com.cn/wiki/m10/vnc">1.6-VNC屏幕共享</a> <!----></li><li id="burner" class="active"><a title="行空板官方文档-固件烧录" href="https://www.unihiker.com.cn/wiki/m10/burner">1.7-系统镜像烧录</a> <!----></li></ul></li><li id="" class=""><a href="javascript:;"><span>二、专用Python库说明</span> <i class="glyphicon glyphicon-menu-down"></i></a> <ul class="nav"><li id="connection" class=""><a href="javascript:;"><span>2.1-unihiker行空库</span> <i class="glyphicon glyphicon-menu-right"></i></a> <ul class="nav"><li id="unihiker_python_lib" class=""><a title="行空板官方文档-unihiker库" href="https://www.unihiker.com.cn/wiki/m10/unihiker_python_lib">库说明</a></li><li id="unihiker_python_lib_1" class=""><a title="行空板官方文档-unihiker库" href="https://www.unihiker.com.cn/wiki/m10/unihiker_python_lib_1">通用知识和功能</a></li><li id="unihiker_python_lib_2" class=""><a title="行空板官方文档-unihiker库" href="https://www.unihiker.com.cn/wiki/m10/unihiker_python_lib_2">基础控件</a></li><li id="unihiker_python_lib_3" class=""><a title="行空板官方文档-unihiker库" href="https://www.unihiker.com.cn/wiki/m10/unihiker_python_lib_3">基础图形</a></li><li id="unihiker_python_lib_4" class=""><a title="行空板官方文档-unihiker库" href="https://www.unihiker.com.cn/wiki/m10/unihiker_python_lib_4">鼠标键盘侦测</a></li><li id="unihiker_python_lib_5" class=""><a title="行空板官方文档-unihiker库" href="https://www.unihiker.com.cn/wiki/m10/unihiker_python_lib_5">多线程</a></li><li id="unihiker_python_lib_6" class=""><a title="行空板官方文档-unihiker库" href="https://www.unihiker.com.cn/wiki/m10/unihiker_python_lib_6">录音及播放</a></li></ul></li><li id="pinpong_python_lib" class=""><a title="行空板官方文档 - pinpong库" href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib">2.2-pinpong硬件控制库</a> <!----></li><li id="user_block_extension" class=""><a title="Mind+图形化扩展库收集" href="https://www.unihiker.com.cn/wiki/m10/user_block_extension">2.3-mind+图形化用户库收集</a> <!----></li></ul></li><li id="vnc" class=""><a href="javascript:;"><span>三、编程方式</span> <i class="glyphicon glyphicon-menu-down"></i></a> <ul class="nav"><li id="mindplus" class=""><a title="行空板官方文档-Mind+使用教程" href="https://www.unihiker.com.cn/wiki/m10/mindplus">3.1.1-Mind+编程说明</a> <!----></li><li id="" class=""><a href="javascript:;"><span>3.1.2-图形化编程(积木说明)</span> <i class="glyphicon glyphicon-menu-right"></i></a> <ul class="nav"><li id="mindplus_block" class=""><a title="行空板教程-Mind+图形化编程" href="https://www.unihiker.com.cn/wiki/m10/mindplus_block">行空板主板功能积木说明</a></li><li id="mindplus_block_Basics" class=""><a title="python_block_Basics" href="https://www.unihiker.com.cn/wiki/m10/mindplus_block_Basics">基础功能积木说明</a></li><li id="mindplus_block_extension" class=""><a title="行空板拓展模块wiki" href="https://www.unihiker.com.cn/wiki/m10/mindplus_block_extension">扩展库积木说明</a></li><li id="user_block_extension" class=""><a title="Mind+图形化扩展库收集" href="https://www.unihiker.com.cn/wiki/m10/user_block_extension">扩展用户库</a></li></ul></li><li id="pip_install" class=""><a title="行空板库安装-行空板官方文档" href="https://www.unihiker.com.cn/wiki/m10/pip_install">3.1.3-Python库安装</a> <!----></li><li id="pyenv" class=""><a title="行空板M10使用pyenv切换Python版本" href="https://www.unihiker.com.cn/wiki/m10/pyenv">3.1.4-切换Python版本(pyenv)</a> <!----></li><li id="mindplus_code" class=""><a title="行空板教程-Mind+代码模式" href="https://www.unihiker.com.cn/wiki/m10/mindplus_code">3.1.5-Mind+代码编程</a> <!----></li><li id="" class=""><a href="javascript:;"><span>3.x-其他编程方式</span> <i class="glyphicon glyphicon-menu-right"></i></a> <!----></li></ul></li><li id="" class=""><a href="javascript:;"><span>四、系列教程</span> <i class="glyphicon glyphicon-menu-down"></i></a> <ul class="nav"><li id="shipinjiaocheng" class=""><a title="行空板官方文档-视频教程" href="https://www.unihiker.com.cn/wiki/m10/shipinjiaocheng">4.0-系列视频教程</a> <!----></li><li id="blocktutorials" class=""><a title="行空板图形化入门教程-行空板教程" href="https://www.unihiker.com.cn/wiki/m10/blocktutorials">4.1-单板图形化入门教程</a> <!----></li><li id="rumenjiaocheng" class=""><a title="行空板官方文档-入门教程" href="https://www.unihiker.com.cn/wiki/m10/rumenjiaocheng">4.2-单板代码入门教程</a> <!----></li><li id="hardwaretutorials" class=""><a title="【行空板】用Python玩转开源硬件" href="https://www.unihiker.com.cn/wiki/m10/hardwaretutorials">4.3-开源硬件入门教程</a> <!----></li></ul></li><li id="burner" class="active"><a href="javascript:;"><span>五、优秀应用案例</span> <i class="glyphicon glyphicon-menu-down"></i></a> <ul class="nav"><li id="ai_project" class=""><a title="行空板官方文档-AI应用" href="https://www.unihiker.com.cn/wiki/m10/ai_project">5.1-AI人工智能相关应用</a> <!----></li><li id="iot_project" class=""><a title="行空板官方文档-IoT物联网应用" href="https://www.unihiker.com.cn/wiki/m10/iot_project">5.2-IoT物联网相关应用</a> <!----></li><li id="k12_project" class=""><a title="【新课标】义务教育信息科技课程 跨学科案例" href="https://www.unihiker.com.cn/wiki/m10/k12_project">5.3-新课标跨学科案例</a> <!----></li><li id="others_project" class=""><a title="行空板项目" href="https://www.unihiker.com.cn/wiki/m10/others_project">5.4-更多社区项目</a> <!----></li></ul></li></ul> <div class="shadow-more" style="display: block;"></div></div> <div class="arrowBtn"><span><i class="glyphicon glyphicon-menu-right" style="transform: rotate(180deg); left: 3px;"></i></span></div></div></div> <section id="markdown-content" class="content" style="width:calc(100% - 330px);padding:0 0 0 250px;" data-v-1fc16f07=""><section id="navbar-content" class="content-nav hidden-xs hidden-sm" style="left:330px;" data-v-1fc16f07=""><ul role="tablist" class="nav nav-tabs" data-v-1fc16f07=""><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/burner#1-%E6%96%87%E4%BB%B6%E5%A4%87%E4%BB%BD" data-v-1fc16f07="">1-文件备份</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/burner#2-%E5%B7%A5%E5%85%B7%E5%87%86%E5%A4%87" data-v-1fc16f07="">2-工具准备</a> <a href="https://www.unihiker.com.cn/wiki/m10/burner#UNIHIKER%20Batch%20Tool%E7%83%A7%E5%BD%95%E5%B7%A5%E5%85%B7" class="children" data-v-1fc16f07="">UNIHIKER Batch Tool烧录工具</a><a href="https://www.unihiker.com.cn/wiki/m10/burner#%E6%9C%80%E6%96%B0%E7%B3%BB%E7%BB%9F%E9%95%9C%E5%83%8F%E5%9B%BA%E4%BB%B6%E4%B8%8B%E8%BD%BD:" class="children" data-v-1fc16f07="">最新系统镜像固件下载:</a></li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/burner#3-%E6%93%8D%E4%BD%9C%E6%AD%A5%E9%AA%A4" data-v-1fc16f07="">3-操作步骤</a> <a href="https://www.unihiker.com.cn/wiki/m10/burner#3.1-%E5%8A%A0%E8%BD%BD%E7%B3%BB%E7%BB%9F%E6%96%87%E4%BB%B6" class="children" data-v-1fc16f07="">3.1-加载系统文件</a><a href="https://www.unihiker.com.cn/wiki/m10/burner#3.2-%E8%A1%8C%E7%A9%BA%E6%9D%BF%E8%BF%9B%E5%85%A5%E7%83%A7%E5%BD%95%E6%A8%A1%E5%BC%8F" class="children" data-v-1fc16f07="">3.2-行空板进入烧录模式</a><a href="https://www.unihiker.com.cn/wiki/m10/burner#3.3-%E7%83%A7%E5%BD%95%E7%B3%BB%E7%BB%9F" class="children" data-v-1fc16f07="">3.3-烧录系统</a><a href="https://www.unihiker.com.cn/wiki/m10/burner#3.4-%E5%AE%89%E8%A3%85%E7%B3%BB%E7%BB%9F" class="children" data-v-1fc16f07="">3.4-安装系统</a><a href="https://www.unihiker.com.cn/wiki/m10/burner#3.5-%E5%88%9D%E5%A7%8B%E8%AE%BE%E7%BD%AE" class="children" data-v-1fc16f07="">3.5-初始设置</a></li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/burner#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98" data-v-1fc16f07="">常见问题</a> <a href="https://www.unihiker.com.cn/wiki/m10/burner#%E5%8D%A1%E5%9C%A8%3Cstrong%3E%E5%BC%80%E5%A7%8B%E6%88%96%E5%AE%89%E8%A3%85%E9%A9%B1%E5%8A%A8%3C/strong%3E%E6%AD%A5%E9%AA%A4%E8%B6%85%E8%BF%875%E5%88%86%E9%92%9F%E4%BA%86%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F" class="children" data-v-1fc16f07="">卡在<strong>开始或安装驱动</strong>步骤超过5分钟了怎么办？</a><a href="https://www.unihiker.com.cn/wiki/m10/burner#%E7%82%B9%E5%87%BB%E5%BC%80%E5%A7%8B%E7%83%A7%E5%BD%95%E8%BD%AF%E4%BB%B6%E9%97%AA%E9%80%80%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F" class="children" data-v-1fc16f07="">点击开始烧录软件闪退怎么办？</a><a href="https://www.unihiker.com.cn/wiki/m10/burner#%E5%A6%82%E4%BD%95%E6%89%8B%E5%8A%A8%E5%AE%89%E8%A3%85%E9%A9%B1%E5%8A%A8%EF%BC%9F" class="children" data-v-1fc16f07="">如何手动安装驱动？</a><a href="https://www.unihiker.com.cn/wiki/m10/burner#%E7%94%A8%E8%A1%8C%E7%A9%BA%E6%9D%BF%E7%BB%99%E8%A1%8C%E7%A9%BA%E6%9D%BF%E7%83%A7%E7%B3%BB%E7%BB%9F%E9%95%9C%E5%83%8F" class="children" data-v-1fc16f07="">用行空板给行空板烧系统镜像</a></li></ul></section> <article id="htmlContent" class="panel-body markdown-body" data-v-1fc16f07=""><h1>系统镜像固件烧录</h1>
+<p>行空板M10适配了基于debian的linux操作系统，内置了各种功能，因此会不定期进行版本升级，当需要升级行空板最新发布的系统，或者系统出现异常需要恢复系统时，可以参考本文刷入新的固件固件。</p>
+<h2>1-文件备份</h2>
+<ul>
+<li>重新刷入系统镜像后，板子中的文件包括root目录将被全部清空无法恢复，因此可以先备份一下需要的文件。</li>
+<li>可以使用<a href="https://www.unihiker.com.cn/wiki/samba" title="samba功能">samba功能</a>将root目录下的个人文件（隐藏文件不要备份）拷贝到电脑上，待固件刷新完毕后再复制回来。</li>
+</ul>
+<h2>2-工具准备</h2>
+<h3>UNIHIKER Batch Tool烧录工具</h3>
+<p>1、需要用到系统镜像烧录工具<strong>UNIHIKER Batch Tool</strong>：</p>
+<p><img src="./行空板官方文档-固件烧录_files/1d50d80e9a30705177bedb949c6fdac6.png" alt=""></p>
+<blockquote>
+<p>注：烧录工具升级为批量烧录工具，可一次给10块行空板同时烧录系统镜像，当前仅提供windows版本。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>下载方式</th>
+<th>windows版</th>
+<th>mac版</th>
+<th>Linux版</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>直接下载（推荐）：</strong></td>
+<td><a href="https://download3.dfrobot.com.cn/unihiker/Burner/UNIHIKER_Batch_Tool_V2.3_2023.4_cn.zip" title="点击下载">点击下载</a></td>
+<td>/</td>
+<td>/</td>
+</tr>
+<tr>
+<td><strong>腾讯微云网盘下载（推荐）：</strong></td>
+<td><a href="https://share.weiyun.com/j3cfyCS6" title="点击下载">点击下载</a></td>
+<td>/</td>
+<td>/</td>
+</tr>
+<tr>
+<td><strong>百度网盘下载:</strong></td>
+<td><a href="https://pan.baidu.com/s/1GU1mPkiReoS0kdNFFtGL4Q?pwd=unih" title="点击下载">点击跳转</a>(提取码：unih)</td>
+<td>/</td>
+<td>/</td>
+</tr>
+<tr>
+<td><strong>阿里云盘下载:</strong></td>
+<td><a href="https://www.aliyundrive.com/s/H4W6eYs469o" title="点击下载">点击跳转</a>(提取码：v3y2)</td>
+<td>/</td>
+<td>/</td>
+</tr>
+</tbody>
+</table>
+<p>2、下载需要刷入的系统img镜像文件，下载完解压可得到img格式镜像文件（文件名中包含文件的md5值，请勿修改img文件的文件名）<br>
+<img src="./行空板官方文档-固件烧录_files/b341f45e542f3d773eef8456f8d11875.png" alt=""></p>
+<font color="red">
+系统镜像文件版本适用说明：<br>v0.2.8版本系统文件：仅适用于V1.2以下(不含V1.2)行空板（板子背面右下角有版本号）；<br>v0.3.1及以上版本系统文件：可适用于所有版本行空板。<br>
+</font>
+<h3>最新系统镜像固件下载:</h3>
+<ul>
+<li><strong>最新版本：</strong> V0.4.5</li>
+<li><strong>解压后文件名:</strong> unihiker_v0.4.5.md5.f4c31712642c55740bace391375073db.img</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>下载方式</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>飞书云盘（推荐）：</strong></td>
+<td><a href="https://h7dvigefi0.feishu.cn/drive/folder/BvW6fuaiRlwmLydTo15c62Ayn0F?from=from_copylink" title="点击下载">点击下载</a></td>
+</tr>
+<tr>
+<td><strong>直接下载（推荐）：</strong></td>
+<td><a href="https://download3.dfrobot.com.cn/unihiker/img/unihiker_v0.4.5_20260201_1541-f4c3.7z" title="点击下载">点击下载</a></td>
+</tr>
+<tr>
+<td><strong>腾讯微云网盘下载（推荐）：</strong></td>
+<td><a href="https://share.weiyun.com/j3cfyCS6" title="点击下载">点击下载</a></td>
+</tr>
+<tr>
+<td><strong>百度网盘下载:</strong></td>
+<td><a href="https://pan.baidu.com/s/1GU1mPkiReoS0kdNFFtGL4Q?pwd=unih" title="点击下载">点击跳转</a>(提取码：unih)</td>
+</tr>
+<tr>
+<td><strong>阿里云盘下载:</strong></td>
+<td><a href="https://www.aliyundrive.com/s/H4W6eYs469o" title="点击下载">点击跳转</a>(提取码：v3y2)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>更新日志：</strong></p>
+<ul>
+<li><strong>V0.4.5版系统镜像更新内容：</strong><br>
+- 默认Python切换为pyenv中的python3.12.7版本<br>
+- 增加内置uv工具并缓存python3.12的pip库</li>
+<li><strong>V0.4.2版系统镜像更新内容：</strong><br>
+- 内置Python3.12.7中增加内置各种python库，包括模型推理扩展需要的model_mp_io和model_mp_core<br>
+- 内置SIoT V2升级解决网页弹窗报错问题</li>
+<li><strong>V0.4.1版系统镜像更新内容：</strong><br>
+- 新增pyenv工具，并内置Python 3.8.5和3.12.7    <a href="https://www.unihiker.com.cn/wiki/m10/pyenv" title="[Pyenv说明]">[使用说明]</a><br>
+- Home菜单更新<br>
+- 封面增加M10 logo<br>
+- 增加点击USB IP重置网络功能<br>
+- 主菜单右上角增加语言切换快捷图标<br>
+- 系统信息页面增加更多参数显示<br>
+- 更新apt源文件<br>
+- 增加v4l-utils库<br>
+- 内置siotV2包更新(  <a href="https://www.unihiker.com.cn/wiki/m10/webmenu#%E5%BA%94%E7%94%A8%E5%BC%80%E5%85%B3" title="[本地web主页切换]">本地web主页切换</a> )<br>
+- unihiker库更新到0.0.28版本<br>
+- pinpong库更新板型识别方式<br>
+【<a href="https://www.unihiker.com.cn/wiki/ReleaseLogs" title="系统更新日志">更多：系统更新日志&amp;历史版本下载→</a>】</li>
+</ul>
+</blockquote>
+<h2>3-操作步骤</h2>
+<h3>3.1-加载系统文件</h3>
+<ul>
+<li>右键选择<strong>以管理员身份运行</strong>系统镜像烧录工具软件<strong>UNIHIKERBatchTool.exe</strong>。</li>
+<li>点击<strong>加载系统文件</strong>，选择系统镜像img文件，文件路径将显示在下方。</li>
+</ul>
+<blockquote>
+<p>注：新版烧录工具增加了文件校验功能，加载系统文件之后将对文件进行md5校验，需要一定时间（根据电脑性能一般在半分钟到5分钟之间），对比读取的文件名后的md5值，如果不一致会提示镜像损坏。</p>
+</blockquote>
+<p><img src="./行空板官方文档-固件烧录_files/af12c7cfc574c88765f2964f24d7fad1.png" alt=""><br>
+<img src="./行空板官方文档-固件烧录_files/5cbe7faf677018937aca896cdb2f839f.png" alt=""></p>
+<h3>3.2-行空板进入烧录模式</h3>
+<ul>
+<li>拔下USB线让行空板断电（如果板子上插了内存卡需要拔下来，建议保持裸板状态，去掉外设及扩展板等，使用原装USB线），然后按住板子上的Home按键不放，插上USB线连接电脑，此时行空板将进入系统镜像烧录模式（屏幕显示白屏且不会进入系统）。</li>
+<li>软件上会显示了一个新的设备说明识别正确，可以松开Home按键。如果需要多块板子一起烧录则可以重复这个操作让其他板子进入烧录模式。<br>
+<img src="./行空板官方文档-固件烧录_files/8e33cd576b80ad8b1babfe57a41c1b09.png" alt=""><br>
+<img src="./行空板官方文档-固件烧录_files/4c7a4237af94ea08c69834b65ad8267d.png" alt=""></li>
+</ul>
+<h3>3.3-烧录系统</h3>
+<ul>
+<li>需要烧录的行空板都识别到了之后，点击<strong>开始烧录系统</strong>，此时将开始烧录固件，如果是第一次连接则会先安装驱动。</li>
+<li>等待<strong>烧录进度</strong>到100。</li>
+</ul>
+<blockquote>
+<p>注：烧录过程中查看下方窗口输出的信息，如果<strong>卡在某个步骤进度不动超过5分钟</strong>，请查看本页面最后的<strong>常见问题</strong>中的解决办法。</p>
+</blockquote>
+<p><img src="./行空板官方文档-固件烧录_files/d425413823f40f86a6990afd326f2f6f.png" alt=""></p>
+<p><img src="./行空板官方文档-固件烧录_files/fb0ce74aee33b8cef5915dd6a8830f57.png" alt=""></p>
+<h3>3.4-安装系统</h3>
+<ul>
+<li>当所有行空板<strong>烧录进度都到达100%<strong>或部分烧录失败后（烧录失败的待其他安装完成之后再重新烧录），点击</strong>开始安装系统</strong>，烧录软件将控制所有行空板重启并安装系统。</li>
+<li>行空板会<strong>自动安装系统</strong>，期间会重启多次，时长约一分钟，最后稳定在显示行空板logo界面或语言选择界面，此过程请勿操作及断电，如果误操作了请重刷系统。<br>
+<img src="./行空板官方文档-固件烧录_files/86666c69a3c08dfe9229d295857c86db.png" alt=""><br>
+<img src="./行空板官方文档-固件烧录_files/fd1b3172fe7d8e73cdd0e8cfae612444.png" alt=""></li>
+</ul>
+<h3>3.5-初始设置</h3>
+<ul>
+<li><strong>语言选择：<strong>烧录完成系统启动后显示语言选择界面，按</strong>A B</strong>按键上下移动光标选择<strong>简体中文</strong>，按<strong>HOME</strong>按键确认，行空板会重启，然后显示中文开机logo。</li>
+</ul>
+<p><img src="./行空板官方文档-固件烧录_files/faa79f1cc45b570f0e77f887c981f9c2.png" alt=""><img src="./行空板官方文档-固件烧录_files/35c34da5b9ae2254907556ceca0ac10d.png" alt=""></p>
+<ul>
+<li><strong>触屏校准</strong>：系统烧录后，触屏需要重新校准后才可以使用，选择<strong>HOME</strong>菜单中的<strong>校准触摸屏</strong>，屏幕会依次出现的5个点触摸点，点击触摸点位置后系统重启即完成校准。<br>
+<img src="./行空板官方文档-固件烧录_files/53f9e940d8d75238576797c17c70bee5.png" alt=""><br>
+<img src="./行空板官方文档-固件烧录_files/9a1a83faa9e9080df3c4904a98c73400.png" alt=""><br>
+<img src="./行空板官方文档-固件烧录_files/bdaa6ba8e16f46a6936416b52753885a.gif" alt=""></li>
+</ul>
+<h2>常见问题</h2>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>没有显示待烧录的设备怎么办？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>解答</td>
+<td>首先需要电脑能正确访问行空板，通过usb线连接电脑后，在正常开机时行空板屏幕能显示logo，浏览器访问10.1.2.3能打开行空板的网页菜单。<br>  然后注意烧录系统镜像操作步骤中一定要先板子关机断电，然后按住Home按键再插上USB上电，此时板子才能进入系统镜像烧录模式。</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>系统烧录完成，进度走到100%后过了1分钟行空板还无法开机怎么办？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>解答</td>
+<td>可能系统文件下载不完全，可以更换下载方式尝试重新烧录。</td>
+</tr>
+</tbody>
+</table>
+<h3>卡在<strong>开始或安装驱动</strong>步骤超过5分钟了怎么办？</h3>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>卡在<strong>开始或安装驱动</strong>步骤超过5分钟了怎么办？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>重启一下烧录软件，以管理员身份运行烧录工具，然后尝试重新烧录</td>
+</tr>
+<tr>
+<td>2</td>
+<td>如果情况依旧，则将板子断电重新进入烧录模式，然后重启烧录软件进行烧录</td>
+</tr>
+<tr>
+<td>3</td>
+<td>尝试手动安装驱动后再烧录</td>
+</tr>
+<tr>
+<td>4</td>
+<td>如果依然无法解决可尝试使用此方法进行烧录： <a href="https://www.unihiker.com.cn/wiki/rkdeveloptool" title="点击查看">点击查看</a></td>
+</tr>
+</tbody>
+</table>
+<h3>点击开始烧录软件闪退怎么办？</h3>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>点击<strong>开始烧录系统</strong>后烧录工具软件闪退怎么办？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>解答</td>
+<td>尝试手动安装驱动后再烧录</td>
+</tr>
+</tbody>
+</table>
+<h3>如何手动安装驱动？</h3>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>如何手动安装驱动？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>下载驱动包，解压后以管理员身份运行zadig： <a href="https://img.dfrobot.com.cn/wikicn/599a45d540a65c6bb27c3b2a/faf87d4ce0c528a9ecb5c4469323364d.zip" title="点击下载">点击下载</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>通过拔下和按住home插上行空板时（勾选和取消勾选Options中的List All Device可以刷新列表）来选择Zadig列表中行空板对应的选项，点击<strong>Install Driver</strong>安装驱动，弹出提示是否安装的时候勾选<strong>始终信任...<strong>然后点击</strong>安装</strong>，直到提示successfully为安装成功。<br><img src="./行空板官方文档-固件烧录_files/59fffc6c52ff1d158d5436afb7979b28.png" alt=""> <img src="./行空板官方文档-固件烧录_files/d4f1f9c7a1a802b554b8395b531bfa62.png" alt=""> <img src="./行空板官方文档-固件烧录_files/910f2ff84f321386d550e57d86be9a8b.png" alt=""></td>
+</tr>
+<tr>
+<td>3</td>
+<td>驱动安装成功后，拔下行空板usb，然后按住Home键插上USB，此时Zadig中的下拉列表中应该会会变为USB-MSC或Unknown Device，然后点击<strong>Replace Driver</strong>，直到提示successfully为安装成功。<img src="./行空板官方文档-固件烧录_files/1e6f0bfea40c631f5938ffcf07df71ae.png" alt=""> <img src="./行空板官方文档-固件烧录_files/25783eee67fafcb1cd5d47f33791d603.png" alt=""><img src="./行空板官方文档-固件烧录_files/92a17e0d96e80354d0a7f41ab2efd89b.png" alt=""></td>
+</tr>
+<tr>
+<td>4</td>
+<td>上一步完成后，拔下行空板usb，然后按住Home键插上USB，再次以管理员身份启动烧录软件尝试烧录镜像，当有烧录进度则说明正常使用了。<img src="./行空板官方文档-固件烧录_files/0b5652ac9a660ad55fea83ef6a43446a.png" alt=""></td>
+</tr>
+<tr>
+<td>注：</td>
+<td>请勿使用其他驱动安装软件安装驱动，如果设备管理器中有<strong>Rockusb Device</strong>这个驱动，则右键卸载。<br><img src="./行空板官方文档-固件烧录_files/c5e0e77ef57758de13e60cd26079615f.png" alt=""></td>
+</tr>
+<tr>
+<td>注2：</td>
+<td>如以上操作依然无法完成，则打开设备管理器，展开“其他设备”“通用串行总线设备”加入技术交流群寻求支持。</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>烧录系统镜像时加载完文件之后提示校验出错怎么办？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>解答</td>
+<td>为防止文件下载不完整，新发布的镜像文件名中包含文件的md5值，烧录软件会对文件进行md5计算，将得出来的值与文件名中的值对比，如果发现不一致则说明文件下载过程中可能损坏，请更换其他下载方式重新下载镜像文件。</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>如果是0.3.5以下版本文件名中不包含md5值，则一定会提示校验出错，此时仍然可以继续点烧录</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>烧录工具里面的“设备类型”对烧录有影响吗？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>解答</td>
+<td>“设备类型”仅方便识别固件烧录状态，对烧录和使用没有影响。</td>
+</tr>
+</tbody>
+</table>
+<h3>用行空板给行空板烧系统镜像</h3>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>使用电脑烧录固件尝试了多种方法还是不行，但是有多块行空板，是否可以用正常的行空板给另外一块行空板烧固件？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>解答</td>
+<td>行空板本身是一个linux电脑，且具备usb口，因此可以给另外一个行空板烧录固件。详情查看：<a href="https://mc.dfrobot.com.cn/thread-325157-1-1.html" title="点击查看">点击查看</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>如果以上内容无法解决问题，可以加入行空板官方QQ群（1037967676或960854969）进行交流。</strong></p>
+</article></section></div></div></div></div><script>window.__NUXT__=(function(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p){return {layout:"unihikercn",data:[{device:"pc",platform:"unihiker_m10",setting:{logo:["https:\u002F\u002Fimg.dfrobot.com.cn\u002Fcmscn\u002F6040501dbddfc41c3293a25e\u002F906eaedaeb15ba929c26597ca7d8bd51.png"],domain:"https:\u002F\u002Fwww.unihiker.com.cn\u002F",menu:"defalut",search:i,navigate:[{text:"首页",url:"https:\u002F\u002Fwww.unihiker.com.cn",target:a,active:a},{text:"M10教程",url:"\u002Fwiki\u002Fm10",target:a,active:d},{text:"K10教程",url:"\u002Fwiki\u002Fk10",target:a,active:a},{text:"论坛",url:"https:\u002F\u002Fmc.dfrobot.com.cn\u002Fforum-221-1.html",target:d,active:a},{text:"购买",url:"https:\u002F\u002Fwww.dfrobot.com.cn\u002Fgoods-3404.html",target:d,active:a}],seoTitle:"行空板官网文档",seoKey:"unihiker,wiki,行空板",seoDesc:"欢迎访问行空板官方文档！",content:"# 1-行空板M10简介\n\n行空板M10是一款拥有自主知识产权的国产教学用开源硬件，采用微型计算机架构，集成LCD彩屏、WiFi蓝牙、多种常用传感器和丰富的拓展接口。同时，其自带Linux操作系统和python环境，还预装了常用的python库，让广大师生只需两步就能开始python教学。\n\n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F61788796a3fd1aa3d6d31b8e618a0e44.png)\n\n- **了解详细行空板M10设计理念及详细介绍可查看行空板发布会视频：**[【新品首发】行空板，让你2步拥抱Python！](https:\u002F\u002Fmc.dfrobot.com.cn\u002Fthread-311711-1-1.html \"【新品首发】行空板，让你2步拥抱Python！\")   \n- **购买:** 可在[DF创客商城](https:\u002F\u002Fwww.dfrobot.com.cn\u002Fgoods-3404.html \"DF创客商城\")或淘宝等其他各种线上线下渠道购买。  \n- 关注**行空板微信公众号**可第一时间收到教程更新或产品相关公告。    \n![公众号二维码](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F94e337de75532fddb250dc4af0d01308.png \"公众号二维码\")\n\n## 2-遇到问题怎么办？\n1. 查看官方文档的**“常见问题”**页面搜索问题或在**百度搜索**关键词尝试解决。\n2. 进入[论坛](https:\u002F\u002Fmc.dfrobot.com.cn\u002Fforum-221-1.html \"论坛\")**搜索**或**发帖子**交流问题\n3. 加入行空板官方**QQ交流群**(1037967676或960854969)进行交流。  \n![qq群二维码](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F41b73430991ba6d6b4def6a365ab2fdb.png \"qq群二维码\")\n\n\n## 3-学习指南\n\n\u003Cfont color=\"red\"\u003E\n\u003Cbig\u003E请先查看\u003Cstrong\u003E“快速使用教程（学习指南）”\u003C\u002Fstrong\u003E然后再进行其他操作：\u003Ca href=\"https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fget-started\"\u003E点击查看\u003C\u002Fa\u003E \u003C\u002Fbig\u003E\n\u003C\u002Ffont\u003E\n\u003Cbr\u003E\n\u003Cbr\u003E\u003Cbr\u003E\n\n\n## 4-官方文档目录\n\n[**快速使用教程(学习指南)**](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fget-started \"0-快速使用教程\")  \n[FAQ常见问题](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002FFAQ \"FAQ常见问题\")  \n\n### 行空板通用功能\n[1.1-硬件介绍](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fjianjie \"1.1-硬件介绍\")  \n[1.2-连接方式说明](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fnetworking \"1.2-连接方式说明\")  \n[1.3-板载Home菜单](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fhomemenu \"1.3-板载Home菜单\")  \n[1.4-本地Web主页](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fwebmenu \"1.4-本地Web主页\")  \n[1.5-SMB文件共享](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fsamba \"1.5-samba文件管理\")  \n[1.6-vnc屏幕共享](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fvnc \"1.6-vnc屏幕共享\")  \n[1.7-系统镜像烧录](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fburner \"1.7-系统镜像烧录\")  \n\n### 编程方式\n[2.1-Mind+编程](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fmindplus \"2.1-Mind+编程\")  \n[2.2-Jupyter编程](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fjupyter \"2.2-Jupyter编程\")  \n[2.3-Thonny编程](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fthonny \"2.3-Thonny编程\")  \n[2.4-SSH连接](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fssh \"2.4-SSH连接\")  \n[2.5-VSCode](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fvscode \"2.5-VSCode\")  \n\n\n### 专用Python库\n[3.1-unihiker行空板库](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Funihiker_python_lib \"3.1-unihiker行空板库\")  \n[3.2-pinpong硬件控制库](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fpinpong_python_lib \"3.2-pinpong硬件控制库\")  \n[3.3-Python库安装](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fpip_install \"3.3-Python库安装\")  \n\n### 系列教程\n[4.0-行空板视频教程](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fshipinjiaocheng \"4.0-行空板视频教程\")  \n[4.1-行空板代码入门教程](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Frumenjiaocheng \"4.1-行空板代码入门教程\")  \n[4.2-行空板图形化入门教程](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fblocktutorials \"4.2-行空板图形化入门教程\")  \n[4.3-开源硬件入门教程](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fhardwaretutorials \"4.3-开源硬件入门教程\")  \n\n### 应用案例\n[5.1-AI人工智能相关应用](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fai_project \"5.1-AI人工智能相关应用\")  \n[5.2-IoT物联网相关应用](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fiot_project \"5.2-IoT物联网相关应用\")  \n[5.3-新课标跨学科案例](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fk12_project \"5.3-新课标跨学科案例\")  \n[5.4-更多社区项目](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fothers_project \"5.4-更多社区项目\")  \n\n\n\n",error:"\u003C\u002Fbr\u003E\n\u003C\u002Fbr\u003E\n\u003C\u002Fbr\u003E\n\u003C\u002Fbr\u003E\n\u003C\u002Fbr\u003E\n\n\u003Cdiv style=\"text-align: center\"\u003E\n\u003Cimg src=\"https:\u002F\u002Fdfimg.dfrobot.com\u002Fnobody\u002Fwiki\u002F27770f01a94b938ac70266870cf4b189.png\"\u002F\u003E\n\u003C\u002Fdiv\u003E\n\n\u003Cp style=\"text-align: center;\"\u003ENo Permission To Access The Current Wiki !\u003C\u002Fp\u003E"},seo:{title:g,key:k,desc:l},menu:[{name:"0-快速使用教程(学习指南)",modify:d,id:i,wikiid:"2360",subject:"get-started",title:"行空板官方文档-行空板快速上手教程 ",tasks:[],type:c,active:a},{id:6,name:"FAQ常见问题",modify:a,wikiid:"2329",subject:"FAQ",title:"行空板官方文档-常见问题",tasks:[],type:c,active:a},{id:13,name:"一、行空板通用功能",modify:a,wikiid:b,subject:b,title:b,tasks:[{id:14,name:"1.1-硬件介绍",modify:a,wikiid:"2332",subject:"jianjie",title:"行空板官方文档 - 硬件介绍",tasks:[],type:c,active:a},{id:28,name:"1.2-连接方式说明",modify:a,wikiid:"2354",subject:"networking",title:"行空板官方文档-连接说明",develop:b,tasks:[],type:c,active:a},{id:29,name:"1.3-板载Home菜单",modify:a,wikiid:"2351",subject:"homemenu",title:"行空板官方文档-Home菜单",develop:b,tasks:[],type:c,active:a},{id:30,name:"1.4-本地Web主页",modify:a,wikiid:"2352",subject:"webmenu",title:"行空板官方文档-本地Web主页",develop:b,tasks:[],type:c,active:a},{id:31,name:"1.5-SMB文件共享",modify:a,wikiid:"2339",subject:"samba",title:"行空板官方文档-samba文件共享",develop:b,tasks:[],type:c,active:a},{id:33,name:"1.6-VNC屏幕共享",modify:a,wikiid:"2353",subject:m,title:"本地Web主页-屏幕共享功能",develop:b,tasks:[],type:c,active:a},{id:34,name:"1.7-系统镜像烧录",modify:a,wikiid:"2356",subject:j,title:g,develop:b,tasks:[],type:c,active:d}],develop:d,type:e,active:d},{id:17,name:"二、专用Python库说明",modify:a,wikiid:b,subject:b,title:b,tasks:[{id:18,name:"2.1-unihiker行空库",modify:a,wikiid:"2304",subject:"connection",title:"Multi connection methods of UNIHIEKR",tasks:[{id:43,name:"库说明",modify:a,wikiid:"2359",subject:"unihiker_python_lib",title:f,develop:b,tasks:[],type:c,active:a},{id:44,name:"通用知识和功能",modify:a,wikiid:"2362",subject:"unihiker_python_lib_1",title:f,develop:b,tasks:[],type:c,active:a},{id:45,name:"基础控件",modify:a,wikiid:"2363",subject:"unihiker_python_lib_2",title:f,develop:b,tasks:[],type:c,active:a},{id:50,name:"基础图形",modify:a,wikiid:"2364",subject:"unihiker_python_lib_3",title:f,develop:b,tasks:[],type:c,active:a},{id:46,name:"鼠标键盘侦测",modify:a,wikiid:"2365",subject:"unihiker_python_lib_4",title:f,develop:b,tasks:[],type:c,active:a},{id:48,name:"多线程",modify:a,wikiid:"2366",subject:"unihiker_python_lib_5",title:f,develop:b,tasks:[],type:c,active:a},{id:49,name:"录音及播放",modify:a,wikiid:"2367",subject:"unihiker_python_lib_6",title:f,develop:b,tasks:[],type:c,active:a}],develop:d,type:e,active:a},{id:19,name:"2.2-pinpong硬件控制库",modify:a,wikiid:"2361",subject:"pinpong_python_lib",title:"行空板官方文档 - pinpong库",tasks:[],type:c,active:a},{id:20,name:"2.3-mind+图形化用户库收集",modify:a,wikiid:"2385",subject:n,title:o,tasks:[],type:c,active:a}],develop:d,type:e,active:a},{id:22,name:"三、编程方式",modify:a,wikiid:"2308",subject:m,title:"Remote Desktop (Screen Sharing) of UNIHIKER",tasks:[{id:42,name:"3.1.1-Mind+编程说明",modify:a,wikiid:"2334",subject:"mindplus",title:"行空板官方文档-Mind+使用教程",develop:b,tasks:[],type:c,active:a},{id:71,name:"3.1.2-图形化编程(积木说明)",modify:d,wikiid:b,subject:b,title:b,develop:d,tasks:[{id:72,name:"行空板主板功能积木说明",modify:a,wikiid:"39823",subject:"mindplus_block",title:"行空板教程-Mind+图形化编程",develop:b,tasks:[],type:c,active:a},{id:74,name:"基础功能积木说明",modify:a,wikiid:"39829",subject:"mindplus_block_Basics",title:"python_block_Basics",develop:b,tasks:[],type:c,active:a},{id:75,name:"扩展库积木说明",modify:a,wikiid:"39821",subject:"mindplus_block_extension",title:"行空板拓展模块wiki",develop:b,tasks:[],type:c,active:a},{id:76,name:"扩展用户库",modify:a,wikiid:"39834",subject:n,title:o,develop:b,tasks:[],type:c,active:a}],type:e,active:a},{id:52,name:"3.1.3-Python库安装",modify:a,wikiid:"2377",subject:"pip_install",title:"行空板库安装-行空板官方文档",develop:b,tasks:[],type:c,active:a},{id:77,name:"3.1.4-切换Python版本(pyenv)",modify:a,wikiid:"39970",subject:"pyenv",title:"行空板M10使用pyenv切换Python版本",develop:b,tasks:[],type:c,active:a},{id:53,name:"3.1.5-Mind+代码编程",modify:a,wikiid:"2375",subject:"mindplus_code",title:"行空板教程-Mind+代码模式",develop:b,tasks:[],type:c,active:a},{id:54,name:"3.x-其他编程方式",modify:a,wikiid:b,subject:b,title:b,develop:b,tasks:[{id:56,name:"3.2-Jupyter编程",modify:a,wikiid:"2333",subject:"jupyter",title:"行空板官方文档-Jupyter使用教程",develop:b,tasks:[],type:c,active:a},{id:57,name:"3.3-Thonny编程",modify:a,wikiid:"2337",subject:"thonny",title:"行空板官方文档-Thonny使用教程",develop:b,tasks:[],type:c,active:a},{id:67,name:"3.4-SSH连接",modify:a,wikiid:"2335",subject:"ssh",title:"行空板官方文档--SSH连接",develop:b,tasks:[],type:c,active:a},{id:68,name:"3.5-VSCode",modify:a,wikiid:"2336",subject:"vscode",title:"行空板官方文档-VScode连接",develop:b,tasks:[],type:c,active:a}],type:e,active:a}],develop:d,type:e,active:a},{id:23,name:"四、系列教程",modify:a,wikiid:b,subject:b,title:b,tasks:[{id:24,name:"4.0-系列视频教程",modify:a,wikiid:"2331",subject:"shipinjiaocheng",title:"行空板官方文档-视频教程",tasks:[],type:c,active:a},{id:60,name:"4.1-单板图形化入门教程",modify:a,wikiid:"2378",subject:"blocktutorials",title:"行空板图形化入门教程-行空板教程",develop:b,tasks:[],type:c,active:a},{id:61,name:"4.2-单板代码入门教程",modify:a,wikiid:"2330",subject:"rumenjiaocheng",title:"行空板官方文档-入门教程",develop:b,tasks:[],type:c,active:a},{id:62,name:"4.3-开源硬件入门教程",modify:a,wikiid:"2383",subject:"hardwaretutorials",title:"【行空板】用Python玩转开源硬件",develop:b,tasks:[],type:c,active:a}],develop:d,type:e,active:a},{id:25,name:"五、优秀应用案例",modify:a,wikiid:"2309",subject:j,title:"Burn OS Image to UNIHIKER",tasks:[{id:39,name:"5.1-AI人工智能相关应用",modify:a,wikiid:"2369",subject:"ai_project",title:"行空板官方文档-AI应用",develop:b,tasks:[],type:c,active:a},{id:63,name:"5.2-IoT物联网相关应用",modify:a,wikiid:"2368",subject:"iot_project",title:"行空板官方文档-IoT物联网应用",develop:b,tasks:[],type:c,active:a},{id:64,name:"5.3-新课标跨学科案例",modify:a,wikiid:"2382",subject:"k12_project",title:"【新课标】义务教育信息科技课程 跨学科案例",develop:b,tasks:[],type:c,active:a},{id:65,name:"5.4-更多社区项目",modify:a,wikiid:"2370",subject:"others_project",title:"行空板项目",develop:b,tasks:[],type:c,active:a}],develop:d,type:e,active:d}],wikiSubject:j,wikiData:{title:g,show:i,seoTitle:g,seoKey:k,seoDesc:l,content:"# 系统镜像固件烧录\n\n行空板M10适配了基于debian的linux操作系统，内置了各种功能，因此会不定期进行版本升级，当需要升级行空板最新发布的系统，或者系统出现异常需要恢复系统时，可以参考本文刷入新的固件固件。  \n\n## 1-文件备份\n- 重新刷入系统镜像后，板子中的文件包括root目录将被全部清空无法恢复，因此可以先备份一下需要的文件。  \n- 可以使用[samba功能](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fsamba \"samba功能\")将root目录下的个人文件（隐藏文件不要备份）拷贝到电脑上，待固件刷新完毕后再复制回来。  \n\n## 2-工具准备\n\n### UNIHIKER Batch Tool烧录工具\n1、需要用到系统镜像烧录工具**UNIHIKER Batch Tool**：    \n\n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F1d50d80e9a30705177bedb949c6fdac6.png)  \n\u003E 注：烧录工具升级为批量烧录工具，可一次给10块行空板同时烧录系统镜像，当前仅提供windows版本。  \n\n\n| 下载方式 | windows版 | mac版 | Linux版 |\n| ------------ | ------------ | ------------ | ------------ |\n| **直接下载（推荐）：**  | [点击下载](https:\u002F\u002Fdownload3.dfrobot.com.cn\u002Funihiker\u002FBurner\u002FUNIHIKER_Batch_Tool_V2.3_2023.4_cn.zip \"点击下载\")  | \u002F|\u002F |\n| **腾讯微云网盘下载（推荐）：**  | [点击下载](https:\u002F\u002Fshare.weiyun.com\u002Fj3cfyCS6 \"点击下载\")  | \u002F|\u002F |\n| **百度网盘下载:**   | [点击跳转](https:\u002F\u002Fpan.baidu.com\u002Fs\u002F1GU1mPkiReoS0kdNFFtGL4Q?pwd=unih \"点击下载\")(提取码：unih)  | \u002F|\u002F |\n| **阿里云盘下载:**  | [点击跳转](https:\u002F\u002Fwww.aliyundrive.com\u002Fs\u002FH4W6eYs469o \"点击下载\")(提取码：v3y2)  |\u002F |\u002F | |\n\n\n2、下载需要刷入的系统img镜像文件，下载完解压可得到img格式镜像文件（文件名中包含文件的md5值，请勿修改img文件的文件名）  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fb341f45e542f3d773eef8456f8d11875.png)  \n\n\u003Cfont color=\"red\"\u003E\n系统镜像文件版本适用说明：\u003Cbr\u003Ev0.2.8版本系统文件：仅适用于V1.2以下(不含V1.2)行空板（板子背面右下角有版本号）；\u003Cbr\u003Ev0.3.1及以上版本系统文件：可适用于所有版本行空板。\u003Cbr\u003E\n\u003C\u002Ffont\u003E\n\n### 最新系统镜像固件下载:   \n\n- **最新版本：** V0.4.5\n- **解压后文件名:** unihiker_v0.4.5.md5.f4c31712642c55740bace391375073db.img   \n \n| 下载方式 |  |\n| ------------ | ------------ | \n| **飞书云盘（推荐）：**  | [点击下载](https:\u002F\u002Fh7dvigefi0.feishu.cn\u002Fdrive\u002Ffolder\u002FBvW6fuaiRlwmLydTo15c62Ayn0F?from=from_copylink \"点击下载\")  |\n| **直接下载（推荐）：**  | [点击下载](https:\u002F\u002Fdownload3.dfrobot.com.cn\u002Funihiker\u002Fimg\u002Funihiker_v0.4.5_20260201_1541-f4c3.7z \"点击下载\")  |\n| **腾讯微云网盘下载（推荐）：**  | [点击下载](https:\u002F\u002Fshare.weiyun.com\u002Fj3cfyCS6 \"点击下载\")  | \u002F|\u002F |\n| **百度网盘下载:**   | [点击跳转](https:\u002F\u002Fpan.baidu.com\u002Fs\u002F1GU1mPkiReoS0kdNFFtGL4Q?pwd=unih \"点击下载\")(提取码：unih)  |\n| **阿里云盘下载:**  | [点击跳转](https:\u002F\u002Fwww.aliyundrive.com\u002Fs\u002FH4W6eYs469o \"点击下载\")(提取码：v3y2)  |\n\n\n\u003E  **更新日志：**  \n\u003E- **V0.4.5版系统镜像更新内容：**    \n\t- 默认Python切换为pyenv中的python3.12.7版本  \n\t- 增加内置uv工具并缓存python3.12的pip库  \n\u003E- **V0.4.2版系统镜像更新内容：**    \n\t- 内置Python3.12.7中增加内置各种python库，包括模型推理扩展需要的model_mp_io和model_mp_core  \n\t- 内置SIoT V2升级解决网页弹窗报错问题  \n\u003E- **V0.4.1版系统镜像更新内容：**  \n\t- 新增pyenv工具，并内置Python 3.8.5和3.12.7    [[使用说明]](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fpyenv \"[Pyenv说明]\")  \n\t- Home菜单更新  \n\t\t- 封面增加M10 logo  \n\t\t- 增加点击USB IP重置网络功能  \n\t\t- 主菜单右上角增加语言切换快捷图标  \n\t\t- 系统信息页面增加更多参数显示  \n\t- 更新apt源文件  \n\t- 增加v4l-utils库  \n\t- 内置siotV2包更新(  [本地web主页切换](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fwebmenu#%E5%BA%94%E7%94%A8%E5%BC%80%E5%85%B3 \"[本地web主页切换]\") )  \n\t- unihiker库更新到0.0.28版本  \n\t- pinpong库更新板型识别方式  \n\u003E【[更多：系统更新日志&历史版本下载→](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002FReleaseLogs \"系统更新日志\")】  \n\n## 3-操作步骤\n### 3.1-加载系统文件\n- 右键选择**以管理员身份运行**系统镜像烧录工具软件**UNIHIKERBatchTool.exe**。  \n- 点击**加载系统文件**，选择系统镜像img文件，文件路径将显示在下方。  \n\n\u003E 注：新版烧录工具增加了文件校验功能，加载系统文件之后将对文件进行md5校验，需要一定时间（根据电脑性能一般在半分钟到5分钟之间），对比读取的文件名后的md5值，如果不一致会提示镜像损坏。  \n\n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002Faf12c7cfc574c88765f2964f24d7fad1.png)   \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F5cbe7faf677018937aca896cdb2f839f.png)    \n\n ### 3.2-行空板进入烧录模式\n- 拔下USB线让行空板断电（如果板子上插了内存卡需要拔下来，建议保持裸板状态，去掉外设及扩展板等，使用原装USB线），然后按住板子上的Home按键不放，插上USB线连接电脑，此时行空板将进入系统镜像烧录模式（屏幕显示白屏且不会进入系统）。\n- 软件上会显示了一个新的设备说明识别正确，可以松开Home按键。如果需要多块板子一起烧录则可以重复这个操作让其他板子进入烧录模式。    \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F8e33cd576b80ad8b1babfe57a41c1b09.png)    \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F4c7a4237af94ea08c69834b65ad8267d.png)    \n### 3.3-烧录系统\n- 需要烧录的行空板都识别到了之后，点击**开始烧录系统**，此时将开始烧录固件，如果是第一次连接则会先安装驱动。    \n- 等待**烧录进度**到100。\n\n\u003E 注：烧录过程中查看下方窗口输出的信息，如果**卡在某个步骤进度不动超过5分钟**，请查看本页面最后的**常见问题**中的解决办法。  \n\n\n ![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fd425413823f40f86a6990afd326f2f6f.png)  \n\n ![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Ffb0ce74aee33b8cef5915dd6a8830f57.png)  \n### 3.4-安装系统\n- 当所有行空板**烧录进度都到达100%**或部分烧录失败后（烧录失败的待其他安装完成之后再重新烧录），点击**开始安装系统**，烧录软件将控制所有行空板重启并安装系统。   \n- 行空板会**自动安装系统**，期间会重启多次，时长约一分钟，最后稳定在显示行空板logo界面或语言选择界面，此过程请勿操作及断电，如果误操作了请重刷系统。  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F86666c69a3c08dfe9229d295857c86db.png)   \n ![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Ffd1b3172fe7d8e73cdd0e8cfae612444.png)    \n### 3.5-初始设置\n\n- **语言选择：**烧录完成系统启动后显示语言选择界面，按**A B**按键上下移动光标选择**简体中文**，按**HOME**按键确认，行空板会重启，然后显示中文开机logo。  \n\n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002Ffaa79f1cc45b570f0e77f887c981f9c2.png)![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F35c34da5b9ae2254907556ceca0ac10d.png)  \n\n- **触屏校准**：系统烧录后，触屏需要重新校准后才可以使用，选择**HOME**菜单中的**校准触摸屏**，屏幕会依次出现的5个点触摸点，点击触摸点位置后系统重启即完成校准。   \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F53f9e940d8d75238576797c17c70bee5.png)\n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F9a1a83faa9e9080df3c4904a98c73400.png)\n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fbdaa6ba8e16f46a6936416b52753885a.gif)  \n\n## 常见问题\n\n| 问题  | 没有显示待烧录的设备怎么办？    |\n| ------------ | ------------ |\n| 解答  | 首先需要电脑能正确访问行空板，通过usb线连接电脑后，在正常开机时行空板屏幕能显示logo，浏览器访问10.1.2.3能打开行空板的网页菜单。\u003Cbr\u003E  然后注意烧录系统镜像操作步骤中一定要先板子关机断电，然后按住Home按键再插上USB上电，此时板子才能进入系统镜像烧录模式。  | |\n\n\n| 问题  | 系统烧录完成，进度走到100%后过了1分钟行空板还无法开机怎么办？ |\n| ------------ | ------------ |\n| 解答  | 可能系统文件下载不完全，可以更换下载方式尝试重新烧录。 | |\n\n### 卡在**开始或安装驱动**步骤超过5分钟了怎么办？\n\n| 问题  | 卡在**开始或安装驱动**步骤超过5分钟了怎么办？ |\n| ------------ | ------------ |\n| 1  | 重启一下烧录软件，以管理员身份运行烧录工具，然后尝试重新烧录|\n| 2 | 如果情况依旧，则将板子断电重新进入烧录模式，然后重启烧录软件进行烧录|\n|3| 尝试手动安装驱动后再烧录 |\n|4 |如果依然无法解决可尝试使用此方法进行烧录： [点击查看](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Frkdeveloptool \"点击查看\") | |\n\n### 点击开始烧录软件闪退怎么办？\n\n| 问题  | 点击**开始烧录系统**后烧录工具软件闪退怎么办？ |\n| ------------ | ------------ |\n| 解答 |尝试手动安装驱动后再烧录  |\n\n### 如何手动安装驱动？\n\n| 问题  | 如何手动安装驱动？ |\n| ------------ | ------------ |\n| 1 | 下载驱动包，解压后以管理员身份运行zadig： [点击下载](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002Ffaf87d4ce0c528a9ecb5c4469323364d.zip \"点击下载\")    |\n| 2  |通过拔下和按住home插上行空板时（勾选和取消勾选Options中的List All Device可以刷新列表）来选择Zadig列表中行空板对应的选项，点击**Install Driver**安装驱动，弹出提示是否安装的时候勾选**始终信任...**然后点击**安装**，直到提示successfully为安装成功。\u003Cbr\u003E![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F59fffc6c52ff1d158d5436afb7979b28.png) ![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002Fd4f1f9c7a1a802b554b8395b531bfa62.png) ![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F910f2ff84f321386d550e57d86be9a8b.png)|\n| 3  | 驱动安装成功后，拔下行空板usb，然后按住Home键插上USB，此时Zadig中的下拉列表中应该会会变为USB-MSC或Unknown Device，然后点击**Replace Driver**，直到提示successfully为安装成功。![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F1e6f0bfea40c631f5938ffcf07df71ae.png) ![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F25783eee67fafcb1cd5d47f33791d603.png)![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F92a17e0d96e80354d0a7f41ab2efd89b.png)|\n| 4  |上一步完成后，拔下行空板usb，然后按住Home键插上USB，再次以管理员身份启动烧录软件尝试烧录镜像，当有烧录进度则说明正常使用了。![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F0b5652ac9a660ad55fea83ef6a43446a.png)  |\n| 注：  | 请勿使用其他驱动安装软件安装驱动，如果设备管理器中有**Rockusb Device**这个驱动，则右键卸载。\u003Cbr\u003E![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002Fc5e0e77ef57758de13e60cd26079615f.png)  |\n| 注2：  | 如以上操作依然无法完成，则打开设备管理器，展开“其他设备”“通用串行总线设备”加入技术交流群寻求支持。 |\n\n| 问题  | 烧录系统镜像时加载完文件之后提示校验出错怎么办？ |\n| ------------ | ------------ |\n| 解答  | 为防止文件下载不完整，新发布的镜像文件名中包含文件的md5值，烧录软件会对文件进行md5计算，将得出来的值与文件名中的值对比，如果发现不一致则说明文件下载过程中可能损坏，请更换其他下载方式重新下载镜像文件。| |\n| 解答  | 如果是0.3.5以下版本文件名中不包含md5值，则一定会提示校验出错，此时仍然可以继续点烧录| |\n\n| 问题  | 烧录工具里面的“设备类型”对烧录有影响吗？ |\n| ------------ | ------------ |\n| 解答  | “设备类型”仅方便识别固件烧录状态，对烧录和使用没有影响。 | |\n\n### 用行空板给行空板烧系统镜像\n| 问题  | 使用电脑烧录固件尝试了多种方法还是不行，但是有多块行空板，是否可以用正常的行空板给另外一块行空板烧固件？ |\n| ------------ | ------------ |\n| 解答  | 行空板本身是一个linux电脑，且具备usb口，因此可以给另外一个行空板烧录固件。详情查看：[点击查看](https:\u002F\u002Fmc.dfrobot.com.cn\u002Fthread-325157-1-1.html \"点击查看\") | |\n\n\n**如果以上内容无法解决问题，可以加入行空板官方QQ群（1037967676或960854969）进行交流。**\n\n",product:{id:b,sku:b,title:b,thumb:b,price:b,url:b,desc:b},sku:b},subMenu:[{title:"1-文件备份",children:[]},{title:"2-工具准备",children:[{title:"UNIHIKER Batch Tool烧录工具",children:[]},{title:"最新系统镜像固件下载:",children:[]}]},{title:"3-操作步骤",children:[{title:"3.1-加载系统文件",children:[]},{title:"3.2-行空板进入烧录模式",children:[]},{title:"3.3-烧录系统",children:[]},{title:"3.4-安装系统",children:[]},{title:"3.5-初始设置",children:[]}]},{title:"常见问题",children:[{title:"卡在\u003Cstrong\u003E开始或安装驱动\u003C\u002Fstrong\u003E步骤超过5分钟了怎么办？",children:[]},{title:"点击开始烧录软件闪退怎么办？",children:[]},{title:"如何手动安装驱动？",children:[]},{title:"用行空板给行空板烧系统镜像",children:[]}]}],conWidth:"330px",plNumber:"0 0 0 250px",htmlStr:"\u003Ch1\u003E系统镜像固件烧录\u003C\u002Fh1\u003E\n\u003Cp\u003E行空板M10适配了基于debian的linux操作系统，内置了各种功能，因此会不定期进行版本升级，当需要升级行空板最新发布的系统，或者系统出现异常需要恢复系统时，可以参考本文刷入新的固件固件。\u003C\u002Fp\u003E\n\u003Ch2\u003E1-文件备份\u003C\u002Fh2\u003E\n\u003Cul\u003E\n\u003Cli\u003E重新刷入系统镜像后，板子中的文件包括root目录将被全部清空无法恢复，因此可以先备份一下需要的文件。\u003C\u002Fli\u003E\n\u003Cli\u003E可以使用\u003Ca href=\"https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fsamba\" title=\"samba功能\"\u003Esamba功能\u003C\u002Fa\u003E将root目录下的个人文件（隐藏文件不要备份）拷贝到电脑上，待固件刷新完毕后再复制回来。\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Ch2\u003E2-工具准备\u003C\u002Fh2\u003E\n\u003Ch3\u003EUNIHIKER Batch Tool烧录工具\u003C\u002Fh3\u003E\n\u003Cp\u003E1、需要用到系统镜像烧录工具\u003Cstrong\u003EUNIHIKER Batch Tool\u003C\u002Fstrong\u003E：\u003C\u002Fp\u003E\n\u003Cp\u003E\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F1d50d80e9a30705177bedb949c6fdac6.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E注：烧录工具升级为批量烧录工具，可一次给10块行空板同时烧录系统镜像，当前仅提供windows版本。\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Ctable\u003E\n\u003Cthead\u003E\n\u003Ctr\u003E\n\u003Cth\u003E下载方式\u003C\u002Fth\u003E\n\u003Cth\u003Ewindows版\u003C\u002Fth\u003E\n\u003Cth\u003Emac版\u003C\u002Fth\u003E\n\u003Cth\u003ELinux版\u003C\u002Fth\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Fthead\u003E\n\u003Ctbody\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E\u003Cstrong\u003E直接下载（推荐）：\u003C\u002Fstrong\u003E\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u003Ca href=\"https:\u002F\u002Fdownload3.dfrobot.com.cn\u002Funihiker\u002FBurner\u002FUNIHIKER_Batch_Tool_V2.3_2023.4_cn.zip\" title=\"点击下载\"\u003E点击下载\u003C\u002Fa\u003E\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u002F\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u002F\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E\u003Cstrong\u003E腾讯微云网盘下载（推荐）：\u003C\u002Fstrong\u003E\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u003Ca href=\"https:\u002F\u002Fshare.weiyun.com\u002Fj3cfyCS6\" title=\"点击下载\"\u003E点击下载\u003C\u002Fa\u003E\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u002F\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u002F\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E\u003Cstrong\u003E百度网盘下载:\u003C\u002Fstrong\u003E\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u003Ca href=\"https:\u002F\u002Fpan.baidu.com\u002Fs\u002F1GU1mPkiReoS0kdNFFtGL4Q?pwd=unih\" title=\"点击下载\"\u003E点击跳转\u003C\u002Fa\u003E(提取码：unih)\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u002F\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u002F\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E\u003Cstrong\u003E阿里云盘下载:\u003C\u002Fstrong\u003E\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u003Ca href=\"https:\u002F\u002Fwww.aliyundrive.com\u002Fs\u002FH4W6eYs469o\" title=\"点击下载\"\u003E点击跳转\u003C\u002Fa\u003E(提取码：v3y2)\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u002F\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u002F\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Ftbody\u003E\n\u003C\u002Ftable\u003E\n\u003Cp\u003E2、下载需要刷入的系统img镜像文件，下载完解压可得到img格式镜像文件（文件名中包含文件的md5值，请勿修改img文件的文件名）\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fb341f45e542f3d773eef8456f8d11875.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003Cfont color=\"red\"\u003E\n系统镜像文件版本适用说明：\u003Cbr\u003Ev0.2.8版本系统文件：仅适用于V1.2以下(不含V1.2)行空板（板子背面右下角有版本号）；\u003Cbr\u003Ev0.3.1及以上版本系统文件：可适用于所有版本行空板。\u003Cbr\u003E\n\u003C\u002Ffont\u003E\n\u003Ch3\u003E最新系统镜像固件下载:\u003C\u002Fh3\u003E\n\u003Cul\u003E\n\u003Cli\u003E\u003Cstrong\u003E最新版本：\u003C\u002Fstrong\u003E V0.4.5\u003C\u002Fli\u003E\n\u003Cli\u003E\u003Cstrong\u003E解压后文件名:\u003C\u002Fstrong\u003E unihiker_v0.4.5.md5.f4c31712642c55740bace391375073db.img\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Ctable\u003E\n\u003Cthead\u003E\n\u003Ctr\u003E\n\u003Cth\u003E下载方式\u003C\u002Fth\u003E\n\u003Cth\u003E\u003C\u002Fth\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Fthead\u003E\n\u003Ctbody\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E\u003Cstrong\u003E飞书云盘（推荐）：\u003C\u002Fstrong\u003E\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u003Ca href=\"https:\u002F\u002Fh7dvigefi0.feishu.cn\u002Fdrive\u002Ffolder\u002FBvW6fuaiRlwmLydTo15c62Ayn0F?from=from_copylink\" title=\"点击下载\"\u003E点击下载\u003C\u002Fa\u003E\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E\u003Cstrong\u003E直接下载（推荐）：\u003C\u002Fstrong\u003E\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u003Ca href=\"https:\u002F\u002Fdownload3.dfrobot.com.cn\u002Funihiker\u002Fimg\u002Funihiker_v0.4.5_20260201_1541-f4c3.7z\" title=\"点击下载\"\u003E点击下载\u003C\u002Fa\u003E\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E\u003Cstrong\u003E腾讯微云网盘下载（推荐）：\u003C\u002Fstrong\u003E\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u003Ca href=\"https:\u002F\u002Fshare.weiyun.com\u002Fj3cfyCS6\" title=\"点击下载\"\u003E点击下载\u003C\u002Fa\u003E\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E\u003Cstrong\u003E百度网盘下载:\u003C\u002Fstrong\u003E\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u003Ca href=\"https:\u002F\u002Fpan.baidu.com\u002Fs\u002F1GU1mPkiReoS0kdNFFtGL4Q?pwd=unih\" title=\"点击下载\"\u003E点击跳转\u003C\u002Fa\u003E(提取码：unih)\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E\u003Cstrong\u003E阿里云盘下载:\u003C\u002Fstrong\u003E\u003C\u002Ftd\u003E\n\u003Ctd\u003E\u003Ca href=\"https:\u002F\u002Fwww.aliyundrive.com\u002Fs\u002FH4W6eYs469o\" title=\"点击下载\"\u003E点击跳转\u003C\u002Fa\u003E(提取码：v3y2)\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Ftbody\u003E\n\u003C\u002Ftable\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E\u003Cstrong\u003E更新日志：\u003C\u002Fstrong\u003E\u003C\u002Fp\u003E\n\u003Cul\u003E\n\u003Cli\u003E\u003Cstrong\u003EV0.4.5版系统镜像更新内容：\u003C\u002Fstrong\u003E\u003Cbr\u003E\n- 默认Python切换为pyenv中的python3.12.7版本\u003Cbr\u003E\n- 增加内置uv工具并缓存python3.12的pip库\u003C\u002Fli\u003E\n\u003Cli\u003E\u003Cstrong\u003EV0.4.2版系统镜像更新内容：\u003C\u002Fstrong\u003E\u003Cbr\u003E\n- 内置Python3.12.7中增加内置各种python库，包括模型推理扩展需要的model_mp_io和model_mp_core\u003Cbr\u003E\n- 内置SIoT V2升级解决网页弹窗报错问题\u003C\u002Fli\u003E\n\u003Cli\u003E\u003Cstrong\u003EV0.4.1版系统镜像更新内容：\u003C\u002Fstrong\u003E\u003Cbr\u003E\n- 新增pyenv工具，并内置Python 3.8.5和3.12.7    \u003Ca href=\"https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fpyenv\" title=\"[Pyenv说明]\"\u003E[使用说明]\u003C\u002Fa\u003E\u003Cbr\u003E\n- Home菜单更新\u003Cbr\u003E\n- 封面增加M10 logo\u003Cbr\u003E\n- 增加点击USB IP重置网络功能\u003Cbr\u003E\n- 主菜单右上角增加语言切换快捷图标\u003Cbr\u003E\n- 系统信息页面增加更多参数显示\u003Cbr\u003E\n- 更新apt源文件\u003Cbr\u003E\n- 增加v4l-utils库\u003Cbr\u003E\n- 内置siotV2包更新(  \u003Ca href=\"https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fwebmenu#%E5%BA%94%E7%94%A8%E5%BC%80%E5%85%B3\" title=\"[本地web主页切换]\"\u003E本地web主页切换\u003C\u002Fa\u003E )\u003Cbr\u003E\n- unihiker库更新到0.0.28版本\u003Cbr\u003E\n- pinpong库更新板型识别方式\u003Cbr\u003E\n【\u003Ca href=\"https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002FReleaseLogs\" title=\"系统更新日志\"\u003E更多：系统更新日志&amp;历史版本下载→\u003C\u002Fa\u003E】\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003C\u002Fblockquote\u003E\n\u003Ch2\u003E3-操作步骤\u003C\u002Fh2\u003E\n\u003Ch3\u003E3.1-加载系统文件\u003C\u002Fh3\u003E\n\u003Cul\u003E\n\u003Cli\u003E右键选择\u003Cstrong\u003E以管理员身份运行\u003C\u002Fstrong\u003E系统镜像烧录工具软件\u003Cstrong\u003EUNIHIKERBatchTool.exe\u003C\u002Fstrong\u003E。\u003C\u002Fli\u003E\n\u003Cli\u003E点击\u003Cstrong\u003E加载系统文件\u003C\u002Fstrong\u003E，选择系统镜像img文件，文件路径将显示在下方。\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E注：新版烧录工具增加了文件校验功能，加载系统文件之后将对文件进行md5校验，需要一定时间（根据电脑性能一般在半分钟到5分钟之间），对比读取的文件名后的md5值，如果不一致会提示镜像损坏。\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Cp\u003E\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002Faf12c7cfc574c88765f2964f24d7fad1.png\" alt=\"\"\u003E\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F5cbe7faf677018937aca896cdb2f839f.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003Ch3\u003E3.2-行空板进入烧录模式\u003C\u002Fh3\u003E\n\u003Cul\u003E\n\u003Cli\u003E拔下USB线让行空板断电（如果板子上插了内存卡需要拔下来，建议保持裸板状态，去掉外设及扩展板等，使用原装USB线），然后按住板子上的Home按键不放，插上USB线连接电脑，此时行空板将进入系统镜像烧录模式（屏幕显示白屏且不会进入系统）。\u003C\u002Fli\u003E\n\u003Cli\u003E软件上会显示了一个新的设备说明识别正确，可以松开Home按键。如果需要多块板子一起烧录则可以重复这个操作让其他板子进入烧录模式。\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F8e33cd576b80ad8b1babfe57a41c1b09.png\" alt=\"\"\u003E\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F4c7a4237af94ea08c69834b65ad8267d.png\" alt=\"\"\u003E\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Ch3\u003E3.3-烧录系统\u003C\u002Fh3\u003E\n\u003Cul\u003E\n\u003Cli\u003E需要烧录的行空板都识别到了之后，点击\u003Cstrong\u003E开始烧录系统\u003C\u002Fstrong\u003E，此时将开始烧录固件，如果是第一次连接则会先安装驱动。\u003C\u002Fli\u003E\n\u003Cli\u003E等待\u003Cstrong\u003E烧录进度\u003C\u002Fstrong\u003E到100。\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E注：烧录过程中查看下方窗口输出的信息，如果\u003Cstrong\u003E卡在某个步骤进度不动超过5分钟\u003C\u002Fstrong\u003E，请查看本页面最后的\u003Cstrong\u003E常见问题\u003C\u002Fstrong\u003E中的解决办法。\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Cp\u003E\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fd425413823f40f86a6990afd326f2f6f.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003Cp\u003E\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Ffb0ce74aee33b8cef5915dd6a8830f57.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003Ch3\u003E3.4-安装系统\u003C\u002Fh3\u003E\n\u003Cul\u003E\n\u003Cli\u003E当所有行空板\u003Cstrong\u003E烧录进度都到达100%\u003Cstrong\u003E或部分烧录失败后（烧录失败的待其他安装完成之后再重新烧录），点击\u003C\u002Fstrong\u003E开始安装系统\u003C\u002Fstrong\u003E，烧录软件将控制所有行空板重启并安装系统。\u003C\u002Fli\u003E\n\u003Cli\u003E行空板会\u003Cstrong\u003E自动安装系统\u003C\u002Fstrong\u003E，期间会重启多次，时长约一分钟，最后稳定在显示行空板logo界面或语言选择界面，此过程请勿操作及断电，如果误操作了请重刷系统。\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F86666c69a3c08dfe9229d295857c86db.png\" alt=\"\"\u003E\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Ffd1b3172fe7d8e73cdd0e8cfae612444.png\" alt=\"\"\u003E\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Ch3\u003E3.5-初始设置\u003C\u002Fh3\u003E\n\u003Cul\u003E\n\u003Cli\u003E\u003Cstrong\u003E语言选择：\u003Cstrong\u003E烧录完成系统启动后显示语言选择界面，按\u003C\u002Fstrong\u003EA B\u003C\u002Fstrong\u003E按键上下移动光标选择\u003Cstrong\u003E简体中文\u003C\u002Fstrong\u003E，按\u003Cstrong\u003EHOME\u003C\u002Fstrong\u003E按键确认，行空板会重启，然后显示中文开机logo。\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Cp\u003E\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002Ffaa79f1cc45b570f0e77f887c981f9c2.png\" alt=\"\"\u003E\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F35c34da5b9ae2254907556ceca0ac10d.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003Cul\u003E\n\u003Cli\u003E\u003Cstrong\u003E触屏校准\u003C\u002Fstrong\u003E：系统烧录后，触屏需要重新校准后才可以使用，选择\u003Cstrong\u003EHOME\u003C\u002Fstrong\u003E菜单中的\u003Cstrong\u003E校准触摸屏\u003C\u002Fstrong\u003E，屏幕会依次出现的5个点触摸点，点击触摸点位置后系统重启即完成校准。\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F53f9e940d8d75238576797c17c70bee5.png\" alt=\"\"\u003E\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F9a1a83faa9e9080df3c4904a98c73400.png\" alt=\"\"\u003E\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fbdaa6ba8e16f46a6936416b52753885a.gif\" alt=\"\"\u003E\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Ch2\u003E常见问题\u003C\u002Fh2\u003E\n\u003Ctable\u003E\n\u003Cthead\u003E\n\u003Ctr\u003E\n\u003Cth\u003E问题\u003C\u002Fth\u003E\n\u003Cth\u003E没有显示待烧录的设备怎么办？\u003C\u002Fth\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Fthead\u003E\n\u003Ctbody\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E解答\u003C\u002Ftd\u003E\n\u003Ctd\u003E首先需要电脑能正确访问行空板，通过usb线连接电脑后，在正常开机时行空板屏幕能显示logo，浏览器访问10.1.2.3能打开行空板的网页菜单。\u003Cbr\u003E  然后注意烧录系统镜像操作步骤中一定要先板子关机断电，然后按住Home按键再插上USB上电，此时板子才能进入系统镜像烧录模式。\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Ftbody\u003E\n\u003C\u002Ftable\u003E\n\u003Ctable\u003E\n\u003Cthead\u003E\n\u003Ctr\u003E\n\u003Cth\u003E问题\u003C\u002Fth\u003E\n\u003Cth\u003E系统烧录完成，进度走到100%后过了1分钟行空板还无法开机怎么办？\u003C\u002Fth\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Fthead\u003E\n\u003Ctbody\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E解答\u003C\u002Ftd\u003E\n\u003Ctd\u003E可能系统文件下载不完全，可以更换下载方式尝试重新烧录。\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Ftbody\u003E\n\u003C\u002Ftable\u003E\n\u003Ch3\u003E卡在\u003Cstrong\u003E开始或安装驱动\u003C\u002Fstrong\u003E步骤超过5分钟了怎么办？\u003C\u002Fh3\u003E\n\u003Ctable\u003E\n\u003Cthead\u003E\n\u003Ctr\u003E\n\u003Cth\u003E问题\u003C\u002Fth\u003E\n\u003Cth\u003E卡在\u003Cstrong\u003E开始或安装驱动\u003C\u002Fstrong\u003E步骤超过5分钟了怎么办？\u003C\u002Fth\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Fthead\u003E\n\u003Ctbody\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E1\u003C\u002Ftd\u003E\n\u003Ctd\u003E重启一下烧录软件，以管理员身份运行烧录工具，然后尝试重新烧录\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E2\u003C\u002Ftd\u003E\n\u003Ctd\u003E如果情况依旧，则将板子断电重新进入烧录模式，然后重启烧录软件进行烧录\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E3\u003C\u002Ftd\u003E\n\u003Ctd\u003E尝试手动安装驱动后再烧录\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E4\u003C\u002Ftd\u003E\n\u003Ctd\u003E如果依然无法解决可尝试使用此方法进行烧录： \u003Ca href=\"https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Frkdeveloptool\" title=\"点击查看\"\u003E点击查看\u003C\u002Fa\u003E\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Ftbody\u003E\n\u003C\u002Ftable\u003E\n\u003Ch3\u003E点击开始烧录软件闪退怎么办？\u003C\u002Fh3\u003E\n\u003Ctable\u003E\n\u003Cthead\u003E\n\u003Ctr\u003E\n\u003Cth\u003E问题\u003C\u002Fth\u003E\n\u003Cth\u003E点击\u003Cstrong\u003E开始烧录系统\u003C\u002Fstrong\u003E后烧录工具软件闪退怎么办？\u003C\u002Fth\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Fthead\u003E\n\u003Ctbody\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E解答\u003C\u002Ftd\u003E\n\u003Ctd\u003E尝试手动安装驱动后再烧录\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Ftbody\u003E\n\u003C\u002Ftable\u003E\n\u003Ch3\u003E如何手动安装驱动？\u003C\u002Fh3\u003E\n\u003Ctable\u003E\n\u003Cthead\u003E\n\u003Ctr\u003E\n\u003Cth\u003E问题\u003C\u002Fth\u003E\n\u003Cth\u003E如何手动安装驱动？\u003C\u002Fth\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Fthead\u003E\n\u003Ctbody\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E1\u003C\u002Ftd\u003E\n\u003Ctd\u003E下载驱动包，解压后以管理员身份运行zadig： \u003Ca href=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002Ffaf87d4ce0c528a9ecb5c4469323364d.zip\" title=\"点击下载\"\u003E点击下载\u003C\u002Fa\u003E\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E2\u003C\u002Ftd\u003E\n\u003Ctd\u003E通过拔下和按住home插上行空板时（勾选和取消勾选Options中的List All Device可以刷新列表）来选择Zadig列表中行空板对应的选项，点击\u003Cstrong\u003EInstall Driver\u003C\u002Fstrong\u003E安装驱动，弹出提示是否安装的时候勾选\u003Cstrong\u003E始终信任...\u003Cstrong\u003E然后点击\u003C\u002Fstrong\u003E安装\u003C\u002Fstrong\u003E，直到提示successfully为安装成功。\u003Cbr\u003E\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F59fffc6c52ff1d158d5436afb7979b28.png\" alt=\"\"\u003E \u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002Fd4f1f9c7a1a802b554b8395b531bfa62.png\" alt=\"\"\u003E \u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F910f2ff84f321386d550e57d86be9a8b.png\" alt=\"\"\u003E\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E3\u003C\u002Ftd\u003E\n\u003Ctd\u003E驱动安装成功后，拔下行空板usb，然后按住Home键插上USB，此时Zadig中的下拉列表中应该会会变为USB-MSC或Unknown Device，然后点击\u003Cstrong\u003EReplace Driver\u003C\u002Fstrong\u003E，直到提示successfully为安装成功。\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F1e6f0bfea40c631f5938ffcf07df71ae.png\" alt=\"\"\u003E \u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F25783eee67fafcb1cd5d47f33791d603.png\" alt=\"\"\u003E\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F92a17e0d96e80354d0a7f41ab2efd89b.png\" alt=\"\"\u003E\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E4\u003C\u002Ftd\u003E\n\u003Ctd\u003E上一步完成后，拔下行空板usb，然后按住Home键插上USB，再次以管理员身份启动烧录软件尝试烧录镜像，当有烧录进度则说明正常使用了。\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F0b5652ac9a660ad55fea83ef6a43446a.png\" alt=\"\"\u003E\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E注：\u003C\u002Ftd\u003E\n\u003Ctd\u003E请勿使用其他驱动安装软件安装驱动，如果设备管理器中有\u003Cstrong\u003ERockusb Device\u003C\u002Fstrong\u003E这个驱动，则右键卸载。\u003Cbr\u003E\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002Fc5e0e77ef57758de13e60cd26079615f.png\" alt=\"\"\u003E\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E注2：\u003C\u002Ftd\u003E\n\u003Ctd\u003E如以上操作依然无法完成，则打开设备管理器，展开“其他设备”“通用串行总线设备”加入技术交流群寻求支持。\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Ftbody\u003E\n\u003C\u002Ftable\u003E\n\u003Ctable\u003E\n\u003Cthead\u003E\n\u003Ctr\u003E\n\u003Cth\u003E问题\u003C\u002Fth\u003E\n\u003Cth\u003E烧录系统镜像时加载完文件之后提示校验出错怎么办？\u003C\u002Fth\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Fthead\u003E\n\u003Ctbody\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E解答\u003C\u002Ftd\u003E\n\u003Ctd\u003E为防止文件下载不完整，新发布的镜像文件名中包含文件的md5值，烧录软件会对文件进行md5计算，将得出来的值与文件名中的值对比，如果发现不一致则说明文件下载过程中可能损坏，请更换其他下载方式重新下载镜像文件。\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E解答\u003C\u002Ftd\u003E\n\u003Ctd\u003E如果是0.3.5以下版本文件名中不包含md5值，则一定会提示校验出错，此时仍然可以继续点烧录\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Ftbody\u003E\n\u003C\u002Ftable\u003E\n\u003Ctable\u003E\n\u003Cthead\u003E\n\u003Ctr\u003E\n\u003Cth\u003E问题\u003C\u002Fth\u003E\n\u003Cth\u003E烧录工具里面的“设备类型”对烧录有影响吗？\u003C\u002Fth\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Fthead\u003E\n\u003Ctbody\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E解答\u003C\u002Ftd\u003E\n\u003Ctd\u003E“设备类型”仅方便识别固件烧录状态，对烧录和使用没有影响。\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Ftbody\u003E\n\u003C\u002Ftable\u003E\n\u003Ch3\u003E用行空板给行空板烧系统镜像\u003C\u002Fh3\u003E\n\u003Ctable\u003E\n\u003Cthead\u003E\n\u003Ctr\u003E\n\u003Cth\u003E问题\u003C\u002Fth\u003E\n\u003Cth\u003E使用电脑烧录固件尝试了多种方法还是不行，但是有多块行空板，是否可以用正常的行空板给另外一块行空板烧固件？\u003C\u002Fth\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Fthead\u003E\n\u003Ctbody\u003E\n\u003Ctr\u003E\n\u003Ctd\u003E解答\u003C\u002Ftd\u003E\n\u003Ctd\u003E行空板本身是一个linux电脑，且具备usb口，因此可以给另外一个行空板烧录固件。详情查看：\u003Ca href=\"https:\u002F\u002Fmc.dfrobot.com.cn\u002Fthread-325157-1-1.html\" title=\"点击查看\"\u003E点击查看\u003C\u002Fa\u003E\u003C\u002Ftd\u003E\n\u003C\u002Ftr\u003E\n\u003C\u002Ftbody\u003E\n\u003C\u002Ftable\u003E\n\u003Cp\u003E\u003Cstrong\u003E如果以上内容无法解决问题，可以加入行空板官方QQ群（1037967676或960854969）进行交流。\u003C\u002Fstrong\u003E\u003C\u002Fp\u003E\n",search:d,canonicalUrl:"\u002Fburner",hlKey:p,hlSection:p}],fetch:{},error:h,state:{authUser:h,dfrobotshopUser:h},serverRendered:d,routePath:"\u002Fwiki\u002Fm10\u002Fburner",config:{_app:{basePath:"\u002F",assetsPath:"\u002F_nuxt\u002F",cdnURL:h}}}}(false,"","file",true,"folder","行空板官方文档-unihiker库","行空板官方文档-固件烧录",null,1,"burner","行空板,固件烧录,系统更新","本文讲解行空板如何烧录系统镜像","vnc","user_block_extension","Mind+图形化扩展库收集",void 0));</script><script src="./行空板官方文档-固件烧录_files/328c8aa.js.下载" defer=""></script><script src="./行空板官方文档-固件烧录_files/1feb59e.js.下载" defer=""></script><script src="./行空板官方文档-固件烧录_files/aa9438b.js.下载" defer=""></script><script src="./行空板官方文档-固件烧录_files/ca129b3.js.下载" defer=""></script><script src="./行空板官方文档-固件烧录_files/b8c9955.js.下载" defer=""></script>
+  
+
+</body></html>

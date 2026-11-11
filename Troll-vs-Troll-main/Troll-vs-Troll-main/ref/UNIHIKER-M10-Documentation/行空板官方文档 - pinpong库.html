@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib -->
+<html dir="ltr" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><title>行空板官方文档 - pinpong库</title><link rel="icon" type="image/x-icon" href="https://www.unihiker.com.cn/unihiker/favicon.ico"><link rel="stylesheet" href="./行空板官方文档 - pinpong库_files/github-markdown.css"><link rel="stylesheet" href="./行空板官方文档 - pinpong库_files/bootstrap.min.css"><link rel="stylesheet" href="./行空板官方文档 - pinpong库_files/style.css"><link rel="canonical" href="https://www.unihiker.com.cn/pinpong_python_lib"><script src="./行空板官方文档 - pinpong库_files/md5.min.js.下载" ssr="true"></script><script src="./行空板官方文档 - pinpong库_files/jquery-2.1.1.min.js.下载" ssr="true"></script><script src="./行空板官方文档 - pinpong库_files/bootstrap.min.js.下载" ssr="true"></script><script src="./行空板官方文档 - pinpong库_files/ga.js.下载" async="" ssr="false"></script><script type="text/javascript" src="./行空板官方文档 - pinpong库_files/js" ssr="true" mode="client"></script><link rel="preload" href="./行空板官方文档 - pinpong库_files/328c8aa.js.下载" as="script"><link rel="preload" href="./行空板官方文档 - pinpong库_files/aa9438b.js.下载" as="script"><link rel="preload" href="./行空板官方文档 - pinpong库_files/ca129b3.js.下载" as="script"><link rel="preload" href="./行空板官方文档 - pinpong库_files/b7e4c3b.css" as="style"><link rel="preload" href="./行空板官方文档 - pinpong库_files/b8c9955.js.下载" as="script"><link rel="preload" href="./行空板官方文档 - pinpong库_files/1feb59e.js.下载" as="script"><link rel="stylesheet" href="./行空板官方文档 - pinpong库_files/b7e4c3b.css">
+  <link data-n-head="ssr" rel="icon" type="image/x-icon" href="https://www.unihiker.com.cn/unihiker/favicon.ico"><link data-n-head="ssr" rel="stylesheet" href="./行空板官方文档 - pinpong库_files/github-markdown.css"><link data-n-head="ssr" rel="stylesheet" href="./行空板官方文档 - pinpong库_files/bootstrap.min.css"><link data-n-head="ssr" rel="stylesheet" href="./行空板官方文档 - pinpong库_files/style.css"><link data-n-head="ssr" rel="canonical" href="https://www.unihiker.com.cn/pinpong_python_lib"><meta data-n-head="ssr" name="viewport" content="width=device-width, initial-scale=1"><meta data-n-head="ssr" data-hid="keywords" name="keywords" content=""><meta data-n-head="ssr" data-hid="description" name="description" content=""><script data-n-head="ssr" src="./行空板官方文档 - pinpong库_files/md5.min.js.下载" ssr="true"></script><script data-n-head="ssr" src="./行空板官方文档 - pinpong库_files/jquery-2.1.1.min.js.下载" ssr="true"></script><script data-n-head="ssr" src="./行空板官方文档 - pinpong库_files/bootstrap.min.js.下载" ssr="true"></script><script data-n-head="ssr" src="./行空板官方文档 - pinpong库_files/ga.js.下载" async="" ssr="false"></script><script data-n-head="ssr" type="text/javascript" src="./行空板官方文档 - pinpong库_files/js" ssr="true" mode="client"></script></head>
+  <body>
+    <div id="__nuxt"><!----><div id="__layout"><div><div data-v-1fc16f07=""><div data-v-1fc16f07=""><div class="hidden-print hidden-xs hidden-sm"><nav class="navbar-inverse affix pc-navbar"><div class="navbar-header logoImg"><a href="https://www.unihiker.com.cn/" target="_blank" class="navbar-brand logo"><img src="./行空板官方文档 - pinpong库_files/906eaedaeb15ba929c26597ca7d8bd51.png" alt="logo"></a></div> <div id="bs-example-navbar-collapse-9" class="collapse navbar-collapse"><ul class="nav navbar-nav" style="padding-left: 74px;"><li><a href="https://www.unihiker.com.cn/" target="" class="nav-item">首页</a></li><li class="active"><a href="https://www.unihiker.com.cn/wiki/m10" target="" class="nav-item">M10教程</a></li><li><a href="https://www.unihiker.com.cn/wiki/k10" target="" class="nav-item">K10教程</a></li><li><a href="https://mc.dfrobot.com.cn/forum-221-1.html" target="" class="nav-item">论坛</a></li><li><a href="https://www.dfrobot.com.cn/goods-3404.html" target="" class="nav-item">购买</a></li></ul></div></nav> <div style="height: 60px;"></div></div> <div class="mobile hidden-lg hidden-md"><nav class="navbar-inverse hidden-print affix mobile-navbar"><div class="sub-navbar-box"><a href="https://www.unihiker.com.cn/" target="_blank" class="logo"><img src="./行空板官方文档 - pinpong库_files/906eaedaeb15ba929c26597ca7d8bd51.png" alt="logo"></a></div> <div class="navbar-header"><div id="show-bs-docs-sidebar" href="#this" class="navbar-brand" style="padding: 14px;"><i class="glyphicon glyphicon-list"></i></div></div></nav></div></div> <div class="leftMenu" data-v-1fc16f07=""><div class="menu"><div id="leftNavigate" role="complementary" class="col-md-3 bs-docs-sidebar hiidden-prnt"><div class="search"><i class="glyphicon glyphicon-search"></i> <input type="text" placeholder="搜索" value="" class="form-control"> <i class="glyphicon glyphicon-remove"></i></div> <ul class="nav bs-docs-sidenav"><li id="get-started" class=""><a title="行空板官方文档-行空板快速上手教程 " href="https://www.unihiker.com.cn/wiki/m10/get-started">0-快速使用教程(学习指南)</a> <!----></li><li id="FAQ" class=""><a title="行空板官方文档-常见问题" href="https://www.unihiker.com.cn/wiki/m10/FAQ">FAQ常见问题</a> <!----></li><li id="" class=""><a href="javascript:;"><span>一、行空板通用功能</span> <i class="glyphicon glyphicon-menu-down"></i></a> <ul class="nav"><li id="jianjie" class=""><a title="行空板官方文档 - 硬件介绍" href="https://www.unihiker.com.cn/wiki/m10/jianjie">1.1-硬件介绍</a> <!----></li><li id="networking" class=""><a title="行空板官方文档-连接说明" href="https://www.unihiker.com.cn/wiki/m10/networking">1.2-连接方式说明</a> <!----></li><li id="homemenu" class=""><a title="行空板官方文档-Home菜单" href="https://www.unihiker.com.cn/wiki/m10/homemenu">1.3-板载Home菜单</a> <!----></li><li id="webmenu" class=""><a title="行空板官方文档-本地Web主页" href="https://www.unihiker.com.cn/wiki/m10/webmenu">1.4-本地Web主页</a> <!----></li><li id="samba" class=""><a title="行空板官方文档-samba文件共享" href="https://www.unihiker.com.cn/wiki/m10/samba">1.5-SMB文件共享</a> <!----></li><li id="vnc" class=""><a title="本地Web主页-屏幕共享功能" href="https://www.unihiker.com.cn/wiki/m10/vnc">1.6-VNC屏幕共享</a> <!----></li><li id="burner" class=""><a title="行空板官方文档-固件烧录" href="https://www.unihiker.com.cn/wiki/m10/burner">1.7-系统镜像烧录</a> <!----></li></ul></li><li id="" class="active"><a href="javascript:;"><span>二、专用Python库说明</span> <i class="glyphicon glyphicon-menu-down"></i></a> <ul class="nav"><li id="connection" class=""><a href="javascript:;"><span>2.1-unihiker行空库</span> <i class="glyphicon glyphicon-menu-right"></i></a> <ul class="nav"><li id="unihiker_python_lib" class=""><a title="行空板官方文档-unihiker库" href="https://www.unihiker.com.cn/wiki/m10/unihiker_python_lib">库说明</a></li><li id="unihiker_python_lib_1" class=""><a title="行空板官方文档-unihiker库" href="https://www.unihiker.com.cn/wiki/m10/unihiker_python_lib_1">通用知识和功能</a></li><li id="unihiker_python_lib_2" class=""><a title="行空板官方文档-unihiker库" href="https://www.unihiker.com.cn/wiki/m10/unihiker_python_lib_2">基础控件</a></li><li id="unihiker_python_lib_3" class=""><a title="行空板官方文档-unihiker库" href="https://www.unihiker.com.cn/wiki/m10/unihiker_python_lib_3">基础图形</a></li><li id="unihiker_python_lib_4" class=""><a title="行空板官方文档-unihiker库" href="https://www.unihiker.com.cn/wiki/m10/unihiker_python_lib_4">鼠标键盘侦测</a></li><li id="unihiker_python_lib_5" class=""><a title="行空板官方文档-unihiker库" href="https://www.unihiker.com.cn/wiki/m10/unihiker_python_lib_5">多线程</a></li><li id="unihiker_python_lib_6" class=""><a title="行空板官方文档-unihiker库" href="https://www.unihiker.com.cn/wiki/m10/unihiker_python_lib_6">录音及播放</a></li></ul></li><li id="pinpong_python_lib" class="active"><a title="行空板官方文档 - pinpong库" href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib">2.2-pinpong硬件控制库</a> <!----></li><li id="user_block_extension" class=""><a title="Mind+图形化扩展库收集" href="https://www.unihiker.com.cn/wiki/m10/user_block_extension">2.3-mind+图形化用户库收集</a> <!----></li></ul></li><li id="vnc" class=""><a href="javascript:;"><span>三、编程方式</span> <i class="glyphicon glyphicon-menu-down"></i></a> <ul class="nav"><li id="mindplus" class=""><a title="行空板官方文档-Mind+使用教程" href="https://www.unihiker.com.cn/wiki/m10/mindplus">3.1.1-Mind+编程说明</a> <!----></li><li id="" class=""><a href="javascript:;"><span>3.1.2-图形化编程(积木说明)</span> <i class="glyphicon glyphicon-menu-right"></i></a> <ul class="nav"><li id="mindplus_block" class=""><a title="行空板教程-Mind+图形化编程" href="https://www.unihiker.com.cn/wiki/m10/mindplus_block">行空板主板功能积木说明</a></li><li id="mindplus_block_Basics" class=""><a title="python_block_Basics" href="https://www.unihiker.com.cn/wiki/m10/mindplus_block_Basics">基础功能积木说明</a></li><li id="mindplus_block_extension" class=""><a title="行空板拓展模块wiki" href="https://www.unihiker.com.cn/wiki/m10/mindplus_block_extension">扩展库积木说明</a></li><li id="user_block_extension" class=""><a title="Mind+图形化扩展库收集" href="https://www.unihiker.com.cn/wiki/m10/user_block_extension">扩展用户库</a></li></ul></li><li id="pip_install" class=""><a title="行空板库安装-行空板官方文档" href="https://www.unihiker.com.cn/wiki/m10/pip_install">3.1.3-Python库安装</a> <!----></li><li id="pyenv" class=""><a title="行空板M10使用pyenv切换Python版本" href="https://www.unihiker.com.cn/wiki/m10/pyenv">3.1.4-切换Python版本(pyenv)</a> <!----></li><li id="mindplus_code" class=""><a title="行空板教程-Mind+代码模式" href="https://www.unihiker.com.cn/wiki/m10/mindplus_code">3.1.5-Mind+代码编程</a> <!----></li><li id="" class=""><a href="javascript:;"><span>3.x-其他编程方式</span> <i class="glyphicon glyphicon-menu-right"></i></a> <!----></li></ul></li><li id="" class=""><a href="javascript:;"><span>四、系列教程</span> <i class="glyphicon glyphicon-menu-down"></i></a> <ul class="nav"><li id="shipinjiaocheng" class=""><a title="行空板官方文档-视频教程" href="https://www.unihiker.com.cn/wiki/m10/shipinjiaocheng">4.0-系列视频教程</a> <!----></li><li id="blocktutorials" class=""><a title="行空板图形化入门教程-行空板教程" href="https://www.unihiker.com.cn/wiki/m10/blocktutorials">4.1-单板图形化入门教程</a> <!----></li><li id="rumenjiaocheng" class=""><a title="行空板官方文档-入门教程" href="https://www.unihiker.com.cn/wiki/m10/rumenjiaocheng">4.2-单板代码入门教程</a> <!----></li><li id="hardwaretutorials" class=""><a title="【行空板】用Python玩转开源硬件" href="https://www.unihiker.com.cn/wiki/m10/hardwaretutorials">4.3-开源硬件入门教程</a> <!----></li></ul></li><li id="burner" class=""><a href="javascript:;"><span>五、优秀应用案例</span> <i class="glyphicon glyphicon-menu-down"></i></a> <ul class="nav"><li id="ai_project" class=""><a title="行空板官方文档-AI应用" href="https://www.unihiker.com.cn/wiki/m10/ai_project">5.1-AI人工智能相关应用</a> <!----></li><li id="iot_project" class=""><a title="行空板官方文档-IoT物联网应用" href="https://www.unihiker.com.cn/wiki/m10/iot_project">5.2-IoT物联网相关应用</a> <!----></li><li id="k12_project" class=""><a title="【新课标】义务教育信息科技课程 跨学科案例" href="https://www.unihiker.com.cn/wiki/m10/k12_project">5.3-新课标跨学科案例</a> <!----></li><li id="others_project" class=""><a title="行空板项目" href="https://www.unihiker.com.cn/wiki/m10/others_project">5.4-更多社区项目</a> <!----></li></ul></li></ul> <div class="shadow-more" style="display: block;"></div></div> <div class="arrowBtn"><span><i class="glyphicon glyphicon-menu-right" style="transform: rotate(180deg); left: 3px;"></i></span></div></div></div> <section id="markdown-content" class="content" style="width:calc(100% - 330px);padding:0 0 0 250px;" data-v-1fc16f07=""><section id="navbar-content" class="content-nav hidden-xs hidden-sm" style="left:330px;" data-v-1fc16f07=""><ul role="tablist" class="nav nav-tabs" data-v-1fc16f07=""><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#2%20-%20%E5%AE%89%E8%A3%85%E5%BA%93" data-v-1fc16f07="">2 - 安装库</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#================" data-v-1fc16f07="">================</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#3%20-%20pinpong%E5%BA%93%E5%AF%BC%E5%85%A5%E6%96%B9%E6%B3%95" data-v-1fc16f07="">3 - pinpong库导入方法</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#----------------" data-v-1fc16f07="">----------------</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#4%20-%20%E6%9D%BF%E8%BD%BD%E8%B5%84%E6%BA%90%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E" data-v-1fc16f07="">4 - 板载资源使用说明</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#4.1-L%E7%81%AF" data-v-1fc16f07="">4.1-L灯</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#4.2-%E6%8C%89%E9%92%AEAB" data-v-1fc16f07="">4.2-按钮AB</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#4.3-%E5%85%89%E7%BA%BF%E4%BC%A0%E6%84%9F%E5%99%A8" data-v-1fc16f07="">4.3-光线传感器</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#4.4-%E5%8A%A0%E9%80%9F%E5%BA%A6%E4%BC%A0%E6%84%9F%E5%99%A8" data-v-1fc16f07="">4.4-加速度传感器</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#4.5-%E8%9C%82%E9%B8%A3%E5%99%A8" data-v-1fc16f07="">4.5-蜂鸣器</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#4.6-%E7%8E%AF%E5%A2%83%E5%A3%B0%E9%9F%B3%E5%BC%BA%E5%BA%A6" data-v-1fc16f07="">4.6-环境声音强度</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#----------------" data-v-1fc16f07="">----------------</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#5%20-%20%E5%9F%BA%E7%A1%80GPIO%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E" data-v-1fc16f07="">5 - 基础GPIO使用说明</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#5.1-%E6%95%B0%E5%AD%97%E8%BE%93%E5%87%BA" data-v-1fc16f07="">5.1-数字输出</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#5.2-%E6%95%B0%E5%AD%97%E8%BE%93%E5%85%A5" data-v-1fc16f07="">5.2-数字输入</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#5.3-%E6%A8%A1%E6%8B%9F%E8%BE%93%E5%85%A5%EF%BC%88ADC%EF%BC%89" data-v-1fc16f07="">5.3-模拟输入（ADC）</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#5.4-%E6%A8%A1%E6%8B%9F%E8%BE%93%E5%87%BA%EF%BC%88PWM%EF%BC%89" data-v-1fc16f07="">5.4-模拟输出（PWM）</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#----------------" data-v-1fc16f07="">----------------</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#6%20-%20%E9%AB%98%E7%BA%A7%E5%8A%9F%E8%83%BD" data-v-1fc16f07="">6 - 高级功能</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#6.1-%E4%B8%B2%E5%8F%A3%EF%BC%88UART%EF%BC%89" data-v-1fc16f07="">6.1-串口（UART）</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#6.2-SPI" data-v-1fc16f07="">6.2-SPI</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#6.3-I2C" data-v-1fc16f07="">6.3-I2C</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#----------------" data-v-1fc16f07="">----------------</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#7%20-%20%E6%9B%B4%E5%A4%9A%E4%BC%A0%E6%84%9F%E5%99%A8%E7%9A%84%E6%94%AF%E6%8C%81" data-v-1fc16f07="">7 - 更多传感器的支持</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#DHT11%E6%B8%A9%E6%B9%BF%E5%BA%A6%E4%BC%A0%E6%84%9F%E5%99%A8" data-v-1fc16f07="">DHT11温湿度传感器</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#%E8%88%B5%E6%9C%BA%E7%A4%BA%E4%BE%8B" data-v-1fc16f07="">舵机示例</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#%E5%8A%9F%E7%8E%87%E8%AE%A1%E7%A4%BA%E4%BE%8B" data-v-1fc16f07="">功率计示例</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#WS2812%20RGB%E7%81%AF%E5%B8%A6" data-v-1fc16f07="">WS2812 RGB灯带</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#----------------" data-v-1fc16f07="">----------------</a> </li><li data-v-1fc16f07=""><a href="https://www.unihiker.com.cn/wiki/m10/pinpong_python_lib#7%20-%20%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98FAQ" data-v-1fc16f07="">7 - 常见问题FAQ</a> </li></ul></section> <article id="htmlContent" class="panel-body markdown-body" data-v-1fc16f07=""><h1>1 - pinpong库说明</h1>
+<p>行空板上板载了一颗单片机协处理器负责板载元件及GPIO的控制，我们使用Python中的PinPong库来与协处理器通讯，从而实现用Python代码控制硬件。</p>
+<blockquote>
+<p>更多pinpong库的介绍，请查看<a href="https://pinpong.readthedocs.io/zh_CN/latest/" title="pinpong官方文档">pinpong官方文档</a></p>
+</blockquote>
+<h2>2 - 安装库</h2>
+<blockquote>
+<p><strong>注：行空板出厂固件中已经内置了pinpong库，因此本步骤可以跳过。</strong></p>
+</blockquote>
+<p>通过pip工具即可进行安装和更新</p>
+<p><strong>安装：</strong></p>
+<pre><code class="language-bash">pip install pinpong
+</code></pre>
+<p><strong>更新：</strong></p>
+<pre><code class="language-bash">pip install -U pinpong
+</code></pre>
+<h2>================</h2>
+<h2>3 - pinpong库导入方法</h2>
+<ul>
+<li>pinpong库由于支持众多的主控板及开源硬件，因此分成了3个包，board、extension和libs，board包中放置主板支持的功能及常用库，extension为定制类主控，libs中放置其他传感器的扩展库。</li>
+<li>pinpong库支持多块主控板的使用，因此可以指定板型及端口号并生成对象，因为行空板上固定为协处理器并且端口号固定，因此可以省略掉这些参数而直接初始化。</li>
+</ul>
+<pre><code class="language-python">from pinpong.board import xxx   #board包中的库
+from pinpong.libs.xxx    #libs包中的库
+from pinpong.extension.xxx    #extension包中的主板
+
+Board().begin() #初始化，连接协处理器，检查固件为空或版本不对则自动烧录
+
+</code></pre>
+<h2>----------------</h2>
+<h2>4 - 板载资源使用说明</h2>
+<h2>4.1-L灯</h2>
+<p>行空板背面有一颗蓝色LED灯（标记为L）可供用户控制。<br>
+L灯为高低电平控制，接到了行空板的P25接口上，因此控制P25即可控制L灯。</p>
+<blockquote>
+<p>其他接口或者扩展板上连接的单独的LED灯模块控制方法相同，引脚选择实际连接的引脚即可。</p>
+</blockquote>
+<ul>
+<li>语法：<code>Pin(Pin.P25, Pin.OUT).write_digital(电平信号)</code></li>
+<li>返回值：无</li>
+<li>输入参数：<code>1</code>高电平，   <code>0</code>低电平</li>
+<li>示例代码：</li>
+</ul>
+<pre><code class="language-python"># -*- coding: UTF-8 -*-
+import time
+from pinpong.board import Board,Pin
+
+Board().begin()               #初始化
+
+led = Pin(Pin.P25, Pin.OUT) #引脚初始化为电平输出模式，P25为L灯的引脚
+
+while True:
+  #led.value(1) #输出高电平 方法1
+  led.write_digital(1) #输出高电平 方法2
+  print("1 LED亮") #终端打印信息
+  time.sleep(1) #等待1秒 保持状态
+
+  #led.value(0) #输出低电平 方法1
+  led.write_digital(0) #输出低电平 方法2
+  print("0 LED灭") #终端打印信息
+  time.sleep(1) #等待1秒 保持状态
+</code></pre>
+<ul>
+<li>图形化示例：<br>
+<img src="./行空板官方文档 - pinpong库_files/fb408dfa6604d9cfa7e1184d60bcd931.png" alt=""></li>
+</ul>
+<h2>4.2-按钮AB</h2>
+<blockquote>
+<p><strong>注意</strong>：行空板上有三个按键：Home、A、B，其中Home按键仅供Home菜单使用，A、B按键可供用户调用（注：由于A、B按键同时被映射为了键盘的AB按键，因此除了使用pinpong调用，还可以用unihiker库中的键盘事件调用，或者使用pygame、opencv等能获取键盘的库调用，并不需要使用pinpong）。</p>
+</blockquote>
+<p>在pinpong库中，按钮有两种方式调用，一种是直接读取 查询式，第二种是中断事件回调式。</p>
+<ul>
+<li><strong>查询式 ：</strong>
+<ul>
+<li><strong>语法：</strong><code>button_a.is_pressed()</code> <code>button_b.is_pressed()</code></li>
+<li>**返回值：**按钮按下返回<code>True</code>，按钮没有按下返回<code>False</code></li>
+<li>**输入参数：**无</li>
+<li><strong>示例代码：</strong></li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-python"># -*- coding: utf-8 -*-
+from pinpong.board import *
+from pinpong.extension.unihiker import *
+
+Board().begin() #初始化
+
+while True:
+    if button_a.is_pressed() == True: #判断按钮是否被按下
+        print("按钮A按下")
+    if button_b.is_pressed() == True: #判断按钮是否被按下
+        print("按钮B按下")
+
+</code></pre>
+<ul>
+<li>
+<p>图形化示例：<br>
+<img src="./行空板官方文档 - pinpong库_files/46cdad93a2f18504d637af4a7e9db73d.png" alt=""></p>
+</li>
+<li>
+<p><strong>回调式 ：</strong></p>
+<ul>
+<li><strong>语法：</strong><code>button_a.irq(trigger=触发模式, handler = 回调函数)</code> <code>button_b.irq(trigger=触发模式, handler = 回调函数)</code></li>
+<li>**返回值：**无</li>
+<li><strong>输入参数：</strong>
+<ul>
+<li>trigger：触发模式，有上升沿（<code>Pin.IRQ_RISING</code>）、下降沿（<code>Pin.IRQ_FALLING</code>）、电平跳变（<code>Pin.IRQ_RISING+Pin.IRQ_FALLING</code>）三种</li>
+</ul>
+</li>
+<li><strong>示例程序：</strong></li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-python"># -*- coding: utf-8 -*-
+from pinpong.board import *
+from pinpong.extension.unihiker import *
+import time
+
+Board().begin() #初始化
+
+def btn_a_rasing_handler(pin):#中断事件回调函数
+  print("按钮A按下")
+
+def btn_b_falling_handler(pin):#中断事件回调函数
+  print("按钮B松开")
+
+button_a.irq(trigger=Pin.IRQ_RISING, handler = btn_a_rasing_handler)#上升沿触发
+button_b.irq(trigger=Pin.IRQ_FALLING, handler = btn_b_falling_handler)#下降沿触发
+
+while True:
+    time.sleep(1)#等待让程序不退出
+    
+</code></pre>
+<h2>4.3-光线传感器</h2>
+<p>行空板正面屏幕上方有一颗光线传感器，可以获取环境光线强度（注：单位为模拟输入值，非勒克斯）。</p>
+<ul>
+<li>语法： <code>light.read()</code>  注：光线传感器接到行空板的P29接口上，因此还可以通过ADC输入方法读取。</li>
+<li>返回值：光线强度值，0-4095。</li>
+<li>输入参数：无</li>
+<li>示例代码：</li>
+</ul>
+<pre><code class="language-python"># -*- coding: UTF-8 -*-
+import time
+from pinpong.board import *
+from pinpong.extension.unihiker import *
+
+Board().begin()               #初始化
+
+
+while True:
+    light_value = light.read()
+    print("光线强度：%d"%(light_value)) #终端打印信息
+    time.sleep(0.1) #等待1秒 保持状态
+</code></pre>
+<ul>
+<li>图形化示例：<br>
+<img src="./行空板官方文档 - pinpong库_files/c0e816405fd52921bfb50fd1e1ea35dd.png" alt=""></li>
+</ul>
+<h2>4.4-加速度传感器</h2>
+<p>行空板背面板载一颗6轴加速度陀螺仪传感器，可以分别读取加速度和陀螺仪的x、y、z的值，以及加速度强度。</p>
+<ul>
+<li>语法：
+<ul>
+<li>加速度：<code>accelerometer.get_x()</code> <code>accelerometer.get_y()</code> <code>accelerometer.get_z()</code> <code>accelerometer.get_strength()</code></li>
+<li>陀螺仪：<code>gyroscope.get_x()</code> <code>gyroscope.get_y()</code> <code>gyroscope.get_z()</code></li>
+</ul>
+</li>
+<li>返回值：加速度陀螺仪的值</li>
+<li>输入值：无</li>
+<li>示例程序：</li>
+</ul>
+<pre><code class="language-python"># -*- coding: utf-8 -*-
+import time
+from pinpong.board import *
+from pinpong.extension.unihiker import *
+
+Board().begin()  #初始化
+
+while True:
+  print(accelerometer.get_x())                    #读取加速度X的值
+  print(accelerometer.get_y())                    #读取加速度Y的值
+  print(accelerometer.get_z())                    #读取加速度Z的值
+  print(accelerometer.get_strength())             #读取加速度强度（x、y、z方向的合力）
+  print(gyroscope.get_x())                        #读取陀螺仪X的值
+  print(gyroscope.get_y())                        #读取陀螺仪Y的值
+  print(gyroscope.get_z())                        #读取陀螺仪Z的值
+  print("------------------")
+  time.sleep(1)
+
+</code></pre>
+<ul>
+<li>图形化示例：<br>
+<img src="./行空板官方文档 - pinpong库_files/5beb88acb995102fb7b44d1fe086e0f3.png" alt=""></li>
+</ul>
+<h2>4.5-蜂鸣器</h2>
+<p>行空板背面板载一颗蜂鸣器，可以发出设定的音调。</p>
+<ul>
+<li>示例程序：</li>
+</ul>
+<pre><code class="language-python"># -*- coding: utf-8 -*-
+import time
+from pinpong.board import Board,Pin
+from pinpong.extension.unihiker import *
+
+Board().begin()#初始化
+
+#音乐 DADADADUM ENTERTAINER PRELUDE ODE NYAN RINGTONE FUNK BLUES BIRTHDAY WEDDING FUNERAL PUNCHLINE
+#音乐 BADDY CHASE BA_DING WAWAWAWAA JUMP_UP JUMP_DOWN POWER_UP POWER_DOWN
+#播放模式 Once(播放一次) Forever(一直播放) OnceInBackground(后台播放一次) ForeverInBackground(后台一直播放)
+buzzer.play(buzzer.DADADADUM, buzzer.Once) #播放音乐一次
+# buzzer.set_tempo(4,60) #设置每一拍音符数，每分钟节拍数
+buzzer.pitch(494, 4) #播放音符
+# buzzer.pitch(494) #后台播放音符
+# time.sleep(10)
+# buzzer.stop() #停止后台播放
+# buzzer.redirect(Pin.P0) #引脚重定向，只支持PWM引脚 
+# buzzer.play(buzzer.ENTERTAINER, buzzer.ForeverInBackground) #后台一直播放音乐
+while True:
+    time.sleep(1) #等待1秒 保持状态
+</code></pre>
+<ul>
+<li>图形化示例：</li>
+</ul>
+<p><img src="./行空板官方文档 - pinpong库_files/e1fc6e1cbbd7da3b98316bbadb332905.png" alt=""></p>
+<h2>4.6-环境声音强度</h2>
+<p>行空板上的麦克风并非普通的声音传感器，可以直接录音做语音识别，因此接到了CPU而非协处理上，所以获取环境声音强度不使用pinpong库，而使用unihiker库中Audio类获取。</p>
+<blockquote>
+<p>点击查看：<a href="https://www.unihiker.com.cn/wiki/m10/unihiker_python_lib" title="unihiker库">unihiker库</a></p>
+</blockquote>
+<ul>
+<li>示例程序：</li>
+</ul>
+<pre><code class="language-python"># -*- coding: utf-8 -*-
+from unihiker import Audio
+import time
+
+audio = Audio() #实例化音频
+
+while True:
+    value = audio.sound_level()
+    print("环境音=%d"%(value))
+    time.sleep(0.1)
+</code></pre>
+<h2>----------------</h2>
+<h2>5 - 基础GPIO使用说明</h2>
+<p>行空板引脚操作与pinpong通用语法相同。</p>
+<h2>5.1-数字输出</h2>
+<p>行空板所有引脚均支持数字输出，电平电压为3.3V。</p>
+<pre><code class="language-python"># -*- coding: UTF-8 -*-
+#实验效果：控制外接LED灯一秒闪烁一次
+#接线：在行空板P21接一个LED灯
+import time
+from pinpong.board import Board,Pin
+
+Board().begin()               #初始化
+
+led = Pin(Pin.P21, Pin.OUT) #引脚初始化为电平输出
+
+while True:
+  #led.value(1) #输出高电平 方法1
+  led.write_digital(1) #输出高电平 方法2
+  print("1") #终端打印信息
+  time.sleep(1) #等待1秒 保持状态
+
+  #led.value(0) #输出低电平 方法1
+  led.write_digital(0) #输出低电平 方法2
+  print("0") #终端打印信息
+  time.sleep(1) #等待1秒 保持状态
+</code></pre>
+<ul>
+<li>图形化示例：<br>
+<img src="./行空板官方文档 - pinpong库_files/7d5629a4694da569011bcf4e02369b2b.png" alt=""></li>
+</ul>
+<h2>5.2-数字输入</h2>
+<p>行空板所有引脚均支持数字输入，电平电压为3.3V。</p>
+<pre><code class="language-python"># -*- coding: UTF-8 -*-
+#实验效果：使用按钮控制行空板板载L灯亮灭
+#接线：在行空板P23接口接一个按钮模块
+import time
+from pinpong.board import Board,Pin
+
+Board().begin()               #初始化
+
+btn = Pin(Pin.P23, Pin.IN) #引脚初始化为电平输入
+led = Pin(Pin.P25, Pin.OUT) #L灯引脚初始化为输出
+
+while True:
+  #v = btn.value()  #读取引脚电平方法1
+  v = btn.read_digital()  #读取引脚电平方法2
+  print(v)  #终端打印读取的电平状态
+  #led.value(v)  #将按钮状态设置给led灯引脚  输出电平方法1
+  led.write_digital(v) #将按钮状态设置给led灯引脚  输出电平方法2
+  time.sleep(0.1)
+</code></pre>
+<ul>
+<li>图形化示例：<br>
+<img src="./行空板官方文档 - pinpong库_files/2addbddab8455d4f867c74af6651f08f.png" alt=""></li>
+</ul>
+<h2>5.3-模拟输入（ADC）</h2>
+<p>行空板支持8路12位高精度模拟输入ADC，分别对应引脚为: P0 P1 P2 P3 P4 P10 P21 P22</p>
+<pre><code class="language-python"># -*- coding: UTF-8 -*-
+#实验效果：打印行空板P21口模拟值
+#接线：行空板P21口接一个旋钮模块
+import time
+from pinpong.board import Board,Pin
+
+Board().begin()               #初始化
+# ADC模拟输入引脚支持: P0 P1 P2 P3 P4 P10 P21 P22
+#adc21 = ADC(Pin(Pin.P21)) #将Pin传入ADC中实现模拟输入  模拟输入方法1
+adc21 = Pin(Pin.P21, Pin.ANALOG) #引脚初始化为电平输出 模拟输入方法2
+
+while True:
+  #v = adc21.read()  #读取A0口模拟信号数值 0-4095 模拟输入方法1
+  v = adc21.read_analog() #读取A0口模拟信号数值 0-4095 模拟输入方法2
+  print("P21=", v)
+  time.sleep(0.5)
+</code></pre>
+<ul>
+<li>图形化示例：<br>
+<img src="./行空板官方文档 - pinpong库_files/e06b586f1cf0258638d44146f437b771.png" alt=""></li>
+</ul>
+<h2>5.4-模拟输出（PWM）</h2>
+<p>行空板支持8路10位PWM，分别对应引脚为: P0  P2  P3  P10  P16  P21  P22  P23</p>
+<blockquote>
+<p>注意: 其中P8与P2共用一路PWM，P9与P10共用一路PWM，因此P8与P9也可以使用PWM，但使用时P2和P10不能使用，另外需要注意P8P9为一组，P2P10为一组，只能同时使用其中一组，不可混合使用（例如P8或P9输出了PWM，则P2或P10就不能输出PWM了）。</p>
+</blockquote>
+<pre><code class="language-python"># -*- coding: UTF-8 -*-
+#实验效果： PWM输出实验,控制LED灯亮度变化
+#接线：LED灯接到行空板P21引脚上
+import time
+from pinpong.board import Board,Pin
+
+Board().begin()               #初始化
+
+# PWM模拟输出引脚支持: P0  P2  P3  P10  P16  P21  P22  P23
+#pwm21 = PWM(Pin(Pin.P21)) #将引脚传入PWM初始化  模拟输出方法1
+pwm21 = Pin(Pin.P21, Pin.PWM) #初始化引脚为PWM模式 模拟输出方法2
+
+while True:
+    for i in range(1023):
+        print(i)
+        #pwm21.duty(i) #PWM输出 方法1
+        pwm21.write_analog(i) #PWM输出 方法2
+        time.sleep(0.05)
+</code></pre>
+<ul>
+<li>图形化示例：<br>
+<img src="./行空板官方文档 - pinpong库_files/27b4789d43e60ba45288de786ea90bfe.png" alt=""></li>
+</ul>
+<h2>----------------</h2>
+<h2>6 - 高级功能</h2>
+<h2>6.1-串口（UART）</h2>
+<blockquote>
+<p>行空板金手指上支持1路硬串口，可搭配micro:bit兼容的扩展板使用。<br>
+注:不支持软串口<br>
+<img src="./行空板官方文档 - pinpong库_files/732c26ccc3cee823058cc88fd5e97c28.png" alt=""></p>
+</blockquote>
+<blockquote>
+<p>注：行空板板载了USB接口，内置了ch340、cp2102、pl2303串口驱动，因此你还可以直接使用一个USB to TTL转接板连接串口设备，<a href="https://mc.dfrobot.com.cn/thread-314531-1-1.html" title="使用pyserial库进行通信">使用pyserial库进行通信</a>。</p>
+</blockquote>
+<pre><code class="language-python"># -*- coding: utf-8 -*-
+import time
+from pinpong.board import Board, UART
+
+Board("UNIHIKER").begin()  #初始化，选择板型，不输入板型则进行自动识别
+#硬串口1 P0-RX P3-TX
+uart1 = UART()   
+#初始化串口 baud_rate 波特率, bits 数据位数(8/9) parity奇偶校验(0 无校验/1 奇校验/2 偶校验) stop 停止位(1/2)
+# uart1.init(baud_rate = 115200, bits=8, parity=0, stop = 1) 
+uart1.init() #默认波特率为9600
+buf = [0x00, 0x01, 0x02, 0x03, 0x05, 0x06, 0x07]
+#关闭硬串口1
+#uart1.deinit() 
+#返回可读取的字节数
+#uart1.any() 
+#串口写,buf为数列
+#uart1.write(buf)
+#读取串口字符,返回None或者数列
+#uart1.read(n)
+#读一行，以换行符结尾。读取行或 None 超时。(到换行键(0xa)结束，无则返回None)
+#buf = uart1.readline()
+#将字节读入buf。如果 nbytes 指定，则最多读取多个字节。否则，最多读取 len(buf) 字节数。
+#uart1.readinto(buf, nbytes)
+while True:
+    uart1.write(buf)
+    time.sleep(1)
+
+</code></pre>
+<h2>6.2-SPI</h2>
+<blockquote>
+<p>行空板金手指上支持2路SPI接口，可搭配micro:bit兼容的扩展板使用。<br>
+<img src="./行空板官方文档 - pinpong库_files/732c26ccc3cee823058cc88fd5e97c28.png" alt=""></p>
+</blockquote>
+<pre><code class="language-python">import time
+from pinpong.board import Board, Pin, SPI
+
+Board("UNIHIKER").begin()  #初始化，选择板型，不输入板型则进行自动识别
+
+#0代表SPI0(P1 SCK, P10 MISO, P2 MOSI), 1代表SPI1(P13 SCK, P14 MISO, P15 MOSI)
+#cs为选片引脚, 只能做主机
+spi0 = SPI(0, cs = Pin.P3)
+
+w_buf = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
+
+while True:
+    # r_buf = spi0.read(8)    #向从机读取8个字节
+    # print(r_buf)
+    #spi0.write(0x88)         #spi0发送单字节
+    spi0.write(w_buf)         #spi0发送buf
+    time.sleep(1)
+
+
+
+</code></pre>
+<h2>6.3-I2C</h2>
+<blockquote>
+<p>I2C是一种常用的总线接口，在2根信号线上可以挂载多个不同的I2C设备，各设备之间通过I2C地址区分，因此使用时需要注意不同设备地址应该不同，并且I2C总线上的设备如果异常可能会干扰I2C通信导致所有设备军不可用。<br>
+行空板板载2个I2C 4pin ph2.0接口，同时金手指上P19及P20也是I2C接口线可以在各种扩展板上引出I2C接口。<br>
+<img src="./行空板官方文档 - pinpong库_files/04b69a4c67b698e6180b805e0ddd2239.png" alt=""><br>
+<img src="./行空板官方文档 - pinpong库_files/732c26ccc3cee823058cc88fd5e97c28.png" alt=""></p>
+</blockquote>
+<ul>
+<li>
+<p>I2C地址扫描<br>
+pinpong库升级0.6及以上版本后，支持直接在终端使用命令<code>i2cdetect -y 4</code>扫描I2C地址。<br>
+<img src="./行空板官方文档 - pinpong库_files/fb9f5ed9bf6dbe99a0a4d4efa563cfc7.png" alt=""></p>
+</li>
+<li>
+<p>I2C的使用<br>
+I2C模块一般均使用具体的库进行通信，不单独使用I2C通信功能。</p>
+</li>
+</ul>
+<h2>----------------</h2>
+<h2>7 - 更多传感器的支持</h2>
+<p>pinpong库中支持的传感器在行空板上也可以使用，只需要调整对应的引脚代码即可。</p>
+<h2>DHT11温湿度传感器</h2>
+<p>需要传入引脚的传感器，数字信号，任何引脚均可，使用行空板中引脚积木插入对应传感器引脚对象中。</p>
+<blockquote>
+<p>注：因为行空板引脚控制积木默认会进行初始化操作，因此不在需要单独的pinpong初始化积木。</p>
+</blockquote>
+<p><img src="./行空板官方文档 - pinpong库_files/8d1b49cca105eef202312a6c83f8a270.png" alt=""></p>
+<h2>舵机示例</h2>
+<p>需要传入引脚的执行器，需要使用pwm引脚（带~标记的为PWM引脚），使用行空板中引脚积木插入对应执行器引脚对象中。</p>
+<blockquote>
+<p>注0：如果接线及程序正常而舵机不转，尝试将pinpong库升级到0.5.2及以上版本。 <a href="https://www.unihiker.com.cn/wiki/pip_install" title="[升级方法]">[升级方法]</a>。<br>
+注1：行空板板载接口为PH2.0接口，常规舵机线为2.54mm杜邦头，可使用<a href="https://www.dfrobot.com.cn/goods-3478.html" title="PH2.0转杜邦2.54公头线">PH2.0转杜邦2.54公头线</a> 或  <a href="https://www.dfrobot.com.cn/goods-703.html" title="公公头转接线">公公头转接线</a>进行转接。<br>
+注2：行空板板载接口仅能连接9g舵机，请勿连接金属大舵机，大舵机需要的电流较大可能会损坏行空板上的电子部件，应该使用扩展板连接大舵机并独立供电。<br>
+<img src="./行空板官方文档 - pinpong库_files/8d44e6c42dae87b113e5a022c07fd248.png" alt=""></p>
+</blockquote>
+<p><img src="./行空板官方文档 - pinpong库_files/a4fcb0bbf829f15e3cacde959da09a60.png" alt=""></p>
+<h2>功率计示例</h2>
+<p>I2C传感器，需要增加初始化pinpong的积木。</p>
+<blockquote>
+<p>注：没有用到行空板主板中的积木，因此需要单独初始化。</p>
+</blockquote>
+<p><img src="./行空板官方文档 - pinpong库_files/e624c2b293232badb23b818ace5328d5.png" alt=""></p>
+<h2>WS2812 RGB灯带</h2>
+<p>插入行空板引脚初始化即可，数字信号，任何引脚均可，设置为黑色可以熄灭灯。</p>
+<blockquote>
+<p>注：V0.6.0以下版本pinpong库只支持使用一条灯带，如需要同时使用多个灯带请升级pinpong库到最新版本。<br>
+注：因为行空板引脚控制积木默认会进行初始化操作，因此不在需要单独的pinpong初始化积木。<br>
+注：如果对ws2812进行外部供电，需要注意供3.3V电压以及共地</p>
+</blockquote>
+<p><img src="./行空板官方文档 - pinpong库_files/4d7ed40102264ca1929c2e5bd36287d1.png" alt=""><br>
+<img src="./行空板官方文档 - pinpong库_files/2de1ddaab038078ac577bab08cd05f3a.png" alt=""></p>
+<ul>
+<li>更多示例详情查看<strong>对应电子模块的产品维库</strong>或pinpong示例代码：
+<ul>
+<li><a href="https://pinpong.readthedocs.io/" title="pinpong官方文档">pinpong官方文档</a></li>
+<li><a href="https://pinpong.readthedocs.io/" title="pinpong镜像网站">pinpong镜像网站</a></li>
+</ul>
+</li>
+</ul>
+<h2>----------------</h2>
+<h2>7 - 常见问题FAQ</h2>
+<p><strong>暂时还没有常见问题，请在论坛行空板专区或行空板官网交流群进行交流。</strong></p>
+</article></section></div></div></div></div><script>window.__NUXT__=(function(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p){return {layout:"unihikercn",data:[{device:"pc",platform:"unihiker_m10",setting:{logo:["https:\u002F\u002Fimg.dfrobot.com.cn\u002Fcmscn\u002F6040501dbddfc41c3293a25e\u002F906eaedaeb15ba929c26597ca7d8bd51.png"],domain:"https:\u002F\u002Fwww.unihiker.com.cn\u002F",menu:"defalut",search:j,navigate:[{text:"首页",url:"https:\u002F\u002Fwww.unihiker.com.cn",target:a,active:a},{text:"M10教程",url:"\u002Fwiki\u002Fm10",target:a,active:d},{text:"K10教程",url:"\u002Fwiki\u002Fk10",target:a,active:a},{text:"论坛",url:"https:\u002F\u002Fmc.dfrobot.com.cn\u002Fforum-221-1.html",target:d,active:a},{text:"购买",url:"https:\u002F\u002Fwww.dfrobot.com.cn\u002Fgoods-3404.html",target:d,active:a}],seoTitle:"行空板官网文档",seoKey:"unihiker,wiki,行空板",seoDesc:"欢迎访问行空板官方文档！",content:"# 1-行空板M10简介\n\n行空板M10是一款拥有自主知识产权的国产教学用开源硬件，采用微型计算机架构，集成LCD彩屏、WiFi蓝牙、多种常用传感器和丰富的拓展接口。同时，其自带Linux操作系统和python环境，还预装了常用的python库，让广大师生只需两步就能开始python教学。\n\n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F61788796a3fd1aa3d6d31b8e618a0e44.png)\n\n- **了解详细行空板M10设计理念及详细介绍可查看行空板发布会视频：**[【新品首发】行空板，让你2步拥抱Python！](https:\u002F\u002Fmc.dfrobot.com.cn\u002Fthread-311711-1-1.html \"【新品首发】行空板，让你2步拥抱Python！\")   \n- **购买:** 可在[DF创客商城](https:\u002F\u002Fwww.dfrobot.com.cn\u002Fgoods-3404.html \"DF创客商城\")或淘宝等其他各种线上线下渠道购买。  \n- 关注**行空板微信公众号**可第一时间收到教程更新或产品相关公告。    \n![公众号二维码](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F94e337de75532fddb250dc4af0d01308.png \"公众号二维码\")\n\n## 2-遇到问题怎么办？\n1. 查看官方文档的**“常见问题”**页面搜索问题或在**百度搜索**关键词尝试解决。\n2. 进入[论坛](https:\u002F\u002Fmc.dfrobot.com.cn\u002Fforum-221-1.html \"论坛\")**搜索**或**发帖子**交流问题\n3. 加入行空板官方**QQ交流群**(1037967676或960854969)进行交流。  \n![qq群二维码](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F41b73430991ba6d6b4def6a365ab2fdb.png \"qq群二维码\")\n\n\n## 3-学习指南\n\n\u003Cfont color=\"red\"\u003E\n\u003Cbig\u003E请先查看\u003Cstrong\u003E“快速使用教程（学习指南）”\u003C\u002Fstrong\u003E然后再进行其他操作：\u003Ca href=\"https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fget-started\"\u003E点击查看\u003C\u002Fa\u003E \u003C\u002Fbig\u003E\n\u003C\u002Ffont\u003E\n\u003Cbr\u003E\n\u003Cbr\u003E\u003Cbr\u003E\n\n\n## 4-官方文档目录\n\n[**快速使用教程(学习指南)**](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fget-started \"0-快速使用教程\")  \n[FAQ常见问题](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002FFAQ \"FAQ常见问题\")  \n\n### 行空板通用功能\n[1.1-硬件介绍](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fjianjie \"1.1-硬件介绍\")  \n[1.2-连接方式说明](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fnetworking \"1.2-连接方式说明\")  \n[1.3-板载Home菜单](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fhomemenu \"1.3-板载Home菜单\")  \n[1.4-本地Web主页](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fwebmenu \"1.4-本地Web主页\")  \n[1.5-SMB文件共享](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fsamba \"1.5-samba文件管理\")  \n[1.6-vnc屏幕共享](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fvnc \"1.6-vnc屏幕共享\")  \n[1.7-系统镜像烧录](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fburner \"1.7-系统镜像烧录\")  \n\n### 编程方式\n[2.1-Mind+编程](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fmindplus \"2.1-Mind+编程\")  \n[2.2-Jupyter编程](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fjupyter \"2.2-Jupyter编程\")  \n[2.3-Thonny编程](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fthonny \"2.3-Thonny编程\")  \n[2.4-SSH连接](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fssh \"2.4-SSH连接\")  \n[2.5-VSCode](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fvscode \"2.5-VSCode\")  \n\n\n### 专用Python库\n[3.1-unihiker行空板库](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Funihiker_python_lib \"3.1-unihiker行空板库\")  \n[3.2-pinpong硬件控制库](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fpinpong_python_lib \"3.2-pinpong硬件控制库\")  \n[3.3-Python库安装](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fpip_install \"3.3-Python库安装\")  \n\n### 系列教程\n[4.0-行空板视频教程](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fshipinjiaocheng \"4.0-行空板视频教程\")  \n[4.1-行空板代码入门教程](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Frumenjiaocheng \"4.1-行空板代码入门教程\")  \n[4.2-行空板图形化入门教程](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fblocktutorials \"4.2-行空板图形化入门教程\")  \n[4.3-开源硬件入门教程](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fhardwaretutorials \"4.3-开源硬件入门教程\")  \n\n### 应用案例\n[5.1-AI人工智能相关应用](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fai_project \"5.1-AI人工智能相关应用\")  \n[5.2-IoT物联网相关应用](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fiot_project \"5.2-IoT物联网相关应用\")  \n[5.3-新课标跨学科案例](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fk12_project \"5.3-新课标跨学科案例\")  \n[5.4-更多社区项目](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Fothers_project \"5.4-更多社区项目\")  \n\n\n\n",error:"\u003C\u002Fbr\u003E\n\u003C\u002Fbr\u003E\n\u003C\u002Fbr\u003E\n\u003C\u002Fbr\u003E\n\u003C\u002Fbr\u003E\n\n\u003Cdiv style=\"text-align: center\"\u003E\n\u003Cimg src=\"https:\u002F\u002Fdfimg.dfrobot.com\u002Fnobody\u002Fwiki\u002F27770f01a94b938ac70266870cf4b189.png\"\u002F\u003E\n\u003C\u002Fdiv\u003E\n\n\u003Cp style=\"text-align: center;\"\u003ENo Permission To Access The Current Wiki !\u003C\u002Fp\u003E"},seo:{title:h,key:b,desc:b},menu:[{name:"0-快速使用教程(学习指南)",modify:d,id:j,wikiid:"2360",subject:"get-started",title:"行空板官方文档-行空板快速上手教程 ",tasks:[],type:c,active:a},{id:6,name:"FAQ常见问题",modify:a,wikiid:"2329",subject:"FAQ",title:"行空板官方文档-常见问题",tasks:[],type:c,active:a},{id:13,name:"一、行空板通用功能",modify:a,wikiid:b,subject:b,title:b,tasks:[{id:14,name:"1.1-硬件介绍",modify:a,wikiid:"2332",subject:"jianjie",title:"行空板官方文档 - 硬件介绍",tasks:[],type:c,active:a},{id:28,name:"1.2-连接方式说明",modify:a,wikiid:"2354",subject:"networking",title:"行空板官方文档-连接说明",develop:b,tasks:[],type:c,active:a},{id:29,name:"1.3-板载Home菜单",modify:a,wikiid:"2351",subject:"homemenu",title:"行空板官方文档-Home菜单",develop:b,tasks:[],type:c,active:a},{id:30,name:"1.4-本地Web主页",modify:a,wikiid:"2352",subject:"webmenu",title:"行空板官方文档-本地Web主页",develop:b,tasks:[],type:c,active:a},{id:31,name:"1.5-SMB文件共享",modify:a,wikiid:"2339",subject:"samba",title:"行空板官方文档-samba文件共享",develop:b,tasks:[],type:c,active:a},{id:33,name:"1.6-VNC屏幕共享",modify:a,wikiid:"2353",subject:k,title:"本地Web主页-屏幕共享功能",develop:b,tasks:[],type:c,active:a},{id:34,name:"1.7-系统镜像烧录",modify:a,wikiid:"2356",subject:l,title:"行空板官方文档-固件烧录",develop:b,tasks:[],type:c,active:a}],develop:d,type:e,active:a},{id:17,name:"二、专用Python库说明",modify:a,wikiid:b,subject:b,title:b,tasks:[{id:18,name:"2.1-unihiker行空库",modify:a,wikiid:"2304",subject:"connection",title:"Multi connection methods of UNIHIEKR",tasks:[{id:43,name:"库说明",modify:a,wikiid:"2359",subject:"unihiker_python_lib",title:f,develop:b,tasks:[],type:c,active:a},{id:44,name:"通用知识和功能",modify:a,wikiid:"2362",subject:"unihiker_python_lib_1",title:f,develop:b,tasks:[],type:c,active:a},{id:45,name:"基础控件",modify:a,wikiid:"2363",subject:"unihiker_python_lib_2",title:f,develop:b,tasks:[],type:c,active:a},{id:50,name:"基础图形",modify:a,wikiid:"2364",subject:"unihiker_python_lib_3",title:f,develop:b,tasks:[],type:c,active:a},{id:46,name:"鼠标键盘侦测",modify:a,wikiid:"2365",subject:"unihiker_python_lib_4",title:f,develop:b,tasks:[],type:c,active:a},{id:48,name:"多线程",modify:a,wikiid:"2366",subject:"unihiker_python_lib_5",title:f,develop:b,tasks:[],type:c,active:a},{id:49,name:"录音及播放",modify:a,wikiid:"2367",subject:"unihiker_python_lib_6",title:f,develop:b,tasks:[],type:c,active:a}],develop:d,type:e,active:a},{id:19,name:"2.2-pinpong硬件控制库",modify:a,wikiid:"2361",subject:m,title:h,tasks:[],type:c,active:d},{id:20,name:"2.3-mind+图形化用户库收集",modify:a,wikiid:"2385",subject:n,title:o,tasks:[],type:c,active:a}],develop:d,type:e,active:d},{id:22,name:"三、编程方式",modify:a,wikiid:"2308",subject:k,title:"Remote Desktop (Screen Sharing) of UNIHIKER",tasks:[{id:42,name:"3.1.1-Mind+编程说明",modify:a,wikiid:"2334",subject:"mindplus",title:"行空板官方文档-Mind+使用教程",develop:b,tasks:[],type:c,active:a},{id:71,name:"3.1.2-图形化编程(积木说明)",modify:d,wikiid:b,subject:b,title:b,develop:d,tasks:[{id:72,name:"行空板主板功能积木说明",modify:a,wikiid:"39823",subject:"mindplus_block",title:"行空板教程-Mind+图形化编程",develop:b,tasks:[],type:c,active:a},{id:74,name:"基础功能积木说明",modify:a,wikiid:"39829",subject:"mindplus_block_Basics",title:"python_block_Basics",develop:b,tasks:[],type:c,active:a},{id:75,name:"扩展库积木说明",modify:a,wikiid:"39821",subject:"mindplus_block_extension",title:"行空板拓展模块wiki",develop:b,tasks:[],type:c,active:a},{id:76,name:"扩展用户库",modify:a,wikiid:"39834",subject:n,title:o,develop:b,tasks:[],type:c,active:a}],type:e,active:a},{id:52,name:"3.1.3-Python库安装",modify:a,wikiid:"2377",subject:"pip_install",title:"行空板库安装-行空板官方文档",develop:b,tasks:[],type:c,active:a},{id:77,name:"3.1.4-切换Python版本(pyenv)",modify:a,wikiid:"39970",subject:"pyenv",title:"行空板M10使用pyenv切换Python版本",develop:b,tasks:[],type:c,active:a},{id:53,name:"3.1.5-Mind+代码编程",modify:a,wikiid:"2375",subject:"mindplus_code",title:"行空板教程-Mind+代码模式",develop:b,tasks:[],type:c,active:a},{id:54,name:"3.x-其他编程方式",modify:a,wikiid:b,subject:b,title:b,develop:b,tasks:[{id:56,name:"3.2-Jupyter编程",modify:a,wikiid:"2333",subject:"jupyter",title:"行空板官方文档-Jupyter使用教程",develop:b,tasks:[],type:c,active:a},{id:57,name:"3.3-Thonny编程",modify:a,wikiid:"2337",subject:"thonny",title:"行空板官方文档-Thonny使用教程",develop:b,tasks:[],type:c,active:a},{id:67,name:"3.4-SSH连接",modify:a,wikiid:"2335",subject:"ssh",title:"行空板官方文档--SSH连接",develop:b,tasks:[],type:c,active:a},{id:68,name:"3.5-VSCode",modify:a,wikiid:"2336",subject:"vscode",title:"行空板官方文档-VScode连接",develop:b,tasks:[],type:c,active:a}],type:e,active:a}],develop:d,type:e,active:a},{id:23,name:"四、系列教程",modify:a,wikiid:b,subject:b,title:b,tasks:[{id:24,name:"4.0-系列视频教程",modify:a,wikiid:"2331",subject:"shipinjiaocheng",title:"行空板官方文档-视频教程",tasks:[],type:c,active:a},{id:60,name:"4.1-单板图形化入门教程",modify:a,wikiid:"2378",subject:"blocktutorials",title:"行空板图形化入门教程-行空板教程",develop:b,tasks:[],type:c,active:a},{id:61,name:"4.2-单板代码入门教程",modify:a,wikiid:"2330",subject:"rumenjiaocheng",title:"行空板官方文档-入门教程",develop:b,tasks:[],type:c,active:a},{id:62,name:"4.3-开源硬件入门教程",modify:a,wikiid:"2383",subject:"hardwaretutorials",title:"【行空板】用Python玩转开源硬件",develop:b,tasks:[],type:c,active:a}],develop:d,type:e,active:a},{id:25,name:"五、优秀应用案例",modify:a,wikiid:"2309",subject:l,title:"Burn OS Image to UNIHIKER",tasks:[{id:39,name:"5.1-AI人工智能相关应用",modify:a,wikiid:"2369",subject:"ai_project",title:"行空板官方文档-AI应用",develop:b,tasks:[],type:c,active:a},{id:63,name:"5.2-IoT物联网相关应用",modify:a,wikiid:"2368",subject:"iot_project",title:"行空板官方文档-IoT物联网应用",develop:b,tasks:[],type:c,active:a},{id:64,name:"5.3-新课标跨学科案例",modify:a,wikiid:"2382",subject:"k12_project",title:"【新课标】义务教育信息科技课程 跨学科案例",develop:b,tasks:[],type:c,active:a},{id:65,name:"5.4-更多社区项目",modify:a,wikiid:"2370",subject:"others_project",title:"行空板项目",develop:b,tasks:[],type:c,active:a}],develop:d,type:e,active:a}],wikiSubject:m,wikiData:{title:h,show:j,seoTitle:h,seoKey:b,seoDesc:b,content:"# 1 - pinpong库说明\n行空板上板载了一颗单片机协处理器负责板载元件及GPIO的控制，我们使用Python中的PinPong库来与协处理器通讯，从而实现用Python代码控制硬件。\n\n\u003E 更多pinpong库的介绍，请查看[pinpong官方文档](https:\u002F\u002Fpinpong.readthedocs.io\u002Fzh_CN\u002Flatest\u002F \"pinpong官方文档\")\n\n## 2 - 安装库\n\n\u003E **注：行空板出厂固件中已经内置了pinpong库，因此本步骤可以跳过。**\n\n通过pip工具即可进行安装和更新\n\n**安装：**\n```bash\npip install pinpong\n```\n\n**更新：**\n```bash\npip install -U pinpong\n```\n\n## ================\n\n## 3 - pinpong库导入方法\n- pinpong库由于支持众多的主控板及开源硬件，因此分成了3个包，board、extension和libs，board包中放置主板支持的功能及常用库，extension为定制类主控，libs中放置其他传感器的扩展库。\n- pinpong库支持多块主控板的使用，因此可以指定板型及端口号并生成对象，因为行空板上固定为协处理器并且端口号固定，因此可以省略掉这些参数而直接初始化。\n\n```python\nfrom pinpong.board import xxx   #board包中的库\nfrom pinpong.libs.xxx    #libs包中的库\nfrom pinpong.extension.xxx    #extension包中的主板\n\nBoard().begin() #初始化，连接协处理器，检查固件为空或版本不对则自动烧录\n\n```\n\n## ----------------\n\n## 4 - 板载资源使用说明\n## 4.1-L灯 \n行空板背面有一颗蓝色LED灯（标记为L）可供用户控制。  \nL灯为高低电平控制，接到了行空板的P25接口上，因此控制P25即可控制L灯。  \n\n\u003E 其他接口或者扩展板上连接的单独的LED灯模块控制方法相同，引脚选择实际连接的引脚即可。  \n\n- 语法：```Pin(Pin.P25, Pin.OUT).write_digital(电平信号)```\n- 返回值：无\n- 输入参数：```1```高电平，   ```0```低电平\n- 示例代码：\n\n```python\n# -*- coding: UTF-8 -*-\nimport time\nfrom pinpong.board import Board,Pin\n\nBoard().begin()               #初始化\n\nled = Pin(Pin.P25, Pin.OUT) #引脚初始化为电平输出模式，P25为L灯的引脚\n\nwhile True:\n  #led.value(1) #输出高电平 方法1\n  led.write_digital(1) #输出高电平 方法2\n  print(\"1 LED亮\") #终端打印信息\n  time.sleep(1) #等待1秒 保持状态\n\n  #led.value(0) #输出低电平 方法1\n  led.write_digital(0) #输出低电平 方法2\n  print(\"0 LED灭\") #终端打印信息\n  time.sleep(1) #等待1秒 保持状态\n```\n\n- 图形化示例：  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Ffb408dfa6604d9cfa7e1184d60bcd931.png)  \n\n## 4.2-按钮AB \n\n\u003E **注意**：行空板上有三个按键：Home、A、B，其中Home按键仅供Home菜单使用，A、B按键可供用户调用（注：由于A、B按键同时被映射为了键盘的AB按键，因此除了使用pinpong调用，还可以用unihiker库中的键盘事件调用，或者使用pygame、opencv等能获取键盘的库调用，并不需要使用pinpong）。   \n\n在pinpong库中，按钮有两种方式调用，一种是直接读取 查询式，第二种是中断事件回调式。  \n- **查询式 ：**\n\t- **语法：**```button_a.is_pressed()``` ```button_b.is_pressed()```\n\t- **返回值：**按钮按下返回```True```，按钮没有按下返回```False``` \n\t- **输入参数：**无\n\t- **示例代码：**\n\t\n```python\n# -*- coding: utf-8 -*-\nfrom pinpong.board import *\nfrom pinpong.extension.unihiker import *\n\nBoard().begin() #初始化\n\nwhile True:\n    if button_a.is_pressed() == True: #判断按钮是否被按下\n        print(\"按钮A按下\")\n    if button_b.is_pressed() == True: #判断按钮是否被按下\n        print(\"按钮B按下\")\n\n```\n\n- 图形化示例：  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F46cdad93a2f18504d637af4a7e9db73d.png)  \n\n- **回调式 ：** \n\t- **语法：**```button_a.irq(trigger=触发模式, handler = 回调函数)``` ```button_b.irq(trigger=触发模式, handler = 回调函数)```\n\t- **返回值：**无\n\t- **输入参数：**\n\t\t- trigger：触发模式，有上升沿（```Pin.IRQ_RISING```）、下降沿（```Pin.IRQ_FALLING```）、电平跳变（```Pin.IRQ_RISING+Pin.IRQ_FALLING```）三种\n\t- **示例程序：**\n\n```python\n# -*- coding: utf-8 -*-\nfrom pinpong.board import *\nfrom pinpong.extension.unihiker import *\nimport time\n\nBoard().begin() #初始化\n\ndef btn_a_rasing_handler(pin):#中断事件回调函数\n  print(\"按钮A按下\")\n\ndef btn_b_falling_handler(pin):#中断事件回调函数\n  print(\"按钮B松开\")\n\nbutton_a.irq(trigger=Pin.IRQ_RISING, handler = btn_a_rasing_handler)#上升沿触发\nbutton_b.irq(trigger=Pin.IRQ_FALLING, handler = btn_b_falling_handler)#下降沿触发\n\nwhile True:\n    time.sleep(1)#等待让程序不退出\n    \n```\n## 4.3-光线传感器\n行空板正面屏幕上方有一颗光线传感器，可以获取环境光线强度（注：单位为模拟输入值，非勒克斯）。  \n  \n- 语法： ```light.read()```  注：光线传感器接到行空板的P29接口上，因此还可以通过ADC输入方法读取。\n- 返回值：光线强度值，0-4095。\n- 输入参数：无\n- 示例代码：\n\n```python\n# -*- coding: UTF-8 -*-\nimport time\nfrom pinpong.board import *\nfrom pinpong.extension.unihiker import *\n\nBoard().begin()               #初始化\n\n\nwhile True:\n    light_value = light.read()\n    print(\"光线强度：%d\"%(light_value)) #终端打印信息\n    time.sleep(0.1) #等待1秒 保持状态\n```\n- 图形化示例：  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fc0e816405fd52921bfb50fd1e1ea35dd.png)  \n\n## 4.4-加速度传感器\n行空板背面板载一颗6轴加速度陀螺仪传感器，可以分别读取加速度和陀螺仪的x、y、z的值，以及加速度强度。\n- 语法：\n\t- 加速度：```accelerometer.get_x()``` ```accelerometer.get_y()``` ```accelerometer.get_z()``` ```accelerometer.get_strength()```\n\t- 陀螺仪：```gyroscope.get_x()``` ```gyroscope.get_y()``` ```gyroscope.get_z()```\n- 返回值：加速度陀螺仪的值\n- 输入值：无\n- 示例程序：\n\n```python\n# -*- coding: utf-8 -*-\nimport time\nfrom pinpong.board import *\nfrom pinpong.extension.unihiker import *\n\nBoard().begin()  #初始化\n\nwhile True:\n  print(accelerometer.get_x())                    #读取加速度X的值\n  print(accelerometer.get_y())                    #读取加速度Y的值\n  print(accelerometer.get_z())                    #读取加速度Z的值\n  print(accelerometer.get_strength())             #读取加速度强度（x、y、z方向的合力）\n  print(gyroscope.get_x())                        #读取陀螺仪X的值\n  print(gyroscope.get_y())                        #读取陀螺仪Y的值\n  print(gyroscope.get_z())                        #读取陀螺仪Z的值\n  print(\"------------------\")\n  time.sleep(1)\n\n```\n\n- 图形化示例：  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F5beb88acb995102fb7b44d1fe086e0f3.png)  \n\n## 4.5-蜂鸣器\n行空板背面板载一颗蜂鸣器，可以发出设定的音调。  \n\n- 示例程序：\n\n```python\n# -*- coding: utf-8 -*-\nimport time\nfrom pinpong.board import Board,Pin\nfrom pinpong.extension.unihiker import *\n\nBoard().begin()#初始化\n\n#音乐 DADADADUM ENTERTAINER PRELUDE ODE NYAN RINGTONE FUNK BLUES BIRTHDAY WEDDING FUNERAL PUNCHLINE\n#音乐 BADDY CHASE BA_DING WAWAWAWAA JUMP_UP JUMP_DOWN POWER_UP POWER_DOWN\n#播放模式 Once(播放一次) Forever(一直播放) OnceInBackground(后台播放一次) ForeverInBackground(后台一直播放)\nbuzzer.play(buzzer.DADADADUM, buzzer.Once) #播放音乐一次\n# buzzer.set_tempo(4,60) #设置每一拍音符数，每分钟节拍数\nbuzzer.pitch(494, 4) #播放音符\n# buzzer.pitch(494) #后台播放音符\n# time.sleep(10)\n# buzzer.stop() #停止后台播放\n# buzzer.redirect(Pin.P0) #引脚重定向，只支持PWM引脚 \n# buzzer.play(buzzer.ENTERTAINER, buzzer.ForeverInBackground) #后台一直播放音乐\nwhile True:\n    time.sleep(1) #等待1秒 保持状态\n```\n\n- 图形化示例：  \n\n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fe1fc6e1cbbd7da3b98316bbadb332905.png)\n\n## 4.6-环境声音强度\n行空板上的麦克风并非普通的声音传感器，可以直接录音做语音识别，因此接到了CPU而非协处理上，所以获取环境声音强度不使用pinpong库，而使用unihiker库中Audio类获取。\n\u003E 点击查看：[unihiker库](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Funihiker_python_lib \"unihiker库\")\n- 示例程序：\n\n```python\n# -*- coding: utf-8 -*-\nfrom unihiker import Audio\nimport time\n\naudio = Audio() #实例化音频\n\nwhile True:\n    value = audio.sound_level()\n    print(\"环境音=%d\"%(value))\n    time.sleep(0.1)\n```\n\n## ----------------\n\n## 5 - 基础GPIO使用说明\n行空板引脚操作与pinpong通用语法相同。  \n\n## 5.1-数字输出\n行空板所有引脚均支持数字输出，电平电压为3.3V。  \n\n```python\n# -*- coding: UTF-8 -*-\n#实验效果：控制外接LED灯一秒闪烁一次\n#接线：在行空板P21接一个LED灯\nimport time\nfrom pinpong.board import Board,Pin\n\nBoard().begin()               #初始化\n\nled = Pin(Pin.P21, Pin.OUT) #引脚初始化为电平输出\n\nwhile True:\n  #led.value(1) #输出高电平 方法1\n  led.write_digital(1) #输出高电平 方法2\n  print(\"1\") #终端打印信息\n  time.sleep(1) #等待1秒 保持状态\n\n  #led.value(0) #输出低电平 方法1\n  led.write_digital(0) #输出低电平 方法2\n  print(\"0\") #终端打印信息\n  time.sleep(1) #等待1秒 保持状态\n```\n\n- 图形化示例：  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F7d5629a4694da569011bcf4e02369b2b.png)\n\n## 5.2-数字输入\n行空板所有引脚均支持数字输入，电平电压为3.3V。  \n\n```python\n# -*- coding: UTF-8 -*-\n#实验效果：使用按钮控制行空板板载L灯亮灭\n#接线：在行空板P23接口接一个按钮模块\nimport time\nfrom pinpong.board import Board,Pin\n\nBoard().begin()               #初始化\n\nbtn = Pin(Pin.P23, Pin.IN) #引脚初始化为电平输入\nled = Pin(Pin.P25, Pin.OUT) #L灯引脚初始化为输出\n\nwhile True:\n  #v = btn.value()  #读取引脚电平方法1\n  v = btn.read_digital()  #读取引脚电平方法2\n  print(v)  #终端打印读取的电平状态\n  #led.value(v)  #将按钮状态设置给led灯引脚  输出电平方法1\n  led.write_digital(v) #将按钮状态设置给led灯引脚  输出电平方法2\n  time.sleep(0.1)\n```\n\n- 图形化示例：  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F2addbddab8455d4f867c74af6651f08f.png)\n\n## 5.3-模拟输入（ADC）\n行空板支持8路12位高精度模拟输入ADC，分别对应引脚为: P0 P1 P2 P3 P4 P10 P21 P22\n\n```python\n# -*- coding: UTF-8 -*-\n#实验效果：打印行空板P21口模拟值\n#接线：行空板P21口接一个旋钮模块\nimport time\nfrom pinpong.board import Board,Pin\n\nBoard().begin()               #初始化\n# ADC模拟输入引脚支持: P0 P1 P2 P3 P4 P10 P21 P22\n#adc21 = ADC(Pin(Pin.P21)) #将Pin传入ADC中实现模拟输入  模拟输入方法1\nadc21 = Pin(Pin.P21, Pin.ANALOG) #引脚初始化为电平输出 模拟输入方法2\n\nwhile True:\n  #v = adc21.read()  #读取A0口模拟信号数值 0-4095 模拟输入方法1\n  v = adc21.read_analog() #读取A0口模拟信号数值 0-4095 模拟输入方法2\n  print(\"P21=\", v)\n  time.sleep(0.5)\n```\n\n- 图形化示例：  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fe06b586f1cf0258638d44146f437b771.png)\n\n## 5.4-模拟输出（PWM）\n\n行空板支持8路10位PWM，分别对应引脚为: P0  P2  P3  P10  P16  P21  P22  P23  \n  \n\u003E 注意: 其中P8与P2共用一路PWM，P9与P10共用一路PWM，因此P8与P9也可以使用PWM，但使用时P2和P10不能使用，另外需要注意P8P9为一组，P2P10为一组，只能同时使用其中一组，不可混合使用（例如P8或P9输出了PWM，则P2或P10就不能输出PWM了）。  \n\n\n```python\n# -*- coding: UTF-8 -*-\n#实验效果： PWM输出实验,控制LED灯亮度变化\n#接线：LED灯接到行空板P21引脚上\nimport time\nfrom pinpong.board import Board,Pin\n\nBoard().begin()               #初始化\n\n# PWM模拟输出引脚支持: P0  P2  P3  P10  P16  P21  P22  P23\n#pwm21 = PWM(Pin(Pin.P21)) #将引脚传入PWM初始化  模拟输出方法1\npwm21 = Pin(Pin.P21, Pin.PWM) #初始化引脚为PWM模式 模拟输出方法2\n\nwhile True:\n    for i in range(1023):\n        print(i)\n        #pwm21.duty(i) #PWM输出 方法1\n        pwm21.write_analog(i) #PWM输出 方法2\n        time.sleep(0.05)\n```\n\n- 图形化示例：  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F27b4789d43e60ba45288de786ea90bfe.png)  \n\n## ----------------\n## 6 - 高级功能\n## 6.1-串口（UART）\n\n\u003E 行空板金手指上支持1路硬串口，可搭配micro:bit兼容的扩展板使用。  \n注:不支持软串口  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F732c26ccc3cee823058cc88fd5e97c28.png)  \n\n\u003E 注：行空板板载了USB接口，内置了ch340、cp2102、pl2303串口驱动，因此你还可以直接使用一个USB to TTL转接板连接串口设备，[使用pyserial库进行通信](https:\u002F\u002Fmc.dfrobot.com.cn\u002Fthread-314531-1-1.html \"使用pyserial库进行通信\")。\n\n```python\n# -*- coding: utf-8 -*-\nimport time\nfrom pinpong.board import Board, UART\n\nBoard(\"UNIHIKER\").begin()  #初始化，选择板型，不输入板型则进行自动识别\n#硬串口1 P0-RX P3-TX\nuart1 = UART()   \n#初始化串口 baud_rate 波特率, bits 数据位数(8\u002F9) parity奇偶校验(0 无校验\u002F1 奇校验\u002F2 偶校验) stop 停止位(1\u002F2)\n# uart1.init(baud_rate = 115200, bits=8, parity=0, stop = 1) \nuart1.init() #默认波特率为9600\nbuf = [0x00, 0x01, 0x02, 0x03, 0x05, 0x06, 0x07]\n#关闭硬串口1\n#uart1.deinit() \n#返回可读取的字节数\n#uart1.any() \n#串口写,buf为数列\n#uart1.write(buf)\n#读取串口字符,返回None或者数列\n#uart1.read(n)\n#读一行，以换行符结尾。读取行或 None 超时。(到换行键(0xa)结束，无则返回None)\n#buf = uart1.readline()\n#将字节读入buf。如果 nbytes 指定，则最多读取多个字节。否则，最多读取 len(buf) 字节数。\n#uart1.readinto(buf, nbytes)\nwhile True:\n    uart1.write(buf)\n    time.sleep(1)\n\n```\n## 6.2-SPI\n\n\u003E 行空板金手指上支持2路SPI接口，可搭配micro:bit兼容的扩展板使用。  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F732c26ccc3cee823058cc88fd5e97c28.png)  \n  \n```python\nimport time\nfrom pinpong.board import Board, Pin, SPI\n\nBoard(\"UNIHIKER\").begin()  #初始化，选择板型，不输入板型则进行自动识别\n\n#0代表SPI0(P1 SCK, P10 MISO, P2 MOSI), 1代表SPI1(P13 SCK, P14 MISO, P15 MOSI)\n#cs为选片引脚, 只能做主机\nspi0 = SPI(0, cs = Pin.P3)\n\nw_buf = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]\n\nwhile True:\n    # r_buf = spi0.read(8)    #向从机读取8个字节\n    # print(r_buf)\n    #spi0.write(0x88)         #spi0发送单字节\n    spi0.write(w_buf)         #spi0发送buf\n    time.sleep(1)\n\n\n\n```\n\n## 6.3-I2C\n\u003E I2C是一种常用的总线接口，在2根信号线上可以挂载多个不同的I2C设备，各设备之间通过I2C地址区分，因此使用时需要注意不同设备地址应该不同，并且I2C总线上的设备如果异常可能会干扰I2C通信导致所有设备军不可用。  \n\u003E 行空板板载2个I2C 4pin ph2.0接口，同时金手指上P19及P20也是I2C接口线可以在各种扩展板上引出I2C接口。  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F04b69a4c67b698e6180b805e0ddd2239.png)  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F732c26ccc3cee823058cc88fd5e97c28.png)    \n  \n- I2C地址扫描\npinpong库升级0.6及以上版本后，支持直接在终端使用命令```i2cdetect -y 4```扫描I2C地址。   \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002Ffb9f5ed9bf6dbe99a0a4d4efa563cfc7.png)  \n\n\n- I2C的使用\nI2C模块一般均使用具体的库进行通信，不单独使用I2C通信功能。   \n\n\n## ----------------\n## 7 - 更多传感器的支持\npinpong库中支持的传感器在行空板上也可以使用，只需要调整对应的引脚代码即可。  \n\n## DHT11温湿度传感器  \n需要传入引脚的传感器，数字信号，任何引脚均可，使用行空板中引脚积木插入对应传感器引脚对象中。  \n\u003E 注：因为行空板引脚控制积木默认会进行初始化操作，因此不在需要单独的pinpong初始化积木。  \n\n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F8d1b49cca105eef202312a6c83f8a270.png)  \n\n## 舵机示例  \n需要传入引脚的执行器，需要使用pwm引脚（带~标记的为PWM引脚），使用行空板中引脚积木插入对应执行器引脚对象中。  \n\n\u003E 注0：如果接线及程序正常而舵机不转，尝试将pinpong库升级到0.5.2及以上版本。 [[升级方法]](https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fpip_install \"[升级方法]\")。    \n注1：行空板板载接口为PH2.0接口，常规舵机线为2.54mm杜邦头，可使用[PH2.0转杜邦2.54公头线](https:\u002F\u002Fwww.dfrobot.com.cn\u002Fgoods-3478.html \"PH2.0转杜邦2.54公头线\") 或  [公公头转接线](https:\u002F\u002Fwww.dfrobot.com.cn\u002Fgoods-703.html \"公公头转接线\")进行转接。\n注2：行空板板载接口仅能连接9g舵机，请勿连接金属大舵机，大舵机需要的电流较大可能会损坏行空板上的电子部件，应该使用扩展板连接大舵机并独立供电。  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F8d44e6c42dae87b113e5a022c07fd248.png)  \n\n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fa4fcb0bbf829f15e3cacde959da09a60.png)  \n\n## 功率计示例  \nI2C传感器，需要增加初始化pinpong的积木。  \n\u003E 注：没有用到行空板主板中的积木，因此需要单独初始化。  \n\n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fe624c2b293232badb23b818ace5328d5.png)  \n\n## WS2812 RGB灯带  \n插入行空板引脚初始化即可，数字信号，任何引脚均可，设置为黑色可以熄灭灯。  \n\u003E 注：V0.6.0以下版本pinpong库只支持使用一条灯带，如需要同时使用多个灯带请升级pinpong库到最新版本。  \n\u003E 注：因为行空板引脚控制积木默认会进行初始化操作，因此不在需要单独的pinpong初始化积木。  \n\u003E 注：如果对ws2812进行外部供电，需要注意供3.3V电压以及共地\n\n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F4d7ed40102264ca1929c2e5bd36287d1.png)  \n![](https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F2de1ddaab038078ac577bab08cd05f3a.png)  \n\n\n- 更多示例详情查看**对应电子模块的产品维库**或pinpong示例代码：  \n\t- [pinpong官方文档](https:\u002F\u002Fpinpong.readthedocs.io\u002F \"pinpong官方文档\")  \n\t- [pinpong镜像网站](https:\u002F\u002Fpinpong.readthedocs.io\u002F \"pinpong镜像网站\")  \n\t\n## ----------------\n## 7 - 常见问题FAQ\n\n**暂时还没有常见问题，请在论坛行空板专区或行空板官网交流群进行交流。**\n",product:{id:b,sku:b,title:b,thumb:b,price:b,url:b,desc:b},sku:b},subMenu:[{title:"2 - 安装库",children:[]},{title:"================",children:[]},{title:"3 - pinpong库导入方法",children:[]},{title:g,children:[]},{title:"4 - 板载资源使用说明",children:[]},{title:"4.1-L灯",children:[]},{title:"4.2-按钮AB",children:[]},{title:"4.3-光线传感器",children:[]},{title:"4.4-加速度传感器",children:[]},{title:"4.5-蜂鸣器",children:[]},{title:"4.6-环境声音强度",children:[]},{title:g,children:[]},{title:"5 - 基础GPIO使用说明",children:[]},{title:"5.1-数字输出",children:[]},{title:"5.2-数字输入",children:[]},{title:"5.3-模拟输入（ADC）",children:[]},{title:"5.4-模拟输出（PWM）",children:[]},{title:g,children:[]},{title:"6 - 高级功能",children:[]},{title:"6.1-串口（UART）",children:[]},{title:"6.2-SPI",children:[]},{title:"6.3-I2C",children:[]},{title:g,children:[]},{title:"7 - 更多传感器的支持",children:[]},{title:"DHT11温湿度传感器",children:[]},{title:"舵机示例",children:[]},{title:"功率计示例",children:[]},{title:"WS2812 RGB灯带",children:[]},{title:g,children:[]},{title:"7 - 常见问题FAQ",children:[]}],conWidth:"330px",plNumber:"0 0 0 250px",htmlStr:"\u003Ch1\u003E1 - pinpong库说明\u003C\u002Fh1\u003E\n\u003Cp\u003E行空板上板载了一颗单片机协处理器负责板载元件及GPIO的控制，我们使用Python中的PinPong库来与协处理器通讯，从而实现用Python代码控制硬件。\u003C\u002Fp\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E更多pinpong库的介绍，请查看\u003Ca href=\"https:\u002F\u002Fpinpong.readthedocs.io\u002Fzh_CN\u002Flatest\u002F\" title=\"pinpong官方文档\"\u003Epinpong官方文档\u003C\u002Fa\u003E\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Ch2\u003E2 - 安装库\u003C\u002Fh2\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E\u003Cstrong\u003E注：行空板出厂固件中已经内置了pinpong库，因此本步骤可以跳过。\u003C\u002Fstrong\u003E\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Cp\u003E通过pip工具即可进行安装和更新\u003C\u002Fp\u003E\n\u003Cp\u003E\u003Cstrong\u003E安装：\u003C\u002Fstrong\u003E\u003C\u002Fp\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-bash\"\u003Epip install pinpong\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cp\u003E\u003Cstrong\u003E更新：\u003C\u002Fstrong\u003E\u003C\u002Fp\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-bash\"\u003Epip install -U pinpong\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Ch2\u003E================\u003C\u002Fh2\u003E\n\u003Ch2\u003E3 - pinpong库导入方法\u003C\u002Fh2\u003E\n\u003Cul\u003E\n\u003Cli\u003Epinpong库由于支持众多的主控板及开源硬件，因此分成了3个包，board、extension和libs，board包中放置主板支持的功能及常用库，extension为定制类主控，libs中放置其他传感器的扩展库。\u003C\u002Fli\u003E\n\u003Cli\u003Epinpong库支持多块主控板的使用，因此可以指定板型及端口号并生成对象，因为行空板上固定为协处理器并且端口号固定，因此可以省略掉这些参数而直接初始化。\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-python\"\u003Efrom pinpong.board import xxx   #board包中的库\nfrom pinpong.libs.xxx    #libs包中的库\nfrom pinpong.extension.xxx    #extension包中的主板\n\nBoard().begin() #初始化，连接协处理器，检查固件为空或版本不对则自动烧录\n\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Ch2\u003E----------------\u003C\u002Fh2\u003E\n\u003Ch2\u003E4 - 板载资源使用说明\u003C\u002Fh2\u003E\n\u003Ch2\u003E4.1-L灯\u003C\u002Fh2\u003E\n\u003Cp\u003E行空板背面有一颗蓝色LED灯（标记为L）可供用户控制。\u003Cbr\u003E\nL灯为高低电平控制，接到了行空板的P25接口上，因此控制P25即可控制L灯。\u003C\u002Fp\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E其他接口或者扩展板上连接的单独的LED灯模块控制方法相同，引脚选择实际连接的引脚即可。\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Cul\u003E\n\u003Cli\u003E语法：\u003Ccode\u003EPin(Pin.P25, Pin.OUT).write_digital(电平信号)\u003C\u002Fcode\u003E\u003C\u002Fli\u003E\n\u003Cli\u003E返回值：无\u003C\u002Fli\u003E\n\u003Cli\u003E输入参数：\u003Ccode\u003E1\u003C\u002Fcode\u003E高电平，   \u003Ccode\u003E0\u003C\u002Fcode\u003E低电平\u003C\u002Fli\u003E\n\u003Cli\u003E示例代码：\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-python\"\u003E# -*- coding: UTF-8 -*-\nimport time\nfrom pinpong.board import Board,Pin\n\nBoard().begin()               #初始化\n\nled = Pin(Pin.P25, Pin.OUT) #引脚初始化为电平输出模式，P25为L灯的引脚\n\nwhile True:\n  #led.value(1) #输出高电平 方法1\n  led.write_digital(1) #输出高电平 方法2\n  print(&quot;1 LED亮&quot;) #终端打印信息\n  time.sleep(1) #等待1秒 保持状态\n\n  #led.value(0) #输出低电平 方法1\n  led.write_digital(0) #输出低电平 方法2\n  print(&quot;0 LED灭&quot;) #终端打印信息\n  time.sleep(1) #等待1秒 保持状态\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cul\u003E\n\u003Cli\u003E图形化示例：\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Ffb408dfa6604d9cfa7e1184d60bcd931.png\" alt=\"\"\u003E\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Ch2\u003E4.2-按钮AB\u003C\u002Fh2\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E\u003Cstrong\u003E注意\u003C\u002Fstrong\u003E：行空板上有三个按键：Home、A、B，其中Home按键仅供Home菜单使用，A、B按键可供用户调用（注：由于A、B按键同时被映射为了键盘的AB按键，因此除了使用pinpong调用，还可以用unihiker库中的键盘事件调用，或者使用pygame、opencv等能获取键盘的库调用，并不需要使用pinpong）。\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Cp\u003E在pinpong库中，按钮有两种方式调用，一种是直接读取 查询式，第二种是中断事件回调式。\u003C\u002Fp\u003E\n\u003Cul\u003E\n\u003Cli\u003E\u003Cstrong\u003E查询式 ：\u003C\u002Fstrong\u003E\n\u003Cul\u003E\n\u003Cli\u003E\u003Cstrong\u003E语法：\u003C\u002Fstrong\u003E\u003Ccode\u003Ebutton_a.is_pressed()\u003C\u002Fcode\u003E \u003Ccode\u003Ebutton_b.is_pressed()\u003C\u002Fcode\u003E\u003C\u002Fli\u003E\n\u003Cli\u003E**返回值：**按钮按下返回\u003Ccode\u003ETrue\u003C\u002Fcode\u003E，按钮没有按下返回\u003Ccode\u003EFalse\u003C\u002Fcode\u003E\u003C\u002Fli\u003E\n\u003Cli\u003E**输入参数：**无\u003C\u002Fli\u003E\n\u003Cli\u003E\u003Cstrong\u003E示例代码：\u003C\u002Fstrong\u003E\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-python\"\u003E# -*- coding: utf-8 -*-\nfrom pinpong.board import *\nfrom pinpong.extension.unihiker import *\n\nBoard().begin() #初始化\n\nwhile True:\n    if button_a.is_pressed() == True: #判断按钮是否被按下\n        print(&quot;按钮A按下&quot;)\n    if button_b.is_pressed() == True: #判断按钮是否被按下\n        print(&quot;按钮B按下&quot;)\n\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cul\u003E\n\u003Cli\u003E\n\u003Cp\u003E图形化示例：\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F46cdad93a2f18504d637af4a7e9db73d.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003C\u002Fli\u003E\n\u003Cli\u003E\n\u003Cp\u003E\u003Cstrong\u003E回调式 ：\u003C\u002Fstrong\u003E\u003C\u002Fp\u003E\n\u003Cul\u003E\n\u003Cli\u003E\u003Cstrong\u003E语法：\u003C\u002Fstrong\u003E\u003Ccode\u003Ebutton_a.irq(trigger=触发模式, handler = 回调函数)\u003C\u002Fcode\u003E \u003Ccode\u003Ebutton_b.irq(trigger=触发模式, handler = 回调函数)\u003C\u002Fcode\u003E\u003C\u002Fli\u003E\n\u003Cli\u003E**返回值：**无\u003C\u002Fli\u003E\n\u003Cli\u003E\u003Cstrong\u003E输入参数：\u003C\u002Fstrong\u003E\n\u003Cul\u003E\n\u003Cli\u003Etrigger：触发模式，有上升沿（\u003Ccode\u003EPin.IRQ_RISING\u003C\u002Fcode\u003E）、下降沿（\u003Ccode\u003EPin.IRQ_FALLING\u003C\u002Fcode\u003E）、电平跳变（\u003Ccode\u003EPin.IRQ_RISING+Pin.IRQ_FALLING\u003C\u002Fcode\u003E）三种\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003C\u002Fli\u003E\n\u003Cli\u003E\u003Cstrong\u003E示例程序：\u003C\u002Fstrong\u003E\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-python\"\u003E# -*- coding: utf-8 -*-\nfrom pinpong.board import *\nfrom pinpong.extension.unihiker import *\nimport time\n\nBoard().begin() #初始化\n\ndef btn_a_rasing_handler(pin):#中断事件回调函数\n  print(&quot;按钮A按下&quot;)\n\ndef btn_b_falling_handler(pin):#中断事件回调函数\n  print(&quot;按钮B松开&quot;)\n\nbutton_a.irq(trigger=Pin.IRQ_RISING, handler = btn_a_rasing_handler)#上升沿触发\nbutton_b.irq(trigger=Pin.IRQ_FALLING, handler = btn_b_falling_handler)#下降沿触发\n\nwhile True:\n    time.sleep(1)#等待让程序不退出\n    \n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Ch2\u003E4.3-光线传感器\u003C\u002Fh2\u003E\n\u003Cp\u003E行空板正面屏幕上方有一颗光线传感器，可以获取环境光线强度（注：单位为模拟输入值，非勒克斯）。\u003C\u002Fp\u003E\n\u003Cul\u003E\n\u003Cli\u003E语法： \u003Ccode\u003Elight.read()\u003C\u002Fcode\u003E  注：光线传感器接到行空板的P29接口上，因此还可以通过ADC输入方法读取。\u003C\u002Fli\u003E\n\u003Cli\u003E返回值：光线强度值，0-4095。\u003C\u002Fli\u003E\n\u003Cli\u003E输入参数：无\u003C\u002Fli\u003E\n\u003Cli\u003E示例代码：\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-python\"\u003E# -*- coding: UTF-8 -*-\nimport time\nfrom pinpong.board import *\nfrom pinpong.extension.unihiker import *\n\nBoard().begin()               #初始化\n\n\nwhile True:\n    light_value = light.read()\n    print(&quot;光线强度：%d&quot;%(light_value)) #终端打印信息\n    time.sleep(0.1) #等待1秒 保持状态\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cul\u003E\n\u003Cli\u003E图形化示例：\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fc0e816405fd52921bfb50fd1e1ea35dd.png\" alt=\"\"\u003E\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Ch2\u003E4.4-加速度传感器\u003C\u002Fh2\u003E\n\u003Cp\u003E行空板背面板载一颗6轴加速度陀螺仪传感器，可以分别读取加速度和陀螺仪的x、y、z的值，以及加速度强度。\u003C\u002Fp\u003E\n\u003Cul\u003E\n\u003Cli\u003E语法：\n\u003Cul\u003E\n\u003Cli\u003E加速度：\u003Ccode\u003Eaccelerometer.get_x()\u003C\u002Fcode\u003E \u003Ccode\u003Eaccelerometer.get_y()\u003C\u002Fcode\u003E \u003Ccode\u003Eaccelerometer.get_z()\u003C\u002Fcode\u003E \u003Ccode\u003Eaccelerometer.get_strength()\u003C\u002Fcode\u003E\u003C\u002Fli\u003E\n\u003Cli\u003E陀螺仪：\u003Ccode\u003Egyroscope.get_x()\u003C\u002Fcode\u003E \u003Ccode\u003Egyroscope.get_y()\u003C\u002Fcode\u003E \u003Ccode\u003Egyroscope.get_z()\u003C\u002Fcode\u003E\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003C\u002Fli\u003E\n\u003Cli\u003E返回值：加速度陀螺仪的值\u003C\u002Fli\u003E\n\u003Cli\u003E输入值：无\u003C\u002Fli\u003E\n\u003Cli\u003E示例程序：\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-python\"\u003E# -*- coding: utf-8 -*-\nimport time\nfrom pinpong.board import *\nfrom pinpong.extension.unihiker import *\n\nBoard().begin()  #初始化\n\nwhile True:\n  print(accelerometer.get_x())                    #读取加速度X的值\n  print(accelerometer.get_y())                    #读取加速度Y的值\n  print(accelerometer.get_z())                    #读取加速度Z的值\n  print(accelerometer.get_strength())             #读取加速度强度（x、y、z方向的合力）\n  print(gyroscope.get_x())                        #读取陀螺仪X的值\n  print(gyroscope.get_y())                        #读取陀螺仪Y的值\n  print(gyroscope.get_z())                        #读取陀螺仪Z的值\n  print(&quot;------------------&quot;)\n  time.sleep(1)\n\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cul\u003E\n\u003Cli\u003E图形化示例：\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F5beb88acb995102fb7b44d1fe086e0f3.png\" alt=\"\"\u003E\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Ch2\u003E4.5-蜂鸣器\u003C\u002Fh2\u003E\n\u003Cp\u003E行空板背面板载一颗蜂鸣器，可以发出设定的音调。\u003C\u002Fp\u003E\n\u003Cul\u003E\n\u003Cli\u003E示例程序：\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-python\"\u003E# -*- coding: utf-8 -*-\nimport time\nfrom pinpong.board import Board,Pin\nfrom pinpong.extension.unihiker import *\n\nBoard().begin()#初始化\n\n#音乐 DADADADUM ENTERTAINER PRELUDE ODE NYAN RINGTONE FUNK BLUES BIRTHDAY WEDDING FUNERAL PUNCHLINE\n#音乐 BADDY CHASE BA_DING WAWAWAWAA JUMP_UP JUMP_DOWN POWER_UP POWER_DOWN\n#播放模式 Once(播放一次) Forever(一直播放) OnceInBackground(后台播放一次) ForeverInBackground(后台一直播放)\nbuzzer.play(buzzer.DADADADUM, buzzer.Once) #播放音乐一次\n# buzzer.set_tempo(4,60) #设置每一拍音符数，每分钟节拍数\nbuzzer.pitch(494, 4) #播放音符\n# buzzer.pitch(494) #后台播放音符\n# time.sleep(10)\n# buzzer.stop() #停止后台播放\n# buzzer.redirect(Pin.P0) #引脚重定向，只支持PWM引脚 \n# buzzer.play(buzzer.ENTERTAINER, buzzer.ForeverInBackground) #后台一直播放音乐\nwhile True:\n    time.sleep(1) #等待1秒 保持状态\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cul\u003E\n\u003Cli\u003E图形化示例：\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Cp\u003E\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fe1fc6e1cbbd7da3b98316bbadb332905.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003Ch2\u003E4.6-环境声音强度\u003C\u002Fh2\u003E\n\u003Cp\u003E行空板上的麦克风并非普通的声音传感器，可以直接录音做语音识别，因此接到了CPU而非协处理上，所以获取环境声音强度不使用pinpong库，而使用unihiker库中Audio类获取。\u003C\u002Fp\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E点击查看：\u003Ca href=\"https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fm10\u002Funihiker_python_lib\" title=\"unihiker库\"\u003Eunihiker库\u003C\u002Fa\u003E\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Cul\u003E\n\u003Cli\u003E示例程序：\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-python\"\u003E# -*- coding: utf-8 -*-\nfrom unihiker import Audio\nimport time\n\naudio = Audio() #实例化音频\n\nwhile True:\n    value = audio.sound_level()\n    print(&quot;环境音=%d&quot;%(value))\n    time.sleep(0.1)\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Ch2\u003E----------------\u003C\u002Fh2\u003E\n\u003Ch2\u003E5 - 基础GPIO使用说明\u003C\u002Fh2\u003E\n\u003Cp\u003E行空板引脚操作与pinpong通用语法相同。\u003C\u002Fp\u003E\n\u003Ch2\u003E5.1-数字输出\u003C\u002Fh2\u003E\n\u003Cp\u003E行空板所有引脚均支持数字输出，电平电压为3.3V。\u003C\u002Fp\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-python\"\u003E# -*- coding: UTF-8 -*-\n#实验效果：控制外接LED灯一秒闪烁一次\n#接线：在行空板P21接一个LED灯\nimport time\nfrom pinpong.board import Board,Pin\n\nBoard().begin()               #初始化\n\nled = Pin(Pin.P21, Pin.OUT) #引脚初始化为电平输出\n\nwhile True:\n  #led.value(1) #输出高电平 方法1\n  led.write_digital(1) #输出高电平 方法2\n  print(&quot;1&quot;) #终端打印信息\n  time.sleep(1) #等待1秒 保持状态\n\n  #led.value(0) #输出低电平 方法1\n  led.write_digital(0) #输出低电平 方法2\n  print(&quot;0&quot;) #终端打印信息\n  time.sleep(1) #等待1秒 保持状态\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cul\u003E\n\u003Cli\u003E图形化示例：\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F7d5629a4694da569011bcf4e02369b2b.png\" alt=\"\"\u003E\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Ch2\u003E5.2-数字输入\u003C\u002Fh2\u003E\n\u003Cp\u003E行空板所有引脚均支持数字输入，电平电压为3.3V。\u003C\u002Fp\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-python\"\u003E# -*- coding: UTF-8 -*-\n#实验效果：使用按钮控制行空板板载L灯亮灭\n#接线：在行空板P23接口接一个按钮模块\nimport time\nfrom pinpong.board import Board,Pin\n\nBoard().begin()               #初始化\n\nbtn = Pin(Pin.P23, Pin.IN) #引脚初始化为电平输入\nled = Pin(Pin.P25, Pin.OUT) #L灯引脚初始化为输出\n\nwhile True:\n  #v = btn.value()  #读取引脚电平方法1\n  v = btn.read_digital()  #读取引脚电平方法2\n  print(v)  #终端打印读取的电平状态\n  #led.value(v)  #将按钮状态设置给led灯引脚  输出电平方法1\n  led.write_digital(v) #将按钮状态设置给led灯引脚  输出电平方法2\n  time.sleep(0.1)\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cul\u003E\n\u003Cli\u003E图形化示例：\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F2addbddab8455d4f867c74af6651f08f.png\" alt=\"\"\u003E\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Ch2\u003E5.3-模拟输入（ADC）\u003C\u002Fh2\u003E\n\u003Cp\u003E行空板支持8路12位高精度模拟输入ADC，分别对应引脚为: P0 P1 P2 P3 P4 P10 P21 P22\u003C\u002Fp\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-python\"\u003E# -*- coding: UTF-8 -*-\n#实验效果：打印行空板P21口模拟值\n#接线：行空板P21口接一个旋钮模块\nimport time\nfrom pinpong.board import Board,Pin\n\nBoard().begin()               #初始化\n# ADC模拟输入引脚支持: P0 P1 P2 P3 P4 P10 P21 P22\n#adc21 = ADC(Pin(Pin.P21)) #将Pin传入ADC中实现模拟输入  模拟输入方法1\nadc21 = Pin(Pin.P21, Pin.ANALOG) #引脚初始化为电平输出 模拟输入方法2\n\nwhile True:\n  #v = adc21.read()  #读取A0口模拟信号数值 0-4095 模拟输入方法1\n  v = adc21.read_analog() #读取A0口模拟信号数值 0-4095 模拟输入方法2\n  print(&quot;P21=&quot;, v)\n  time.sleep(0.5)\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cul\u003E\n\u003Cli\u003E图形化示例：\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fe06b586f1cf0258638d44146f437b771.png\" alt=\"\"\u003E\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Ch2\u003E5.4-模拟输出（PWM）\u003C\u002Fh2\u003E\n\u003Cp\u003E行空板支持8路10位PWM，分别对应引脚为: P0  P2  P3  P10  P16  P21  P22  P23\u003C\u002Fp\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E注意: 其中P8与P2共用一路PWM，P9与P10共用一路PWM，因此P8与P9也可以使用PWM，但使用时P2和P10不能使用，另外需要注意P8P9为一组，P2P10为一组，只能同时使用其中一组，不可混合使用（例如P8或P9输出了PWM，则P2或P10就不能输出PWM了）。\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-python\"\u003E# -*- coding: UTF-8 -*-\n#实验效果： PWM输出实验,控制LED灯亮度变化\n#接线：LED灯接到行空板P21引脚上\nimport time\nfrom pinpong.board import Board,Pin\n\nBoard().begin()               #初始化\n\n# PWM模拟输出引脚支持: P0  P2  P3  P10  P16  P21  P22  P23\n#pwm21 = PWM(Pin(Pin.P21)) #将引脚传入PWM初始化  模拟输出方法1\npwm21 = Pin(Pin.P21, Pin.PWM) #初始化引脚为PWM模式 模拟输出方法2\n\nwhile True:\n    for i in range(1023):\n        print(i)\n        #pwm21.duty(i) #PWM输出 方法1\n        pwm21.write_analog(i) #PWM输出 方法2\n        time.sleep(0.05)\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cul\u003E\n\u003Cli\u003E图形化示例：\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F27b4789d43e60ba45288de786ea90bfe.png\" alt=\"\"\u003E\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Ch2\u003E----------------\u003C\u002Fh2\u003E\n\u003Ch2\u003E6 - 高级功能\u003C\u002Fh2\u003E\n\u003Ch2\u003E6.1-串口（UART）\u003C\u002Fh2\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E行空板金手指上支持1路硬串口，可搭配micro:bit兼容的扩展板使用。\u003Cbr\u003E\n注:不支持软串口\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F732c26ccc3cee823058cc88fd5e97c28.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E注：行空板板载了USB接口，内置了ch340、cp2102、pl2303串口驱动，因此你还可以直接使用一个USB to TTL转接板连接串口设备，\u003Ca href=\"https:\u002F\u002Fmc.dfrobot.com.cn\u002Fthread-314531-1-1.html\" title=\"使用pyserial库进行通信\"\u003E使用pyserial库进行通信\u003C\u002Fa\u003E。\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-python\"\u003E# -*- coding: utf-8 -*-\nimport time\nfrom pinpong.board import Board, UART\n\nBoard(&quot;UNIHIKER&quot;).begin()  #初始化，选择板型，不输入板型则进行自动识别\n#硬串口1 P0-RX P3-TX\nuart1 = UART()   \n#初始化串口 baud_rate 波特率, bits 数据位数(8\u002F9) parity奇偶校验(0 无校验\u002F1 奇校验\u002F2 偶校验) stop 停止位(1\u002F2)\n# uart1.init(baud_rate = 115200, bits=8, parity=0, stop = 1) \nuart1.init() #默认波特率为9600\nbuf = [0x00, 0x01, 0x02, 0x03, 0x05, 0x06, 0x07]\n#关闭硬串口1\n#uart1.deinit() \n#返回可读取的字节数\n#uart1.any() \n#串口写,buf为数列\n#uart1.write(buf)\n#读取串口字符,返回None或者数列\n#uart1.read(n)\n#读一行，以换行符结尾。读取行或 None 超时。(到换行键(0xa)结束，无则返回None)\n#buf = uart1.readline()\n#将字节读入buf。如果 nbytes 指定，则最多读取多个字节。否则，最多读取 len(buf) 字节数。\n#uart1.readinto(buf, nbytes)\nwhile True:\n    uart1.write(buf)\n    time.sleep(1)\n\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Ch2\u003E6.2-SPI\u003C\u002Fh2\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E行空板金手指上支持2路SPI接口，可搭配micro:bit兼容的扩展板使用。\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F732c26ccc3cee823058cc88fd5e97c28.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Cpre\u003E\u003Ccode class=\"language-python\"\u003Eimport time\nfrom pinpong.board import Board, Pin, SPI\n\nBoard(&quot;UNIHIKER&quot;).begin()  #初始化，选择板型，不输入板型则进行自动识别\n\n#0代表SPI0(P1 SCK, P10 MISO, P2 MOSI), 1代表SPI1(P13 SCK, P14 MISO, P15 MOSI)\n#cs为选片引脚, 只能做主机\nspi0 = SPI(0, cs = Pin.P3)\n\nw_buf = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]\n\nwhile True:\n    # r_buf = spi0.read(8)    #向从机读取8个字节\n    # print(r_buf)\n    #spi0.write(0x88)         #spi0发送单字节\n    spi0.write(w_buf)         #spi0发送buf\n    time.sleep(1)\n\n\n\n\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Ch2\u003E6.3-I2C\u003C\u002Fh2\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003EI2C是一种常用的总线接口，在2根信号线上可以挂载多个不同的I2C设备，各设备之间通过I2C地址区分，因此使用时需要注意不同设备地址应该不同，并且I2C总线上的设备如果异常可能会干扰I2C通信导致所有设备军不可用。\u003Cbr\u003E\n行空板板载2个I2C 4pin ph2.0接口，同时金手指上P19及P20也是I2C接口线可以在各种扩展板上引出I2C接口。\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002F04b69a4c67b698e6180b805e0ddd2239.png\" alt=\"\"\u003E\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F732c26ccc3cee823058cc88fd5e97c28.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Cul\u003E\n\u003Cli\u003E\n\u003Cp\u003EI2C地址扫描\u003Cbr\u003E\npinpong库升级0.6及以上版本后，支持直接在终端使用命令\u003Ccode\u003Ei2cdetect -y 4\u003C\u002Fcode\u003E扫描I2C地址。\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwikicn\u002F599a45d540a65c6bb27c3b2a\u002Ffb9f5ed9bf6dbe99a0a4d4efa563cfc7.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003C\u002Fli\u003E\n\u003Cli\u003E\n\u003Cp\u003EI2C的使用\u003Cbr\u003E\nI2C模块一般均使用具体的库进行通信，不单独使用I2C通信功能。\u003C\u002Fp\u003E\n\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Ch2\u003E----------------\u003C\u002Fh2\u003E\n\u003Ch2\u003E7 - 更多传感器的支持\u003C\u002Fh2\u003E\n\u003Cp\u003Epinpong库中支持的传感器在行空板上也可以使用，只需要调整对应的引脚代码即可。\u003C\u002Fp\u003E\n\u003Ch2\u003EDHT11温湿度传感器\u003C\u002Fh2\u003E\n\u003Cp\u003E需要传入引脚的传感器，数字信号，任何引脚均可，使用行空板中引脚积木插入对应传感器引脚对象中。\u003C\u002Fp\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E注：因为行空板引脚控制积木默认会进行初始化操作，因此不在需要单独的pinpong初始化积木。\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Cp\u003E\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F8d1b49cca105eef202312a6c83f8a270.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003Ch2\u003E舵机示例\u003C\u002Fh2\u003E\n\u003Cp\u003E需要传入引脚的执行器，需要使用pwm引脚（带~标记的为PWM引脚），使用行空板中引脚积木插入对应执行器引脚对象中。\u003C\u002Fp\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E注0：如果接线及程序正常而舵机不转，尝试将pinpong库升级到0.5.2及以上版本。 \u003Ca href=\"https:\u002F\u002Fwww.unihiker.com.cn\u002Fwiki\u002Fpip_install\" title=\"[升级方法]\"\u003E[升级方法]\u003C\u002Fa\u003E。\u003Cbr\u003E\n注1：行空板板载接口为PH2.0接口，常规舵机线为2.54mm杜邦头，可使用\u003Ca href=\"https:\u002F\u002Fwww.dfrobot.com.cn\u002Fgoods-3478.html\" title=\"PH2.0转杜邦2.54公头线\"\u003EPH2.0转杜邦2.54公头线\u003C\u002Fa\u003E 或  \u003Ca href=\"https:\u002F\u002Fwww.dfrobot.com.cn\u002Fgoods-703.html\" title=\"公公头转接线\"\u003E公公头转接线\u003C\u002Fa\u003E进行转接。\u003Cbr\u003E\n注2：行空板板载接口仅能连接9g舵机，请勿连接金属大舵机，大舵机需要的电流较大可能会损坏行空板上的电子部件，应该使用扩展板连接大舵机并独立供电。\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F8d44e6c42dae87b113e5a022c07fd248.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Cp\u003E\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fa4fcb0bbf829f15e3cacde959da09a60.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003Ch2\u003E功率计示例\u003C\u002Fh2\u003E\n\u003Cp\u003EI2C传感器，需要增加初始化pinpong的积木。\u003C\u002Fp\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E注：没有用到行空板主板中的积木，因此需要单独初始化。\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Cp\u003E\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002Fe624c2b293232badb23b818ace5328d5.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003Ch2\u003EWS2812 RGB灯带\u003C\u002Fh2\u003E\n\u003Cp\u003E插入行空板引脚初始化即可，数字信号，任何引脚均可，设置为黑色可以熄灭灯。\u003C\u002Fp\u003E\n\u003Cblockquote\u003E\n\u003Cp\u003E注：V0.6.0以下版本pinpong库只支持使用一条灯带，如需要同时使用多个灯带请升级pinpong库到最新版本。\u003Cbr\u003E\n注：因为行空板引脚控制积木默认会进行初始化操作，因此不在需要单独的pinpong初始化积木。\u003Cbr\u003E\n注：如果对ws2812进行外部供电，需要注意供3.3V电压以及共地\u003C\u002Fp\u003E\n\u003C\u002Fblockquote\u003E\n\u003Cp\u003E\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F4d7ed40102264ca1929c2e5bd36287d1.png\" alt=\"\"\u003E\u003Cbr\u003E\n\u003Cimg src=\"https:\u002F\u002Fimg.dfrobot.com.cn\u002Fwiki\u002Fnone\u002F2de1ddaab038078ac577bab08cd05f3a.png\" alt=\"\"\u003E\u003C\u002Fp\u003E\n\u003Cul\u003E\n\u003Cli\u003E更多示例详情查看\u003Cstrong\u003E对应电子模块的产品维库\u003C\u002Fstrong\u003E或pinpong示例代码：\n\u003Cul\u003E\n\u003Cli\u003E\u003Ca href=\"https:\u002F\u002Fpinpong.readthedocs.io\u002F\" title=\"pinpong官方文档\"\u003Epinpong官方文档\u003C\u002Fa\u003E\u003C\u002Fli\u003E\n\u003Cli\u003E\u003Ca href=\"https:\u002F\u002Fpinpong.readthedocs.io\u002F\" title=\"pinpong镜像网站\"\u003Epinpong镜像网站\u003C\u002Fa\u003E\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Ch2\u003E----------------\u003C\u002Fh2\u003E\n\u003Ch2\u003E7 - 常见问题FAQ\u003C\u002Fh2\u003E\n\u003Cp\u003E\u003Cstrong\u003E暂时还没有常见问题，请在论坛行空板专区或行空板官网交流群进行交流。\u003C\u002Fstrong\u003E\u003C\u002Fp\u003E\n",search:d,canonicalUrl:"\u002Fpinpong_python_lib",hlKey:p,hlSection:p}],fetch:{},error:i,state:{authUser:i,dfrobotshopUser:i},serverRendered:d,routePath:"\u002Fwiki\u002Fm10\u002Fpinpong_python_lib",config:{_app:{basePath:"\u002F",assetsPath:"\u002F_nuxt\u002F",cdnURL:i}}}}(false,"","file",true,"folder","行空板官方文档-unihiker库","----------------","行空板官方文档 - pinpong库",null,1,"vnc","burner","pinpong_python_lib","user_block_extension","Mind+图形化扩展库收集",void 0));</script><script src="./行空板官方文档 - pinpong库_files/328c8aa.js.下载" defer=""></script><script src="./行空板官方文档 - pinpong库_files/1feb59e.js.下载" defer=""></script><script src="./行空板官方文档 - pinpong库_files/aa9438b.js.下载" defer=""></script><script src="./行空板官方文档 - pinpong库_files/ca129b3.js.下载" defer=""></script><script src="./行空板官方文档 - pinpong库_files/b8c9955.js.下载" defer=""></script>
+  
+
+</body></html>

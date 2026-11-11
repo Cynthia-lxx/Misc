@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troll-vs-Troll 物理参数配置</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .param-container {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f0f8ff;
+        }
+        .param-label {
+            display: inline-block;
+            width: 200px;
+            font-weight: bold;
+        }
+        .param-input {
+            width: 100px;
+            padding: 5px;
+            margin-right: 10px;
+        }
+        .param-row {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        .buttons {
+            margin: 20px 0;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+        }
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e9f7ef;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Troll-vs-Troll 物理参数配置</h1>
+        <p>设置拉杆载具的物理参数：</p>
+        
+        <div class="param-container">
+            <div class="param-row">
+                <label class="param-label">书包长度 (m):</label>
+                <input type="number" id="bag_length" class="param-input" value="0.5" step="0.01" min="0.1" max="2">
+            </div>
+            <div class="param-row">
+                <label class="param-label">书包宽度 (m):</label>
+                <input type="number" id="bag_width" class="param-input" value="0.3" step="0.01" min="0.1" max="2">
+            </div>
+            <div class="param-row">
+                <label class="param-label">书包高度 (m):</label>
+                <input type="number" id="bag_height" class="param-input" value="0.7" step="0.01" min="0.1" max="2">
+            </div>
+            <div class="param-row">
+                <label class="param-label">重心高度 (m):</label>
+                <input type="number" id="center_of_gravity_height" class="param-input" value="0.4" step="0.01" min="0.1" max="2">
+            </div>
+            <div class="param-row">
+                <label class="param-label">轮子半径 (m):</label>
+                <input type="number" id="wheel_radius" class="param-input" value="0.1" step="0.01" min="0.01" max="0.5">
+            </div>
+            <div class="param-row">
+                <label class="param-label">单轮质量 (kg):</label>
+                <input type="number" id="wheel_mass" class="param-input" value="0.5" step="0.01" min="0.01" max="5">
+            </div>
+            <div class="param-row">
+                <label class="param-label">书包总质量 (kg):</label>
+                <input type="number" id="bag_total_mass" class="param-input" value="5.0" step="0.1" min="0.1" max="50">
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button onclick="updateParameters()">更新参数</button>
+            <a href="/"><button type="button">返回传感器输入</button></a>
+            <a href="/visualization"><button type="button">查看结果图表</button></a>
+        </div>
+        
+        <div class="status" id="status">
+            状态: 就绪
+        </div>
+    </div>
+
+    <script>
+        function updateParameters() {
+            const params = {
+                bag_length: parseFloat(document.getElementById('bag_length').value),
+                bag_width: parseFloat(document.getElementById('bag_width').value),
+                bag_height: parseFloat(document.getElementById('bag_height').value),
+                center_of_gravity_height: parseFloat(document.getElementById('center_of_gravity_height').value),
+                wheel_radius: parseFloat(document.getElementById('wheel_radius').value),
+                wheel_mass: parseFloat(document.getElementById('wheel_mass').value),
+                bag_total_mass: parseFloat(document.getElementById('bag_total_mass').value)
+            };
+            
+            fetch('/api/update_parameters', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(params)
+            })
+            .then(response => response.json())
+            .then(result => {
+                document.getElementById('status').innerHTML = '状态: 物理参数已更新';
+                setTimeout(() => {
+                    document.getElementById('status').innerHTML = '状态: 就绪';
+                }, 2000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('status').innerHTML = '状态: 更新参数时出错 - ' + error.message;
+            });
+        }
+    </script>
+</body>
+</html>
