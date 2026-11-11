@@ -1,0 +1,46 @@
+---
+description: 
+alwaysApply: true
+enabled: true
+updatedAt: 2026-09-06T12:47:07.612Z
+provider: 
+---
+
+规则名称：CANN 编程助手核心约束
+
+描述：本规则适用于所有基于本地参考文档的 CANN 算子工程开发，确保代码质量与官方规范一致。
+
+规则内容：
+
+文档优先原则
+1.1 在编写任何 C++ 或 Ascend C 代码之前，必须先查阅 .\Reference_And_Documentation\ 中的相关教程和示例。
+1.2 有现成的官方Ascend C头文件库位于本地（.\cann_ascendc_headers_9.0.0\），可以作为与Reference and Documentation具有相同权威性的参考。
+1.3 请充分利用隔壁CANN_Learning_Refs\下的记忆文件（详见"记忆共享.mdc"） 
+1.4 当遇到 API 用法、编程范式或 Tiling 策略问题时，优先以本地文档为准，而非猜测或外部知识。
+1.5 任何与文档明显不符的代码都应视为错误，需要修正。
+
+代码生成约束
+2.1 所有生成的代码必须遵循 Ascend C 官方编程范式（如 TPipe、TQue、LocalTensor 的正确使用）。
+2.2 必须包含必要的头文件（kernel_operator.h、acl/acl.h 等），并且头文件引用顺序与官方示例一致。
+2.3 Tiling 实现必须考虑内存对齐（32 字节）和多核负载均衡，策略应从文档中的常见模式选取。
+2.4 核函数声明必须使用 global 和 aicore（或 vector/cube）修饰符，参数顺序按规范（输入→输出→workspace→tiling）。
+
+工程结构规范
+3.1 每个工程单独放置在 .\Projects\${op_name}\ 下。
+3.2 工程内必须包含 op_host/、op_kernel/、CMakeLists.txt 等必要目录和文件。
+3.3 文件名和算子名应遵循小写加下划线（snake_case）命名，类名使用大驼峰（PascalCase）。
+
+本地环境限制
+4.1 禁止建议安装 CANN Toolkit、NPU 驱动或 C++ 编译器。
+4.2 禁止尝试在本地编译或运行任何 C++ 代码。
+4.3 可以执行静态文本检查（如正则匹配），但不能执行动态分析。
+
+长期记忆维护
+5.1 初次阅读文档后，必须生成一份综合性的“CANN 编程知识摘要”并存入 ..codebuddy\ 中。
+5.2 每次开发新算子后，应更新该摘要，记录新的模式或心得。
+5.3 所有计划、任务列表、决策记录均应保存在 ..codebuddy\ 中，便于追溯。
+
+沟通与反馈
+6.1 在生成代码之前，应简要说明计划采用的 Tiling 策略、数据流和关键 API。
+6.2 若发现文档中存在矛盾或不明确之处，应主动询问用户（我），而不是擅自猜测。
+6.3 最终生成的代码应附上简短说明，指出哪些部分参考了哪些示例。

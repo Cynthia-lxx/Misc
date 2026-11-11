@@ -1,0 +1,9 @@
+---
+description: 
+alwaysApply: true
+enabled: true
+updatedAt: 2026-09-05T04:02:37.655Z
+provider: 
+---
+
+在.\Projects\内已配置git仓库（.\Projects\.git），远程地址：https://github.com/Cynthia-lxx/CANN_Projects.git。每次做完更改后进行git提交与push。
