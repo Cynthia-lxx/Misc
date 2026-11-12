@@ -1,0 +1,38 @@
+# CANN_OpHelper operator spec example: Add (element-wise add), matching the
+# official msopgen example AddCustomTemplate.
+#
+# Field semantics align with docs/official-patterns.md SS1.3/SS1.4:
+# - type and format are parallel arrays; entries at the same index form one
+#   "dtype+format" combination (official JSON convention). E.g.
+#   type: [float16, float] means the tensor supports both float16 and float32.
+# - soc_version is the base SoC version; msopgen will prefix it as
+#   ai_core-ascend910b1 when assembling the command.
+# - shape is an optional operator shape hint (-1 allowed for dynamic dims);
+#   metadata only, never part of the msopgen command.
+
+op_type: AddCustomTemplate        # PascalCase op type name (drives file/function names)
+soc_version: ascend910b1          # msopgen -c will become ai_core-ascend910b1
+language: cpp                     # official msopgen -lan value, always cpp
+description: 逐元素加法 z = x + y（Element-Wise，官方 Add 模板样例）
+
+inputs:
+  - name: x
+    param_type: required
+    type: [float16, float]
+    format: [ND, ND]
+    shape: [8, 2048]              # example shape hint only
+  - name: y
+    param_type: required
+    type: [float16, float]
+    format: [ND, ND]
+    shape: [8, 2048]
+
+outputs:
+  - name: z
+    param_type: required
+    type: [float16, float]
+    format: [ND, ND]
+    shape: [8, 2048]
+
+# attrs: []                       # declare scalar attrs here (name/type/value)
+# tiling: {}                      # reserved for tiling (used by later phases)

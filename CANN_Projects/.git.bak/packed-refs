@@ -1,0 +1,5 @@
+# pack-refs with: peeled fully-peeled sorted 
+900043440ba1a1b986fa76b3f210188f0d5509f6 refs/remotes/origin/fix/p2a-gm-tiling
+11725a317285a3dd801b79ed5a272055d0f8d309 refs/remotes/origin/fix/p2b-cube-real-shape
+32b0253d79762ff9d7e5e16c0b7d8c248aafd2cb refs/remotes/origin/fix/p3-fullshape-fused
+a9bf559aed8024c3c03ebe456b21b93035bef812 refs/remotes/origin/master
