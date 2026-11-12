@@ -1,0 +1,43 @@
+---
+description: 双环境开发规则（CPU 版 P 盘 / GPU 版 F 盘）
+alwaysApply: true
+enabled: true
+updatedAt: 2026-10-04T05:56:46.481Z
+provider:
+---
+
+项目分为 CPU 和 GPU 两个开发位置。
+
+【CPU 版（主要开发）】
+- 位置：P 盘（U 盘）
+- Python：3.14.5 embedded
+- 虚拟环境：penv
+- torch：2.13.0+cpu，torchvision：0.28.0（无 CUDA）
+- 注意：开发时不要使用 Python 3.12 以上的语法特性，以确保与 GPU 版的 Python 3.12 兼容
+
+【GPU 版（用于 GPU 推理与冒烟测试）】
+- 位置：F:\Dev\ComfyUI_Refs\（2TB SSD 移动硬盘）
+- Python：本机系统 Python 3.12（py -3.12）
+- 虚拟环境：F:\Dev\ComfyUI_Refs\ComfyDL_UI\penv_new\
+- torch：2.11.0+cu130，torchvision：0.26.0+cu130，torchaudio：2.11.0+cu130
+- CUDA：本机 CUDA 13.1
+- 来源：2026/10/4 通过 robocopy 从 P 盘完整复制而来（含 ComfyDL_releases），之后在 F 盘重建 penv_new
+
+【开发流程】
+- 在 P 盘进行主要开发
+- 冒烟测试需在 CPU 版和 GPU 版各跑一遍
+  - CPU 版：cd P:\... ; .\penv\scripts\activate ; <smoke test>
+  - GPU 版：cd F:\Dev\ComfyUI_Refs\ComfyDL_UI ; .\penv_new\Scripts\activate ; <smoke test>
+- 在 P 盘完成一次提交后，在 F 盘对应仓库先 git fetch 再 git switch 到对应分支，确保两边代码状态一致（除 CPU/GPU、Python 版本、虚拟环境、PyTorch 版本外完全相同）
+
+【环境异常处理】
+如果出现以下任一情况，说明当前计算机不是编写本规则的计算机：
+- 本机 Python 3.12 不可用
+- penv_new 启动失败
+- CUDA 13.1 未找到
+- F 盘离线
+- F 盘内容与预期不符
+
+预期 F 盘内容：F:\Dev\ComfyUI_Refs\ComfyDL_UI\ 存在，且 penv_new 可激活、torch.__version__ == "2.11.0+cu130"、torch.cuda.is_available() == True。
+
+此时应在 P 盘上进行 CPU 版开发，并将"开发环境发生变化"记入记忆，等待开发环境搬回该计算机后再进行同步与补全冒烟测试。届时用户将对计算机的回归进行说明。此事件可能发生多次。

@@ -1,0 +1,4626 @@
+{
+  "root": "p:\\Dev\\ComfyUI_Refs\\ComfyDL_UI",
+  "entries": [
+    "main",
+    "server",
+    "execution",
+    "nodes"
+  ],
+  "keep_closure": [
+    "api_server",
+    "api_server.routes",
+    "api_server.routes.internal",
+    "api_server.routes.internal.internal_routes",
+    "api_server.services",
+    "api_server.services.terminal_service",
+    "app",
+    "app.app_settings",
+    "app.assets.api.routes",
+    "app.assets.api.schemas_in",
+    "app.assets.api.upload",
+    "app.assets.database.models",
+    "app.assets.database.queries",
+    "app.assets.database.queries.asset",
+    "app.assets.database.queries.asset_reference",
+    "app.assets.database.queries.common",
+    "app.assets.database.queries.tags",
+    "app.assets.helpers",
+    "app.assets.scanner",
+    "app.assets.seeder",
+    "app.assets.services",
+    "app.assets.services.asset_management",
+    "app.assets.services.bulk_ingest",
+    "app.assets.services.cursor",
+    "app.assets.services.file_utils",
+    "app.assets.services.hashing",
+    "app.assets.services.image_dimensions",
+    "app.assets.services.ingest",
+    "app.assets.services.metadata_extract",
+    "app.assets.services.path_utils",
+    "app.assets.services.schemas",
+    "app.assets.services.tagging",
+    "app.custom_node_manager",
+    "app.database.db",
+    "app.database.models",
+    "app.frontend_management",
+    "app.logger",
+    "app.model_manager",
+    "app.node_replace_manager",
+    "app.subgraph_manager",
+    "app.user_manager",
+    "comfy.background_removal.birefnet",
+    "comfy.bg_removal_model",
+    "comfy.cldm.cldm",
+    "comfy.cldm.control_types",
+    "comfy.cldm.dit_embedder",
+    "comfy.cldm.mmdit",
+    "comfy.cli_args",
+    "comfy.clip_model",
+    "comfy.clip_vision",
+    "comfy.comfy_api_env",
+    "comfy.comfy_types",
+    "comfy.comfy_types.node_typing",
+    "comfy.conds",
+    "comfy.context_windows",
+    "comfy.controlnet",
+    "comfy.deploy_environment",
+    "comfy.diffusers_load",
+    "comfy.float",
+    "comfy.hooks",
+    "comfy.image_encoders.dino2",
+    "comfy.image_encoders.dino3",
+    "comfy.image_encoders.naf",
+    "comfy.internal_logging",
+    "comfy.latent_formats",
+    "comfy.ldm.ace.ace_step15",
+    "comfy.ldm.ace.attention",
+    "comfy.ldm.ace.lyric_encoder",
+    "comfy.ldm.ace.model",
+    "comfy.ldm.ace.vae.autoencoder_dc",
+    "comfy.ldm.ace.vae.music_dcae_pipeline",
+    "comfy.ldm.ace.vae.music_log_mel",
+    "comfy.ldm.ace.vae.music_vocoder",
+    "comfy.ldm.anima.model",
+    "comfy.ldm.audio.autoencoder",
+    "comfy.ldm.audio.dit",
+    "comfy.ldm.audio.embedders",
+    "comfy.ldm.audio.vae_sa3",
+    "comfy.ldm.aura.mmdit",
+    "comfy.ldm.boogu.model",
+    "comfy.ldm.cascade.common",
+    "comfy.ldm.cascade.controlnet",
+    "comfy.ldm.cascade.stage_a",
+    "comfy.ldm.cascade.stage_b",
+    "comfy.ldm.cascade.stage_c",
+    "comfy.ldm.cascade.stage_c_coder",
+    "comfy.ldm.chroma.layers",
+    "comfy.ldm.chroma.model",
+    "comfy.ldm.chroma_radiance.layers",
+    "comfy.ldm.chroma_radiance.model",
+    "comfy.ldm.cogvideo",
+    "comfy.ldm.cogvideo.model",
+    "comfy.ldm.cogvideo.vae",
+    "comfy.ldm.common_dit",
+    "comfy.ldm.cosmos.blocks",
+    "comfy.ldm.cosmos.cosmos_tokenizer.layers3d",
+    "comfy.ldm.cosmos.cosmos_tokenizer.patching",
+    "comfy.ldm.cosmos.cosmos_tokenizer.utils",
+    "comfy.ldm.cosmos.model",
+    "comfy.ldm.cosmos.position_embedding",
+    "comfy.ldm.cosmos.predict2",
+    "comfy.ldm.cosmos.vae",
+    "comfy.ldm.depth_anything_3.camera",
+    "comfy.ldm.depth_anything_3.dpt",
+    "comfy.ldm.depth_anything_3.model",
+    "comfy.ldm.depth_anything_3.ray_pose",
+    "comfy.ldm.depth_anything_3.reference_view_selector",
+    "comfy.ldm.depth_anything_3.transform",
+    "comfy.ldm.ernie.model",
+    "comfy.ldm.flux.controlnet",
+    "comfy.ldm.flux.layers",
+    "comfy.ldm.flux.math",
+    "comfy.ldm.flux.model",
+    "comfy.ldm.flux.redux",
+    "comfy.ldm.genmo.joint_model.asymm_models_joint",
+    "comfy.ldm.genmo.joint_model.layers",
+    "comfy.ldm.genmo.joint_model.rope_mixed",
+    "comfy.ldm.genmo.joint_model.temporal_rope",
+    "comfy.ldm.genmo.joint_model.utils",
+    "comfy.ldm.genmo.vae.model",
+    "comfy.ldm.hidream.model",
+    "comfy.ldm.hidream_o1.attention",
+    "comfy.ldm.hidream_o1.conditioning",
+    "comfy.ldm.hidream_o1.model",
+    "comfy.ldm.hidream_o1.utils",
+    "comfy.ldm.hunyuan3d.model",
+    "comfy.ldm.hunyuan3d.vae",
+    "comfy.ldm.hunyuan3dv2_1.hunyuandit",
+    "comfy.ldm.hunyuan_video.model",
+    "comfy.ldm.hunyuan_video.vae",
+    "comfy.ldm.hydit.attn_layers",
+    "comfy.ldm.hydit.controlnet",
+    "comfy.ldm.hydit.models",
+    "comfy.ldm.hydit.poolers",
+    "comfy.ldm.hydit.posemb_layers",
+    "comfy.ldm.ideogram4.model",
+    "comfy.ldm.joyimage.model",
+    "comfy.ldm.kandinsky5.model",
+    "comfy.ldm.krea2.model",
+    "comfy.ldm.lens.model",
+    "comfy.ldm.lightricks.av_model",
+    "comfy.ldm.lightricks.embeddings_connector",
+    "comfy.ldm.lightricks.model",
+    "comfy.ldm.lightricks.symmetric_patchifier",
+    "comfy.ldm.lightricks.vae.audio_vae",
+    "comfy.ldm.lightricks.vae.causal_audio_autoencoder",
+    "comfy.ldm.lightricks.vae.causal_conv3d",
+    "comfy.ldm.lightricks.vae.causal_video_autoencoder",
+    "comfy.ldm.lightricks.vae.conv_nd_factory",
+    "comfy.ldm.lightricks.vae.dual_conv3d",
+    "comfy.ldm.lightricks.vae.na_diffusion_decoder",
+    "comfy.ldm.lightricks.vae.pixel_norm",
+    "comfy.ldm.lightricks.vocoders.vocoder",
+    "comfy.ldm.lumina.model",
+    "comfy.ldm.mage_flow.model",
+    "comfy.ldm.mage_flow.vae",
+    "comfy.ldm.minimax.audio_vae",
+    "comfy.ldm.minimax.model",
+    "comfy.ldm.minimax.vae",
+    "comfy.ldm.minimax_music",
+    "comfy.ldm.minimax_music.ar",
+    "comfy.ldm.minimax_music.dav",
+    "comfy.ldm.minimax_music.dit",
+    "comfy.ldm.minimax_music.prompt",
+    "comfy.ldm.mmaudio.vae",
+    "comfy.ldm.mmaudio.vae.alias_free_torch",
+    "comfy.ldm.mmaudio.vae.autoencoder",
+    "comfy.ldm.mmaudio.vae.bigvgan",
+    "comfy.ldm.mmaudio.vae.distributions",
+    "comfy.ldm.mmaudio.vae.vae",
+    "comfy.ldm.mmaudio.vae.vae_modules",
+    "comfy.ldm.models.autoencoder",
+    "comfy.ldm.modules.attention",
+    "comfy.ldm.modules.diffusionmodules",
+    "comfy.ldm.modules.diffusionmodules.mmdit",
+    "comfy.ldm.modules.diffusionmodules.model",
+    "comfy.ldm.modules.diffusionmodules.openaimodel",
+    "comfy.ldm.modules.diffusionmodules.upscaling",
+    "comfy.ldm.modules.diffusionmodules.util",
+    "comfy.ldm.modules.distributions",
+    "comfy.ldm.modules.distributions.distributions",
+    "comfy.ldm.modules.ema",
+    "comfy.ldm.modules.encoders",
+    "comfy.ldm.modules.encoders.noise_aug_modules",
+    "comfy.ldm.modules.sdpose",
+    "comfy.ldm.modules.sub_quadratic_attention",
+    "comfy.ldm.omnigen.omnigen2",
+    "comfy.ldm.pixart.blocks",
+    "comfy.ldm.pixart.pixartms",
+    "comfy.ldm.pixeldit.model",
+    "comfy.ldm.pixeldit.modules",
+    "comfy.ldm.pixeldit.pid",
+    "comfy.ldm.qwen_image.controlnet",
+    "comfy.ldm.qwen_image.model",
+    "comfy.ldm.rt_detr.rtdetr_v4",
+    "comfy.ldm.sam3.detector",
+    "comfy.ldm.sam3.sam",
+    "comfy.ldm.sam3.tracker",
+    "comfy.ldm.seedvr.attention",
+    "comfy.ldm.seedvr.constants",
+    "comfy.ldm.seedvr.model",
+    "comfy.ldm.seedvr.vae",
+    "comfy.ldm.trellis2.flexgemm",
+    "comfy.ldm.trellis2.model",
+    "comfy.ldm.trellis2.vae",
+    "comfy.ldm.triposplat.gaussian",
+    "comfy.ldm.triposplat.model",
+    "comfy.ldm.triposplat.vae",
+    "comfy.ldm.util",
+    "comfy.ldm.wan.ar_model",
+    "comfy.ldm.wan.model",
+    "comfy.ldm.wan.model_animate",
+    "comfy.ldm.wan.model_animate2",
+    "comfy.ldm.wan.model_wandancer",
+    "comfy.ldm.wan.vae",
+    "comfy.ldm.wan.vae2_2",
+    "comfy.lora",
+    "comfy.lora_convert",
+    "comfy.memory_management",
+    "comfy.model_base",
+    "comfy.model_detection",
+    "comfy.model_management",
+    "comfy.model_patcher",
+    "comfy.model_prefetch",
+    "comfy.model_sampling",
+    "comfy.multigpu",
+    "comfy.nested_tensor",
+    "comfy.ops",
+    "comfy.options",
+    "comfy.patcher_extension",
+    "comfy.pinned_memory",
+    "comfy.pixel_space_convert",
+    "comfy.quant_ops",
+    "comfy.rmsnorm",
+    "comfy.sample",
+    "comfy.sampler_helpers",
+    "comfy.samplers",
+    "comfy.sd",
+    "comfy.sd1_clip",
+    "comfy.supported_models",
+    "comfy.supported_models_base",
+    "comfy.system_memory",
+    "comfy.t2i_adapter.adapter",
+    "comfy.taesd.taehv",
+    "comfy.taesd.taesd",
+    "comfy.text_encoders.ace",
+    "comfy.text_encoders.ace15",
+    "comfy.text_encoders.ace_text_cleaners",
+    "comfy.text_encoders.anima",
+    "comfy.text_encoders.aura_t5",
+    "comfy.text_encoders.bert",
+    "comfy.text_encoders.boogu",
+    "comfy.text_encoders.bpe_tokenizer",
+    "comfy.text_encoders.cogvideo",
+    "comfy.text_encoders.cosmos",
+    "comfy.text_encoders.ernie",
+    "comfy.text_encoders.flux",
+    "comfy.text_encoders.gemma4",
+    "comfy.text_encoders.genmo",
+    "comfy.text_encoders.gpt_oss",
+    "comfy.text_encoders.hidream",
+    "comfy.text_encoders.hidream_o1",
+    "comfy.text_encoders.hunyuan_image",
+    "comfy.text_encoders.hunyuan_video",
+    "comfy.text_encoders.hydit",
+    "comfy.text_encoders.ideogram4",
+    "comfy.text_encoders.jina_clip_2",
+    "comfy.text_encoders.joyimage",
+    "comfy.text_encoders.kandinsky5",
+    "comfy.text_encoders.krea2",
+    "comfy.text_encoders.llama",
+    "comfy.text_encoders.long_clipl",
+    "comfy.text_encoders.longcat_image",
+    "comfy.text_encoders.lt",
+    "comfy.text_encoders.lumina2",
+    "comfy.text_encoders.mage_flow",
+    "comfy.text_encoders.minimax",
+    "comfy.text_encoders.minimax_music",
+    "comfy.text_encoders.newbie",
+    "comfy.text_encoders.omnigen2",
+    "comfy.text_encoders.ovis",
+    "comfy.text_encoders.pixart_t5",
+    "comfy.text_encoders.pixeldit",
+    "comfy.text_encoders.qwen35",
+    "comfy.text_encoders.qwen3vl",
+    "comfy.text_encoders.qwen_image",
+    "comfy.text_encoders.qwen_vl",
+    "comfy.text_encoders.sa3",
+    "comfy.text_encoders.sa_t5",
+    "comfy.text_encoders.sam3_clip",
+    "comfy.text_encoders.sd2_clip",
+    "comfy.text_encoders.sd3_clip",
+    "comfy.text_encoders.spiece_tokenizer",
+    "comfy.text_encoders.t5",
+    "comfy.text_encoders.wan",
+    "comfy.text_encoders.z_image",
+    "comfy.utils",
+    "comfy.weight_adapter",
+    "comfy.weight_adapter.base",
+    "comfy.weight_adapter.boft",
+    "comfy.weight_adapter.bypass",
+    "comfy.weight_adapter.glora",
+    "comfy.weight_adapter.loha",
+    "comfy.weight_adapter.lokr",
+    "comfy.weight_adapter.lora",
+    "comfy.weight_adapter.oft",
+    "comfy_api.feature_flags",
+    "comfy_api.input",
+    "comfy_api.internal",
+    "comfy_api.internal.api_registry",
+    "comfy_api.internal.async_to_sync",
+    "comfy_api.internal.singleton",
+    "comfy_api.latest",
+    "comfy_api.latest._caching",
+    "comfy_api.latest._input",
+    "comfy_api.latest._input.basic_types",
+    "comfy_api.latest._input.curve_types",
+    "comfy_api.latest._input.range_types",
+    "comfy_api.latest._input.video_types",
+    "comfy_api.latest._input_impl",
+    "comfy_api.latest._input_impl.video_types",
+    "comfy_api.latest._io",
+    "comfy_api.latest._io_public",
+    "comfy_api.latest._util",
+    "comfy_api.latest._util.geometry_types",
+    "comfy_api.latest._util.image_types",
+    "comfy_api.latest._util.video_types",
+    "comfy_api.v0_0_1",
+    "comfy_api.v0_0_2",
+    "comfy_api.version_list",
+    "comfy_execution.asset_enrichment",
+    "comfy_execution.cache_provider",
+    "comfy_execution.caching",
+    "comfy_execution.graph",
+    "comfy_execution.graph_utils",
+    "comfy_execution.jobs",
+    "comfy_execution.progress",
+    "comfy_execution.utils",
+    "comfy_execution.validation",
+    "comfyui_version",
+    "cuda_malloc",
+    "execution",
+    "folder_paths",
+    "hook_breaker_ac10a0",
+    "latent_preview",
+    "main",
+    "middleware",
+    "middleware.cache_middleware",
+    "node_helpers",
+    "nodes",
+    "protocol",
+    "server",
+    "utils",
+    "utils.extra_config",
+    "utils.install_util",
+    "utils.json_util",
+    "utils.mime_types"
+  ],
+  "delete_candidates": [
+    ".ci.update_windows.update",
+    "alembic_db.env",
+    "alembic_db.versions.0001_assets",
+    "alembic_db.versions.0002_merge_to_asset_references",
+    "alembic_db.versions.0003_add_metadata_job_id",
+    "alembic_db.versions.0004_drop_tag_type",
+    "alembic_db.versions.0005_allow_case_sensitive_tags",
+    "alembic_db.versions.0006_add_loader_path",
+    "api_server.utils.file_operations",
+    "app.assets.api.schemas_out",
+    "blueprints..glsl.update_blueprints",
+    "comfy.audio_encoders.audio_encoders",
+    "comfy.audio_encoders.wav2vec2",
+    "comfy.audio_encoders.whisper",
+    "comfy.comfy_types.examples.example_nodes",
+    "comfy.diffusers_convert",
+    "comfy.extra_samplers.uni_pc",
+    "comfy.gligen",
+    "comfy.k_diffusion.deis",
+    "comfy.k_diffusion.sa_solver",
+    "comfy.k_diffusion.sampling",
+    "comfy.k_diffusion.utils",
+    "comfy.ldm.anima.lllite",
+    "comfy.ldm.colormap",
+    "comfy.ldm.depth_anything_3.preprocess",
+    "comfy.ldm.hunyuan_video.upsampler",
+    "comfy.ldm.hunyuan_video.vae_refiner",
+    "comfy.ldm.lightricks.duration_head",
+    "comfy.ldm.lightricks.latent_upsampler",
+    "comfy.ldm.lumina.controlnet",
+    "comfy.ldm.mmaudio.vae.activations",
+    "comfy.ldm.modules.temporal_ae",
+    "comfy.ldm.moge.geometry",
+    "comfy.ldm.moge.model",
+    "comfy.ldm.moge.modules",
+    "comfy.ldm.moge.panorama",
+    "comfy.ldm.sam3d_body.mhr.mhr_head",
+    "comfy.ldm.sam3d_body.mhr.mhr_rig",
+    "comfy.ldm.sam3d_body.mhr.mhr_utils",
+    "comfy.ldm.sam3d_body.model.camera_modules",
+    "comfy.ldm.sam3d_body.model.model",
+    "comfy.ldm.sam3d_body.model.prompt",
+    "comfy.ldm.sam3d_body.model.transformer",
+    "comfy.ldm.sam3d_body.utils",
+    "comfy.ldm.seedvr.color_fix",
+    "comfy.ldm.supir",
+    "comfy.ldm.supir.supir_modules",
+    "comfy.ldm.supir.supir_patch",
+    "comfy.ldm.triposplat.preview",
+    "comfy.ldm.wan.model_multitalk",
+    "comfy.ldm.wan.uni3c",
+    "comfy.sdxl_clip",
+    "comfy_api.generate_api_stubs",
+    "comfy_api.input.basic_types",
+    "comfy_api.input.video_types",
+    "comfy_api.input_impl",
+    "comfy_api.input_impl.video_types",
+    "comfy_api.latest._ui",
+    "comfy_api.latest._ui_public",
+    "comfy_api.torch_helpers",
+    "comfy_api.torch_helpers.torch_compile",
+    "comfy_api.util",
+    "comfy_api.util.video_types",
+    "comfy_api_nodes",
+    "comfy_api_nodes.apis",
+    "comfy_api_nodes.apis.anthropic",
+    "comfy_api_nodes.apis.beeble",
+    "comfy_api_nodes.apis.bfl",
+    "comfy_api_nodes.apis.bria",
+    "comfy_api_nodes.apis.bytedance",
+    "comfy_api_nodes.apis.bytedance_llm",
+    "comfy_api_nodes.apis.elevenlabs",
+    "comfy_api_nodes.apis.fishaudio",
+    "comfy_api_nodes.apis.gemini",
+    "comfy_api_nodes.apis.grok",
+    "comfy_api_nodes.apis.heygen",
+    "comfy_api_nodes.apis.hitpaw",
+    "comfy_api_nodes.apis.hunyuan3d",
+    "comfy_api_nodes.apis.ideogram",
+    "comfy_api_nodes.apis.kling",
+    "comfy_api_nodes.apis.krea",
+    "comfy_api_nodes.apis.luma",
+    "comfy_api_nodes.apis.magnific",
+    "comfy_api_nodes.apis.meshy",
+    "comfy_api_nodes.apis.minimax",
+    "comfy_api_nodes.apis.openai",
+    "comfy_api_nodes.apis.openrouter",
+    "comfy_api_nodes.apis.pixverse",
+    "comfy_api_nodes.apis.quiver",
+    "comfy_api_nodes.apis.qwen",
+    "comfy_api_nodes.apis.recraft",
+    "comfy_api_nodes.apis.reve",
+    "comfy_api_nodes.apis.rodin",
+    "comfy_api_nodes.apis.runway",
+    "comfy_api_nodes.apis.sync_so",
+    "comfy_api_nodes.apis.topaz",
+    "comfy_api_nodes.apis.tripo",
+    "comfy_api_nodes.apis.veo",
+    "comfy_api_nodes.apis.vidu",
+    "comfy_api_nodes.apis.wan",
+    "comfy_api_nodes.apis.wavespeed",
+    "comfy_api_nodes.nodes_anthropic",
+    "comfy_api_nodes.nodes_beeble",
+    "comfy_api_nodes.nodes_bfl",
+    "comfy_api_nodes.nodes_bria",
+    "comfy_api_nodes.nodes_bytedance",
+    "comfy_api_nodes.nodes_bytedance_llm",
+    "comfy_api_nodes.nodes_elevenlabs",
+    "comfy_api_nodes.nodes_fishaudio",
+    "comfy_api_nodes.nodes_gemini",
+    "comfy_api_nodes.nodes_grok",
+    "comfy_api_nodes.nodes_heygen",
+    "comfy_api_nodes.nodes_hitpaw",
+    "comfy_api_nodes.nodes_hunyuan3d",
+    "comfy_api_nodes.nodes_ideogram",
+    "comfy_api_nodes.nodes_kling",
+    "comfy_api_nodes.nodes_krea",
+    "comfy_api_nodes.nodes_ltxv",
+    "comfy_api_nodes.nodes_luma",
+    "comfy_api_nodes.nodes_magnific",
+    "comfy_api_nodes.nodes_meshy",
+    "comfy_api_nodes.nodes_minimax",
+    "comfy_api_nodes.nodes_openai",
+    "comfy_api_nodes.nodes_openrouter",
+    "comfy_api_nodes.nodes_pixverse",
+    "comfy_api_nodes.nodes_quiver",
+    "comfy_api_nodes.nodes_qwen",
+    "comfy_api_nodes.nodes_recraft",
+    "comfy_api_nodes.nodes_reve",
+    "comfy_api_nodes.nodes_rodin",
+    "comfy_api_nodes.nodes_runway",
+    "comfy_api_nodes.nodes_sonilo",
+    "comfy_api_nodes.nodes_sora",
+    "comfy_api_nodes.nodes_sync_so",
+    "comfy_api_nodes.nodes_topaz",
+    "comfy_api_nodes.nodes_tripo",
+    "comfy_api_nodes.nodes_veo2",
+    "comfy_api_nodes.nodes_vidu",
+    "comfy_api_nodes.nodes_wan",
+    "comfy_api_nodes.nodes_wavespeed",
+    "comfy_api_nodes.util",
+    "comfy_api_nodes.util._helpers",
+    "comfy_api_nodes.util.client",
+    "comfy_api_nodes.util.common_exceptions",
+    "comfy_api_nodes.util.conversions",
+    "comfy_api_nodes.util.download_helpers",
+    "comfy_api_nodes.util.request_logger",
+    "comfy_api_nodes.util.upload_helpers",
+    "comfy_api_nodes.util.validation_utils",
+    "comfy_config.config_parser",
+    "comfy_config.types",
+    "comfy_extras.chainner_models.model_loading",
+    "comfy_extras.color_util",
+    "comfy_extras.compositor_blend",
+    "comfy_extras.frame_interpolation_models.film_net",
+    "comfy_extras.frame_interpolation_models.ifnet",
+    "comfy_extras.mediapipe.face_geometry",
+    "comfy_extras.mediapipe.face_landmarker",
+    "comfy_extras.mesh3d.fileio.gltf_read",
+    "comfy_extras.mesh3d.fileio.mesh_file_read",
+    "comfy_extras.mesh3d.postprocess.qem_decimate",
+    "comfy_extras.mesh3d.postprocess.remesh",
+    "comfy_extras.mesh3d.uv_unwrap.mesh",
+    "comfy_extras.mesh3d.uv_unwrap.pack",
+    "comfy_extras.mesh3d.uv_unwrap.parameterize",
+    "comfy_extras.mesh3d.uv_unwrap.segment",
+    "comfy_extras.nodes_ace",
+    "comfy_extras.nodes_advanced_samplers",
+    "comfy_extras.nodes_align_your_steps",
+    "comfy_extras.nodes_apg",
+    "comfy_extras.nodes_ar_video",
+    "comfy_extras.nodes_attention_multiply",
+    "comfy_extras.nodes_audio",
+    "comfy_extras.nodes_audio_encoder",
+    "comfy_extras.nodes_bernini",
+    "comfy_extras.nodes_bg_removal",
+    "comfy_extras.nodes_boogu",
+    "comfy_extras.nodes_bounding_boxes",
+    "comfy_extras.nodes_camera_trajectory",
+    "comfy_extras.nodes_canny",
+    "comfy_extras.nodes_cfg",
+    "comfy_extras.nodes_chroma_radiance",
+    "comfy_extras.nodes_clip_sdxl",
+    "comfy_extras.nodes_color",
+    "comfy_extras.nodes_compositing",
+    "comfy_extras.nodes_compositor",
+    "comfy_extras.nodes_cond",
+    "comfy_extras.nodes_context_windows",
+    "comfy_extras.nodes_controlnet",
+    "comfy_extras.nodes_cosmos",
+    "comfy_extras.nodes_curve",
+    "comfy_extras.nodes_custom_sampler",
+    "comfy_extras.nodes_dataset",
+    "comfy_extras.nodes_depth_anything_3",
+    "comfy_extras.nodes_differential_diffusion",
+    "comfy_extras.nodes_easycache",
+    "comfy_extras.nodes_edit_model",
+    "comfy_extras.nodes_eps",
+    "comfy_extras.nodes_flux",
+    "comfy_extras.nodes_frame_interpolation",
+    "comfy_extras.nodes_freelunch",
+    "comfy_extras.nodes_fresca",
+    "comfy_extras.nodes_gaussian_splat",
+    "comfy_extras.nodes_gits",
+    "comfy_extras.nodes_glsl",
+    "comfy_extras.nodes_hidream",
+    "comfy_extras.nodes_hidream_o1",
+    "comfy_extras.nodes_hooks",
+    "comfy_extras.nodes_hunyuan",
+    "comfy_extras.nodes_hunyuan3d",
+    "comfy_extras.nodes_hypernetwork",
+    "comfy_extras.nodes_hypertile",
+    "comfy_extras.nodes_ideogram4",
+    "comfy_extras.nodes_image_compare",
+    "comfy_extras.nodes_images",
+    "comfy_extras.nodes_ip2p",
+    "comfy_extras.nodes_joyimage",
+    "comfy_extras.nodes_json_prompt",
+    "comfy_extras.nodes_kandinsky5",
+    "comfy_extras.nodes_latent",
+    "comfy_extras.nodes_load_3d",
+    "comfy_extras.nodes_logic",
+    "comfy_extras.nodes_lora_debug",
+    "comfy_extras.nodes_lora_extract",
+    "comfy_extras.nodes_lotus",
+    "comfy_extras.nodes_lt",
+    "comfy_extras.nodes_lt_audio",
+    "comfy_extras.nodes_lt_upsampler",
+    "comfy_extras.nodes_lumina2",
+    "comfy_extras.nodes_mage",
+    "comfy_extras.nodes_mahiro",
+    "comfy_extras.nodes_mask",
+    "comfy_extras.nodes_math",
+    "comfy_extras.nodes_mediapipe",
+    "comfy_extras.nodes_mesh_io",
+    "comfy_extras.nodes_mesh_postprocess",
+    "comfy_extras.nodes_minimax_h3",
+    "comfy_extras.nodes_minimax_music",
+    "comfy_extras.nodes_mochi",
+    "comfy_extras.nodes_model_advanced",
+    "comfy_extras.nodes_model_downscale",
+    "comfy_extras.nodes_model_merging",
+    "comfy_extras.nodes_model_merging_model_specific",
+    "comfy_extras.nodes_model_patch",
+    "comfy_extras.nodes_moge",
+    "comfy_extras.nodes_morphology",
+    "comfy_extras.nodes_multigpu",
+    "comfy_extras.nodes_nag",
+    "comfy_extras.nodes_nop",
+    "comfy_extras.nodes_number_convert",
+    "comfy_extras.nodes_optimalsteps",
+    "comfy_extras.nodes_pag",
+    "comfy_extras.nodes_painter",
+    "comfy_extras.nodes_perpneg",
+    "comfy_extras.nodes_photomaker",
+    "comfy_extras.nodes_pid",
+    "comfy_extras.nodes_pixart",
+    "comfy_extras.nodes_post_processing",
+    "comfy_extras.nodes_preview_any",
+    "comfy_extras.nodes_primitive",
+    "comfy_extras.nodes_qwen",
+    "comfy_extras.nodes_rebatch",
+    "comfy_extras.nodes_replacements",
+    "comfy_extras.nodes_resolution",
+    "comfy_extras.nodes_rope",
+    "comfy_extras.nodes_rtdetr",
+    "comfy_extras.nodes_sag",
+    "comfy_extras.nodes_sam3",
+    "comfy_extras.nodes_sam3d_body",
+    "comfy_extras.nodes_save_3d",
+    "comfy_extras.nodes_scail",
+    "comfy_extras.nodes_sd3",
+    "comfy_extras.nodes_sdpose",
+    "comfy_extras.nodes_sdupscale",
+    "comfy_extras.nodes_seed",
+    "comfy_extras.nodes_seedvr",
+    "comfy_extras.nodes_slg",
+    "comfy_extras.nodes_stable3d",
+    "comfy_extras.nodes_stable_cascade",
+    "comfy_extras.nodes_string",
+    "comfy_extras.nodes_tcfg",
+    "comfy_extras.nodes_text",
+    "comfy_extras.nodes_text_overlay",
+    "comfy_extras.nodes_textgen",
+    "comfy_extras.nodes_tomesd",
+    "comfy_extras.nodes_toolkit",
+    "comfy_extras.nodes_torch_compile",
+    "comfy_extras.nodes_train",
+    "comfy_extras.nodes_trellis2",
+    "comfy_extras.nodes_triposplat",
+    "comfy_extras.nodes_upscale_model",
+    "comfy_extras.nodes_video",
+    "comfy_extras.nodes_video_model",
+    "comfy_extras.nodes_void",
+    "comfy_extras.nodes_wan",
+    "comfy_extras.nodes_wandancer",
+    "comfy_extras.nodes_wanmove",
+    "comfy_extras.nodes_webcam",
+    "comfy_extras.nodes_zimage",
+    "comfy_extras.pose.keypoint_draw",
+    "comfy_extras.sam3d_body.export.bvh",
+    "comfy_extras.sam3d_body.export.capsules",
+    "comfy_extras.sam3d_body.export.glb_openpose",
+    "comfy_extras.sam3d_body.export.glb_shared",
+    "comfy_extras.sam3d_body.export.glb_skeletal",
+    "comfy_extras.sam3d_body.export.openpose_2d",
+    "comfy_extras.sam3d_body.face_expression",
+    "comfy_extras.sam3d_body.rasterizer",
+    "comfy_extras.sam3d_body.utils",
+    "comfy_extras.void_noise_warp",
+    "custom_nodes.websocket_image_save",
+    "script_examples.basic_api_example",
+    "script_examples.websockets_api_example",
+    "script_examples.websockets_api_example_ws_images",
+    "tests",
+    "tests-unit.app_test",
+    "tests-unit.app_test.custom_node_manager_test",
+    "tests-unit.app_test.database_path_test",
+    "tests-unit.app_test.frontend_manager_test",
+    "tests-unit.app_test.model_manager_test",
+    "tests-unit.app_test.node_replace_manager_test",
+    "tests-unit.app_test.test_migrations",
+    "tests-unit.app_test.user_manager_system_user_test",
+    "tests-unit.assets_test.conftest",
+    "tests-unit.assets_test.helpers",
+    "tests-unit.assets_test.queries.conftest",
+    "tests-unit.assets_test.queries.test_asset",
+    "tests-unit.assets_test.queries.test_asset_info",
+    "tests-unit.assets_test.queries.test_asset_reference_keyset",
+    "tests-unit.assets_test.queries.test_cache_state",
+    "tests-unit.assets_test.queries.test_metadata",
+    "tests-unit.assets_test.queries.test_tags",
+    "tests-unit.assets_test.services",
+    "tests-unit.assets_test.services.conftest",
+    "tests-unit.assets_test.services.test_asset_management",
+    "tests-unit.assets_test.services.test_asset_response_loader_path",
+    "tests-unit.assets_test.services.test_asset_response_preview_url",
+    "tests-unit.assets_test.services.test_bulk_ingest",
+    "tests-unit.assets_test.services.test_cursor",
+    "tests-unit.assets_test.services.test_enrich",
+    "tests-unit.assets_test.services.test_image_dimensions",
+    "tests-unit.assets_test.services.test_ingest",
+    "tests-unit.assets_test.services.test_path_utils",
+    "tests-unit.assets_test.services.test_tag_histogram",
+    "tests-unit.assets_test.services.test_tagging",
+    "tests-unit.assets_test.test_assets_missing_sync",
+    "tests-unit.assets_test.test_crud",
+    "tests-unit.assets_test.test_downloads",
+    "tests-unit.assets_test.test_file_utils",
+    "tests-unit.assets_test.test_list_cursor",
+    "tests-unit.assets_test.test_list_filter",
+    "tests-unit.assets_test.test_metadata_filters",
+    "tests-unit.assets_test.test_preview_url",
+    "tests-unit.assets_test.test_prompt_id_enforcement",
+    "tests-unit.assets_test.test_prune_orphaned_assets",
+    "tests-unit.assets_test.test_sync_references",
+    "tests-unit.assets_test.test_tags_api",
+    "tests-unit.assets_test.test_temp_assets",
+    "tests-unit.assets_test.test_uploads",
+    "tests-unit.comfy_api_nodes_test.audio_conversions_test",
+    "tests-unit.comfy_api_nodes_test.gemini_response_images_test",
+    "tests-unit.comfy_api_nodes_test.image_conversions_test",
+    "tests-unit.comfy_api_test.input_impl_test",
+    "tests-unit.comfy_api_test.multicombo_serialization_test",
+    "tests-unit.comfy_api_test.video_bit_depth_test",
+    "tests-unit.comfy_api_test.video_types_test",
+    "tests-unit.comfy_extras_test",
+    "tests-unit.comfy_extras_test.compositor_blend_fixture_gen",
+    "tests-unit.comfy_extras_test.compositor_blend_test",
+    "tests-unit.comfy_extras_test.compositor_node_test",
+    "tests-unit.comfy_extras_test.image_stitch_test",
+    "tests-unit.comfy_extras_test.nodes_dataset_test",
+    "tests-unit.comfy_extras_test.nodes_math_test",
+    "tests-unit.comfy_extras_test.nodes_number_convert_test",
+    "tests-unit.comfy_extras_test.nodes_preview_any_test",
+    "tests-unit.comfy_extras_test.test_seedvr2_conditioning",
+    "tests-unit.comfy_extras_test.test_seedvr2_nodes",
+    "tests-unit.comfy_extras_test.test_seedvr2_post_processing",
+    "tests-unit.comfy_extras_test.test_seedvr2_temporal_chunk",
+    "tests-unit.comfy_quant.test_mixed_precision",
+    "tests-unit.comfy_test.folder_path_test",
+    "tests-unit.comfy_test.gemma4_template_test",
+    "tests-unit.comfy_test.model_detection_test",
+    "tests-unit.comfy_test.seedvr_vae_forward_test",
+    "tests-unit.comfy_test.system_memory_test",
+    "tests-unit.comfy_test.test_seedvr2_dtype",
+    "tests-unit.comfy_test.test_seedvr2_internals",
+    "tests-unit.comfy_test.test_seedvr2_model",
+    "tests-unit.comfy_test.test_seedvr2_vae_decode",
+    "tests-unit.comfy_test.test_seedvr2_vae_tiled",
+    "tests-unit.comfy_test.test_vae_decode_tiled_nested",
+    "tests-unit.deploy_environment_test",
+    "tests-unit.execution_test.preview_method_override_test",
+    "tests-unit.execution_test.test_cache_provider",
+    "tests-unit.execution_test.test_enrich_output",
+    "tests-unit.execution_test.validate_node_input_test",
+    "tests-unit.feature_flags_test",
+    "tests-unit.folder_paths_test",
+    "tests-unit.folder_paths_test.filter_by_content_types_test",
+    "tests-unit.folder_paths_test.misc_test",
+    "tests-unit.folder_paths_test.system_user_test",
+    "tests-unit.jobs_cancel_test",
+    "tests-unit.jobs_cancel_test.jobs_cancel_test",
+    "tests-unit.prompt_server_test",
+    "tests-unit.prompt_server_test.system_user_endpoint_test",
+    "tests-unit.prompt_server_test.user_manager_test",
+    "tests-unit.security_test",
+    "tests-unit.security_test.test_ghsa_779p_02_preview_traversal",
+    "tests-unit.security_test.test_ghsa_779p_03_annotated_traversal",
+    "tests-unit.security_test.test_ghsa_779p_04_userdata_xss",
+    "tests-unit.security_test.test_ghsa_779p_05_dangerous_content_types",
+    "tests-unit.security_test.test_ghsa_779p_06_inline_svg_image_dest",
+    "tests-unit.seeder_test.test_seeder",
+    "tests-unit.server.utils.file_operations_test",
+    "tests-unit.server_test.test_cache_control",
+    "tests-unit.utils.extra_config_test",
+    "tests-unit.utils.json_util_test",
+    "tests-unit.websocket_feature_flags_test",
+    "tests.compare.conftest",
+    "tests.compare.test_quality",
+    "tests.conftest",
+    "tests.execution.test_async_nodes",
+    "tests.execution.test_execution",
+    "tests.execution.test_jobs",
+    "tests.execution.test_preview_method",
+    "tests.execution.test_progress_isolation",
+    "tests.execution.test_public_api",
+    "tests.execution.testing_nodes.testing-pack",
+    "tests.execution.testing_nodes.testing-pack.api_test_nodes",
+    "tests.execution.testing_nodes.testing-pack.async_test_nodes",
+    "tests.execution.testing_nodes.testing-pack.conditions",
+    "tests.execution.testing_nodes.testing-pack.flow_control",
+    "tests.execution.testing_nodes.testing-pack.specific_tests",
+    "tests.execution.testing_nodes.testing-pack.stubs",
+    "tests.execution.testing_nodes.testing-pack.tools",
+    "tests.execution.testing_nodes.testing-pack.util",
+    "tests.inference",
+    "tests.inference.test_inference",
+    "tests.test_asset_seeder"
+  ],
+  "graph": {
+    ".ci.update_windows.update": [],
+    "alembic_db.env": [
+      "app",
+      "app.database.models"
+    ],
+    "alembic_db.versions.0001_assets": [],
+    "alembic_db.versions.0002_merge_to_asset_references": [],
+    "alembic_db.versions.0003_add_metadata_job_id": [
+      "app",
+      "app.database.models"
+    ],
+    "alembic_db.versions.0004_drop_tag_type": [],
+    "alembic_db.versions.0005_allow_case_sensitive_tags": [],
+    "alembic_db.versions.0006_add_loader_path": [],
+    "api_server": [],
+    "api_server.routes": [],
+    "api_server.routes.internal": [],
+    "api_server.routes.internal.internal_routes": [
+      "api_server",
+      "api_server.services",
+      "api_server.services.terminal_service",
+      "app",
+      "app.logger",
+      "folder_paths"
+    ],
+    "api_server.services": [],
+    "api_server.services.terminal_service": [
+      "app",
+      "app.logger"
+    ],
+    "api_server.utils.file_operations": [],
+    "app": [],
+    "app.app_settings": [],
+    "app.assets.api.routes": [
+      "app",
+      "app.assets.api.schemas_in",
+      "app.assets.api.upload",
+      "app.assets.helpers",
+      "app.assets.seeder",
+      "app.assets.services",
+      "app.assets.services.cursor",
+      "app.assets.services.path_utils",
+      "app.assets.services.tagging",
+      "folder_paths"
+    ],
+    "app.assets.api.schemas_in": [
+      "app",
+      "app.assets.helpers"
+    ],
+    "app.assets.api.schemas_out": [],
+    "app.assets.api.upload": [
+      "app",
+      "app.assets.api.schemas_in",
+      "app.assets.helpers",
+      "folder_paths"
+    ],
+    "app.assets.database.models": [
+      "app",
+      "app.assets.helpers",
+      "app.database.models"
+    ],
+    "app.assets.database.queries": [
+      "app",
+      "app.assets.database.queries",
+      "app.assets.database.queries.asset",
+      "app.assets.database.queries.asset_reference",
+      "app.assets.database.queries.tags"
+    ],
+    "app.assets.database.queries.asset": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.database.queries.common"
+    ],
+    "app.assets.database.queries.asset_reference": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.database.queries.common",
+      "app.assets.helpers"
+    ],
+    "app.assets.database.queries.common": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.helpers"
+    ],
+    "app.assets.database.queries.tags": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.database.queries.common",
+      "app.assets.helpers"
+    ],
+    "app.assets.helpers": [],
+    "app.assets.scanner": [
+      "app",
+      "app.assets.database.queries",
+      "app.assets.services",
+      "app.assets.services.bulk_ingest",
+      "app.assets.services.file_utils",
+      "app.assets.services.hashing",
+      "app.assets.services.image_dimensions",
+      "app.assets.services.metadata_extract",
+      "app.assets.services.path_utils",
+      "app.database.db",
+      "folder_paths"
+    ],
+    "app.assets.seeder": [
+      "app",
+      "app.assets.scanner",
+      "app.database.db",
+      "folder_paths",
+      "server"
+    ],
+    "app.assets.services": [
+      "app",
+      "app.assets.database.queries",
+      "app.assets.services",
+      "app.assets.services.asset_management",
+      "app.assets.services.bulk_ingest",
+      "app.assets.services.file_utils",
+      "app.assets.services.ingest",
+      "app.assets.services.schemas",
+      "app.assets.services.tagging"
+    ],
+    "app.assets.services.asset_management": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.helpers",
+      "app.assets.services",
+      "app.assets.services.cursor",
+      "app.assets.services.path_utils",
+      "app.assets.services.schemas",
+      "app.database.db"
+    ],
+    "app.assets.services.bulk_ingest": [
+      "app",
+      "app.assets.database.queries",
+      "app.assets.helpers",
+      "app.assets.services",
+      "app.assets.services.metadata_extract"
+    ],
+    "app.assets.services.cursor": [],
+    "app.assets.services.file_utils": [],
+    "app.assets.services.hashing": [],
+    "app.assets.services.image_dimensions": [],
+    "app.assets.services.ingest": [
+      "app",
+      "app.assets.database.queries",
+      "app.assets.helpers",
+      "app.assets.services",
+      "app.assets.services.bulk_ingest",
+      "app.assets.services.file_utils",
+      "app.assets.services.hashing",
+      "app.assets.services.image_dimensions",
+      "app.assets.services.path_utils",
+      "app.assets.services.schemas",
+      "app.database.db"
+    ],
+    "app.assets.services.metadata_extract": [
+      "utils",
+      "utils.mime_types"
+    ],
+    "app.assets.services.path_utils": [
+      "folder_paths"
+    ],
+    "app.assets.services.schemas": [
+      "app",
+      "app.assets.database.models"
+    ],
+    "app.assets.services.tagging": [
+      "app",
+      "app.assets.database.queries",
+      "app.assets.database.queries.tags",
+      "app.assets.services",
+      "app.assets.services.schemas",
+      "app.database.db"
+    ],
+    "app.custom_node_manager": [
+      "folder_paths",
+      "utils",
+      "utils.json_util"
+    ],
+    "app.database.db": [
+      "app",
+      "app.assets.database.models",
+      "app.database.models",
+      "app.logger",
+      "comfy.cli_args",
+      "folder_paths",
+      "utils",
+      "utils.install_util"
+    ],
+    "app.database.models": [],
+    "app.frontend_management": [
+      "app",
+      "app.logger",
+      "comfy.cli_args",
+      "utils",
+      "utils.install_util"
+    ],
+    "app.logger": [
+      "comfy.internal_logging"
+    ],
+    "app.model_manager": [
+      "comfy.utils",
+      "folder_paths"
+    ],
+    "app.node_replace_manager": [
+      "comfy_api.latest",
+      "comfy_api.latest._io_public",
+      "comfy_execution.graph_utils",
+      "nodes"
+    ],
+    "app.subgraph_manager": [
+      "folder_paths"
+    ],
+    "app.user_manager": [
+      "app",
+      "app.app_settings",
+      "comfy.cli_args",
+      "folder_paths"
+    ],
+    "blueprints..glsl.update_blueprints": [],
+    "comfy.audio_encoders.audio_encoders": [
+      "comfy.audio_encoders.wav2vec2",
+      "comfy.audio_encoders.whisper",
+      "comfy.model_management",
+      "comfy.ops",
+      "comfy.utils"
+    ],
+    "comfy.audio_encoders.wav2vec2": [
+      "comfy.ldm.modules.attention"
+    ],
+    "comfy.audio_encoders.whisper": [
+      "comfy.ldm.modules.attention",
+      "comfy.ops"
+    ],
+    "comfy.background_removal.birefnet": [
+      "comfy.ldm.modules.attention",
+      "comfy.ops"
+    ],
+    "comfy.bg_removal_model": [
+      "comfy.background_removal.birefnet",
+      "comfy.clip_model",
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.ops",
+      "comfy.utils"
+    ],
+    "comfy.cldm.cldm": [
+      "comfy.cldm.control_types",
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.openaimodel",
+      "comfy.ldm.modules.diffusionmodules.util",
+      "comfy.ldm.util",
+      "comfy.ops"
+    ],
+    "comfy.cldm.control_types": [],
+    "comfy.cldm.dit_embedder": [
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.mmdit"
+    ],
+    "comfy.cldm.mmdit": [
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.mmdit"
+    ],
+    "comfy.cli_args": [
+      "comfy.options"
+    ],
+    "comfy.clip_model": [
+      "comfy.ldm.modules.attention",
+      "comfy.ops"
+    ],
+    "comfy.clip_vision": [
+      "comfy.clip_model",
+      "comfy.image_encoders.dino2",
+      "comfy.image_encoders.dino3",
+      "comfy.image_encoders.naf",
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.ops",
+      "comfy.utils"
+    ],
+    "comfy.comfy_api_env": [
+      "comfy.cli_args"
+    ],
+    "comfy.comfy_types": [
+      "comfy.comfy_types",
+      "comfy.comfy_types.node_typing"
+    ],
+    "comfy.comfy_types.examples.example_nodes": [
+      "comfy.comfy_types"
+    ],
+    "comfy.comfy_types.node_typing": [],
+    "comfy.conds": [
+      "comfy.utils"
+    ],
+    "comfy.context_windows": [
+      "comfy.conds",
+      "comfy.controlnet",
+      "comfy.model_base",
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.patcher_extension",
+      "comfy.utils"
+    ],
+    "comfy.controlnet": [
+      "comfy.cldm.cldm",
+      "comfy.cldm.dit_embedder",
+      "comfy.cldm.mmdit",
+      "comfy.hooks",
+      "comfy.latent_formats",
+      "comfy.ldm.cascade.controlnet",
+      "comfy.ldm.flux.controlnet",
+      "comfy.ldm.hydit.controlnet",
+      "comfy.ldm.qwen_image.controlnet",
+      "comfy.model_base",
+      "comfy.model_detection",
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.ops",
+      "comfy.t2i_adapter.adapter",
+      "comfy.utils"
+    ],
+    "comfy.deploy_environment": [],
+    "comfy.diffusers_convert": [],
+    "comfy.diffusers_load": [
+      "comfy.sd"
+    ],
+    "comfy.extra_samplers.uni_pc": [],
+    "comfy.float": [],
+    "comfy.gligen": [
+      "comfy.ldm.modules.attention",
+      "comfy.ops"
+    ],
+    "comfy.hooks": [
+      "comfy.lora",
+      "comfy.model_base",
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.patcher_extension",
+      "comfy.sd",
+      "node_helpers"
+    ],
+    "comfy.image_encoders.dino2": [
+      "comfy.ldm.depth_anything_3.reference_view_selector",
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.text_encoders.bert"
+    ],
+    "comfy.image_encoders.dino3": [
+      "comfy.image_encoders.dino2",
+      "comfy.ldm.modules.attention",
+      "comfy.ops"
+    ],
+    "comfy.image_encoders.naf": [
+      "comfy.ops"
+    ],
+    "comfy.internal_logging": [],
+    "comfy.k_diffusion.deis": [],
+    "comfy.k_diffusion.sa_solver": [],
+    "comfy.k_diffusion.sampling": [
+      "comfy.memory_management",
+      "comfy.model_patcher",
+      "comfy.model_sampling",
+      "comfy.utils"
+    ],
+    "comfy.k_diffusion.utils": [],
+    "comfy.latent_formats": [
+      "comfy.nested_tensor"
+    ],
+    "comfy.ldm.ace.ace_step15": [
+      "comfy.ldm.flux.layers",
+      "comfy.ldm.modules.attention",
+      "comfy.model_management"
+    ],
+    "comfy.ldm.ace.attention": [
+      "comfy.ldm.modules.attention",
+      "comfy.model_management"
+    ],
+    "comfy.ldm.ace.lyric_encoder": [
+      "comfy.model_management"
+    ],
+    "comfy.ldm.ace.model": [
+      "comfy.ldm.ace.attention",
+      "comfy.ldm.ace.lyric_encoder",
+      "comfy.ldm.lightricks.model",
+      "comfy.model_management",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.ace.vae.autoencoder_dc": [
+      "comfy.model_management",
+      "comfy.ops"
+    ],
+    "comfy.ldm.ace.vae.music_dcae_pipeline": [
+      "comfy.ldm.ace.vae.autoencoder_dc",
+      "comfy.ldm.ace.vae.music_vocoder"
+    ],
+    "comfy.ldm.ace.vae.music_log_mel": [
+      "comfy.model_management"
+    ],
+    "comfy.ldm.ace.vae.music_vocoder": [
+      "comfy.ldm.ace.vae.music_log_mel",
+      "comfy.model_management",
+      "comfy.ops"
+    ],
+    "comfy.ldm.anima.lllite": [
+      "comfy.ops",
+      "comfy.utils"
+    ],
+    "comfy.ldm.anima.model": [
+      "comfy.ldm.cosmos.predict2"
+    ],
+    "comfy.ldm.audio.autoencoder": [
+      "comfy.ops"
+    ],
+    "comfy.ldm.audio.dit": [
+      "comfy.ldm.audio.embedders",
+      "comfy.ldm.modules.attention",
+      "comfy.ops"
+    ],
+    "comfy.ldm.audio.embedders": [
+      "comfy.ops"
+    ],
+    "comfy.ldm.audio.vae_sa3": [
+      "comfy.ldm.audio.autoencoder",
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.ops"
+    ],
+    "comfy.ldm.aura.mmdit": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.modules.attention",
+      "comfy.ops",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.boogu.model": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.omnigen.omnigen2"
+    ],
+    "comfy.ldm.cascade.common": [
+      "comfy.ldm.modules.attention",
+      "comfy.ops"
+    ],
+    "comfy.ldm.cascade.controlnet": [
+      "comfy.ldm.cascade.common"
+    ],
+    "comfy.ldm.cascade.stage_a": [
+      "comfy.ops"
+    ],
+    "comfy.ldm.cascade.stage_b": [
+      "comfy.ldm.cascade.common"
+    ],
+    "comfy.ldm.cascade.stage_c": [
+      "comfy.ldm.cascade.common"
+    ],
+    "comfy.ldm.cascade.stage_c_coder": [
+      "comfy.ops"
+    ],
+    "comfy.ldm.chroma.layers": [
+      "comfy.ldm.flux.layers"
+    ],
+    "comfy.ldm.chroma.model": [
+      "comfy.ldm.chroma.layers",
+      "comfy.ldm.common_dit",
+      "comfy.ldm.flux.layers",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.chroma_radiance.layers": [],
+    "comfy.ldm.chroma_radiance.model": [
+      "comfy.ldm.chroma.layers",
+      "comfy.ldm.chroma.model",
+      "comfy.ldm.chroma_radiance.layers",
+      "comfy.ldm.common_dit",
+      "comfy.ldm.flux.layers"
+    ],
+    "comfy.ldm.cogvideo": [],
+    "comfy.ldm.cogvideo.model": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.modules.attention",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.cogvideo.vae": [
+      "comfy.ops"
+    ],
+    "comfy.ldm.colormap": [],
+    "comfy.ldm.common_dit": [
+      "comfy.rmsnorm"
+    ],
+    "comfy.ldm.cosmos.blocks": [
+      "comfy.ldm.modules.attention"
+    ],
+    "comfy.ldm.cosmos.cosmos_tokenizer.layers3d": [
+      "comfy.ldm.cosmos.cosmos_tokenizer.patching",
+      "comfy.ldm.cosmos.cosmos_tokenizer.utils",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.model",
+      "comfy.ops"
+    ],
+    "comfy.ldm.cosmos.cosmos_tokenizer.patching": [],
+    "comfy.ldm.cosmos.cosmos_tokenizer.utils": [
+      "comfy.ops"
+    ],
+    "comfy.ldm.cosmos.model": [
+      "comfy.ldm.cosmos.blocks",
+      "comfy.ldm.cosmos.position_embedding",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.cosmos.position_embedding": [],
+    "comfy.ldm.cosmos.predict2": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.cosmos.position_embedding",
+      "comfy.ldm.modules.attention",
+      "comfy.ops",
+      "comfy.patcher_extension",
+      "comfy.quant_ops"
+    ],
+    "comfy.ldm.cosmos.vae": [
+      "comfy.ldm.cosmos.cosmos_tokenizer.layers3d"
+    ],
+    "comfy.ldm.depth_anything_3.camera": [
+      "comfy.ldm.depth_anything_3.transform",
+      "comfy.ldm.modules.attention"
+    ],
+    "comfy.ldm.depth_anything_3.dpt": [],
+    "comfy.ldm.depth_anything_3.model": [
+      "comfy.image_encoders.dino2",
+      "comfy.ldm.depth_anything_3.camera",
+      "comfy.ldm.depth_anything_3.dpt",
+      "comfy.ldm.depth_anything_3.ray_pose",
+      "comfy.ldm.depth_anything_3.transform"
+    ],
+    "comfy.ldm.depth_anything_3.preprocess": [
+      "comfy.utils"
+    ],
+    "comfy.ldm.depth_anything_3.ray_pose": [],
+    "comfy.ldm.depth_anything_3.reference_view_selector": [],
+    "comfy.ldm.depth_anything_3.transform": [],
+    "comfy.ldm.ernie.model": [
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.ops",
+      "comfy.quant_ops"
+    ],
+    "comfy.ldm.flux.controlnet": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.flux.layers",
+      "comfy.ldm.flux.model"
+    ],
+    "comfy.ldm.flux.layers": [
+      "comfy.ldm.flux.math"
+    ],
+    "comfy.ldm.flux.math": [
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.quant_ops"
+    ],
+    "comfy.ldm.flux.model": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.flux.layers",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.flux.redux": [
+      "comfy.ops"
+    ],
+    "comfy.ldm.genmo.joint_model.asymm_models_joint": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.genmo.joint_model.layers",
+      "comfy.ldm.genmo.joint_model.rope_mixed",
+      "comfy.ldm.genmo.joint_model.temporal_rope",
+      "comfy.ldm.genmo.joint_model.utils",
+      "comfy.ldm.modules.attention",
+      "comfy.ops"
+    ],
+    "comfy.ldm.genmo.joint_model.layers": [
+      "comfy.ldm.common_dit"
+    ],
+    "comfy.ldm.genmo.joint_model.rope_mixed": [],
+    "comfy.ldm.genmo.joint_model.temporal_rope": [],
+    "comfy.ldm.genmo.joint_model.utils": [],
+    "comfy.ldm.genmo.vae.model": [
+      "comfy.ldm.modules.attention",
+      "comfy.ops"
+    ],
+    "comfy.ldm.hidream.model": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.flux.layers",
+      "comfy.ldm.flux.math",
+      "comfy.ldm.lightricks.model",
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.hidream_o1.attention": [
+      "comfy.ldm.modules.attention",
+      "comfy.ops"
+    ],
+    "comfy.ldm.hidream_o1.conditioning": [
+      "comfy.ldm.hidream_o1.utils",
+      "comfy.text_encoders.hidream_o1",
+      "comfy.text_encoders.qwen_vl",
+      "comfy.utils"
+    ],
+    "comfy.ldm.hidream_o1.model": [
+      "comfy.ldm.hidream_o1.attention",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.mmdit",
+      "comfy.patcher_extension",
+      "comfy.text_encoders.llama",
+      "comfy.text_encoders.qwen35"
+    ],
+    "comfy.ldm.hidream_o1.utils": [],
+    "comfy.ldm.hunyuan3d.model": [
+      "comfy.ldm.flux.layers",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.hunyuan3d.vae": [
+      "comfy.ops"
+    ],
+    "comfy.ldm.hunyuan3dv2_1.hunyuandit": [
+      "comfy.ldm.modules.attention",
+      "comfy.model_management"
+    ],
+    "comfy.ldm.hunyuan_video.model": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.flux.layers",
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.mmdit",
+      "comfy.ldm.wan.model",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.hunyuan_video.upsampler": [
+      "comfy.ldm.hunyuan_video.vae_refiner",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.model",
+      "comfy.model_management",
+      "comfy.model_patcher"
+    ],
+    "comfy.ldm.hunyuan_video.vae": [
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.model",
+      "comfy.ops"
+    ],
+    "comfy.ldm.hunyuan_video.vae_refiner": [
+      "comfy.ldm.models.autoencoder",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.model",
+      "comfy.model_management",
+      "comfy.ops"
+    ],
+    "comfy.ldm.hydit.attn_layers": [
+      "comfy.ldm.modules.attention"
+    ],
+    "comfy.ldm.hydit.controlnet": [
+      "comfy.latent_formats",
+      "comfy.ldm.hydit.models",
+      "comfy.ldm.hydit.poolers",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.mmdit"
+    ],
+    "comfy.ldm.hydit.models": [
+      "comfy.ldm.hydit.attn_layers",
+      "comfy.ldm.hydit.poolers",
+      "comfy.ldm.hydit.posemb_layers",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.mmdit",
+      "comfy.ldm.modules.diffusionmodules.util",
+      "comfy.ops"
+    ],
+    "comfy.ldm.hydit.poolers": [
+      "comfy.ldm.modules.attention",
+      "comfy.ops"
+    ],
+    "comfy.ldm.hydit.posemb_layers": [],
+    "comfy.ldm.ideogram4.model": [
+      "comfy.ldm.lumina.model",
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.ops",
+      "comfy.patcher_extension",
+      "comfy.quant_ops",
+      "comfy.text_encoders.llama"
+    ],
+    "comfy.ldm.joyimage.model": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.lightricks.model",
+      "comfy.ldm.modules.attention",
+      "comfy.ops",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.kandinsky5.model": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.flux.layers",
+      "comfy.ldm.flux.math",
+      "comfy.ldm.modules.attention"
+    ],
+    "comfy.ldm.krea2.model": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.flux.layers",
+      "comfy.ldm.flux.math",
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.patcher_extension",
+      "comfy.utils"
+    ],
+    "comfy.ldm.lens.model": [
+      "comfy.ldm.flux.layers",
+      "comfy.ldm.flux.math",
+      "comfy.ldm.modules.attention",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.lightricks.av_model": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.lightricks.embeddings_connector",
+      "comfy.ldm.lightricks.model",
+      "comfy.ldm.lightricks.symmetric_patchifier",
+      "comfy.model_management",
+      "comfy.model_prefetch",
+      "comfy.quant_ops"
+    ],
+    "comfy.ldm.lightricks.duration_head": [],
+    "comfy.ldm.lightricks.embeddings_connector": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.lightricks.model"
+    ],
+    "comfy.ldm.lightricks.latent_upsampler": [],
+    "comfy.ldm.lightricks.model": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.lightricks.symmetric_patchifier",
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.ops",
+      "comfy.patcher_extension",
+      "comfy.quant_ops"
+    ],
+    "comfy.ldm.lightricks.symmetric_patchifier": [],
+    "comfy.ldm.lightricks.vae.audio_vae": [
+      "comfy.ldm.lightricks.symmetric_patchifier",
+      "comfy.ldm.lightricks.vae.causal_audio_autoencoder",
+      "comfy.ldm.lightricks.vocoders.vocoder",
+      "comfy.ldm.mmaudio.vae",
+      "comfy.ldm.mmaudio.vae.distributions"
+    ],
+    "comfy.ldm.lightricks.vae.causal_audio_autoencoder": [
+      "comfy.ldm.lightricks.vae.pixel_norm",
+      "comfy.ops"
+    ],
+    "comfy.ldm.lightricks.vae.causal_conv3d": [
+      "comfy.ops"
+    ],
+    "comfy.ldm.lightricks.vae.causal_video_autoencoder": [
+      "comfy.ldm.lightricks.model",
+      "comfy.ldm.lightricks.vae.causal_conv3d",
+      "comfy.ldm.lightricks.vae.conv_nd_factory",
+      "comfy.ldm.lightricks.vae.pixel_norm",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.model",
+      "comfy.model_management",
+      "comfy.ops"
+    ],
+    "comfy.ldm.lightricks.vae.conv_nd_factory": [
+      "comfy.ldm.lightricks.vae.causal_conv3d",
+      "comfy.ldm.lightricks.vae.dual_conv3d",
+      "comfy.ops"
+    ],
+    "comfy.ldm.lightricks.vae.dual_conv3d": [],
+    "comfy.ldm.lightricks.vae.na_diffusion_decoder": [
+      "comfy.ldm.lightricks.model",
+      "comfy.ldm.lightricks.vae.causal_video_autoencoder",
+      "comfy.model_management"
+    ],
+    "comfy.ldm.lightricks.vae.pixel_norm": [],
+    "comfy.ldm.lightricks.vocoders.vocoder": [
+      "comfy.model_management",
+      "comfy.ops"
+    ],
+    "comfy.ldm.lumina.controlnet": [
+      "comfy.ldm.lumina.model"
+    ],
+    "comfy.ldm.lumina.model": [
+      "comfy.ldm.chroma_radiance.layers",
+      "comfy.ldm.common_dit",
+      "comfy.ldm.flux.layers",
+      "comfy.ldm.flux.math",
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.mmdit",
+      "comfy.model_management",
+      "comfy.ops",
+      "comfy.patcher_extension",
+      "comfy.quant_ops",
+      "comfy.utils"
+    ],
+    "comfy.ldm.mage_flow.model": [
+      "comfy.ldm.flux.layers",
+      "comfy.ldm.lightricks.model",
+      "comfy.ldm.qwen_image.model",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.mage_flow.vae": [
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.model",
+      "comfy.ops"
+    ],
+    "comfy.ldm.minimax.audio_vae": [
+      "comfy.ops"
+    ],
+    "comfy.ldm.minimax.model": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.model_prefetch",
+      "comfy.ops",
+      "comfy.patcher_extension",
+      "comfy.quant_ops"
+    ],
+    "comfy.ldm.minimax.vae": [
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.ops",
+      "comfy.quant_ops",
+      "comfy.rmsnorm"
+    ],
+    "comfy.ldm.minimax_music": [],
+    "comfy.ldm.minimax_music.ar": [
+      "comfy.ldm.minimax_music",
+      "comfy.ldm.minimax_music.prompt",
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.model_prefetch",
+      "comfy.ops",
+      "comfy.text_encoders.llama",
+      "comfy.utils"
+    ],
+    "comfy.ldm.minimax_music.dav": [
+      "comfy.ops"
+    ],
+    "comfy.ldm.minimax_music.dit": [
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.ops",
+      "comfy.quant_ops"
+    ],
+    "comfy.ldm.minimax_music.prompt": [],
+    "comfy.ldm.mmaudio.vae": [],
+    "comfy.ldm.mmaudio.vae.activations": [
+      "comfy.model_management"
+    ],
+    "comfy.ldm.mmaudio.vae.alias_free_torch": [
+      "comfy.model_management"
+    ],
+    "comfy.ldm.mmaudio.vae.autoencoder": [
+      "comfy.ldm.mmaudio.vae",
+      "comfy.ldm.mmaudio.vae.bigvgan",
+      "comfy.ldm.mmaudio.vae.distributions",
+      "comfy.ldm.mmaudio.vae.vae"
+    ],
+    "comfy.ldm.mmaudio.vae.bigvgan": [
+      "comfy.ldm.mmaudio.vae",
+      "comfy.ldm.mmaudio.vae.alias_free_torch",
+      "comfy.ops"
+    ],
+    "comfy.ldm.mmaudio.vae.distributions": [],
+    "comfy.ldm.mmaudio.vae.vae": [
+      "comfy.ldm.mmaudio.vae",
+      "comfy.ldm.mmaudio.vae.distributions",
+      "comfy.ldm.mmaudio.vae.vae_modules",
+      "comfy.ops"
+    ],
+    "comfy.ldm.mmaudio.vae.vae_modules": [
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.model",
+      "comfy.ops"
+    ],
+    "comfy.ldm.models.autoencoder": [
+      "comfy.ldm.modules.distributions",
+      "comfy.ldm.modules.distributions.distributions",
+      "comfy.ldm.modules.ema",
+      "comfy.ldm.util",
+      "comfy.model_management",
+      "comfy.ops"
+    ],
+    "comfy.ldm.modules.attention": [
+      "comfy.cli_args",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.util",
+      "comfy.ldm.modules.sub_quadratic_attention",
+      "comfy.ops"
+    ],
+    "comfy.ldm.modules.diffusionmodules": [],
+    "comfy.ldm.modules.diffusionmodules.mmdit": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.util",
+      "comfy.ops"
+    ],
+    "comfy.ldm.modules.diffusionmodules.model": [
+      "comfy.ops"
+    ],
+    "comfy.ldm.modules.diffusionmodules.openaimodel": [
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.util",
+      "comfy.ldm.modules.sdpose",
+      "comfy.ldm.util",
+      "comfy.ops",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.modules.diffusionmodules.upscaling": [
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.util"
+    ],
+    "comfy.ldm.modules.diffusionmodules.util": [
+      "comfy.ldm.util"
+    ],
+    "comfy.ldm.modules.distributions": [],
+    "comfy.ldm.modules.distributions.distributions": [],
+    "comfy.ldm.modules.ema": [],
+    "comfy.ldm.modules.encoders": [],
+    "comfy.ldm.modules.encoders.noise_aug_modules": [
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.openaimodel",
+      "comfy.ldm.modules.diffusionmodules.upscaling"
+    ],
+    "comfy.ldm.modules.sdpose": [],
+    "comfy.ldm.modules.sub_quadratic_attention": [],
+    "comfy.ldm.modules.temporal_ae": [
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.model",
+      "comfy.ldm.modules.diffusionmodules.openaimodel",
+      "comfy.ops"
+    ],
+    "comfy.ldm.moge.geometry": [],
+    "comfy.ldm.moge.model": [
+      "comfy.image_encoders.dino2",
+      "comfy.ldm.moge.geometry",
+      "comfy.ldm.moge.modules",
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.ops"
+    ],
+    "comfy.ldm.moge.modules": [
+      "comfy.image_encoders.dino2",
+      "comfy.ldm.moge.geometry",
+      "comfy.ops"
+    ],
+    "comfy.ldm.moge.panorama": [],
+    "comfy.ldm.omnigen.omnigen2": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.flux.layers",
+      "comfy.ldm.flux.math",
+      "comfy.ldm.lightricks.model",
+      "comfy.ldm.modules.attention",
+      "comfy.model_management"
+    ],
+    "comfy.ldm.pixart.blocks": [
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.mmdit"
+    ],
+    "comfy.ldm.pixart.pixartms": [
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.mmdit",
+      "comfy.ldm.pixart.blocks"
+    ],
+    "comfy.ldm.pixeldit.model": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.flux.math",
+      "comfy.ldm.hidream.model",
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.mmdit",
+      "comfy.ldm.pixeldit.modules",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.pixeldit.modules": [
+      "comfy.ldm.flux.math",
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.mmdit"
+    ],
+    "comfy.ldm.pixeldit.pid": [
+      "comfy.ldm.pixeldit.model",
+      "comfy.ldm.pixeldit.modules"
+    ],
+    "comfy.ldm.qwen_image.controlnet": [
+      "comfy.ldm.qwen_image.model"
+    ],
+    "comfy.ldm.qwen_image.model": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.flux.layers",
+      "comfy.ldm.flux.math",
+      "comfy.ldm.lightricks.model",
+      "comfy.ldm.modules.attention",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.rt_detr.rtdetr_v4": [
+      "comfy.ldm.modules.attention",
+      "comfy.model_management"
+    ],
+    "comfy.ldm.sam3.detector": [
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.sam3.sam",
+      "comfy.ldm.sam3.tracker",
+      "comfy.ops"
+    ],
+    "comfy.ldm.sam3.sam": [
+      "comfy.ldm.flux.layers",
+      "comfy.ldm.flux.math",
+      "comfy.ldm.modules.attention",
+      "comfy.ops"
+    ],
+    "comfy.ldm.sam3.tracker": [
+      "comfy.ldm.cascade.common",
+      "comfy.ldm.flux.math",
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.sam3.sam",
+      "comfy.model_management",
+      "comfy.ops"
+    ],
+    "comfy.ldm.sam3d_body.mhr.mhr_head": [
+      "comfy.ldm.sam3d_body.mhr.mhr_utils",
+      "comfy.ldm.sam3d_body.model.transformer",
+      "comfy.ldm.sam3d_body.utils",
+      "comfy.ops"
+    ],
+    "comfy.ldm.sam3d_body.mhr.mhr_rig": [
+      "comfy.ldm.sam3d_body.mhr.mhr_utils",
+      "comfy.ops"
+    ],
+    "comfy.ldm.sam3d_body.mhr.mhr_utils": [],
+    "comfy.ldm.sam3d_body.model.camera_modules": [
+      "comfy.ldm.cascade.common",
+      "comfy.ldm.sam3d_body.model.transformer",
+      "comfy.ldm.sam3d_body.utils"
+    ],
+    "comfy.ldm.sam3d_body.model.model": [
+      "comfy.image_encoders.dino3",
+      "comfy.ldm.sam3.sam",
+      "comfy.ldm.sam3d_body.mhr.mhr_head",
+      "comfy.ldm.sam3d_body.mhr.mhr_rig",
+      "comfy.ldm.sam3d_body.mhr.mhr_utils",
+      "comfy.ldm.sam3d_body.model.camera_modules",
+      "comfy.ldm.sam3d_body.model.prompt",
+      "comfy.ldm.sam3d_body.model.transformer",
+      "comfy.ldm.sam3d_body.utils",
+      "comfy.model_management",
+      "comfy.ops",
+      "comfy_extras.mediapipe.face_landmarker"
+    ],
+    "comfy.ldm.sam3d_body.model.prompt": [
+      "comfy.ldm.cascade.common",
+      "comfy.ldm.sam3.sam",
+      "comfy.ldm.sam3d_body.model.transformer",
+      "comfy.ops"
+    ],
+    "comfy.ldm.sam3d_body.model.transformer": [
+      "comfy.ldm.modules.attention"
+    ],
+    "comfy.ldm.sam3d_body.utils": [],
+    "comfy.ldm.seedvr.attention": [],
+    "comfy.ldm.seedvr.color_fix": [
+      "comfy.ldm.seedvr.constants"
+    ],
+    "comfy.ldm.seedvr.constants": [],
+    "comfy.ldm.seedvr.model": [
+      "comfy.ldm.flux.math",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.model",
+      "comfy.ldm.seedvr.attention",
+      "comfy.ldm.seedvr.constants",
+      "comfy.model_management",
+      "comfy.ops"
+    ],
+    "comfy.ldm.seedvr.vae": [
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.model",
+      "comfy.ldm.seedvr.constants",
+      "comfy.model_management",
+      "comfy.ops",
+      "comfy.utils"
+    ],
+    "comfy.ldm.supir": [],
+    "comfy.ldm.supir.supir_modules": [
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.openaimodel",
+      "comfy.ldm.modules.diffusionmodules.util"
+    ],
+    "comfy.ldm.supir.supir_patch": [
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.openaimodel"
+    ],
+    "comfy.ldm.trellis2.flexgemm": [
+      "comfy.model_management"
+    ],
+    "comfy.ldm.trellis2.model": [
+      "comfy.ldm.flux.math",
+      "comfy.ldm.genmo.joint_model.layers",
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.trellis2.vae",
+      "comfy.model_management",
+      "comfy.ops"
+    ],
+    "comfy.ldm.trellis2.vae": [
+      "comfy.ldm.trellis2.flexgemm",
+      "comfy.ops"
+    ],
+    "comfy.ldm.triposplat.gaussian": [
+      "comfy.model_management"
+    ],
+    "comfy.ldm.triposplat.model": [
+      "comfy.ldm.flux.math",
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.patcher_extension",
+      "comfy.rmsnorm"
+    ],
+    "comfy.ldm.triposplat.preview": [],
+    "comfy.ldm.triposplat.vae": [
+      "comfy.ldm.triposplat.gaussian",
+      "comfy.ldm.triposplat.model",
+      "comfy.model_management",
+      "comfy.ops"
+    ],
+    "comfy.ldm.util": [],
+    "comfy.ldm.wan.ar_model": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.flux.math",
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.wan.model",
+      "comfy.model_management"
+    ],
+    "comfy.ldm.wan.model": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.flux.layers",
+      "comfy.ldm.flux.math",
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.ops",
+      "comfy.patcher_extension"
+    ],
+    "comfy.ldm.wan.model_animate": [
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.wan.model",
+      "comfy.model_management"
+    ],
+    "comfy.ldm.wan.model_animate2": [
+      "comfy.ldm.common_dit",
+      "comfy.ldm.flux.math",
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.wan.model",
+      "comfy.model_management",
+      "comfy.quant_ops",
+      "comfy.utils"
+    ],
+    "comfy.ldm.wan.model_multitalk": [
+      "comfy.ldm.modules.attention"
+    ],
+    "comfy.ldm.wan.model_wandancer": [
+      "comfy.ldm.flux.layers",
+      "comfy.ldm.flux.math",
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.wan.model"
+    ],
+    "comfy.ldm.wan.uni3c": [
+      "comfy.ldm.flux.layers",
+      "comfy.ldm.wan.model"
+    ],
+    "comfy.ldm.wan.vae": [
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.model",
+      "comfy.ops"
+    ],
+    "comfy.ldm.wan.vae2_2": [
+      "comfy.ldm.wan.vae",
+      "comfy.ops"
+    ],
+    "comfy.lora": [
+      "comfy.memory_management",
+      "comfy.model_base",
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy.weight_adapter"
+    ],
+    "comfy.lora_convert": [
+      "comfy.utils"
+    ],
+    "comfy.memory_management": [
+      "comfy.quant_ops"
+    ],
+    "comfy.model_base": [
+      "comfy.conds",
+      "comfy.context_windows",
+      "comfy.latent_formats",
+      "comfy.ldm.ace.ace_step15",
+      "comfy.ldm.ace.model",
+      "comfy.ldm.anima.model",
+      "comfy.ldm.audio.dit",
+      "comfy.ldm.audio.embedders",
+      "comfy.ldm.aura.mmdit",
+      "comfy.ldm.boogu.model",
+      "comfy.ldm.cascade.stage_b",
+      "comfy.ldm.cascade.stage_c",
+      "comfy.ldm.chroma.model",
+      "comfy.ldm.chroma_radiance.model",
+      "comfy.ldm.cogvideo",
+      "comfy.ldm.cogvideo.model",
+      "comfy.ldm.cosmos.model",
+      "comfy.ldm.cosmos.predict2",
+      "comfy.ldm.depth_anything_3.model",
+      "comfy.ldm.ernie.model",
+      "comfy.ldm.flux.model",
+      "comfy.ldm.genmo.joint_model.asymm_models_joint",
+      "comfy.ldm.hidream.model",
+      "comfy.ldm.hidream_o1.conditioning",
+      "comfy.ldm.hidream_o1.model",
+      "comfy.ldm.hunyuan3d.model",
+      "comfy.ldm.hunyuan3dv2_1.hunyuandit",
+      "comfy.ldm.hunyuan_video.model",
+      "comfy.ldm.hydit.models",
+      "comfy.ldm.ideogram4.model",
+      "comfy.ldm.joyimage.model",
+      "comfy.ldm.kandinsky5.model",
+      "comfy.ldm.krea2.model",
+      "comfy.ldm.lens.model",
+      "comfy.ldm.lightricks.av_model",
+      "comfy.ldm.lightricks.model",
+      "comfy.ldm.lightricks.symmetric_patchifier",
+      "comfy.ldm.lumina.model",
+      "comfy.ldm.mage_flow.model",
+      "comfy.ldm.minimax.model",
+      "comfy.ldm.minimax_music",
+      "comfy.ldm.minimax_music.dit",
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.mmdit",
+      "comfy.ldm.modules.diffusionmodules.openaimodel",
+      "comfy.ldm.modules.diffusionmodules.upscaling",
+      "comfy.ldm.modules.encoders",
+      "comfy.ldm.modules.encoders.noise_aug_modules",
+      "comfy.ldm.omnigen.omnigen2",
+      "comfy.ldm.pixart.pixartms",
+      "comfy.ldm.pixeldit.model",
+      "comfy.ldm.pixeldit.pid",
+      "comfy.ldm.qwen_image.model",
+      "comfy.ldm.rt_detr.rtdetr_v4",
+      "comfy.ldm.sam3.detector",
+      "comfy.ldm.seedvr.model",
+      "comfy.ldm.trellis2.model",
+      "comfy.ldm.triposplat.model",
+      "comfy.ldm.wan.ar_model",
+      "comfy.ldm.wan.model",
+      "comfy.ldm.wan.model_animate",
+      "comfy.ldm.wan.model_animate2",
+      "comfy.ldm.wan.model_wandancer",
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.model_sampling",
+      "comfy.nested_tensor",
+      "comfy.ops",
+      "comfy.patcher_extension"
+    ],
+    "comfy.model_detection": [
+      "comfy.memory_management",
+      "comfy.supported_models",
+      "comfy.supported_models_base",
+      "comfy.utils"
+    ],
+    "comfy.model_management": [
+      "comfy.cli_args",
+      "comfy.internal_logging",
+      "comfy.memory_management",
+      "comfy.model_patcher",
+      "comfy.quant_ops",
+      "comfy.system_memory",
+      "comfy.utils"
+    ],
+    "comfy.model_patcher": [
+      "comfy.comfy_types",
+      "comfy.float",
+      "comfy.hooks",
+      "comfy.internal_logging",
+      "comfy.lora",
+      "comfy.model_management",
+      "comfy.ops",
+      "comfy.patcher_extension",
+      "comfy.quant_ops",
+      "comfy.utils"
+    ],
+    "comfy.model_prefetch": [
+      "comfy.cli_args",
+      "comfy.memory_management",
+      "comfy.model_management",
+      "comfy.ops"
+    ],
+    "comfy.model_sampling": [
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.util"
+    ],
+    "comfy.multigpu": [
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.patcher_extension",
+      "comfy.utils"
+    ],
+    "comfy.nested_tensor": [],
+    "comfy.ops": [
+      "comfy.cli_args",
+      "comfy.float",
+      "comfy.memory_management",
+      "comfy.model_management",
+      "comfy.pinned_memory",
+      "comfy.quant_ops",
+      "comfy.utils"
+    ],
+    "comfy.options": [],
+    "comfy.patcher_extension": [],
+    "comfy.pinned_memory": [
+      "comfy.cli_args",
+      "comfy.memory_management",
+      "comfy.model_management",
+      "comfy.utils"
+    ],
+    "comfy.pixel_space_convert": [],
+    "comfy.quant_ops": [
+      "comfy.cli_args",
+      "comfy.float"
+    ],
+    "comfy.rmsnorm": [
+      "comfy.model_management"
+    ],
+    "comfy.sample": [
+      "comfy.model_management",
+      "comfy.nested_tensor",
+      "comfy.samplers",
+      "comfy.utils"
+    ],
+    "comfy.sampler_helpers": [
+      "comfy.conds",
+      "comfy.controlnet",
+      "comfy.hooks",
+      "comfy.model_base",
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.patcher_extension",
+      "comfy.utils"
+    ],
+    "comfy.samplers": [
+      "comfy.context_windows",
+      "comfy.controlnet",
+      "comfy.hooks",
+      "comfy.internal_logging",
+      "comfy.model_base",
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.multigpu",
+      "comfy.patcher_extension",
+      "comfy.sampler_helpers",
+      "comfy.utils"
+    ],
+    "comfy.sd": [
+      "comfy.hooks",
+      "comfy.latent_formats",
+      "comfy.ldm.ace.vae.music_dcae_pipeline",
+      "comfy.ldm.audio.autoencoder",
+      "comfy.ldm.audio.vae_sa3",
+      "comfy.ldm.cascade.stage_a",
+      "comfy.ldm.cascade.stage_c_coder",
+      "comfy.ldm.cogvideo",
+      "comfy.ldm.cogvideo.vae",
+      "comfy.ldm.cosmos.vae",
+      "comfy.ldm.flux.redux",
+      "comfy.ldm.genmo.vae.model",
+      "comfy.ldm.hunyuan3d.vae",
+      "comfy.ldm.hunyuan_video.vae",
+      "comfy.ldm.lightricks.vae.audio_vae",
+      "comfy.ldm.lightricks.vae.causal_video_autoencoder",
+      "comfy.ldm.lightricks.vae.na_diffusion_decoder",
+      "comfy.ldm.mage_flow.vae",
+      "comfy.ldm.minimax.audio_vae",
+      "comfy.ldm.minimax.vae",
+      "comfy.ldm.minimax_music",
+      "comfy.ldm.minimax_music.dav",
+      "comfy.ldm.mmaudio.vae",
+      "comfy.ldm.mmaudio.vae.autoencoder",
+      "comfy.ldm.models.autoencoder",
+      "comfy.ldm.seedvr.vae",
+      "comfy.ldm.trellis2.vae",
+      "comfy.ldm.triposplat.vae",
+      "comfy.ldm.wan.vae",
+      "comfy.ldm.wan.vae2_2",
+      "comfy.lora",
+      "comfy.lora_convert",
+      "comfy.model_patcher",
+      "comfy.ops",
+      "comfy.pixel_space_convert",
+      "comfy.t2i_adapter.adapter",
+      "comfy.taesd.taehv",
+      "comfy.taesd.taesd",
+      "comfy.text_encoders.ace",
+      "comfy.text_encoders.ace15",
+      "comfy.text_encoders.anima",
+      "comfy.text_encoders.aura_t5",
+      "comfy.text_encoders.boogu",
+      "comfy.text_encoders.cogvideo",
+      "comfy.text_encoders.cosmos",
+      "comfy.text_encoders.ernie",
+      "comfy.text_encoders.flux",
+      "comfy.text_encoders.gemma4",
+      "comfy.text_encoders.genmo",
+      "comfy.text_encoders.gpt_oss",
+      "comfy.text_encoders.hidream",
+      "comfy.text_encoders.hunyuan_image",
+      "comfy.text_encoders.hunyuan_video",
+      "comfy.text_encoders.hydit",
+      "comfy.text_encoders.ideogram4",
+      "comfy.text_encoders.jina_clip_2",
+      "comfy.text_encoders.joyimage",
+      "comfy.text_encoders.kandinsky5",
+      "comfy.text_encoders.krea2",
+      "comfy.text_encoders.long_clipl",
+      "comfy.text_encoders.longcat_image",
+      "comfy.text_encoders.lt",
+      "comfy.text_encoders.lumina2",
+      "comfy.text_encoders.mage_flow",
+      "comfy.text_encoders.minimax",
+      "comfy.text_encoders.minimax_music",
+      "comfy.text_encoders.newbie",
+      "comfy.text_encoders.omnigen2",
+      "comfy.text_encoders.ovis",
+      "comfy.text_encoders.pixart_t5",
+      "comfy.text_encoders.pixeldit",
+      "comfy.text_encoders.qwen35",
+      "comfy.text_encoders.qwen3vl",
+      "comfy.text_encoders.qwen_image",
+      "comfy.text_encoders.sa3",
+      "comfy.text_encoders.sa_t5",
+      "comfy.text_encoders.sd2_clip",
+      "comfy.text_encoders.sd3_clip",
+      "comfy.text_encoders.wan",
+      "comfy.text_encoders.z_image",
+      "comfy.utils",
+      "comfy.weight_adapter"
+    ],
+    "comfy.sd1_clip": [
+      "comfy.clip_model",
+      "comfy.ops"
+    ],
+    "comfy.sdxl_clip": [],
+    "comfy.supported_models": [
+      "comfy.model_management",
+      "comfy.text_encoders.ace",
+      "comfy.text_encoders.ace15",
+      "comfy.text_encoders.anima",
+      "comfy.text_encoders.aura_t5",
+      "comfy.text_encoders.boogu",
+      "comfy.text_encoders.cogvideo",
+      "comfy.text_encoders.cosmos",
+      "comfy.text_encoders.ernie",
+      "comfy.text_encoders.flux",
+      "comfy.text_encoders.genmo",
+      "comfy.text_encoders.hidream_o1",
+      "comfy.text_encoders.hunyuan_image",
+      "comfy.text_encoders.hunyuan_video",
+      "comfy.text_encoders.hydit",
+      "comfy.text_encoders.ideogram4",
+      "comfy.text_encoders.joyimage",
+      "comfy.text_encoders.kandinsky5",
+      "comfy.text_encoders.krea2",
+      "comfy.text_encoders.longcat_image",
+      "comfy.text_encoders.lt",
+      "comfy.text_encoders.lumina2",
+      "comfy.text_encoders.mage_flow",
+      "comfy.text_encoders.minimax",
+      "comfy.text_encoders.minimax_music",
+      "comfy.text_encoders.omnigen2",
+      "comfy.text_encoders.pixart_t5",
+      "comfy.text_encoders.pixeldit",
+      "comfy.text_encoders.qwen_image",
+      "comfy.text_encoders.sa3",
+      "comfy.text_encoders.sa_t5",
+      "comfy.text_encoders.sam3_clip",
+      "comfy.text_encoders.sd2_clip",
+      "comfy.text_encoders.sd3_clip",
+      "comfy.text_encoders.wan",
+      "comfy.text_encoders.z_image"
+    ],
+    "comfy.supported_models_base": [],
+    "comfy.system_memory": [],
+    "comfy.t2i_adapter.adapter": [],
+    "comfy.taesd.taehv": [
+      "comfy.model_management",
+      "comfy.ops"
+    ],
+    "comfy.taesd.taesd": [
+      "comfy.ops",
+      "comfy.utils"
+    ],
+    "comfy.text_encoders.ace": [
+      "comfy.text_encoders.ace_text_cleaners",
+      "comfy.text_encoders.spiece_tokenizer",
+      "comfy.text_encoders.t5"
+    ],
+    "comfy.text_encoders.ace15": [
+      "comfy.ops",
+      "comfy.text_encoders.anima",
+      "comfy.text_encoders.llama",
+      "comfy.utils"
+    ],
+    "comfy.text_encoders.ace_text_cleaners": [],
+    "comfy.text_encoders.anima": [
+      "comfy.text_encoders.llama"
+    ],
+    "comfy.text_encoders.aura_t5": [
+      "comfy.text_encoders.spiece_tokenizer",
+      "comfy.text_encoders.t5"
+    ],
+    "comfy.text_encoders.bert": [
+      "comfy.ldm.modules.attention",
+      "comfy.ops"
+    ],
+    "comfy.text_encoders.boogu": [
+      "comfy.text_encoders.qwen3vl"
+    ],
+    "comfy.text_encoders.bpe_tokenizer": [],
+    "comfy.text_encoders.cogvideo": [
+      "comfy.text_encoders.sd3_clip"
+    ],
+    "comfy.text_encoders.cosmos": [
+      "comfy.text_encoders.t5"
+    ],
+    "comfy.text_encoders.ernie": [
+      "comfy.text_encoders.flux",
+      "comfy.text_encoders.llama"
+    ],
+    "comfy.text_encoders.flux": [
+      "comfy.model_management",
+      "comfy.text_encoders.bpe_tokenizer",
+      "comfy.text_encoders.llama",
+      "comfy.text_encoders.sd3_clip",
+      "comfy.text_encoders.t5"
+    ],
+    "comfy.text_encoders.gemma4": [
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.model_prefetch",
+      "comfy.ops",
+      "comfy.quant_ops",
+      "comfy.rmsnorm",
+      "comfy.text_encoders.llama"
+    ],
+    "comfy.text_encoders.genmo": [
+      "comfy.text_encoders.sd3_clip"
+    ],
+    "comfy.text_encoders.gpt_oss": [
+      "comfy.ldm.modules.attention",
+      "comfy.ops",
+      "comfy.text_encoders.llama"
+    ],
+    "comfy.text_encoders.hidream": [
+      "comfy.model_management"
+    ],
+    "comfy.text_encoders.hidream_o1": [],
+    "comfy.text_encoders.hunyuan_image": [
+      "comfy.text_encoders.llama",
+      "comfy.text_encoders.qwen_image"
+    ],
+    "comfy.text_encoders.hunyuan_video": [
+      "comfy.model_management",
+      "comfy.text_encoders.bpe_tokenizer",
+      "comfy.text_encoders.hunyuan_image",
+      "comfy.text_encoders.llama",
+      "comfy.utils"
+    ],
+    "comfy.text_encoders.hydit": [
+      "comfy.text_encoders.bert",
+      "comfy.text_encoders.spiece_tokenizer",
+      "comfy.text_encoders.t5"
+    ],
+    "comfy.text_encoders.ideogram4": [
+      "comfy.text_encoders.llama",
+      "comfy.text_encoders.qwen3vl"
+    ],
+    "comfy.text_encoders.jina_clip_2": [
+      "comfy.model_management",
+      "comfy.ops",
+      "comfy.text_encoders.spiece_tokenizer"
+    ],
+    "comfy.text_encoders.joyimage": [
+      "comfy.text_encoders.qwen3vl",
+      "comfy.text_encoders.qwen_vl"
+    ],
+    "comfy.text_encoders.kandinsky5": [
+      "comfy.text_encoders.llama",
+      "comfy.text_encoders.qwen_image"
+    ],
+    "comfy.text_encoders.krea2": [
+      "comfy.text_encoders.qwen3vl"
+    ],
+    "comfy.text_encoders.llama": [
+      "comfy.clip_model",
+      "comfy.ldm.common_dit",
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.model_prefetch",
+      "comfy.ops",
+      "comfy.utils"
+    ],
+    "comfy.text_encoders.long_clipl": [],
+    "comfy.text_encoders.longcat_image": [
+      "comfy.text_encoders.qwen_image"
+    ],
+    "comfy.text_encoders.lt": [
+      "comfy.ldm.lightricks.embeddings_connector",
+      "comfy.text_encoders.genmo",
+      "comfy.text_encoders.spiece_tokenizer",
+      "comfy.utils"
+    ],
+    "comfy.text_encoders.lumina2": [
+      "comfy.text_encoders.llama",
+      "comfy.text_encoders.lt",
+      "comfy.text_encoders.spiece_tokenizer",
+      "comfy.utils"
+    ],
+    "comfy.text_encoders.mage_flow": [
+      "comfy.text_encoders.qwen3vl"
+    ],
+    "comfy.text_encoders.minimax": [
+      "comfy.sd1_clip",
+      "comfy.text_encoders.qwen3vl"
+    ],
+    "comfy.text_encoders.minimax_music": [
+      "comfy.ldm.minimax_music",
+      "comfy.ldm.minimax_music.ar",
+      "comfy.ldm.minimax_music.prompt",
+      "comfy.ops"
+    ],
+    "comfy.text_encoders.newbie": [
+      "comfy.model_management",
+      "comfy.text_encoders.jina_clip_2",
+      "comfy.text_encoders.lumina2"
+    ],
+    "comfy.text_encoders.omnigen2": [
+      "comfy.text_encoders.llama"
+    ],
+    "comfy.text_encoders.ovis": [
+      "comfy.text_encoders.llama"
+    ],
+    "comfy.text_encoders.pixart_t5": [
+      "comfy.sd1_clip",
+      "comfy.text_encoders.sd3_clip",
+      "comfy.text_encoders.t5"
+    ],
+    "comfy.text_encoders.pixeldit": [
+      "comfy.text_encoders.llama",
+      "comfy.text_encoders.lumina2"
+    ],
+    "comfy.text_encoders.qwen35": [
+      "comfy.ldm.modules.attention",
+      "comfy.model_management",
+      "comfy.text_encoders.llama",
+      "comfy.text_encoders.qwen_vl"
+    ],
+    "comfy.text_encoders.qwen3vl": [
+      "comfy.text_encoders.llama",
+      "comfy.text_encoders.qwen35",
+      "comfy.text_encoders.qwen_vl"
+    ],
+    "comfy.text_encoders.qwen_image": [
+      "comfy.text_encoders.llama"
+    ],
+    "comfy.text_encoders.qwen_vl": [
+      "comfy.ldm.modules.attention"
+    ],
+    "comfy.text_encoders.sa3": [
+      "comfy.text_encoders.llama",
+      "comfy.text_encoders.spiece_tokenizer"
+    ],
+    "comfy.text_encoders.sa_t5": [
+      "comfy.text_encoders.t5"
+    ],
+    "comfy.text_encoders.sam3_clip": [],
+    "comfy.text_encoders.sd2_clip": [],
+    "comfy.text_encoders.sd3_clip": [
+      "comfy.model_management",
+      "comfy.text_encoders.t5",
+      "comfy.utils"
+    ],
+    "comfy.text_encoders.spiece_tokenizer": [],
+    "comfy.text_encoders.t5": [
+      "comfy.ldm.modules.attention",
+      "comfy.ops"
+    ],
+    "comfy.text_encoders.wan": [
+      "comfy.text_encoders.spiece_tokenizer",
+      "comfy.text_encoders.t5"
+    ],
+    "comfy.text_encoders.z_image": [
+      "comfy.text_encoders.llama"
+    ],
+    "comfy.utils": [
+      "comfy.cli_args",
+      "comfy.memory_management"
+    ],
+    "comfy.weight_adapter": [
+      "comfy.weight_adapter",
+      "comfy.weight_adapter.base",
+      "comfy.weight_adapter.boft",
+      "comfy.weight_adapter.bypass",
+      "comfy.weight_adapter.glora",
+      "comfy.weight_adapter.loha",
+      "comfy.weight_adapter.lokr",
+      "comfy.weight_adapter.lora",
+      "comfy.weight_adapter.oft"
+    ],
+    "comfy.weight_adapter.base": [
+      "comfy.model_management"
+    ],
+    "comfy.weight_adapter.boft": [
+      "comfy.model_management",
+      "comfy.weight_adapter",
+      "comfy.weight_adapter.base"
+    ],
+    "comfy.weight_adapter.bypass": [
+      "comfy.model_management",
+      "comfy.patcher_extension",
+      "comfy.weight_adapter",
+      "comfy.weight_adapter.base"
+    ],
+    "comfy.weight_adapter.glora": [
+      "comfy.model_management",
+      "comfy.weight_adapter",
+      "comfy.weight_adapter.base"
+    ],
+    "comfy.weight_adapter.loha": [
+      "comfy.model_management",
+      "comfy.weight_adapter",
+      "comfy.weight_adapter.base"
+    ],
+    "comfy.weight_adapter.lokr": [
+      "comfy.model_management",
+      "comfy.weight_adapter",
+      "comfy.weight_adapter.base"
+    ],
+    "comfy.weight_adapter.lora": [
+      "comfy.model_management",
+      "comfy.weight_adapter",
+      "comfy.weight_adapter.base"
+    ],
+    "comfy.weight_adapter.oft": [
+      "comfy.model_management",
+      "comfy.weight_adapter",
+      "comfy.weight_adapter.base"
+    ],
+    "comfy_api.feature_flags": [
+      "comfy.cli_args"
+    ],
+    "comfy_api.generate_api_stubs": [
+      "comfy_api.internal",
+      "comfy_api.internal.async_to_sync",
+      "comfy_api.version_list"
+    ],
+    "comfy_api.input": [
+      "comfy_api.latest",
+      "comfy_api.latest._input"
+    ],
+    "comfy_api.input.basic_types": [
+      "comfy_api.latest",
+      "comfy_api.latest._input",
+      "comfy_api.latest._input.basic_types"
+    ],
+    "comfy_api.input.video_types": [
+      "comfy_api.latest",
+      "comfy_api.latest._input",
+      "comfy_api.latest._input.video_types"
+    ],
+    "comfy_api.input_impl": [
+      "comfy_api.latest",
+      "comfy_api.latest._input_impl"
+    ],
+    "comfy_api.input_impl.video_types": [
+      "comfy_api.latest",
+      "comfy_api.latest._input_impl",
+      "comfy_api.latest._input_impl.video_types"
+    ],
+    "comfy_api.internal": [
+      "comfy_api.internal",
+      "comfy_api.internal.api_registry"
+    ],
+    "comfy_api.internal.api_registry": [
+      "comfy_api.internal",
+      "comfy_api.internal.singleton"
+    ],
+    "comfy_api.internal.async_to_sync": [
+      "comfy_api.internal",
+      "comfy_api.internal.singleton"
+    ],
+    "comfy_api.internal.singleton": [],
+    "comfy_api.latest": [
+      "comfy.cli_args",
+      "comfy_api.internal",
+      "comfy_api.internal.async_to_sync",
+      "comfy_api.internal.singleton",
+      "comfy_api.latest",
+      "comfy_api.latest._caching",
+      "comfy_api.latest._input",
+      "comfy_api.latest._input_impl",
+      "comfy_api.latest._util",
+      "comfy_execution.cache_provider",
+      "comfy_execution.progress",
+      "comfy_execution.utils",
+      "server"
+    ],
+    "comfy_api.latest._caching": [],
+    "comfy_api.latest._input": [
+      "comfy_api.latest",
+      "comfy_api.latest._input",
+      "comfy_api.latest._input.basic_types",
+      "comfy_api.latest._input.curve_types",
+      "comfy_api.latest._input.range_types",
+      "comfy_api.latest._input.video_types"
+    ],
+    "comfy_api.latest._input.basic_types": [],
+    "comfy_api.latest._input.curve_types": [],
+    "comfy_api.latest._input.range_types": [],
+    "comfy_api.latest._input.video_types": [
+      "comfy_api.latest",
+      "comfy_api.latest._util"
+    ],
+    "comfy_api.latest._input_impl": [
+      "comfy_api.latest",
+      "comfy_api.latest._input_impl",
+      "comfy_api.latest._input_impl.video_types"
+    ],
+    "comfy_api.latest._input_impl.video_types": [
+      "comfy_api.latest",
+      "comfy_api.latest._input",
+      "comfy_api.latest._util"
+    ],
+    "comfy_api.latest._io": [
+      "comfy.bg_removal_model",
+      "comfy.clip_vision",
+      "comfy.controlnet",
+      "comfy.hooks",
+      "comfy.model_patcher",
+      "comfy.samplers",
+      "comfy.sd",
+      "comfy_api.input",
+      "comfy_api.internal",
+      "comfy_api.latest",
+      "comfy_api.latest._util",
+      "comfy_execution.graph_utils"
+    ],
+    "comfy_api.latest._io_public": [
+      "comfy_api.latest",
+      "comfy_api.latest._io"
+    ],
+    "comfy_api.latest._ui": [
+      "comfy.cli_args",
+      "comfy_api.latest",
+      "comfy_api.latest._io",
+      "folder_paths"
+    ],
+    "comfy_api.latest._ui_public": [
+      "comfy_api.latest",
+      "comfy_api.latest._ui"
+    ],
+    "comfy_api.latest._util": [
+      "comfy_api.latest",
+      "comfy_api.latest._util",
+      "comfy_api.latest._util.geometry_types",
+      "comfy_api.latest._util.image_types",
+      "comfy_api.latest._util.video_types"
+    ],
+    "comfy_api.latest._util.geometry_types": [],
+    "comfy_api.latest._util.image_types": [],
+    "comfy_api.latest._util.video_types": [
+      "comfy_api.latest",
+      "comfy_api.latest._input"
+    ],
+    "comfy_api.torch_helpers": [
+      "comfy_api.torch_helpers",
+      "comfy_api.torch_helpers.torch_compile"
+    ],
+    "comfy_api.torch_helpers.torch_compile": [
+      "comfy.model_patcher",
+      "comfy.patcher_extension",
+      "comfy.utils"
+    ],
+    "comfy_api.util": [
+      "comfy_api.latest",
+      "comfy_api.latest._util"
+    ],
+    "comfy_api.util.video_types": [
+      "comfy_api.latest",
+      "comfy_api.latest._util",
+      "comfy_api.latest._util.video_types"
+    ],
+    "comfy_api.v0_0_1": [
+      "comfy_api.internal",
+      "comfy_api.internal.async_to_sync",
+      "comfy_api.v0_0_1",
+      "comfy_api.v0_0_2"
+    ],
+    "comfy_api.v0_0_2": [
+      "comfy_api.internal",
+      "comfy_api.internal.async_to_sync",
+      "comfy_api.latest",
+      "comfy_api.v0_0_2"
+    ],
+    "comfy_api.version_list": [
+      "comfy_api.internal",
+      "comfy_api.latest",
+      "comfy_api.v0_0_1",
+      "comfy_api.v0_0_2"
+    ],
+    "comfy_api_nodes": [],
+    "comfy_api_nodes.apis": [],
+    "comfy_api_nodes.apis.anthropic": [],
+    "comfy_api_nodes.apis.beeble": [],
+    "comfy_api_nodes.apis.bfl": [],
+    "comfy_api_nodes.apis.bria": [],
+    "comfy_api_nodes.apis.bytedance": [],
+    "comfy_api_nodes.apis.bytedance_llm": [],
+    "comfy_api_nodes.apis.elevenlabs": [],
+    "comfy_api_nodes.apis.fishaudio": [],
+    "comfy_api_nodes.apis.gemini": [],
+    "comfy_api_nodes.apis.grok": [],
+    "comfy_api_nodes.apis.heygen": [],
+    "comfy_api_nodes.apis.hitpaw": [],
+    "comfy_api_nodes.apis.hunyuan3d": [],
+    "comfy_api_nodes.apis.ideogram": [],
+    "comfy_api_nodes.apis.kling": [],
+    "comfy_api_nodes.apis.krea": [],
+    "comfy_api_nodes.apis.luma": [],
+    "comfy_api_nodes.apis.magnific": [],
+    "comfy_api_nodes.apis.meshy": [
+      "comfy_api.latest"
+    ],
+    "comfy_api_nodes.apis.minimax": [],
+    "comfy_api_nodes.apis.openai": [],
+    "comfy_api_nodes.apis.openrouter": [],
+    "comfy_api_nodes.apis.pixverse": [],
+    "comfy_api_nodes.apis.quiver": [],
+    "comfy_api_nodes.apis.qwen": [],
+    "comfy_api_nodes.apis.recraft": [],
+    "comfy_api_nodes.apis.reve": [],
+    "comfy_api_nodes.apis.rodin": [],
+    "comfy_api_nodes.apis.runway": [],
+    "comfy_api_nodes.apis.sync_so": [],
+    "comfy_api_nodes.apis.topaz": [],
+    "comfy_api_nodes.apis.tripo": [],
+    "comfy_api_nodes.apis.veo": [],
+    "comfy_api_nodes.apis.vidu": [],
+    "comfy_api_nodes.apis.wan": [],
+    "comfy_api_nodes.apis.wavespeed": [],
+    "comfy_api_nodes.nodes_anthropic": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.anthropic",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_beeble": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.beeble",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_bfl": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.bfl",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_bria": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.bria",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_bytedance": [
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.bytedance",
+      "comfy_api_nodes.util",
+      "comfy_api_nodes.util.common_exceptions",
+      "server"
+    ],
+    "comfy_api_nodes.nodes_bytedance_llm": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.bytedance_llm",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_elevenlabs": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.elevenlabs",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_fishaudio": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.fishaudio",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_gemini": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.gemini",
+      "comfy_api_nodes.util",
+      "folder_paths"
+    ],
+    "comfy_api_nodes.nodes_grok": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.grok",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_heygen": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.heygen",
+      "comfy_api_nodes.util",
+      "server"
+    ],
+    "comfy_api_nodes.nodes_hitpaw": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.hitpaw",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_hunyuan3d": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.hunyuan3d",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_ideogram": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.ideogram",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_kling": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.kling",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_krea": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.krea",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_ltxv": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_luma": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.luma",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_magnific": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.magnific",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_meshy": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.meshy",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_minimax": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.minimax",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_openai": [
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.openai",
+      "comfy_api_nodes.util",
+      "folder_paths"
+    ],
+    "comfy_api_nodes.nodes_openrouter": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.openrouter",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_pixverse": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.pixverse",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_quiver": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.quiver",
+      "comfy_api_nodes.util",
+      "comfy_extras.nodes_images"
+    ],
+    "comfy_api_nodes.nodes_qwen": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.qwen",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_recraft": [
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.recraft",
+      "comfy_api_nodes.util",
+      "comfy_extras.nodes_images"
+    ],
+    "comfy_api_nodes.nodes_reve": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.reve",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_rodin": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.rodin",
+      "comfy_api_nodes.util",
+      "folder_paths"
+    ],
+    "comfy_api_nodes.nodes_runway": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.runway",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_sonilo": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.util",
+      "comfy_api_nodes.util._helpers",
+      "comfy_api_nodes.util.common_exceptions",
+      "server"
+    ],
+    "comfy_api_nodes.nodes_sora": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_sync_so": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.sync_so",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_topaz": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.topaz",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_tripo": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.tripo",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_veo2": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.veo",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_vidu": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.vidu",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.nodes_wan": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.wan",
+      "comfy_api_nodes.util",
+      "comfy_api_nodes.util.client"
+    ],
+    "comfy_api_nodes.nodes_wavespeed": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.wavespeed",
+      "comfy_api_nodes.util"
+    ],
+    "comfy_api_nodes.util": [
+      "comfy_api_nodes",
+      "comfy_api_nodes.util",
+      "comfy_api_nodes.util._helpers",
+      "comfy_api_nodes.util.client",
+      "comfy_api_nodes.util.conversions",
+      "comfy_api_nodes.util.download_helpers",
+      "comfy_api_nodes.util.upload_helpers",
+      "comfy_api_nodes.util.validation_utils"
+    ],
+    "comfy_api_nodes.util._helpers": [
+      "comfy.cli_args",
+      "comfy.comfy_api_env",
+      "comfy.deploy_environment",
+      "comfy.model_management",
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.util",
+      "comfy_api_nodes.util.common_exceptions",
+      "comfy_execution.utils",
+      "comfyui_version"
+    ],
+    "comfy_api_nodes.util.client": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.util",
+      "comfy_api_nodes.util._helpers",
+      "comfy_api_nodes.util.common_exceptions",
+      "server"
+    ],
+    "comfy_api_nodes.util.common_exceptions": [],
+    "comfy_api_nodes.util.conversions": [
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.util",
+      "comfy_api_nodes.util._helpers"
+    ],
+    "comfy_api_nodes.util.download_helpers": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.util",
+      "comfy_api_nodes.util._helpers",
+      "comfy_api_nodes.util.client",
+      "comfy_api_nodes.util.common_exceptions",
+      "comfy_api_nodes.util.conversions",
+      "folder_paths"
+    ],
+    "comfy_api_nodes.util.request_logger": [
+      "folder_paths"
+    ],
+    "comfy_api_nodes.util.upload_helpers": [
+      "comfy_api.latest",
+      "comfy_api_nodes",
+      "comfy_api_nodes.util",
+      "comfy_api_nodes.util._helpers",
+      "comfy_api_nodes.util.client",
+      "comfy_api_nodes.util.common_exceptions",
+      "comfy_api_nodes.util.conversions"
+    ],
+    "comfy_api_nodes.util.validation_utils": [
+      "comfy_api.latest"
+    ],
+    "comfy_config.config_parser": [
+      "comfy_config.types"
+    ],
+    "comfy_config.types": [],
+    "comfy_execution.asset_enrichment": [
+      "app",
+      "app.assets.services",
+      "app.assets.services.ingest",
+      "comfy.cli_args",
+      "folder_paths"
+    ],
+    "comfy_execution.cache_provider": [
+      "comfy_api.latest",
+      "comfy_api.latest._caching"
+    ],
+    "comfy_execution.caching": [
+      "comfy.model_patcher",
+      "comfy.system_memory",
+      "comfy_execution.cache_provider",
+      "comfy_execution.graph",
+      "comfy_execution.graph_utils",
+      "execution",
+      "nodes"
+    ],
+    "comfy_execution.graph": [
+      "comfy.comfy_types",
+      "comfy.comfy_types.node_typing",
+      "comfy_execution.graph_utils",
+      "nodes"
+    ],
+    "comfy_execution.graph_utils": [],
+    "comfy_execution.jobs": [
+      "comfy_api.internal"
+    ],
+    "comfy_execution.progress": [
+      "comfy_execution.graph",
+      "protocol"
+    ],
+    "comfy_execution.utils": [],
+    "comfy_execution.validation": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.chainner_models.model_loading": [],
+    "comfy_extras.color_util": [],
+    "comfy_extras.compositor_blend": [],
+    "comfy_extras.frame_interpolation_models.film_net": [
+      "comfy.ops"
+    ],
+    "comfy_extras.frame_interpolation_models.ifnet": [
+      "comfy.ops"
+    ],
+    "comfy_extras.mediapipe.face_geometry": [],
+    "comfy_extras.mediapipe.face_landmarker": [],
+    "comfy_extras.mesh3d.fileio.gltf_read": [],
+    "comfy_extras.mesh3d.fileio.mesh_file_read": [],
+    "comfy_extras.mesh3d.postprocess.qem_decimate": [
+      "comfy.utils"
+    ],
+    "comfy_extras.mesh3d.postprocess.remesh": [
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_extras.mesh3d.postprocess.qem_decimate"
+    ],
+    "comfy_extras.mesh3d.uv_unwrap.mesh": [],
+    "comfy_extras.mesh3d.uv_unwrap.pack": [
+      "comfy.model_management"
+    ],
+    "comfy_extras.mesh3d.uv_unwrap.parameterize": [],
+    "comfy_extras.mesh3d.uv_unwrap.segment": [
+      "comfy_extras.mesh3d.uv_unwrap.mesh"
+    ],
+    "comfy_extras.nodes_ace": [
+      "comfy.model_management",
+      "comfy_api.latest",
+      "node_helpers"
+    ],
+    "comfy_extras.nodes_advanced_samplers": [
+      "comfy.k_diffusion.sampling",
+      "comfy.model_patcher",
+      "comfy.samplers",
+      "comfy.utils",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_align_your_steps": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_apg": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_ar_video": [
+      "comfy.model_management",
+      "comfy.samplers",
+      "comfy.utils",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_attention_multiply": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_audio": [
+      "comfy.model_management",
+      "comfy_api.latest",
+      "folder_paths",
+      "node_helpers"
+    ],
+    "comfy_extras.nodes_audio_encoder": [
+      "comfy.audio_encoders.audio_encoders",
+      "comfy.utils",
+      "comfy_api.latest",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_bernini": [
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "node_helpers"
+    ],
+    "comfy_extras.nodes_bg_removal": [
+      "comfy.bg_removal_model",
+      "comfy_api.latest",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_boogu": [
+      "comfy.utils",
+      "comfy_api.latest",
+      "node_helpers"
+    ],
+    "comfy_extras.nodes_bounding_boxes": [
+      "comfy_api.latest",
+      "comfy_extras.color_util"
+    ],
+    "comfy_extras.nodes_camera_trajectory": [
+      "comfy.model_management",
+      "comfy_api.latest",
+      "nodes"
+    ],
+    "comfy_extras.nodes_canny": [
+      "comfy.model_management",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_cfg": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_chroma_radiance": [
+      "comfy.model_management",
+      "comfy_api.latest",
+      "nodes"
+    ],
+    "comfy_extras.nodes_clip_sdxl": [
+      "comfy_api.latest",
+      "nodes"
+    ],
+    "comfy_extras.nodes_color": [
+      "comfy_api.latest",
+      "comfy_extras.color_util"
+    ],
+    "comfy_extras.nodes_compositing": [
+      "comfy.utils",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_compositor": [
+      "comfy_api.latest",
+      "comfy_extras.color_util",
+      "comfy_extras.compositor_blend",
+      "comfy_extras.nodes_bounding_boxes",
+      "nodes"
+    ],
+    "comfy_extras.nodes_cond": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_context_windows": [
+      "comfy.context_windows",
+      "comfy_api.latest",
+      "nodes"
+    ],
+    "comfy_extras.nodes_controlnet": [
+      "comfy.cldm.control_types",
+      "comfy.utils",
+      "comfy_api.latest",
+      "nodes"
+    ],
+    "comfy_extras.nodes_cosmos": [
+      "comfy.latent_formats",
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "nodes"
+    ],
+    "comfy_extras.nodes_curve": [
+      "comfy_api.input",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_custom_sampler": [
+      "comfy.patcher_extension",
+      "comfy.sample",
+      "comfy.sampler_helpers",
+      "comfy.samplers",
+      "comfy.utils",
+      "comfy_api.latest",
+      "latent_preview",
+      "node_helpers"
+    ],
+    "comfy_extras.nodes_dataset": [
+      "comfy_api.latest",
+      "folder_paths",
+      "node_helpers"
+    ],
+    "comfy_extras.nodes_depth_anything_3": [
+      "comfy.ldm.colormap",
+      "comfy.ldm.moge.geometry",
+      "comfy.model_management",
+      "comfy.sd",
+      "comfy_api.latest",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_differential_diffusion": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_easycache": [
+      "comfy.model_patcher",
+      "comfy.patcher_extension",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_edit_model": [
+      "comfy_api.latest",
+      "node_helpers"
+    ],
+    "comfy_extras.nodes_eps": [
+      "comfy.k_diffusion.sampling",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_flux": [
+      "comfy.ldm.flux.math",
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "node_helpers",
+      "nodes"
+    ],
+    "comfy_extras.nodes_frame_interpolation": [
+      "comfy.ldm.common_dit",
+      "comfy.model_patcher",
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_extras.frame_interpolation_models.film_net",
+      "comfy_extras.frame_interpolation_models.ifnet",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_freelunch": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_fresca": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_gaussian_splat": [
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_extras.nodes_save_3d",
+      "server"
+    ],
+    "comfy_extras.nodes_gits": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_glsl": [
+      "comfy_api.latest",
+      "nodes"
+    ],
+    "comfy_extras.nodes_hidream": [
+      "comfy.model_management",
+      "comfy.sd",
+      "comfy_api.latest",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_hidream_o1": [
+      "comfy.model_management",
+      "comfy.patcher_extension",
+      "comfy_api.latest",
+      "node_helpers"
+    ],
+    "comfy_extras.nodes_hooks": [
+      "comfy.hooks",
+      "comfy.sd",
+      "comfy.utils",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_hunyuan": [
+      "comfy.ldm.hunyuan_video.upsampler",
+      "comfy.ldm.lightricks.latent_upsampler",
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.ops",
+      "comfy_api.latest",
+      "folder_paths",
+      "node_helpers",
+      "nodes"
+    ],
+    "comfy_extras.nodes_hunyuan3d": [
+      "comfy.ldm.modules.diffusionmodules",
+      "comfy.ldm.modules.diffusionmodules.mmdit",
+      "comfy.model_management",
+      "comfy_api.latest",
+      "comfy_api.latest._util",
+      "comfy_extras.nodes_save_3d"
+    ],
+    "comfy_extras.nodes_hypernetwork": [
+      "comfy.utils",
+      "comfy_api.latest",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_hypertile": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_ideogram4": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_image_compare": [
+      "comfy_api.latest",
+      "nodes"
+    ],
+    "comfy_extras.nodes_images": [
+      "comfy.cli_args",
+      "comfy.utils",
+      "comfy_api.latest",
+      "folder_paths",
+      "nodes",
+      "server"
+    ],
+    "comfy_extras.nodes_ip2p": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_joyimage": [
+      "comfy.utils",
+      "comfy_api.latest",
+      "node_helpers"
+    ],
+    "comfy_extras.nodes_json_prompt": [
+      "comfy_api.latest",
+      "comfy_extras.color_util"
+    ],
+    "comfy_extras.nodes_kandinsky5": [
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "node_helpers",
+      "nodes"
+    ],
+    "comfy_extras.nodes_latent": [
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_extras.nodes_post_processing",
+      "nodes"
+    ],
+    "comfy_extras.nodes_load_3d": [
+      "comfy_api.latest",
+      "folder_paths",
+      "nodes"
+    ],
+    "comfy_extras.nodes_logic": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_lora_debug": [
+      "comfy.sd",
+      "comfy.utils",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_lora_extract": [
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_lotus": [
+      "comfy.model_management",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_lt": [
+      "comfy.ldm.lightricks.duration_head",
+      "comfy.ldm.lightricks.symmetric_patchifier",
+      "comfy.model_management",
+      "comfy.model_sampling",
+      "comfy.nested_tensor",
+      "comfy.samplers",
+      "comfy.utils",
+      "comfy_api.latest",
+      "node_helpers",
+      "nodes"
+    ],
+    "comfy_extras.nodes_lt_audio": [
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_extras.nodes_audio",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_lt_upsampler": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_lumina2": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_mage": [
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "node_helpers"
+    ],
+    "comfy_extras.nodes_mahiro": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_mask": [
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "node_helpers",
+      "nodes"
+    ],
+    "comfy_extras.nodes_math": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_mediapipe": [
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_extras.mediapipe.face_geometry",
+      "comfy_extras.mediapipe.face_landmarker",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_mesh_io": [],
+    "comfy_extras.nodes_mesh_postprocess": [
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_extras.mesh3d.postprocess.qem_decimate",
+      "comfy_extras.mesh3d.postprocess.remesh",
+      "comfy_extras.nodes_save_3d",
+      "server"
+    ],
+    "comfy_extras.nodes_minimax_h3": [
+      "comfy.ldm.minimax.model",
+      "comfy.model_management",
+      "comfy.model_sampling",
+      "comfy.nested_tensor",
+      "comfy.utils",
+      "comfy_api.latest",
+      "node_helpers",
+      "nodes"
+    ],
+    "comfy_extras.nodes_minimax_music": [
+      "comfy.ldm.minimax_music",
+      "comfy.ldm.minimax_music.ar",
+      "comfy.ldm.minimax_music.dit",
+      "comfy.model_management",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_mochi": [
+      "comfy.model_management",
+      "comfy_api.latest",
+      "nodes"
+    ],
+    "comfy_extras.nodes_model_advanced": [
+      "comfy.latent_formats",
+      "comfy.ldm.modules.attention",
+      "comfy.model_sampling",
+      "comfy.sd",
+      "node_helpers",
+      "nodes"
+    ],
+    "comfy_extras.nodes_model_downscale": [
+      "comfy.utils",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_model_merging": [
+      "comfy.cli_args",
+      "comfy.model_base",
+      "comfy.model_management",
+      "comfy.model_sampling",
+      "comfy.sd",
+      "comfy.utils",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_model_merging_model_specific": [
+      "comfy_extras.nodes_model_merging"
+    ],
+    "comfy_extras.nodes_model_patch": [
+      "comfy.latent_formats",
+      "comfy.ldm.anima.lllite",
+      "comfy.ldm.common_dit",
+      "comfy.ldm.lightricks.duration_head",
+      "comfy.ldm.lumina.controlnet",
+      "comfy.ldm.supir",
+      "comfy.ldm.supir.supir_modules",
+      "comfy.ldm.supir.supir_patch",
+      "comfy.ldm.wan.model_multitalk",
+      "comfy.ldm.wan.uni3c",
+      "comfy.model_management",
+      "comfy.ops",
+      "comfy.utils",
+      "comfy_api.latest",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_moge": [
+      "comfy.ldm.colormap",
+      "comfy.ldm.moge.geometry",
+      "comfy.ldm.moge.model",
+      "comfy.ldm.moge.panorama",
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_morphology": [
+      "comfy.model_management",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_multigpu": [
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.multigpu",
+      "comfy.sd",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_nag": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_nop": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_number_convert": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_optimalsteps": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_pag": [
+      "comfy.model_patcher",
+      "comfy.samplers",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_painter": [
+      "comfy_api.latest",
+      "folder_paths",
+      "node_helpers"
+    ],
+    "comfy_extras.nodes_perpneg": [
+      "comfy.model_management",
+      "comfy.sampler_helpers",
+      "comfy.samplers",
+      "comfy.utils",
+      "comfy_api.latest",
+      "node_helpers"
+    ],
+    "comfy_extras.nodes_photomaker": [
+      "comfy.clip_model",
+      "comfy.clip_vision",
+      "comfy.ops",
+      "comfy_api.latest",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_pid": [
+      "comfy.latent_formats",
+      "comfy_api.latest",
+      "node_helpers"
+    ],
+    "comfy_extras.nodes_pixart": [
+      "comfy_api.latest",
+      "nodes"
+    ],
+    "comfy_extras.nodes_post_processing": [
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_extras.nodes_latent",
+      "node_helpers",
+      "nodes"
+    ],
+    "comfy_extras.nodes_preview_any": [
+      "comfy.comfy_types",
+      "comfy.comfy_types.node_typing"
+    ],
+    "comfy_extras.nodes_primitive": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_qwen": [
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "node_helpers",
+      "nodes"
+    ],
+    "comfy_extras.nodes_rebatch": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_replacements": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_resolution": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_rope": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_rtdetr": [
+      "comfy.ldm.rt_detr.rtdetr_v4",
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_sag": [
+      "comfy.ldm.modules.attention",
+      "comfy.samplers",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_sam3": [
+      "comfy.ldm.sam3.tracker",
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_sam3d_body": [
+      "comfy.ldm.sam3d_body.model.model",
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.ops",
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_extras.sam3d_body.export.bvh",
+      "comfy_extras.sam3d_body.export.capsules",
+      "comfy_extras.sam3d_body.export.glb_openpose",
+      "comfy_extras.sam3d_body.export.glb_skeletal",
+      "comfy_extras.sam3d_body.export.openpose_2d",
+      "comfy_extras.sam3d_body.rasterizer",
+      "comfy_extras.sam3d_body.utils",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_save_3d": [
+      "comfy.cli_args",
+      "comfy_api.latest",
+      "folder_paths",
+      "server"
+    ],
+    "comfy_extras.nodes_scail": [
+      "comfy.ldm.sam3.tracker",
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "node_helpers",
+      "nodes"
+    ],
+    "comfy_extras.nodes_sd3": [
+      "comfy.model_management",
+      "comfy.sd",
+      "comfy_api.latest",
+      "comfy_extras.nodes_slg",
+      "folder_paths",
+      "nodes"
+    ],
+    "comfy_extras.nodes_sdpose": [
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_extras.nodes_lotus",
+      "comfy_extras.pose.keypoint_draw"
+    ],
+    "comfy_extras.nodes_sdupscale": [
+      "comfy.utils",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_seed": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_seedvr": [
+      "comfy.ldm.seedvr.color_fix",
+      "comfy.ldm.seedvr.constants",
+      "comfy.model_management",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_slg": [
+      "comfy.model_patcher",
+      "comfy.samplers",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_stable3d": [
+      "comfy.utils",
+      "comfy_api.latest",
+      "nodes"
+    ],
+    "comfy_extras.nodes_stable_cascade": [
+      "comfy.utils",
+      "comfy_api.latest",
+      "nodes"
+    ],
+    "comfy_extras.nodes_string": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_tcfg": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_text": [
+      "comfy_api.latest",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_text_overlay": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_textgen": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_tomesd": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_toolkit": [
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_torch_compile": [
+      "comfy_api.latest",
+      "comfy_api.torch_helpers"
+    ],
+    "comfy_extras.nodes_train": [
+      "comfy.cli_args",
+      "comfy.conds",
+      "comfy.model_management",
+      "comfy.sampler_helpers",
+      "comfy.samplers",
+      "comfy.sd",
+      "comfy.utils",
+      "comfy.weight_adapter",
+      "comfy.weight_adapter.bypass",
+      "comfy_api.latest",
+      "comfy_extras.nodes_custom_sampler",
+      "folder_paths",
+      "node_helpers"
+    ],
+    "comfy_extras.nodes_trellis2": [
+      "comfy.latent_formats",
+      "comfy.ldm.trellis2.model",
+      "comfy.ldm.trellis2.vae",
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_extras.nodes_mesh_postprocess"
+    ],
+    "comfy_extras.nodes_triposplat": [
+      "comfy.ldm.triposplat.preview",
+      "comfy.model_management",
+      "comfy.nested_tensor",
+      "comfy.patcher_extension",
+      "comfy.utils",
+      "comfy_api.latest"
+    ],
+    "comfy_extras.nodes_upscale_model": [
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.utils",
+      "comfy_api.latest",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_video": [
+      "comfy.cli_args",
+      "comfy_api.latest",
+      "folder_paths"
+    ],
+    "comfy_extras.nodes_video_model": [
+      "comfy.sd",
+      "comfy.utils",
+      "comfy_extras.nodes_model_merging",
+      "folder_paths",
+      "node_helpers",
+      "nodes"
+    ],
+    "comfy_extras.nodes_void": [
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.samplers",
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_extras.void_noise_warp",
+      "folder_paths",
+      "node_helpers",
+      "nodes"
+    ],
+    "comfy_extras.nodes_wan": [
+      "comfy.clip_vision",
+      "comfy.latent_formats",
+      "comfy.ldm.wan.model_animate2",
+      "comfy.ldm.wan.model_multitalk",
+      "comfy.model_management",
+      "comfy.patcher_extension",
+      "comfy.utils",
+      "comfy_api.latest",
+      "node_helpers",
+      "nodes"
+    ],
+    "comfy_extras.nodes_wandancer": [
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "node_helpers",
+      "nodes"
+    ],
+    "comfy_extras.nodes_wanmove": [
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.latest",
+      "comfy_extras.nodes_wan",
+      "node_helpers",
+      "nodes"
+    ],
+    "comfy_extras.nodes_webcam": [
+      "folder_paths",
+      "nodes"
+    ],
+    "comfy_extras.nodes_zimage": [
+      "comfy.utils",
+      "comfy_api.latest",
+      "node_helpers"
+    ],
+    "comfy_extras.pose.keypoint_draw": [],
+    "comfy_extras.sam3d_body.export.bvh": [
+      "comfy_extras.sam3d_body.export.glb_shared"
+    ],
+    "comfy_extras.sam3d_body.export.capsules": [
+      "comfy.model_management",
+      "comfy_extras.sam3d_body.export.glb_shared"
+    ],
+    "comfy_extras.sam3d_body.export.glb_openpose": [
+      "comfy_extras.sam3d_body.export.glb_shared"
+    ],
+    "comfy_extras.sam3d_body.export.glb_shared": [
+      "comfy_extras.pose.keypoint_draw",
+      "comfy_extras.sam3d_body.rasterizer"
+    ],
+    "comfy_extras.sam3d_body.export.glb_skeletal": [
+      "comfy_extras.sam3d_body.export.glb_shared",
+      "comfy_extras.sam3d_body.utils"
+    ],
+    "comfy_extras.sam3d_body.export.openpose_2d": [
+      "comfy_extras.pose.keypoint_draw",
+      "comfy_extras.sam3d_body.export.glb_shared"
+    ],
+    "comfy_extras.sam3d_body.face_expression": [
+      "comfy.model_management"
+    ],
+    "comfy_extras.sam3d_body.rasterizer": [
+      "comfy.model_management",
+      "comfy_extras.sam3d_body.utils"
+    ],
+    "comfy_extras.sam3d_body.utils": [
+      "comfy.ldm.sam3.tracker",
+      "comfy.ldm.sam3d_body.model.model",
+      "comfy.ldm.sam3d_body.utils",
+      "comfy.model_management",
+      "comfy.utils"
+    ],
+    "comfy_extras.void_noise_warp": [
+      "comfy.model_management"
+    ],
+    "comfyui_version": [],
+    "cuda_malloc": [
+      "comfy.cli_args"
+    ],
+    "custom_nodes.websocket_image_save": [
+      "comfy.utils"
+    ],
+    "execution": [
+      "comfy.cli_args",
+      "comfy.internal_logging",
+      "comfy.memory_management",
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.model_prefetch",
+      "comfy.system_memory",
+      "comfy_api.internal",
+      "comfy_api.latest",
+      "comfy_execution.asset_enrichment",
+      "comfy_execution.cache_provider",
+      "comfy_execution.caching",
+      "comfy_execution.graph",
+      "comfy_execution.graph_utils",
+      "comfy_execution.progress",
+      "comfy_execution.utils",
+      "comfy_execution.validation",
+      "latent_preview",
+      "nodes"
+    ],
+    "folder_paths": [
+      "comfy.cli_args"
+    ],
+    "hook_breaker_ac10a0": [
+      "comfy.model_management"
+    ],
+    "latent_preview": [
+      "comfy.cli_args",
+      "comfy.model_management",
+      "comfy.sd",
+      "comfy.taesd.taesd",
+      "comfy.utils",
+      "folder_paths"
+    ],
+    "main": [
+      "app",
+      "app.assets.seeder",
+      "app.assets.services",
+      "app.database.db",
+      "app.logger",
+      "comfy.cli_args",
+      "comfy.memory_management",
+      "comfy.model_management",
+      "comfy.model_patcher",
+      "comfy.options",
+      "comfy.utils",
+      "comfy_api.feature_flags",
+      "comfy_execution.progress",
+      "comfy_execution.utils",
+      "comfyui_version",
+      "cuda_malloc",
+      "execution",
+      "folder_paths",
+      "hook_breaker_ac10a0",
+      "nodes",
+      "protocol",
+      "server",
+      "utils",
+      "utils.extra_config",
+      "utils.mime_types"
+    ],
+    "middleware": [],
+    "middleware.cache_middleware": [],
+    "node_helpers": [
+      "comfy.cli_args"
+    ],
+    "nodes": [
+      "comfy.cli_args",
+      "comfy.clip_vision",
+      "comfy.comfy_types",
+      "comfy.controlnet",
+      "comfy.diffusers_load",
+      "comfy.model_management",
+      "comfy.sample",
+      "comfy.samplers",
+      "comfy.sd",
+      "comfy.utils",
+      "comfy_api.internal",
+      "comfy_api.latest",
+      "comfy_api.version_list",
+      "folder_paths",
+      "latent_preview",
+      "node_helpers"
+    ],
+    "protocol": [],
+    "script_examples.basic_api_example": [],
+    "script_examples.websockets_api_example": [],
+    "script_examples.websockets_api_example_ws_images": [],
+    "server": [
+      "api_server",
+      "api_server.routes",
+      "api_server.routes.internal",
+      "api_server.routes.internal.internal_routes",
+      "app",
+      "app.assets.api.routes",
+      "app.assets.seeder",
+      "app.assets.services",
+      "app.assets.services.asset_management",
+      "app.assets.services.ingest",
+      "app.assets.services.path_utils",
+      "app.custom_node_manager",
+      "app.frontend_management",
+      "app.model_manager",
+      "app.node_replace_manager",
+      "app.subgraph_manager",
+      "app.user_manager",
+      "comfy.cli_args",
+      "comfy.comfy_api_env",
+      "comfy.deploy_environment",
+      "comfy.model_management",
+      "comfy.utils",
+      "comfy_api.internal",
+      "comfy_execution.jobs",
+      "comfyui_version",
+      "execution",
+      "folder_paths",
+      "middleware",
+      "middleware.cache_middleware",
+      "node_helpers",
+      "nodes",
+      "protocol"
+    ],
+    "tests": [],
+    "tests-unit.app_test": [],
+    "tests-unit.app_test.custom_node_manager_test": [
+      "app",
+      "app.custom_node_manager"
+    ],
+    "tests-unit.app_test.database_path_test": [
+      "app",
+      "comfy.cli_args",
+      "folder_paths"
+    ],
+    "tests-unit.app_test.frontend_manager_test": [
+      "app",
+      "app.frontend_management",
+      "comfy.cli_args",
+      "utils",
+      "utils.install_util"
+    ],
+    "tests-unit.app_test.model_manager_test": [
+      "app",
+      "app.model_manager"
+    ],
+    "tests-unit.app_test.node_replace_manager_test": [],
+    "tests-unit.app_test.test_migrations": [],
+    "tests-unit.app_test.user_manager_system_user_test": [
+      "app",
+      "app.user_manager",
+      "folder_paths"
+    ],
+    "tests-unit.assets_test.conftest": [],
+    "tests-unit.assets_test.helpers": [],
+    "tests-unit.assets_test.queries.conftest": [
+      "app",
+      "app.assets.database.models"
+    ],
+    "tests-unit.assets_test.queries.test_asset": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.helpers"
+    ],
+    "tests-unit.assets_test.queries.test_asset_info": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.helpers"
+    ],
+    "tests-unit.assets_test.queries.test_asset_reference_keyset": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.database.queries.asset_reference"
+    ],
+    "tests-unit.assets_test.queries.test_cache_state": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.helpers"
+    ],
+    "tests-unit.assets_test.queries.test_metadata": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.database.queries.asset_reference",
+      "app.assets.helpers"
+    ],
+    "tests-unit.assets_test.queries.test_tags": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.helpers"
+    ],
+    "tests-unit.assets_test.services": [],
+    "tests-unit.assets_test.services.conftest": [
+      "app",
+      "app.assets.database.models"
+    ],
+    "tests-unit.assets_test.services.test_asset_management": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.helpers",
+      "app.assets.services",
+      "app.assets.services.asset_management"
+    ],
+    "tests-unit.assets_test.services.test_asset_response_loader_path": [
+      "app",
+      "app.assets.api.routes",
+      "app.assets.services",
+      "app.assets.services.schemas"
+    ],
+    "tests-unit.assets_test.services.test_asset_response_preview_url": [
+      "app",
+      "app.assets.api.routes",
+      "app.assets.services",
+      "app.assets.services.schemas"
+    ],
+    "tests-unit.assets_test.services.test_bulk_ingest": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.scanner",
+      "app.assets.services",
+      "app.assets.services.bulk_ingest",
+      "app.assets.services.metadata_extract"
+    ],
+    "tests-unit.assets_test.services.test_cursor": [
+      "app",
+      "app.assets.services",
+      "app.assets.services.cursor"
+    ],
+    "tests-unit.assets_test.services.test_enrich": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.scanner",
+      "app.assets.services",
+      "app.assets.services.file_utils"
+    ],
+    "tests-unit.assets_test.services.test_image_dimensions": [
+      "app",
+      "app.assets.services",
+      "app.assets.services.image_dimensions"
+    ],
+    "tests-unit.assets_test.services.test_ingest": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.helpers",
+      "app.assets.services",
+      "app.assets.services.ingest"
+    ],
+    "tests-unit.assets_test.services.test_path_utils": [
+      "app",
+      "app.assets.services",
+      "app.assets.services.path_utils"
+    ],
+    "tests-unit.assets_test.services.test_tag_histogram": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.helpers",
+      "app.assets.services",
+      "app.assets.services.tagging"
+    ],
+    "tests-unit.assets_test.services.test_tagging": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.helpers",
+      "app.assets.services"
+    ],
+    "tests-unit.assets_test.test_assets_missing_sync": [],
+    "tests-unit.assets_test.test_crud": [],
+    "tests-unit.assets_test.test_downloads": [],
+    "tests-unit.assets_test.test_file_utils": [
+      "app",
+      "app.assets.services",
+      "app.assets.services.file_utils"
+    ],
+    "tests-unit.assets_test.test_list_cursor": [],
+    "tests-unit.assets_test.test_list_filter": [
+      "app"
+    ],
+    "tests-unit.assets_test.test_metadata_filters": [],
+    "tests-unit.assets_test.test_preview_url": [],
+    "tests-unit.assets_test.test_prompt_id_enforcement": [],
+    "tests-unit.assets_test.test_prune_orphaned_assets": [],
+    "tests-unit.assets_test.test_sync_references": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.database.queries.asset_reference",
+      "app.assets.scanner",
+      "app.assets.services",
+      "app.assets.services.file_utils"
+    ],
+    "tests-unit.assets_test.test_tags_api": [],
+    "tests-unit.assets_test.test_temp_assets": [
+      "app",
+      "app.assets.database.models",
+      "app.assets.database.queries",
+      "app.assets.database.queries.asset_reference",
+      "app.assets.scanner",
+      "app.assets.services",
+      "app.assets.services.file_utils"
+    ],
+    "tests-unit.assets_test.test_uploads": [
+      "app",
+      "app.assets.api.schemas_in",
+      "app.assets.api.schemas_out"
+    ],
+    "tests-unit.comfy_api_nodes_test.audio_conversions_test": [
+      "comfy.cli_args",
+      "comfy_api_nodes",
+      "comfy_api_nodes.util",
+      "comfy_api_nodes.util.conversions"
+    ],
+    "tests-unit.comfy_api_nodes_test.gemini_response_images_test": [
+      "comfy.cli_args",
+      "comfy_api_nodes",
+      "comfy_api_nodes.apis",
+      "comfy_api_nodes.apis.gemini",
+      "comfy_api_nodes.nodes_gemini"
+    ],
+    "tests-unit.comfy_api_nodes_test.image_conversions_test": [
+      "comfy.cli_args",
+      "comfy_api_nodes",
+      "comfy_api_nodes.util",
+      "comfy_api_nodes.util.conversions"
+    ],
+    "tests-unit.comfy_api_test.input_impl_test": [
+      "comfy_api.input_impl",
+      "comfy_api.input_impl.video_types",
+      "comfy_api.util"
+    ],
+    "tests-unit.comfy_api_test.multicombo_serialization_test": [
+      "comfy_api.latest",
+      "comfy_api.latest._io"
+    ],
+    "tests-unit.comfy_api_test.video_bit_depth_test": [
+      "comfy_api.latest",
+      "comfy_api.latest._input_impl",
+      "comfy_api.latest._input_impl.video_types",
+      "comfy_api.latest._util",
+      "comfy_api.latest._util.video_types",
+      "comfy_extras.nodes_video"
+    ],
+    "tests-unit.comfy_api_test.video_types_test": [
+      "comfy_api.input",
+      "comfy_api.input.basic_types",
+      "comfy_api.input_impl",
+      "comfy_api.input_impl.video_types",
+      "comfy_api.util",
+      "comfy_api.util.video_types"
+    ],
+    "tests-unit.comfy_extras_test": [],
+    "tests-unit.comfy_extras_test.compositor_blend_fixture_gen": [
+      "comfy_extras.compositor_blend"
+    ],
+    "tests-unit.comfy_extras_test.compositor_blend_test": [
+      "comfy_extras.compositor_blend"
+    ],
+    "tests-unit.comfy_extras_test.compositor_node_test": [
+      "comfy_extras.nodes_compositor"
+    ],
+    "tests-unit.comfy_extras_test.image_stitch_test": [
+      "comfy_extras.nodes_images"
+    ],
+    "tests-unit.comfy_extras_test.nodes_dataset_test": [
+      "comfy_api.latest"
+    ],
+    "tests-unit.comfy_extras_test.nodes_math_test": [
+      "comfy_extras.nodes_math"
+    ],
+    "tests-unit.comfy_extras_test.nodes_number_convert_test": [
+      "comfy_extras.nodes_number_convert"
+    ],
+    "tests-unit.comfy_extras_test.nodes_preview_any_test": [
+      "comfy_extras.nodes_preview_any"
+    ],
+    "tests-unit.comfy_extras_test.test_seedvr2_conditioning": [
+      "comfy.cli_args",
+      "comfy.ldm.seedvr.constants"
+    ],
+    "tests-unit.comfy_extras_test.test_seedvr2_nodes": [
+      "comfy.cli_args"
+    ],
+    "tests-unit.comfy_extras_test.test_seedvr2_post_processing": [
+      "comfy.cli_args"
+    ],
+    "tests-unit.comfy_extras_test.test_seedvr2_temporal_chunk": [
+      "comfy.cli_args",
+      "comfy.ldm.seedvr.constants",
+      "comfy.model_management",
+      "comfy_extras.nodes_seedvr"
+    ],
+    "tests-unit.comfy_quant.test_mixed_precision": [
+      "comfy.cli_args",
+      "comfy.quant_ops",
+      "comfy.utils"
+    ],
+    "tests-unit.comfy_test.folder_path_test": [
+      "comfy.cli_args",
+      "comfy.options",
+      "folder_paths"
+    ],
+    "tests-unit.comfy_test.gemma4_template_test": [
+      "comfy.cli_args",
+      "comfy.text_encoders.gemma4"
+    ],
+    "tests-unit.comfy_test.model_detection_test": [
+      "comfy.model_detection",
+      "comfy.supported_models"
+    ],
+    "tests-unit.comfy_test.seedvr_vae_forward_test": [
+      "comfy.cli_args",
+      "comfy.ldm.seedvr.vae"
+    ],
+    "tests-unit.comfy_test.system_memory_test": [
+      "comfy.system_memory"
+    ],
+    "tests-unit.comfy_test.test_seedvr2_dtype": [
+      "comfy.cli_args",
+      "comfy.ldm.seedvr.model",
+      "comfy.ldm.seedvr.vae",
+      "comfy.sd",
+      "comfy.supported_models"
+    ],
+    "tests-unit.comfy_test.test_seedvr2_internals": [
+      "comfy.cli_args",
+      "comfy.ldm.modules.attention",
+      "comfy.ldm.seedvr.attention",
+      "comfy.ldm.seedvr.model",
+      "comfy.ldm.seedvr.vae",
+      "comfy.ops"
+    ],
+    "tests-unit.comfy_test.test_seedvr2_model": [
+      "comfy.cli_args",
+      "comfy.latent_formats",
+      "comfy.ldm.seedvr.model",
+      "comfy.ldm.seedvr.vae",
+      "comfy.model_management",
+      "comfy.ops",
+      "comfy.sample",
+      "comfy.sd",
+      "nodes"
+    ],
+    "tests-unit.comfy_test.test_seedvr2_vae_decode": [
+      "comfy.cli_args",
+      "comfy.ldm.seedvr.vae"
+    ],
+    "tests-unit.comfy_test.test_seedvr2_vae_tiled": [
+      "comfy.cli_args",
+      "comfy.ldm.seedvr.vae",
+      "comfy.sd"
+    ],
+    "tests-unit.comfy_test.test_vae_decode_tiled_nested": [
+      "comfy.cli_args",
+      "comfy.nested_tensor",
+      "nodes"
+    ],
+    "tests-unit.deploy_environment_test": [
+      "comfy.deploy_environment"
+    ],
+    "tests-unit.execution_test.preview_method_override_test": [
+      "comfy.cli_args",
+      "latent_preview"
+    ],
+    "tests-unit.execution_test.test_cache_provider": [
+      "comfy_execution.cache_provider"
+    ],
+    "tests-unit.execution_test.test_enrich_output": [
+      "comfy_execution.asset_enrichment"
+    ],
+    "tests-unit.execution_test.validate_node_input_test": [
+      "comfy_execution.validation"
+    ],
+    "tests-unit.feature_flags_test": [
+      "comfy.comfy_api_env",
+      "comfy_api.feature_flags"
+    ],
+    "tests-unit.folder_paths_test": [],
+    "tests-unit.folder_paths_test.filter_by_content_types_test": [
+      "folder_paths"
+    ],
+    "tests-unit.folder_paths_test.misc_test": [
+      "folder_paths"
+    ],
+    "tests-unit.folder_paths_test.system_user_test": [
+      "folder_paths"
+    ],
+    "tests-unit.jobs_cancel_test": [],
+    "tests-unit.jobs_cancel_test.jobs_cancel_test": [
+      "comfy_execution.jobs"
+    ],
+    "tests-unit.prompt_server_test": [],
+    "tests-unit.prompt_server_test.system_user_endpoint_test": [
+      "app",
+      "app.user_manager",
+      "folder_paths"
+    ],
+    "tests-unit.prompt_server_test.user_manager_test": [
+      "app",
+      "app.user_manager"
+    ],
+    "tests-unit.security_test": [],
+    "tests-unit.security_test.test_ghsa_779p_02_preview_traversal": [
+      "app",
+      "app.model_manager"
+    ],
+    "tests-unit.security_test.test_ghsa_779p_03_annotated_traversal": [
+      "comfy.options",
+      "folder_paths"
+    ],
+    "tests-unit.security_test.test_ghsa_779p_04_userdata_xss": [
+      "app",
+      "app.user_manager"
+    ],
+    "tests-unit.security_test.test_ghsa_779p_05_dangerous_content_types": [
+      "folder_paths"
+    ],
+    "tests-unit.security_test.test_ghsa_779p_06_inline_svg_image_dest": [
+      "app",
+      "app.assets.services",
+      "app.assets.services.schemas",
+      "folder_paths"
+    ],
+    "tests-unit.seeder_test.test_seeder": [
+      "app",
+      "app.assets.database.queries",
+      "app.assets.database.queries.asset_reference",
+      "app.assets.seeder"
+    ],
+    "tests-unit.server.utils.file_operations_test": [
+      "api_server",
+      "api_server.utils.file_operations"
+    ],
+    "tests-unit.server_test.test_cache_control": [
+      "middleware",
+      "middleware.cache_middleware"
+    ],
+    "tests-unit.utils.extra_config_test": [
+      "folder_paths",
+      "utils",
+      "utils.extra_config"
+    ],
+    "tests-unit.utils.json_util_test": [
+      "utils",
+      "utils.json_util"
+    ],
+    "tests-unit.websocket_feature_flags_test": [],
+    "tests.compare.conftest": [],
+    "tests.compare.test_quality": [],
+    "tests.conftest": [],
+    "tests.execution.test_async_nodes": [
+      "comfy_execution.graph_utils",
+      "tests",
+      "tests.execution.test_execution"
+    ],
+    "tests.execution.test_execution": [
+      "comfy_execution.graph_utils"
+    ],
+    "tests.execution.test_jobs": [
+      "comfy_execution.jobs"
+    ],
+    "tests.execution.test_preview_method": [],
+    "tests.execution.test_progress_isolation": [
+      "comfy_execution.graph_utils",
+      "tests",
+      "tests.execution.test_execution"
+    ],
+    "tests.execution.test_public_api": [
+      "comfy_execution.graph_utils",
+      "tests",
+      "tests.execution.test_execution"
+    ],
+    "tests.execution.testing_nodes.testing-pack": [
+      "tests",
+      "tests.execution.testing_nodes.testing-pack",
+      "tests.execution.testing_nodes.testing-pack.api_test_nodes",
+      "tests.execution.testing_nodes.testing-pack.async_test_nodes",
+      "tests.execution.testing_nodes.testing-pack.conditions",
+      "tests.execution.testing_nodes.testing-pack.flow_control",
+      "tests.execution.testing_nodes.testing-pack.specific_tests",
+      "tests.execution.testing_nodes.testing-pack.stubs",
+      "tests.execution.testing_nodes.testing-pack.util"
+    ],
+    "tests.execution.testing_nodes.testing-pack.api_test_nodes": [
+      "comfy.comfy_types",
+      "comfy_api.v0_0_2"
+    ],
+    "tests.execution.testing_nodes.testing-pack.async_test_nodes": [
+      "comfy.comfy_types",
+      "comfy.comfy_types.node_typing",
+      "comfy.utils",
+      "comfy_execution.graph_utils"
+    ],
+    "tests.execution.testing_nodes.testing-pack.conditions": [],
+    "tests.execution.testing_nodes.testing-pack.flow_control": [
+      "comfy_execution.graph",
+      "comfy_execution.graph_utils",
+      "tests",
+      "tests.execution.testing_nodes.testing-pack",
+      "tests.execution.testing_nodes.testing-pack.tools"
+    ],
+    "tests.execution.testing_nodes.testing-pack.specific_tests": [
+      "comfy.comfy_types",
+      "comfy.comfy_types.node_typing",
+      "comfy.utils",
+      "comfy_execution.graph_utils",
+      "tests",
+      "tests.execution.testing_nodes.testing-pack",
+      "tests.execution.testing_nodes.testing-pack.tools"
+    ],
+    "tests.execution.testing_nodes.testing-pack.stubs": [],
+    "tests.execution.testing_nodes.testing-pack.tools": [],
+    "tests.execution.testing_nodes.testing-pack.util": [
+      "comfy_execution.graph_utils",
+      "tests",
+      "tests.execution.testing_nodes.testing-pack",
+      "tests.execution.testing_nodes.testing-pack.flow_control",
+      "tests.execution.testing_nodes.testing-pack.tools"
+    ],
+    "tests.inference": [],
+    "tests.inference.test_inference": [
+      "comfy.samplers"
+    ],
+    "tests.test_asset_seeder": [
+      "app",
+      "app.assets.seeder"
+    ],
+    "utils": [],
+    "utils.extra_config": [
+      "folder_paths"
+    ],
+    "utils.install_util": [],
+    "utils.json_util": [],
+    "utils.mime_types": []
+  }
+}

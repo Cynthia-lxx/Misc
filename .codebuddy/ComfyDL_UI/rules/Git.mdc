@@ -1,0 +1,61 @@
+---
+description: 
+alwaysApply: true
+enabled: true
+updatedAt: 2026-09-04T14:35:02.536Z
+provider: 
+---
+
+仓库位置
+仓库根目录：P:\Dev\ComfyUI_Refs\ComfyDL_UI\
+注意：不要混淆项目参考代码根目录（.\）与仓库根目录，Git 操作均在仓库根目录执行。
+
+分支策略
+主分支：master
+如果功能简单或无需验证、对项目整体侵入性不大，则开发工作直接在 master 分支进行（项目初期，单开发者模式）。
+当项目成熟后，可引入 feature/* 分支，但目前不强制。
+
+提交信息格式
+格式：<type>(<scope>): <subject>
+type 类型：
+
+feat: 新功能
+
+fix: 错误修复
+
+docs: 文档变更
+
+style: 代码风格（不影响逻辑）
+
+refactor: 重构
+
+test: 测试相关
+
+chore: 构建/工具变更
+scope: 影响的模块（如 cli, template, msopgen, yamlio, model, scripts）
+subject: 简短描述（中文或英文均可，但需清晰）
+
+示例：
+feat(cli): 添加 generate 命令
+fix(msopgen): 修正命令参数顺序
+docs(readme): 更新安装说明
+
+提交频率
+每完成一个可独立验证的功能点即提交，避免积压大量未提交变更。
+提交前确保相关测试通过（若有）。
+
+与远程仓库同步
+推送前先拉取：git pull origin master --rebase
+推送：git push origin master
+遇到冲突时，在本地解决后再推送。
+
+
+标签与版本
+每达到一个里程碑（如 MVP、M1、M2），打一个版本标签：
+git tag -a v0.1.0 -m "MVP: 基础 CLI 与模板引擎"
+git push origin v0.1.0
+
+禁止事项
+禁止提交大型二进制文件。
+禁止提交包含敏感信息（密码、Token）的文件。
+禁止在 master 分支上强制推送（--force）。

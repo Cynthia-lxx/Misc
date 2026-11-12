@@ -1,0 +1,9 @@
+---
+description: 
+alwaysApply: true
+enabled: true
+updatedAt: 2026-09-11T03:07:24.046Z
+provider: 
+---
+
+ComfyUI的官方最权威文档位于".\Comfy_Docs_Work\"，其权威性和优先级超过Comfy_CustomNode_Docs_md。请在编写代码时查阅该文档，

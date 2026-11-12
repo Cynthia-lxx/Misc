@@ -1,0 +1,9 @@
+---
+description: 
+alwaysApply: true
+enabled: true
+updatedAt: 2026-09-04T14:51:50.043Z
+provider: 
+---
+
+一般来说，项目应该采用双语或者纯英文。双语方案一般来说应该是维护一个语言包。编写代码时的注释等内容优先使用英文。
