@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>jQuery Load (js和css有问题？)</title>
+        <script src="../js/jquery-3.3.1.js"></script>
+        <script type="text/javascript">
+            jQuery(function(){
+                jQuery('#loadPage').click(function(){
+                    jQuery('#pagecontainer').load('info.html', 
+                            function(){alert('Content Successfully Loaded.')} 
+                    );
+                });
+            })
+        </script>        
+    </head>
+    <body>
+        <a href="javascript:void(0)" id="loadPage">Click To Load Web Page</a><br/>
+        <div id="pagecontainer"></div>        
+    </body>
+</html>
