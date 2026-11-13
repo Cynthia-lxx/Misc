@@ -197,12 +197,12 @@
       "source": "osu.Game/Configuration/OsuConfigManager.cs:343-347"
     },
     {
-      "id": "hud.visibility",
+      "id": "dock.visibility",
       "type": "enum",
       "default": "always",
       "values": [
         "always",
-        "hide-during-gameplay",
+        "hide-during-focus",
         "never"
       ],
       "appliesTo": {
@@ -212,7 +212,7 @@
       "source": "osu.Game/Configuration/OsuConfigManager.cs:353 / Configuration/HUDVisibilityMode.cs:9-19"
     },
     {
-      "id": "storyboard.enabled",
+      "id": "backdropMedia.enabled",
       "type": "boolean",
       "default": true,
       "appliesTo": {

@@ -10,15 +10,42 @@
   "tokenFormat": "tokens 中每个值为 [saturation, lightness] (0-1)；装配器按 hue 生成 hsl(h s% l%)",
   "inheritFormat": "主题文件可用 tokensFrom 指向另一主题 id 复用 tokens，仅覆盖 hue / usedBy / overrides",
   "schemes": [
-    { "id": "red",        "hue": 0 },
-    { "id": "orange",     "hue": 45 },
-    { "id": "lime",       "hue": 90 },
-    { "id": "green",      "hue": 125 },
-    { "id": "aquamarine", "hue": 160 },
-    { "id": "blue",       "hue": 200 },
-    { "id": "purple",     "hue": 255 },
-    { "id": "plum",       "hue": 320 },
-    { "id": "pink",       "hue": 333 }
+    {
+      "id": "red",
+      "hue": 0
+    },
+    {
+      "id": "orange",
+      "hue": 45
+    },
+    {
+      "id": "lime",
+      "hue": 90
+    },
+    {
+      "id": "green",
+      "hue": 125
+    },
+    {
+      "id": "aquamarine",
+      "hue": 160
+    },
+    {
+      "id": "blue",
+      "hue": 200
+    },
+    {
+      "id": "purple",
+      "hue": 255
+    },
+    {
+      "id": "plum",
+      "hue": 320
+    },
+    {
+      "id": "pink",
+      "hue": 333
+    }
   ],
   "aliases": {
     "--ui-accent": "var(--colour-1)",
@@ -33,8 +60,8 @@
     "--ui-glow": "var(--colour-1)"
   },
   "usage": {
-    "blue": "SongSelect / BeatmapListing（上游 SongSelect.cs:116）",
-    "purple": "Player / PlayerLoader / SettingsPanel（上游 Player.cs:128, SettingsPanel.cs:75）",
+    "blue": "List view / ItemListing（上游 SongSelect.cs:116）",
+    "purple": "Player / View loader / SettingsPanel（上游 Player.cs:128, SettingsPanel.cs:75）",
     "plum": "OnlinePlay",
     "pink": "UserProfile（上游 UserProfileOverlay.cs 可被 ProfileHue 覆盖）",
     "aquamarine": "Editor / ScreenFooter 退出 overlay 时重置（上游 ScreenFooter.cs:70,391）"

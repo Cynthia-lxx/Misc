@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 2,
+  "_meta": {
+    "name": "ui-reference-kit",
+    "purpose": "从 MIT 源码抽离/翻译的 UI 参考资源清单，供 GPL-3.0 目标仓库装配",
+    "source": "p:/Dev/osu (MIT)",
+    "licence": "上游 MIT；派生编排部分随目标仓库 GPL-3.0",
+    "licenceFile": "00-overview/LICENSE-MIT.txt",
+    "audit": "00-overview/licence-audit.json",
+    "constraint": "不使用 osu!/ppy/lazer 品牌；组件统一 ui- 前缀"
+  },
+  "css": {
+    "tokens": "03-colour-typography/tokens.css",
+    "generatedTheme": "dist/themes.css",
+    "note": "tokens.css 为基础层；主题 CSS 由装配器按 themes/*.json 生成"
+  },
+  "themes": {
+    "dir": "03-colour-typography/themes",
+    "index": "03-colour-typography/themes/index.json",
+    "default": "blue",
+    "appliesTo": "data-theme"
+  },
+  "settings": "00-overview/settings.json",
+  "i18n": {
+    "dir": "00-overview/i18n",
+    "default": "en",
+    "fallback": "en",
+    "available": [
+      "en",
+      "zh-CN"
+    ],
+    "provenance": "键名与英文 fallback 取自 MIT 源码 Localisation/*Strings.cs；zh-CN 为本资源包自行翻译，未复制上游 Crowdin 译文",
+    "excluded": "含品牌词的字符串（如 UserInterfaceStrings.cs:55）"
+  },
+  "components": [
+    {
+      "id": "ui-button",
+      "kind": "custom-element",
+      "tag": "ui-button",
+      "files": {
+        "js": "04-components/ui-button/ui-button.js",
+        "css": "04-components/ui-button/ui-button.css"
+      },
+      "mount": "[data-ui-mount='button']",
+      "settings": [
+        "ui.hoverFeedback",
+        "ui.holdActivationDelay",
+        "motion.duration.fast",
+        "motion.reduce",
+        "theme.scheme"
+      ],
+      "i18nKeys": [
+        "common.back",
+        "common.next",
+        "common.finish"
+      ],
+      "exports": [
+        "default",
+        "UiButtonElement"
+      ],
+      "source": [
+        "osu.Game/Graphics/UserInterface/OsuButton.cs:133-176",
+        "osu.Game/Graphics/UserInterface/ShearedButton.cs:191-249",
+        "osu.Game/Graphics/UserInterface/HoverClickSounds.cs:42-58 (视觉反馈部分)"
+      ]
+    },
+    {
+      "id": "ui-panel",
+      "kind": "dom-factory",
+      "files": {
+        "js": "04-components/ui-panel/ui-panel.js",
+        "css": "04-components/ui-panel/ui-panel.css"
+      },
+      "mount": "[data-ui-mount='panel']",
+      "settings": [
+        "theme.scheme",
+        "graphics.blur",
+        "graphics.dim",
+        "motion.duration.normal",
+        "motion.reduce"
+      ],
+      "i18nKeys": [
+        "common.name",
+        "common.description",
+        "common.default"
+      ],
+      "exports": [
+        "mount",
+        "unmount",
+        "setTheme"
+      ],
+      "source": [
+        "osu.Game/Screens/Select/Panel.cs:135-205,331-385",
+        "osu.Game/Graphics/Containers/BeatSyncedContainer.cs"
+      ]
+    },
+    {
+      "id": "ui-action-rail",
+      "kind": "custom-element",
+      "tag": "ui-action-rail",
+      "files": {
+        "js": "04-components/ui-action-rail/ui-action-rail.js",
+        "css": "04-components/ui-action-rail/ui-action-rail.css"
+      },
+      "mount": "[data-ui-mount='menu-buttons']",
+      "settings": [
+        "theme.scheme",
+        "motion.reduce",
+        "ui.hoverFeedback"
+      ],
+      "i18nKeys": [],
+      "exports": [
+        "default",
+        "UiActionRailElement",
+        "setItems",
+        "setState",
+        "setTheme",
+        "unmount"
+      ],
+      "source": [
+        "osu.Game/Screens/Menu/ButtonSystem.cs:38-137,424-528",
+        "osu.Game/Screens/Menu/MainMenuButton.cs:97-356",
+        "osu.Game/Screens/Menu/ButtonArea.cs:26-132",
+        "osu.Game/Screens/Menu/FlowContainerWithOrigin.cs:15-34",
+        "osu.Game/Screens/Menu/OsuLogo.cs:291-452"
+      ],
+      "note": "用户点名的「hub 右侧一横排楔形按钮」：4 种宽度状态、节拍驱动 hover、加性按压层、hub 追踪、键盘导航"
+    },
+    {
+      "id": "ui-reveal-overlay",
+      "kind": "custom-element",
+      "tag": "ui-reveal-overlay",
+      "files": {
+        "js": "04-components/ui-reveal-overlay/ui-reveal-overlay.js",
+        "css": "04-components/ui-reveal-overlay/ui-reveal-overlay.css"
+      },
+      "mount": "[data-ui-mount='overlay']",
+      "settings": [
+        "theme.scheme",
+        "motion.reduce",
+        "graphics.dim"
+      ],
+      "i18nKeys": [],
+      "exports": [
+        "default",
+        "UiRevealOverlayElement",
+        "open",
+        "close",
+        "toggle",
+        "setTheme",
+        "unmount"
+      ],
+      "source": [
+        "osu.Game/Graphics/Containers/WaveContainer.cs:19-192",
+        "osu.Game/Overlays/WaveOverlayContainer.cs:10-49",
+        "osu.Game/Overlays/Mods/ShearedOverlayContainer.cs:132-174",
+        "osu.Game/Overlays/SettingsPanel.cs:170-204",
+        "osu.Game/Overlays/Dialog/PopupDialog.cs:324-354"
+      ],
+      "note": "用户点名的「叠加界面滑入附带几何效果」：Wave 四层旋转、Shear 斜切、侧栏 X 位移、底部 Y 位移、圆形弹性揭示，共 5 种 variant"
+    }
+  ],
+  "motion": {
+    "data": "05-motion/motion.json",
+    "inventory": "05-motion/effect-inventory.json",
+    "css": "05-motion/motion.css",
+    "timeline": "05-motion/timeline.js",
+    "effects": "05-motion/effects.js",
+    "source": "全仓动效普查（2026-11-13）：523 文件含 Transform、27 种 Easing、约 173 处具名时长、140 条归档动效",
+    "note": "motion.json 为可执行配置（曲线/时长/序列）；motion-inventory.json 为带源码行号的全量考据档案"
+  },
+  "effects": {
+    "shaders": {
+      "triangleBorder": "06-visual-effects/geometry/edge-geometry.js",
+      "flashlight": "06-visual-effects/geometry/focus-mask.js"
+    },
+    "particles": {
+      "engine": "06-visual-effects/particles/particles.js",
+      "presets": "06-visual-effects/particles/presets.json"
+    },
+    "glow": {
+      "js": "06-visual-effects/glow/glow.js",
+      "css": "06-visual-effects/glow/glow.css"
+    },
+    "scenes": {
+      "entrance": "06-visual-effects/compositions/entrance-timeline.js",
+      "judgement": "06-visual-effects/compositions/status-pulse.js",
+      "judgementCss": "06-visual-effects/compositions/status-pulse.css"
+    },
+    "note": "上游 GLSL 文本不在仓库内（在 NuGet 包）；此处按 C# 侧算法用 WebGL2 / Canvas 2D / CSS 独立重写，未复制 shader 源码"
+  },
+  "extraCss": [
+    "05-motion/motion.css",
+    "04-components/ui-action-rail/ui-action-rail.css",
+    "04-components/ui-reveal-overlay/ui-reveal-overlay.css",
+    "06-visual-effects/glow/glow.css",
+    "06-visual-effects/compositions/status-pulse.css"
+  ],
+  "extraFiles": [
+    "05-motion/motion.json",
+    "05-motion/effect-inventory.json",
+    "05-motion/motion.css",
+    "05-motion/timeline.js",
+    "05-motion/effects.js",
+    "04-components/ui-action-rail/ui-action-rail.js",
+    "04-components/ui-action-rail/ui-action-rail.css",
+    "04-components/ui-reveal-overlay/ui-reveal-overlay.js",
+    "04-components/ui-reveal-overlay/ui-reveal-overlay.css",
+    "06-visual-effects/geometry/edge-geometry.js",
+    "06-visual-effects/geometry/focus-mask.js",
+    "06-visual-effects/particles/particles.js",
+    "06-visual-effects/particles/presets.json",
+    "06-visual-effects/glow/glow.css",
+    "06-visual-effects/glow/glow.js",
+    "06-visual-effects/compositions/entrance-timeline.js",
+    "06-visual-effects/compositions/status-pulse.js",
+    "06-visual-effects/compositions/status-pulse.css"
+  ],
+  "demoFragment": "10-templates/effects-demo.html",
+  "navigationDemoFragment": "10-templates/navigation-demo.html",
+  "preview": {
+    "shell": "10-templates/preview/shell.html",
+    "dir": "10-templates/preview",
+    "server": "10-templates/preview_server.py",
+    "output": "dist/preview.html",
+    "classic": "dist/index.html",
+    "views": [
+      "overview",
+      "theme",
+      "components",
+      "motion",
+      "vfx",
+      "data"
+    ],
+    "api": [
+      "health",
+      "manifest",
+      "inventory",
+      "motion",
+      "themes",
+      "settings",
+      "i18n/<lang>",
+      "audit",
+      "files",
+      "validate"
+    ],
+    "note": "完整预览站：hash 路由 6 个视图覆盖全部抽离资源；Python 3 标准库服务器提供 /api/* 与 no-store 缓存头"
+  },
+  "assembly": {
+    "script": "10-templates/assemble.py",
+    "runtime": "Python 3.9+",
+    "inputs": [
+      "00-overview/ui-manifest.json",
+      "00-overview/settings.json",
+      "03-colour-typography/themes/*.json",
+      "00-overview/i18n/*.json",
+      "05-motion/*",
+      "04-components/**/*",
+      "06-visual-effects/**/*",
+      "10-templates/effects-demo.html",
+      "10-templates/navigation-demo.html",
+      "10-templates/preview/*",
+      "10-templates/preview_server.py"
+    ],
+    "outputs": [
+      "dist/tokens.css",
+      "dist/themes.css",
+      "dist/settings.json",
+      "dist/manifest.json",
+      "dist/i18n/",
+      "dist/themes/*.json",
+      "dist/components/",
+      "dist/05-motion/",
+      "dist/06-visual-effects/",
+      "dist/04-components/",
+      "dist/preview/",
+      "dist/preview.html",
+      "dist/preview_server.py",
+      "dist/index.html"
+    ],
+    "defaultTheme": "blue",
+    "defaultLang": "en"
+  },
+  "layers": {
+    "style": "CSS 自定义属性 + JSON 主题配置（优先）",
+    "component": "原生 JS ES module；Custom Elements + Shadow DOM 或 mount/unmount/setTheme 纯 DOM 工厂",
+    "data": "本 manifest + settings.json + motion-inventory.json + i18n 语言包 JSON",
+    "assembly": "Python 3 装配器"
+  }
+}

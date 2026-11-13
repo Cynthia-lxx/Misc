@@ -7,10 +7,10 @@
   <link rel="stylesheet" href="tokens.css">
   <link rel="stylesheet" href="themes.css">
   <link rel="stylesheet" href="05-motion/motion.css">
-  <link rel="stylesheet" href="04-components/ui-button-system/ui-button-system.css">
-  <link rel="stylesheet" href="04-components/ui-wave-overlay/ui-wave-overlay.css">
-  <link rel="stylesheet" href="06-vfx/glow/glow.css">
-  <link rel="stylesheet" href="06-vfx/scenes/judgement.css">
+  <link rel="stylesheet" href="04-components/ui-action-rail/ui-action-rail.css">
+  <link rel="stylesheet" href="04-components/ui-reveal-overlay/ui-reveal-overlay.css">
+  <link rel="stylesheet" href="06-visual-effects/glow/glow.css">
+  <link rel="stylesheet" href="06-visual-effects/compositions/status-pulse.css">
   <link rel="stylesheet" href="components/ui-panel/ui-panel.css" data-ui-panel-styles>
   <style>
     body { margin: 0; padding: 24px; background: var(--ui-surface-sunken); color: var(--ui-text); }
@@ -57,30 +57,30 @@
 <!-- SPDX-License-Identifier: MIT
      Derived from ppy/osu (MIT) — see 00-overview/LICENSE-MIT.txt
      Menu / overlay motion demo fragment injected by assemble.py. -->
-  <section id="menu-demo">
-    <h2>ButtonSystem &amp; Overlay Geometry</h2>
+  <section id="navigation-demo">
+    <h2>ActionRail &amp; Overlay Geometry</h2>
     <p>横排楔形按钮（4 种宽度状态 + 节拍 hover + 加性按压层）与 5 种 overlay 滑入几何。</p>
 
     <div class="demo-block">
       <!-- 多组按钮：top / play / edit 各自可见，状态切换才有明显变化 -->
-      <ui-button-system id="menu-buttons">
-        <span data-menu-item="settings" data-icon="⚙" data-min="top" data-max="top" data-colour="#88da20">Settings</span>
-        <span data-menu-item="play" data-icon="▶" data-min="top" data-max="top" data-colour="#66ccff">Play</span>
-        <span data-menu-item="edit" data-icon="✎" data-min="top" data-max="top" data-colour="#ffcc22">Edit</span>
-        <span data-menu-item="browse" data-icon="⌕" data-min="top" data-max="top" data-colour="#8c66ff">Browse</span>
-        <span data-menu-item="solo" data-icon="●" data-min="play" data-max="play" data-colour="#66ccff">Solo</span>
-        <span data-menu-item="multi" data-icon="●●" data-min="play" data-max="play" data-colour="#ff66ab">Multi</span>
-        <span data-menu-item="edit-map" data-icon="▤" data-min="edit" data-max="edit" data-colour="#ffcc22">Edit map</span>
-        <span data-menu-item="edit-skin" data-icon="◈" data-min="edit" data-max="edit" data-colour="#ff9966">Edit skin</span>
-      </ui-button-system>
+      <ui-action-rail id="menu-buttons">
+        <span data-menu-item="settings" data-icon="⚙" data-min="primary" data-max="primary" data-colour="#88da20">Settings</span>
+        <span data-menu-item="detail" data-icon="▶" data-min="primary" data-max="primary" data-colour="#66ccff">Open</span>
+        <span data-menu-item="secondary" data-icon="✎" data-min="primary" data-max="primary" data-colour="#ffcc22">Modify</span>
+        <span data-menu-item="browse" data-icon="⌕" data-min="primary" data-max="primary" data-colour="#8c66ff">Explore</span>
+        <span data-menu-item="solo" data-icon="●" data-min="detail" data-max="detail" data-colour="#66ccff">Single</span>
+        <span data-menu-item="group" data-icon="●●" data-min="detail" data-max="detail" data-colour="#ff66ab">Group</span>
+        <span data-menu-item="edit-map" data-icon="▤" data-min="secondary" data-max="secondary" data-colour="#ffcc22">Modify item</span>
+        <span data-menu-item="edit-renderer" data-icon="◈" data-min="secondary" data-max="secondary" data-colour="#ff9966">Modify theme</span>
+      </ui-action-rail>
       <div class="row demo-row">
         <span>State:</span>
         <button type="button" data-state-btn="initial">Initial</button>
-        <button type="button" data-state-btn="top">TopLevel</button>
-        <button type="button" data-state-btn="play">Play</button>
-        <button type="button" data-state-btn="edit">Edit</button>
-        <button type="button" data-state-btn="entering">EnteringMode</button>
-        <button type="button" data-state-btn="exit">Exit</button>
+        <button type="button" data-state-btn="primary">Primary</button>
+        <button type="button" data-state-btn="detail">Play</button>
+        <button type="button" data-state-btn="secondary">Edit</button>
+        <button type="button" data-state-btn="transition">Transition</button>
+        <button type="button" data-state-btn="hidden">Exit</button>
         <strong id="menu-status">state: initial</strong>
       </div>
     </div>
@@ -111,15 +111,15 @@
       <p id="inventory-summary">loading motion-inventory.json…</p>
     </div>
 
-    <ui-wave-overlay id="demo-overlay" variant="wave">
+    <ui-reveal-overlay id="demo-overlay" variant="wave">
       <h3>Overlay content</h3>
       <p>Variant 由按钮切换；按 Esc 或点击遮罩关闭。</p>
       <button type="button" id="overlay-close">Close</button>
-    </ui-wave-overlay>
+    </ui-reveal-overlay>
   </section>
 
   <style>
-    #menu-demo { max-width: 960px; margin-top: 28px; }
+    #navigation-demo { max-width: 960px; margin-primary: 28px; }
     .demo-block { margin: 14px 0; padding: 14px; border: 1px solid var(--ui-border, #444); border-radius: var(--corner-radius, 5px); }
     .demo-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
     .demo-row button { height: 34px; padding: 0 10px; border: 1px solid var(--ui-border, #444); border-radius: 5px;
@@ -134,9 +134,9 @@
   </style>
 
   <script type="module">
-    import './04-components/ui-button-system/ui-button-system.js';
-    import './04-components/ui-wave-overlay/ui-wave-overlay.js';
-    import { shearSlide, rollingNumber, ripple, glitchTriangles } from './05-motion/effects.js';
+    import './04-components/ui-action-rail/ui-action-rail.js';
+    import './04-components/ui-reveal-overlay/ui-reveal-overlay.js';
+    import { shearSlide, rollingNumber, ripple, scatterShapes } from './05-motion/effects.js';
 
     const menu = document.getElementById('menu-buttons');
     const overlay = document.getElementById('demo-overlay');
@@ -185,7 +185,7 @@
     let glitch = null;
     document.getElementById('btn-glitch').addEventListener('click', () => {
       glitch?.stop();
-      glitch = glitchTriangles(glitchHost, { interval: 22, fade: 120 });
+      glitch = scatterShapes(glitchHost, { interval: 22, fade: 120 });
       overlayStatus.textContent = 'glitch triangles running';
       window.setTimeout(() => glitch?.stop(), 900);
     });
@@ -200,7 +200,7 @@
       overlay.setTheme(e.target.value);
     });
 
-    fetch('./05-motion/motion-inventory.json')
+    fetch('./05-motion/effect-inventory.json')
       .then((r) => r.json())
       .then((data) => {
         const count = Object.values(data.entries).reduce((n, list) => n + list.length, 0);
@@ -219,13 +219,13 @@
      Every initialisation step is isolated: one failure must never abort the rest
      of the button bindings again (that was the root cause of the blank preview).
 -->
-  <section id="vfx-demo">
-    <h2>Motion / VFX</h2>
+  <section id="effects-demo">
+    <h2>Motion / 视觉效果</h2>
     <p><code>motion.json</code> 编排表 + <code>timeline.js</code> 绝对时间轴 + WebGL / Canvas 2D 重写。</p>
 
     <div class="vfx-grid">
       <figure>
-        <figcaption>TrianglesV2 · WebGL2 UBO 描边</figcaption>
+        <figcaption>Edge geometry · WebGL2 UBO 描边</figcaption>
         <canvas id="vfx-triangles" class="ui-vfx-canvas"></canvas>
       </figure>
       <figure>
@@ -233,22 +233,22 @@
         <canvas id="vfx-particles" class="ui-vfx-canvas"></canvas>
       </figure>
       <figure>
-        <figcaption>Flashlight · 柔边光锥（跟随鼠标）</figcaption>
-        <canvas id="vfx-flashlight" class="ui-vfx-canvas"></canvas>
+        <figcaption>Focus mask · 柔边光锥（跟随鼠标）</figcaption>
+        <canvas id="vfx-focus-mask" class="ui-vfx-canvas"></canvas>
       </figure>
     </div>
 
     <div class="row">
       <button type="button" id="btn-intro">Play intro timeline</button>
-      <button type="button" id="btn-judge-hit">Judgement: GREAT</button>
-      <button type="button" id="btn-judge-miss">Judgement: MISS</button>
+      <button type="button" id="btn-status-hit">Status pulse: SUCCESS</button>
+      <button type="button" id="btn-status-miss">Status pulse: ERROR</button>
       <button type="button" id="btn-burst">Particle burst</button>
-      <button type="button" id="btn-flashlight">Toggle flashlight</button>
-      <span id="intro-status">step: -</span>
+      <button type="button" id="btn-focus-mask">Toggle focusMask</button>
+      <span id="entrance-status">step: -</span>
     </div>
 
-    <div id="intro-stage" class="intro-stage">Intro stage</div>
-    <div id="judgement-layer" class="ui-judgement-layer" style="position: relative; height: 120px;"></div>
+    <div id="entrance-stage" class="entrance-stage">Entrance stage</div>
+    <div id="status-pulse-layer" class="ui-status-pulse-layer" style="position: relative; height: 120px;"></div>
 
     <!-- 可见事件日志：点击任何组件/按钮都会在这里留下反馈 -->
     <div id="event-log" class="event-log" aria-live="polite">
@@ -258,18 +258,18 @@
   </section>
 
   <style>
-    #vfx-demo { max-width: 960px; margin-top: 28px; }
+    #effects-demo { max-width: 960px; margin-primary: 28px; }
     .vfx-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
     .vfx-grid figure { margin: 0; }
     .vfx-grid figcaption { font-size: var(--font-size-caption2, 12px); color: var(--ui-text-muted, #aaa); margin-bottom: 4px; }
     .ui-vfx-canvas { height: 150px; border: 1px solid var(--ui-border, #444); border-radius: var(--corner-radius, 5px); background: var(--ui-surface-sunken, #111); }
-    .intro-stage { padding: 12px; border: 1px dashed var(--ui-border, #444); border-radius: var(--corner-radius, 5px); margin-top: 12px;
+    .entrance-stage { padding: 12px; border: 1px dashed var(--ui-border, #444); border-radius: var(--corner-radius, 5px); margin-top: 12px;
       transition: border-color 300ms var(--easing-out, ease-out), background 300ms var(--easing-out, ease-out); }
-    .intro-stage[data-intro-step] { border-color: var(--ui-accent, #66ccff); background: color-mix(in srgb, var(--ui-accent, #66ccff) 12%, transparent); }
-    #vfx-demo button { height: var(--control-height, 40px); padding: 0 12px; border-radius: var(--corner-radius, 5px);
+    .entrance-stage[data-entrance-step] { border-color: var(--ui-accent, #66ccff); background: color-mix(in srgb, var(--ui-accent, #66ccff) 12%, transparent); }
+    #effects-demo button { height: var(--control-height, 40px); padding: 0 12px; border-radius: var(--corner-radius, 5px);
       border: var(--border-width, 2px) solid var(--ui-border, #444); background: var(--ui-surface-raised, #333); color: var(--ui-text, #fff); cursor: pointer; }
-    #vfx-demo button:hover { border-color: var(--ui-accent, #66ccff); }
-    #vfx-demo button:active { transform: scale(0.96); }
+    #effects-demo button:hover { border-color: var(--ui-accent, #66ccff); }
+    #effects-demo button:active { transform: scale(0.96); }
     .event-log { margin-top: 14px; padding: 10px 14px; border: 1px solid var(--ui-border, #444); border-radius: var(--corner-radius, 5px);
       background: var(--ui-surface, #2a2a2a); font-size: var(--font-size-caption1, 14px); }
     .event-log ul { margin: 6px 0 0; padding-left: 18px; max-height: 130px; overflow: auto; }
@@ -277,12 +277,12 @@
   </style>
 
   <script type="module">
-    import { mountTriangles } from './06-vfx/shaders/triangle-border.js';
-    import { mountFlashlight } from './06-vfx/shaders/flashlight.js';
-    import { createParticleSpewer } from './06-vfx/particles/particles.js';
-    import { createJudgementLayer } from './06-vfx/scenes/judgement.js';
-    import { createIntroPlayer } from './06-vfx/scenes/intro-timeline.js';
-    import { flashColour, gameWideFlash } from './06-vfx/glow/glow.js';
+    import { mountTriangles } from './06-visual-effects/geometry/edge-geometry.js';
+    import { mountFocusMask } from './06-visual-effects/geometry/focus-mask.js';
+    import { createParticleSpewer } from './06-visual-effects/particles/particles.js';
+    import { createStatusPulseLayer } from './06-visual-effects/compositions/status-pulse.js';
+    import { createEntrancePlayer } from './06-visual-effects/compositions/entrance-timeline.js';
+    import { flashColour, fullSurfaceFlash } from './06-visual-effects/glow/glow.js';
 
     const logList = document.getElementById('event-log-list');
     const log = (text) => {
@@ -306,15 +306,15 @@
     document.addEventListener('ui-menu-state', (e) => log(`menu state → ${e.detail?.state}`));
     document.addEventListener('ui-overlay-open', (e) => log(`overlay open: ${e.detail?.variant}`));
     document.addEventListener('ui-overlay-close', (e) => log(`overlay close: ${e.detail?.variant}`));
-    document.addEventListener('ui-intro-step', (e) => log(`intro step: ${e.detail?.step?.action} @ ${e.detail?.step?.at}ms`));
-    document.addEventListener('ui-judgement', (e) => log(`judgement: ${e.detail?.type}`));
+    document.addEventListener('ui-entrance-step', (e) => log(`entrance step: ${e.detail?.step?.action} @ ${e.detail?.step?.at}ms`));
+    document.addEventListener('ui-status-pulse', (e) => log(`status-pulse: ${e.detail?.type}`));
 
     let motion = null;
     let presets = null;
     try {
       [motion, presets] = await Promise.all([
         fetch('./05-motion/motion.json').then((r) => r.json()),
-        fetch('./06-vfx/particles/presets.json').then((r) => r.json()),
+        fetch('./06-visual-effects/particles/presets.json').then((r) => r.json()),
       ]);
       log('motion.json / presets.json 已加载');
     } catch (error) {
@@ -331,16 +331,16 @@
       document.getElementById('vfx-particles'),
       { ...(presets?.presets?.starFountain || {}), perSecond: 60, size: 7, speed: 0.28, duration: 1200 },
     ));
-    const flashlightCanvas = document.getElementById('vfx-flashlight');
-    const flashlight = safe('Flashlight', () => mountFlashlight(flashlightCanvas, { size: 90 }));
-    const judgements = safe('Judgement', () => createJudgementLayer(document.getElementById('judgement-layer')));
+    const focusMaskCanvas = document.getElementById('vfx-focus-mask');
+    const focusMask = safe('Focus mask', () => mountFocusMask(focusMaskCanvas, { size: 90 }));
+    const statusPulseLayer = safe('Status pulse', () => createStatusPulseLayer(document.getElementById('status-pulse-layer')));
 
-    const status = document.getElementById('intro-status');
-    const intro = safe('Intro', () => createIntroPlayer(document.getElementById('intro-stage'), motion, {
+    const status = document.getElementById('entrance-status');
+    const intro = safe('Intro', () => createEntrancePlayer(document.getElementById('entrance-stage'), motion, {
       onStep: (step) => { status.textContent = `step: ${step.action} @ ${step.at}ms`; },
     }));
 
-    let combo = 0;
+    let intensity = 0;
     const bind = (id, handler) => {
       const el = document.getElementById(id);
       if (!el) { log(`⚠ 缺少按钮 #${id}`); return; }
@@ -353,33 +353,33 @@
     };
 
     bind('btn-intro', () => intro?.play());
-    bind('btn-judge-hit', () => {
-      judgements?.apply({ type: 'great', x: 120, y: 60, timeAbsolute: performance.now() });
-      combo += 30;
-      flashlight?.setCombo(combo);
+    bind('btn-status-hit', () => {
+      statusPulseLayer?.apply({ type: 'success', x: 120, y: 60, timeAbsolute: performance.now() });
+      intensity += 30;
+      focusMask?.setIntensity(intensity);
     });
-    bind('btn-judge-miss', () => {
-      judgements?.apply({ type: 'miss', x: 220, y: 60, timeAbsolute: performance.now() });
-      combo = 0;
-      flashlight?.setCombo(combo);
+    bind('btn-status-miss', () => {
+      statusPulseLayer?.apply({ type: 'error', x: 220, y: 60, timeAbsolute: performance.now() });
+      intensity = 0;
+      focusMask?.setIntensity(intensity);
     });
     bind('btn-burst', () => {
       particles?.burst(60);
-      gameWideFlash(document.body, 350);
+      fullSurfaceFlash(document.body, 350);
     });
-    bind('btn-flashlight', () => { flashlightCanvas.hidden = !flashlightCanvas.hidden; });
+    bind('btn-focus-mask', () => { focusMaskCanvas.hidden = !focusMaskCanvas.hidden; });
 
-    flashlightCanvas.addEventListener('pointermove', (e) => {
-      const rect = flashlightCanvas.getBoundingClientRect();
-      flashlight?.setPosition((e.clientX - rect.left) / rect.width, (e.clientY - rect.top) / rect.height);
+    focusMaskCanvas.addEventListener('pointermove', (e) => {
+      const rect = focusMaskCanvas.getBoundingClientRect();
+      focusMask?.setPosition((e.clientX - rect.left) / rect.width, (e.clientY - rect.top) / rect.height);
     });
 
     document.getElementById('theme-select')?.addEventListener('change', (e) => {
       const name = e.target.value;
       triangles?.setTheme(name);
       particles?.setTheme(name);
-      flashlight?.setTheme(name);
-      judgements?.setTheme(name);
+      focusMask?.setTheme(name);
+      statusPulseLayer?.setTheme(name);
       intro?.setTheme(name);
       log(`theme → ${name}`);
     });
@@ -387,15 +387,15 @@
     // Auto-start visible motion so the page is never a static screenshot.
     window.setTimeout(() => {
       particles?.burst(70);
-      judgements?.apply({ type: 'great', x: 160, y: 60, timeAbsolute: performance.now() });
-      log('自动播放：粒子爆发 + 判定特效');
+      statusPulseLayer?.apply({ type: 'success', x: 160, y: 60, timeAbsolute: performance.now() });
+      log('自动播放：粒子爆发 + 状态反馈');
     }, 350);
 
     window.addEventListener('beforeunload', () => {
       triangles?.unmount?.();
       particles?.unmount?.();
-      flashlight?.unmount?.();
-      judgements?.unmount?.();
+      focusMask?.unmount?.();
+      statusPulseLayer?.unmount?.();
       intro?.unmount?.();
     });
 

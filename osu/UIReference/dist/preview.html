@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" data-theme="blue">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-store">
+  <title>UI Reference Kit · Preview</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="themes.css">
+  <link rel="stylesheet" href="05-motion/motion.css">
+  <link rel="stylesheet" href="04-components/ui-action-rail/ui-action-rail.css">
+  <link rel="stylesheet" href="04-components/ui-reveal-overlay/ui-reveal-overlay.css">
+  <link rel="stylesheet" href="06-visual-effects/glow/glow.css">
+  <link rel="stylesheet" href="06-visual-effects/compositions/status-pulse.css">
+  <link rel="stylesheet" href="components/ui-panel/ui-panel.css" data-ui-panel-styles>
+  <link rel="stylesheet" href="05-motion/motion.css">
+  <link rel="stylesheet" href="04-components/ui-action-rail/ui-action-rail.css">
+  <link rel="stylesheet" href="04-components/ui-reveal-overlay/ui-reveal-overlay.css">
+  <link rel="stylesheet" href="06-visual-effects/glow/glow.css">
+  <link rel="stylesheet" href="06-visual-effects/compositions/status-pulse.css">
+  <link rel="stylesheet" href="preview/preview.css">
+</head>
+<body>
+  <div class="pv-shell">
+    <aside class="pv-side">
+      <div class="pv-brand">
+        <span class="pv-brand-mark">UR</span>
+        <span class="pv-brand-text">UI Reference Kit<small>preview / 2026-11-13</small></span>
+      </div>
+      <nav class="pv-nav" id="pv-nav" aria-label="Preview views"></nav>
+      <div class="pv-side-foot">
+        <div class="pv-side-row"><span class="pv-dot" id="pv-server-dot"></span><span id="pv-server-status">checking server…</span></div>
+        <div class="pv-side-row pv-muted" id="pv-api-note">static mode fallback available</div>
+        <div class="pv-side-row pv-muted">MIT-derived · GPL-3.0 target</div>
+      </div>
+    </aside>
+
+    <main class="pv-main">
+      <header class="pv-top">
+        <div class="pv-head-title">
+          <h1 id="pv-view-title">总览</h1>
+          <p id="pv-view-desc"></p>
+        </div>
+        <div class="pv-controls">
+          <label>Theme<select id="pv-theme">            <option value="red">Red</option>
+            <option value="orange">Orange</option>
+            <option value="lime">Lime</option>
+            <option value="green">Green</option>
+            <option value="aquamarine">Aquamarine</option>
+            <option value="blue" selected>Blue</option>
+            <option value="purple">Purple</option>
+            <option value="plum">Plum</option>
+            <option value="pink">Pink</option></select></label>
+          <label>Lang<select id="pv-lang">            <option value="en" selected>en</option>
+            <option value="zh-CN">zh-CN</option></select></label>
+          <label>Speed<select id="pv-rate">
+            <option value="0.5">0.5×</option>
+            <option value="1" selected>1×</option>
+            <option value="1.5">1.5×</option>
+            <option value="2">2×</option>
+          </select></label>
+          <button type="button" id="pv-reduce" class="pv-btn">Reduced motion: off</button>
+          <button type="button" id="pv-log-toggle" class="pv-btn">Log <span id="pv-log-count">0</span></button>
+        </div>
+      </header>
+
+      <div class="pv-view" id="pv-view"></div>
+
+      <footer class="pv-foot">
+        <span id="pv-foot-left">ready</span>
+        <span id="pv-foot-right">hash-route · no build step</span>
+      </footer>
+    </main>
+  </div>
+
+  <aside class="pv-log-panel" id="pv-log-panel" hidden>
+    <header><strong>Event log</strong><span><button type="button" id="pv-log-clear" class="pv-btn">clear</button> <button type="button" id="pv-log-close" class="pv-btn">×</button></span></header>
+    <ul id="pv-log-list"></ul>
+  </aside>
+
+  <script type="application/json" id="pv-config">{"theme": "blue", "lang": "en", "themes": ["red", "orange", "lime", "green", "aquamarine", "blue", "purple", "plum", "pink"], "languages": ["en", "zh-CN"], "build": "2026-11-13", "files": ["04-components/ui-action-rail/ui-action-rail.css", "04-components/ui-action-rail/ui-action-rail.js", "04-components/ui-reveal-overlay/ui-reveal-overlay.css", "04-components/ui-reveal-overlay/ui-reveal-overlay.js", "05-motion/effect-inventory.json", "05-motion/effects.js", "05-motion/motion.css", "05-motion/motion.json", "05-motion/timeline.js", "06-visual-effects/compositions/entrance-timeline.js", "06-visual-effects/compositions/status-pulse.css", "06-visual-effects/compositions/status-pulse.js", "06-visual-effects/geometry/edge-geometry.js", "06-visual-effects/geometry/focus-mask.js", "06-visual-effects/glow/glow.css", "06-visual-effects/glow/glow.js", "06-visual-effects/particles/particles.js", "06-visual-effects/particles/presets.json", "LICENSE-MIT.txt", "components/ui-action-rail/ui-action-rail.css", "components/ui-action-rail/ui-action-rail.js", "components/ui-button/ui-button.css", "components/ui-button/ui-button.js", "components/ui-panel/ui-panel.css", "components/ui-panel/ui-panel.js", "components/ui-reveal-overlay/ui-reveal-overlay.css", "components/ui-reveal-overlay/ui-reveal-overlay.js", "i18n/en.json", "i18n/zh-CN.json", "index.html", "licence-audit.json", "manifest.json", "preview.html", "preview/app.js", "preview/preview.css", "preview/view-components.js", "preview/view-data.js", "preview/view-effects.js", "preview/view-motion.js", "preview/view-overview.js", "preview/view-theme.js", "preview/views.js", "preview_server.py", "settings.json", "themes.css", "themes/aquamarine.json", "themes/blue.json", "themes/index.json", "themes/pink.json", "themes/plum.json", "themes/purple.json", "tokens.css"]}</script>
+  <script type="module" src="preview/app.js"></script>
+</body>
+</html>

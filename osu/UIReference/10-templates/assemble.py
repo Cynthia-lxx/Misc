@@ -9,9 +9,9 @@
 #   python assemble.py --check          # validate only, write nothing
 #
 # Inputs : ui-manifest.json, settings.json, themes/*.json, i18n/*.json, tokens.css,
-#          components/*/*, 05-motion/*, 06-vfx/**/*, 10-templates/vfx-demo.html
+#          components/*/*, 05-motion/*, 06-visual-effects/**/*, 10-templates/effects-demo.html
 # Outputs: tokens.css, themes.css, settings.json, i18n/, components/, 05-motion/,
-#          06-vfx/, index.html, licence files
+#          06-visual-effects/, index.html, licence files
 
 from __future__ import annotations
 
@@ -72,7 +72,7 @@ __EXTRA_CSS__
        <code>tokens.css</code> + generated <code>themes.css</code>.</p>
   </main>
 
-__VFX_DEMO__
+__视觉效果_DEMO__
 
   <script type="module">
     const lang = document.documentElement.lang;
@@ -219,7 +219,7 @@ def validate(root: Path, manifest: dict, settings: dict, index: dict, i18n: dict
     ]
     referenced += manifest.get("extraFiles", [])
     referenced += manifest.get("extraCss", [])
-    referenced += [manifest.get("demoFragment"), manifest.get("menuDemoFragment")]
+    referenced += [manifest.get("demoFragment"), manifest.get("navigationDemoFragment")]
     preview = manifest.get("preview", {})
     referenced += [preview.get("shell"), preview.get("server")]
     for rel in referenced:
@@ -228,7 +228,7 @@ def validate(root: Path, manifest: dict, settings: dict, index: dict, i18n: dict
 
     preview_dir = root / "10-templates/preview"
     for name in ("preview.css", "app.js", "views.js", "view-overview.js", "view-theme.js",
-                 "view-components.js", "view-motion.js", "view-vfx.js", "view-data.js"):
+                 "view-components.js", "view-motion.js", "view-effects.js", "view-data.js"):
         if not (preview_dir / name).is_file():
             problems.append(f"missing preview module {name}")
 
@@ -272,7 +272,7 @@ def build_html(root: Path, manifest: dict, index: dict, themes: dict,
         f'  <link rel="stylesheet" href="{rel}">' for rel in manifest.get("extraCss", [])
     )
     fragment = (root / manifest["demoFragment"]).read_text(encoding="utf-8")
-    menu_fragment = (root / manifest["menuDemoFragment"]).read_text(encoding="utf-8")
+    menu_fragment = (root / manifest["navigationDemoFragment"]).read_text(encoding="utf-8")
 
     return (HTML_TEMPLATE
             .replace("__LANG__", lang)
@@ -280,7 +280,7 @@ def build_html(root: Path, manifest: dict, index: dict, themes: dict,
             .replace("__THEME_OPTIONS__", theme_options)
             .replace("__LANG_OPTIONS__", lang_options)
             .replace("__EXTRA_CSS__", extra_css)
-            .replace("__VFX_DEMO__", menu_fragment + "\n\n" + fragment))
+            .replace("__视觉效果_DEMO__", menu_fragment + "\n\n" + fragment))
 
 
 def build_preview_html(root: Path, manifest: dict, index: dict, themes: dict,
@@ -414,10 +414,20 @@ def main(argv=None) -> int:
     parser.add_argument("--theme", default="blue", help="default theme id")
     parser.add_argument("--lang", default="en", help="default language code")
     parser.add_argument("--check", action="store_true", help="validate inputs only, write nothing")
+    parser.add_argument("--clean", action="store_true", help="remove the generated dist directory before assembling")
     args = parser.parse_args(argv)
 
     root = args.root.resolve()
     out = (args.out or (root / "dist")).resolve()
+    if args.clean and not args.check and out.is_dir() and out.name == "dist":
+        # Remove generated files explicitly; some environments wrap shutil.rmtree
+        # with a trash/recycle shim that does not work reliably on this path.
+        for path in sorted(out.rglob("*"), key=lambda p: len(p.parts), reverse=True):
+            if path.is_file():
+                path.unlink()
+            elif path.is_dir():
+                path.rmdir()
+        out.rmdir()
     try:
         result = assemble(root, out, args.theme, args.lang, args.check)
     except (OSError, ValueError, json.JSONDecodeError) as exc:

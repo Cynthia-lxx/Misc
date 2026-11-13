@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: MIT
  * Derived from ppy/osu (MIT) — see 00-overview/LICENSE-MIT.txt
  * Reusable motion engine translated from the full inventory
- * (05-motion/motion-inventory.json): stagger, fan-out, wave reveal, shear slide,
+ * (05-motion/effect-inventory.json): stagger, fan-out, wave reveal, shear slide,
  * circular reveal, parallax, beat sync, rolling numbers, ripple, glitch triangles.
  * Uses the Web Animations API + requestAnimationFrame; every effect honours
  * `--motion-scale` / prefers-reduced-motion (upstream has no such switch).
@@ -30,7 +30,7 @@ export function animate(element, keyframes, options = {}) {
   });
 }
 
-/** ModSelect / Settings / Footer 的逐项错峰（inventory: stagger primitives）. */
+/** Option columns / Settings / Footer 的逐项错峰（inventory: stagger primitives）. */
 export function stagger(elements, effectFn, options = {}) {
   const list = [...(elements || [])];
   const step = options.step ?? 30;
@@ -102,7 +102,7 @@ export function waveReveal(container, options = {}) {
   };
 }
 
-/** ShearedOverlay / ModSelect 列错峰：±700 交替 + 30ms 步进. */
+/** ShearedOverlay / Option columns 列错峰：±700 交替 + 30ms 步进. */
 export function shearSlide(elements, options = {}) {
   const distance = options.distance ?? 700;
   const step = options.step ?? 30;
@@ -145,7 +145,7 @@ export function parallax(element, options = {}) {
   return { destroy() { window.removeEventListener('pointermove', onMove); cancelAnimationFrame(raf); element.style.transform = ''; } };
 }
 
-/** RollingCounter / ArgonTotalScorePanel：3000ms OutPow10 数字滚动. */
+/** RollingCounter / ArgonTotalResultPanel：3000ms OutPow10 数字滚动. */
 export function rollingNumber(element, from, to, options = {}) {
   if (!element) return { cancel() {} };
   const duration = Math.max(1, (options.duration ?? 3000) * motionScale());
@@ -189,7 +189,7 @@ export function ripple(container, x, y, options = {}) {
 }
 
 /** BeatSyncedContainer 等价：按 BPM 触发回调，返回停止句柄. */
-export function beatSync(callback, options = {}) {
+export function intervalSync(callback, options = {}) {
   const bpm = options.bpm ?? 120;
   const interval = 60000 / bpm;
   let index = 0;
@@ -197,16 +197,16 @@ export function beatSync(callback, options = {}) {
   let stopped = false;
   const run = () => {
     if (stopped) return;
-    callback({ index, time: performance.now(), kiai: Boolean(options.kiai), beatLength: interval });
+    callback({ index, time: performance.now(), emphasis: Boolean(options.emphasis), cycleLength: interval });
     index += 1;
     timer = window.setTimeout(run, interval);
   };
   timer = window.setTimeout(run, options.early ?? 0);
-  return { stop() { stopped = true; clearTimeout(timer); }, get beatIndex() { return index; } };
+  return { stop() { stopped = true; clearTimeout(timer); }, get cycleIndex() { return index; } };
 }
 
-/** IntroTriangles glitch：每 22ms 生成随机三角，120ms 淡出. */
-export function glitchTriangles(container, options = {}) {
+/** Scatter shapes：每 22ms 生成随机三角，120ms 淡出. */
+export function scatterShapes(container, options = {}) {
   if (!container || motionScale() === 0) return { stop() {} };
   const interval = options.interval ?? 22;
   let timer = 0;
@@ -231,5 +231,5 @@ export function glitchTriangles(container, options = {}) {
 
 export default {
   motionScale, animate, stagger, fanOut, waveReveal, shearSlide, circularReveal,
-  parallax, rollingNumber, elasticPop, ripple, beatSync, glitchTriangles,
+  parallax, rollingNumber, elasticPop, ripple, intervalSync, scatterShapes,
 };

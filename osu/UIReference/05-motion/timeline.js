@@ -8,7 +8,7 @@
 /**
  * A small absolute-time timeline. Events are keyed to an absolute millisecond
  * position, so seeking or rewinding replays exactly the same states — the same
- * property that makes upstream replay/judgement effects deterministic.
+ * property that makes upstream replay/status-pulse effects deterministic.
  */
 export class Timeline {
   constructor(options = {}) {

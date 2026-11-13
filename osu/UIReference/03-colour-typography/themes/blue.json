@@ -7,7 +7,7 @@
   "id": "blue",
   "label": "Blue",
   "hue": 200,
-  "usedBy": ["song-select", "beatmap-listing"],
+  "usedBy": ["song-select", "item-listing"],
   "tokens": {
     "--colour-0": [1.0, 0.8],
     "--colour-1": [1.0, 0.7],

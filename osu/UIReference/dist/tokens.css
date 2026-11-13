@@ -3,7 +3,7 @@
  * Colour constants: osu.Game/Graphics/OsuColour.cs; HSL provider: osu.Game/Overlays/OverlayColourProvider.cs
  * Layout constants: Graphics/Containers/*, Screens/Footer/ScreenFooter.cs, Overlays/SettingsPanel.cs
  * Type scale: Graphics/OsuFont.cs. Motion: 调研报告 C2 (durations/easing).
- * No osu!/ppy branding, no font binaries, no game resources are distributed here.
+ * No osu!/ppy branding, no font binaries, no third-party assets are distributed here.
  */
 
 :root {
@@ -71,22 +71,22 @@
   /* ------------------------------------------------------------------ *
    * 4. 语义色：数据 -> 颜色  (OsuColour.cs:81-291)
    * ------------------------------------------------------------------ */
-  --rank-xh: #de31ae; --rank-s: #02b5c3; --rank-a: #88da20;
-  --rank-b: #e3b130;  --rank-c: #ff8e5d; --rank-d: #ff5a5a; --rank-f: #3f3f3f;
-  --hit-miss: #ed1121;   --hit-meh: var(--yellow);  --hit-ok: var(--green);
-  --hit-good: var(--green-light); --hit-great: #66ccff;
-  --mod-automation: var(--blue-1); --mod-difficulty-increase: var(--red-1);
-  --mod-difficulty-reduction: var(--lime-1); --mod-conversion: var(--purple-1);
-  --mod-fun: var(--pink-1); --mod-system: var(--yellow);
-  --status-ranked: #b3ff66; --status-loved: #ff66ab; --status-qualified: #66ccff;
-  --status-pending: #ffd966; --status-wip: #ff9966; --status-graveyard: #000000;
+  --grade-1: #de31ae; --grade-2: #02b5c3; --grade-3: #88da20;
+  --grade-4: #e3b130;  --grade-5: #ff8e5d; --grade-6: #ff5a5a; --grade-7: #3f3f3f;
+  --state-error: #ed1121;   --state-warning: var(--yellow);  --state-success: var(--green);
+  --state-success-soft: var(--green-light); --state-info: #66ccff;
+  --tag-automation: var(--blue-1); --tag-increase: var(--red-1);
+  --tag-reduction: var(--lime-1); --tag-conversion: var(--purple-1);
+  --tag-creative: var(--pink-1); --tag-system: var(--yellow);
+  --state-approved: #b3ff66; --state-featured: #ff66ab; --state-verified: #66ccff;
+  --state-queued: #ffd966; --state-draft: #ff9966; --state-archived: #000000;
   --danger: #cc3378; --content-background: #222a28;
   --foreground-on-light: var(--gray-3); --foreground-on-dark: var(--gray-e);
 
   /* 星数渐变停靠点：0.1 灰蓝 -> 9/10 黑 (OsuColour.cs:33-57) */
-  --star-0: #aaaaaa; --star-1: #4290fb; --star-2: #4fc0ff; --star-3: #4fffd5;
-  --star-4: #7cff4f; --star-5: #f6f05c; --star-6: #ff8068; --star-7: #ff4e6f;
-  --star-8: #c645b8; --star-9: #6563de; --star-10: #18158e;
+  --intensity-0: #aaaaaa; --intensity-1: #4290fb; --intensity-2: #4fc0ff; --intensity-3: #4fffd5;
+  --intensity-4: #7cff4f; --intensity-5: #f6f05c; --intensity-6: #ff8068; --intensity-7: #ff4e6f;
+  --intensity-8: #c645b8; --intensity-9: #6563de; --intensity-10: #18158e;
 
   /* ------------------------------------------------------------------ *
    * 5. 主题派生层 — 默认值，由 dist/themes.css 的 [data-theme] 覆盖
@@ -181,7 +181,7 @@
   --duration-fast: 120ms;
   --duration-normal: 300ms;
   --duration-transition: 500ms;
-  --duration-intro: 800ms;
+  --duration-entrance: 800ms;
   --motion-scale: 1;
   --easing-out: cubic-bezier(0.22, 1, 0.36, 1);       /* OutQuint 近似 */
   --easing-in: cubic-bezier(0.64, 0, 0.78, 0);         /* InQuint 近似 */

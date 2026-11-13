@@ -73,13 +73,13 @@
 
 .ui-panel[data-selected='true'] .ui-panel__glow { opacity: 0.16; }
 
-/* BeatSyncedContainer 的脉冲：显式由 data-beat 打开，避免常驻动画 */
+/* BeatSyncedContainer 的脉冲：显式由 data-pulse 打开，避免常驻动画 */
 @keyframes ui-panel-pulse {
   0%, 100% { opacity: 0.12; }
   50% { opacity: 0.32; }
 }
 
-.ui-panel[data-beat='true'] .ui-panel__glow {
+.ui-panel[data-pulse='true'] .ui-panel__glow {
   animation: ui-panel-pulse var(--_beat) var(--easing-in-out, ease-in-out) infinite;
 }
 
@@ -87,13 +87,13 @@
 @media (prefers-reduced-motion: reduce) {
   .ui-panel { transition-duration: 0ms; }
   .ui-panel:hover, .ui-panel:focus-visible { transform: none; }
-  .ui-panel[data-beat='true'] .ui-panel__glow { animation: none; }
+  .ui-panel[data-pulse='true'] .ui-panel__glow { animation: none; }
 }
 
 :root[data-reduce-motion='true'] .ui-panel {
   transition-duration: 0ms;
 }
 
-:root[data-reduce-motion='true'] .ui-panel[data-beat='true'] .ui-panel__glow {
+:root[data-reduce-motion='true'] .ui-panel[data-pulse='true'] .ui-panel__glow {
   animation: none;
 }

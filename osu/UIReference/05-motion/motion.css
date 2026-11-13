@@ -1,8 +1,8 @@
 /* SPDX-License-Identifier: MIT
  * Derived from ppy/osu (MIT) — see 00-overview/LICENSE-MIT.txt
- * Full motion inventory: 05-motion/motion-inventory.json (118 entries)
- * Geometry primitives translated from ButtonSystem / WaveContainer / ShearedOverlay /
- * PopupDialog / ModSelect / IntroSequence / MenuSideFlashes / Matchmaking.
+ * Full motion inventory: 05-motion/effect-inventory.json (118 entries)
+ * Geometry primitives translated from ActionRail / WaveContainer / ShearedOverlay /
+ * PopupDialog / Option columns / Entrance sequence / MenuSideFlashes / Matchmaking.
  * All values come from 03-colour-typography/tokens.css and 05-motion/motion.json.
  */
 
@@ -10,7 +10,7 @@
   --_d-fast: calc(var(--duration-fast, 120ms) * var(--motion-scale, 1));
   --_d-normal: calc(var(--duration-normal, 300ms) * var(--motion-scale, 1));
   --_d-transition: calc(var(--duration-transition, 500ms) * var(--motion-scale, 1));
-  --_d-intro: calc(var(--duration-intro, 800ms) * var(--motion-scale, 1));
+  --_d-entrance: calc(var(--duration-intro, 800ms) * var(--motion-scale, 1));
   --_shear: 0.2;
   --_shear-deg: 11.5deg;
   --_wave-stagger: 100ms;
@@ -41,7 +41,7 @@
 .ui-motion-stagger[data-stagger='footer'] > * { animation-delay: calc(30ms * var(--ui-index, 0) * var(--motion-scale, 1)); }
 
 /* ================================================================ *
- * 2. 主菜单横排按钮：楔形 / 宽度状态机 / hover 反馈
+ * 2. 首页横排按钮：楔形 / 宽度状态机 / hover 反馈
  *    ButtonSystem.cs / MainMenuButton.cs / ButtonArea.cs
  * ================================================================ */
 .ui-button-row {
@@ -97,30 +97,30 @@
   transform-origin: center;
   transition: transform 500ms var(--easing-out, ease-out);
 }
-.ui-wedge[data-hovered='true'] .ui-wedge__icon { transform: rotate(var(--ui-beat-rotation, 8deg)) scale(1.2, 1.08); }
+.ui-wedge[data-hovered='true'] .ui-wedge__icon { transform: rotate(var(--ui-pulse-rotation, 8deg)) scale(1.2, 1.08); }
 
-@keyframes ui-beat-heartbeat {
+@keyframes ui-pulse-heartbeat {
   0%   { transform: translateY(0) scale(1); }
   40%  { transform: translateY(-10px) scale(1.2); }
   100% { transform: translateY(0) scale(1.2, 1.08); }
 }
-.ui-wedge[data-beating='true'] .ui-wedge__icon {
-  animation: ui-beat-heartbeat calc(var(--ui-beat-length, 500ms) * var(--motion-scale, 1)) var(--easing-out, ease-out) infinite alternate;
+.ui-wedge[data-pulsing='true'] .ui-wedge__icon {
+  animation: ui-pulse-heartbeat calc(var(--ui-pulse-length, 500ms) * var(--motion-scale, 1)) var(--easing-out, ease-out) infinite alternate;
 }
 
-/* Logo 心跳 / ripple / kiai（OsuLogo.cs） */
-@keyframes ui-logo-beat { from { transform: scale(0.98); } to { transform: scale(1); } }
-@keyframes ui-logo-ripple { from { opacity: 0.15; transform: scale(1); } to { opacity: 0; transform: scale(1.04); } }
+/* Logo 心跳 / ripple / emphasis（OsuLogo.cs） */
+@keyframes ui-hub-pulse { from { transform: scale(0.98); } to { transform: scale(1); } }
+@keyframes ui-hub-ripple { from { opacity: 0.15; transform: scale(1); } to { opacity: 0; transform: scale(1.04); } }
 @keyframes ui-side-flash { from { opacity: 0.9; } to { opacity: 0; } }
 
-.ui-logo-beat { animation: ui-logo-beat 60ms var(--easing-out, ease-out) both; }
-.ui-logo-ripple { animation: ui-logo-ripple var(--ui-beat-length, 500ms) var(--easing-out, ease-out) both; }
+.ui-hub-pulse { animation: ui-hub-pulse 60ms var(--easing-out, ease-out) both; }
+.ui-hub-ripple { animation: ui-hub-ripple var(--ui-pulse-length, 500ms) var(--easing-out, ease-out) both; }
 .ui-side-flash {
   position: absolute; top: 0; bottom: 0; width: 400px;
   background: linear-gradient(90deg, var(--ui-accent), transparent);
   mix-blend-mode: screen;
   pointer-events: none;
-  animation: ui-side-flash var(--ui-beat-length, 500ms) var(--easing-in, ease-in) both;
+  animation: ui-side-flash var(--ui-pulse-length, 500ms) var(--easing-in, ease-in) both;
 }
 .ui-side-flash--left { left: 0; }
 .ui-side-flash--right { right: 0; transform: scaleX(-1); }
@@ -193,12 +193,12 @@
 @keyframes ui-glow-pulse { 0%,100% { box-shadow: 0 0 4px var(--ui-glow, #66ccff); } 50% { box-shadow: 0 0 16px var(--ui-glow, #66ccff); } }
 @keyframes ui-spin { to { transform: rotate(360deg); } }
 @keyframes ui-additive-flash { from { opacity: 0.55; } to { opacity: 0; } }
-@keyframes ui-glitch-triangle { from { opacity: 1; } to { opacity: 0; } }
+@keyframes ui-scatter-shape { from { opacity: 1; } to { opacity: 0; } }
 @keyframes ui-shake { 0%,100% { transform: translate(0,0); } 25% { transform: translate(2px,0); } 75% { transform: translate(-2px,0); } }
 
 .ui-motion-elastic { animation: ui-elastic-pop var(--_d-intro) var(--easing-elastic, ease-out) both; }
 .ui-motion-ripple { animation: ui-ripple 700ms var(--easing-out-expo, ease-out) both; }
-.ui-motion-beat { animation: ui-pulse-beat 500ms var(--easing-out, ease-out) both; }
+.ui-motion-pulse { animation: ui-pulse-beat 500ms var(--easing-out, ease-out) both; }
 .ui-motion-glow { animation: ui-glow-pulse 800ms var(--easing-in-out, ease-in-out) infinite; }
 .ui-motion-spin { animation: ui-spin var(--ui-spin-duration, 20000ms) linear infinite; }
 .ui-motion-shake { animation: ui-shake 20ms linear infinite; }
@@ -207,7 +207,7 @@
   background: var(--ui-accent, #66ccff); mix-blend-mode: screen; pointer-events: none;
   animation: ui-additive-flash var(--_d-normal) var(--easing-out, ease-out) both;
 }
-.ui-glitch-triangle { animation: ui-glitch-triangle 120ms linear both; }
+.ui-scatter-shape { animation: ui-scatter-shape 120ms linear both; }
 
 .ui-parallax { will-change: transform; transition: transform 100ms var(--easing-out, ease-out); }
 .ui-blur { filter: blur(calc(var(--blur-level, 0) * 20px)); transition: filter 800ms var(--easing-out, ease-out); }
@@ -220,11 +220,11 @@
 .ui-mirror-y { transform: scaleY(-1); }
 
 /* 全屏加性白闪 */
-@keyframes ui-game-wide-flash { from { opacity: 0.9; } to { opacity: 0; } }
-.ui-game-wide-flash {
+@keyframes ui-full-surface-flash { from { opacity: 0.9; } to { opacity: 0; } }
+.ui-full-surface-flash {
   position: fixed; inset: 0; z-index: var(--z-topmost, 2100);
   background: #fff; mix-blend-mode: screen; pointer-events: none;
-  animation: ui-game-wide-flash 1000ms var(--easing-out, ease-out) both;
+  animation: ui-full-surface-flash 1000ms var(--easing-out, ease-out) both;
 }
 
 /* ================================================================ *
@@ -234,7 +234,7 @@
 :root[data-reduce-motion='true'] .ui-motion-exit,
 :root[data-reduce-motion='true'] .ui-motion-slide-in,
 :root[data-reduce-motion='true'] .ui-flash,
-:root[data-reduce-motion='true'] .ui-game-wide-flash,
+:root[data-reduce-motion='true'] .ui-full-surface-flash,
 :root[data-reduce-motion='true'] .ui-wave__layer,
 :root[data-reduce-motion='true'] .ui-columns > *,
 :root[data-reduce-motion='true'] .ui-popup,
@@ -245,14 +245,14 @@
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
 }
-:root[data-reduce-motion='true'] .ui-motion-beat,
+:root[data-reduce-motion='true'] .ui-motion-pulse,
 :root[data-reduce-motion='true'] .ui-motion-glow,
 :root[data-reduce-motion='true'] .ui-motion-ripple,
 :root[data-reduce-motion='true'] .ui-motion-spin,
 :root[data-reduce-motion='true'] .ui-motion-shake { animation: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
-  :root:not([data-reduce-motion='false']) .ui-motion-beat,
+  :root:not([data-reduce-motion='false']) .ui-motion-pulse,
   :root:not([data-reduce-motion='false']) .ui-motion-glow,
   :root:not([data-reduce-motion='false']) .ui-motion-spin { animation: none !important; }
 }
