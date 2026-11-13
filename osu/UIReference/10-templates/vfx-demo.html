@@ -1,0 +1,188 @@
+<!-- SPDX-License-Identifier: MIT
+     Derived from ppy/osu (MIT) — see 00-overview/LICENSE-MIT.txt
+     Demo fragment injected by assemble.py into dist/index.html.
+     Every initialisation step is isolated: one failure must never abort the rest
+     of the button bindings again (that was the root cause of the blank preview).
+-->
+  <section id="vfx-demo">
+    <h2>Motion / VFX</h2>
+    <p><code>motion.json</code> 编排表 + <code>timeline.js</code> 绝对时间轴 + WebGL / Canvas 2D 重写。</p>
+
+    <div class="vfx-grid">
+      <figure>
+        <figcaption>TrianglesV2 · WebGL2 UBO 描边</figcaption>
+        <canvas id="vfx-triangles" class="ui-vfx-canvas"></canvas>
+      </figure>
+      <figure>
+        <figcaption>ParticleSpewer · 时间纯函数 + 加法混合</figcaption>
+        <canvas id="vfx-particles" class="ui-vfx-canvas"></canvas>
+      </figure>
+      <figure>
+        <figcaption>Flashlight · 柔边光锥（跟随鼠标）</figcaption>
+        <canvas id="vfx-flashlight" class="ui-vfx-canvas"></canvas>
+      </figure>
+    </div>
+
+    <div class="row">
+      <button type="button" id="btn-intro">Play intro timeline</button>
+      <button type="button" id="btn-judge-hit">Judgement: GREAT</button>
+      <button type="button" id="btn-judge-miss">Judgement: MISS</button>
+      <button type="button" id="btn-burst">Particle burst</button>
+      <button type="button" id="btn-flashlight">Toggle flashlight</button>
+      <span id="intro-status">step: -</span>
+    </div>
+
+    <div id="intro-stage" class="intro-stage">Intro stage</div>
+    <div id="judgement-layer" class="ui-judgement-layer" style="position: relative; height: 120px;"></div>
+
+    <!-- 可见事件日志：点击任何组件/按钮都会在这里留下反馈 -->
+    <div id="event-log" class="event-log" aria-live="polite">
+      <strong>Event log</strong>
+      <ul id="event-log-list"><li>preview initialising…</li></ul>
+    </div>
+  </section>
+
+  <style>
+    #vfx-demo { max-width: 960px; margin-top: 28px; }
+    .vfx-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+    .vfx-grid figure { margin: 0; }
+    .vfx-grid figcaption { font-size: var(--font-size-caption2, 12px); color: var(--ui-text-muted, #aaa); margin-bottom: 4px; }
+    .ui-vfx-canvas { height: 150px; border: 1px solid var(--ui-border, #444); border-radius: var(--corner-radius, 5px); background: var(--ui-surface-sunken, #111); }
+    .intro-stage { padding: 12px; border: 1px dashed var(--ui-border, #444); border-radius: var(--corner-radius, 5px); margin-top: 12px;
+      transition: border-color 300ms var(--easing-out, ease-out), background 300ms var(--easing-out, ease-out); }
+    .intro-stage[data-intro-step] { border-color: var(--ui-accent, #66ccff); background: color-mix(in srgb, var(--ui-accent, #66ccff) 12%, transparent); }
+    #vfx-demo button { height: var(--control-height, 40px); padding: 0 12px; border-radius: var(--corner-radius, 5px);
+      border: var(--border-width, 2px) solid var(--ui-border, #444); background: var(--ui-surface-raised, #333); color: var(--ui-text, #fff); cursor: pointer; }
+    #vfx-demo button:hover { border-color: var(--ui-accent, #66ccff); }
+    #vfx-demo button:active { transform: scale(0.96); }
+    .event-log { margin-top: 14px; padding: 10px 14px; border: 1px solid var(--ui-border, #444); border-radius: var(--corner-radius, 5px);
+      background: var(--ui-surface, #2a2a2a); font-size: var(--font-size-caption1, 14px); }
+    .event-log ul { margin: 6px 0 0; padding-left: 18px; max-height: 130px; overflow: auto; }
+    .event-log li { margin: 2px 0; color: var(--ui-text-muted, #aaa); }
+  </style>
+
+  <script type="module">
+    import { mountTriangles } from './06-vfx/shaders/triangle-border.js';
+    import { mountFlashlight } from './06-vfx/shaders/flashlight.js';
+    import { createParticleSpewer } from './06-vfx/particles/particles.js';
+    import { createJudgementLayer } from './06-vfx/scenes/judgement.js';
+    import { createIntroPlayer } from './06-vfx/scenes/intro-timeline.js';
+    import { flashColour, gameWideFlash } from './06-vfx/glow/glow.js';
+
+    const logList = document.getElementById('event-log-list');
+    const log = (text) => {
+      const li = document.createElement('li');
+      li.textContent = `${new Date().toLocaleTimeString()} · ${text}`;
+      logList.prepend(li);
+      while (logList.children.length > 12) logList.lastElementChild.remove();
+    };
+    const safe = (label, fn) => {
+      try { return fn(); }
+      catch (error) {
+        console.error(`[demo] ${label} failed`, error);
+        log(`⚠ ${label} 失败：${error.message}`);
+        return null;
+      }
+    };
+
+    // Global feedback: every component event becomes visible text.
+    document.addEventListener('ui-press', (e) => log(`ui-press: ${e.detail?.label || ''}`));
+    document.addEventListener('ui-menu-press', (e) => log(`ui-menu-press: ${e.detail?.id || ''}`));
+    document.addEventListener('ui-menu-state', (e) => log(`menu state → ${e.detail?.state}`));
+    document.addEventListener('ui-overlay-open', (e) => log(`overlay open: ${e.detail?.variant}`));
+    document.addEventListener('ui-overlay-close', (e) => log(`overlay close: ${e.detail?.variant}`));
+    document.addEventListener('ui-intro-step', (e) => log(`intro step: ${e.detail?.step?.action} @ ${e.detail?.step?.at}ms`));
+    document.addEventListener('ui-judgement', (e) => log(`judgement: ${e.detail?.type}`));
+
+    let motion = null;
+    let presets = null;
+    try {
+      [motion, presets] = await Promise.all([
+        fetch('./05-motion/motion.json').then((r) => r.json()),
+        fetch('./06-vfx/particles/presets.json').then((r) => r.json()),
+      ]);
+      log('motion.json / presets.json 已加载');
+    } catch (error) {
+      console.error('[demo] data load failed', error);
+      log(`⚠ 数据加载失败：${error.message}`);
+    }
+
+    // Each effect is isolated; a WebGL failure cannot stop the other effects.
+    const triangles = safe('Triangles', () => mountTriangles(
+      document.getElementById('vfx-triangles'),
+      { density: 2, thickness: 0.06, triangleSize: 30, velocity: 0.09 },
+    ));
+    const particles = safe('Particles', () => createParticleSpewer(
+      document.getElementById('vfx-particles'),
+      { ...(presets?.presets?.starFountain || {}), perSecond: 60, size: 7, speed: 0.28, duration: 1200 },
+    ));
+    const flashlightCanvas = document.getElementById('vfx-flashlight');
+    const flashlight = safe('Flashlight', () => mountFlashlight(flashlightCanvas, { size: 90 }));
+    const judgements = safe('Judgement', () => createJudgementLayer(document.getElementById('judgement-layer')));
+
+    const status = document.getElementById('intro-status');
+    const intro = safe('Intro', () => createIntroPlayer(document.getElementById('intro-stage'), motion, {
+      onStep: (step) => { status.textContent = `step: ${step.action} @ ${step.at}ms`; },
+    }));
+
+    let combo = 0;
+    const bind = (id, handler) => {
+      const el = document.getElementById(id);
+      if (!el) { log(`⚠ 缺少按钮 #${id}`); return; }
+      el.addEventListener('click', (event) => {
+        log(`click #${id}`);
+        flashColour(event.currentTarget);
+        try { handler(event); }
+        catch (error) { console.error(`[demo] #${id} failed`, error); log(`⚠ #${id}: ${error.message}`); }
+      });
+    };
+
+    bind('btn-intro', () => intro?.play());
+    bind('btn-judge-hit', () => {
+      judgements?.apply({ type: 'great', x: 120, y: 60, timeAbsolute: performance.now() });
+      combo += 30;
+      flashlight?.setCombo(combo);
+    });
+    bind('btn-judge-miss', () => {
+      judgements?.apply({ type: 'miss', x: 220, y: 60, timeAbsolute: performance.now() });
+      combo = 0;
+      flashlight?.setCombo(combo);
+    });
+    bind('btn-burst', () => {
+      particles?.burst(60);
+      gameWideFlash(document.body, 350);
+    });
+    bind('btn-flashlight', () => { flashlightCanvas.hidden = !flashlightCanvas.hidden; });
+
+    flashlightCanvas.addEventListener('pointermove', (e) => {
+      const rect = flashlightCanvas.getBoundingClientRect();
+      flashlight?.setPosition((e.clientX - rect.left) / rect.width, (e.clientY - rect.top) / rect.height);
+    });
+
+    document.getElementById('theme-select')?.addEventListener('change', (e) => {
+      const name = e.target.value;
+      triangles?.setTheme(name);
+      particles?.setTheme(name);
+      flashlight?.setTheme(name);
+      judgements?.setTheme(name);
+      intro?.setTheme(name);
+      log(`theme → ${name}`);
+    });
+
+    // Auto-start visible motion so the page is never a static screenshot.
+    window.setTimeout(() => {
+      particles?.burst(70);
+      judgements?.apply({ type: 'great', x: 160, y: 60, timeAbsolute: performance.now() });
+      log('自动播放：粒子爆发 + 判定特效');
+    }, 350);
+
+    window.addEventListener('beforeunload', () => {
+      triangles?.unmount?.();
+      particles?.unmount?.();
+      flashlight?.unmount?.();
+      judgements?.unmount?.();
+      intro?.unmount?.();
+    });
+
+    log('预览初始化完成');
+  </script>

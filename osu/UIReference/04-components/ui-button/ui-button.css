@@ -1,0 +1,115 @@
+/* SPDX-License-Identifier: MIT
+ * Derived from ppy/osu (MIT) — see 00-overview/LICENSE-MIT.txt
+ * OsuButton.cs:133-176 / ShearedButton.cs:191-249 / FormControlBackground.cs:42-93
+ * Colours, durations and easing all come from 03-colour-typography/tokens.css.
+ */
+
+:host {
+  display: inline-block;
+  contain: layout style;
+  --_fast: calc(var(--duration-fast, 120ms) * var(--motion-scale, 1));
+  --_normal: calc(var(--duration-normal, 300ms) * var(--motion-scale, 1));
+}
+
+button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 80px;
+  height: var(--control-height, 40px);
+  padding: 0 18px;
+  border: var(--border-width, 2px) solid var(--ui-border, #444);
+  border-radius: var(--corner-radius, 5px);
+  background: var(--ui-surface-raised, #333);
+  color: var(--ui-text, #fff);
+  font: inherit;
+  font-weight: var(--font-weight-semibold, 600);
+  text-shadow: var(--text-shadow, none);
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    background-color var(--_fast) var(--easing-out, ease-out),
+    border-color var(--_fast) var(--easing-out, ease-out),
+    box-shadow var(--_normal) var(--easing-out, ease-out),
+    transform var(--_fast) var(--easing-out, ease-out);
+}
+
+button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ui-accent, #66ccff);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--_normal) var(--easing-out, ease-out);
+}
+
+/* 四态：normal / hovered / focused / disabled（对应 FormControlBackground） */
+button:hover:not(:disabled) {
+  background: var(--ui-surface, #2a2a2a);
+  border-color: var(--ui-accent, #66ccff);
+}
+
+button:hover:not(:disabled)::after { opacity: 0.08; }
+
+button:focus-visible {
+  outline: var(--border-width-strong, 2px) solid var(--ui-accent-strong, #66ccff);
+  outline-offset: 2px;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.97);
+  background: var(--ui-accent-weak, #3399cc);
+}
+
+button:active:not(:disabled)::after { opacity: 0.22; }
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: saturate(0.4);
+}
+
+/* Sheared 变体：上游 SHEAR = 0.2 rad ≈ 11.5deg，斜切必须成对抵消 */
+:host([variant='sheared']) button,
+button[data-variant='sheared'] {
+  border-radius: 7px;
+  transform: skewX(-11.5deg);
+  transform-origin: center;
+}
+
+:host([variant='sheared']) button > *,
+button[data-variant='sheared'] > * {
+  transform: skewX(11.5deg);
+}
+
+:host([variant='sheared']) button:active:not(:disabled),
+button[data-variant='sheared']:active:not(:disabled) {
+  transform: skewX(-11.5deg) scale(0.97);
+}
+
+button[data-variant='danger'] {
+  border-color: var(--danger, #cc3378);
+  background: color-mix(in srgb, var(--danger, #cc3378) 25%, var(--ui-surface-raised, #333));
+}
+
+button[data-variant='danger']:hover:not(:disabled) {
+  border-color: var(--danger, #cc3378);
+}
+
+/* 上游 OsuButton 的点击 FlashColour(500ms)，此处以短促加性层表示 */
+@keyframes ui-button-flash {
+  from { opacity: 0.5; }
+  to { opacity: 0; }
+}
+
+:host([data-flash]) button::after {
+  animation: ui-button-flash var(--_normal) var(--easing-out, ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button { transition-duration: 0ms; }
+  button:active:not(:disabled) { transform: none; }
+}
