@@ -39,9 +39,9 @@ HOST = "127.0.0.1"
 QUIET = False
 
 ENDPOINTS = [
-    "/api/health", "/api/manifest", "/api/inventory", "/api/motion",
-    "/api/themes", "/api/settings", "/api/i18n/<lang>", "/api/audit",
-    "/api/files", "/api/validate",
+    "/api/health", "/api/manifest", "/api/inventory", "/api/expansion",
+    "/api/layers", "/api/motion", "/api/themes", "/api/settings",
+    "/api/i18n/<lang>", "/api/audit", "/api/files", "/api/validate",
 ]
 
 MIME = {
@@ -101,6 +101,10 @@ def build_api(name: str):
         return load_json(ROOT / "00-overview/ui-manifest.json")
     if name == "inventory":
         return load_json(ROOT / "05-motion/effect-inventory.json")
+    if name == "expansion":
+        return load_json(ROOT / "05-motion/expansion-inventory.json")
+    if name == "layers":
+        return load_json(ROOT / "05-motion/layered-view.json")
     if name == "motion":
         return load_json(ROOT / "05-motion/motion.json")
     if name == "themes":

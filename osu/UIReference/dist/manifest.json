@@ -158,6 +158,44 @@
         "osu.Game/Overlays/Dialog/PopupDialog.cs:324-354"
       ],
       "note": "用户点名的「叠加界面滑入附带几何效果」：Wave 四层旋转、Shear 斜切、侧栏 X 位移、底部 Y 位移、圆形弹性揭示，共 5 种 variant"
+    },
+    {
+      "id": "ui-layered-view",
+      "kind": "custom-element",
+      "tag": "ui-layered-view",
+      "files": {
+        "js": "04-components/ui-layered-view/ui-layered-view.js",
+        "css": "04-components/ui-layered-view/ui-layered-view.css"
+      },
+      "mount": "[data-ui-mount='layered-view']",
+      "settings": [
+        "theme.scheme",
+        "motion.reduce",
+        "motion.duration.normal",
+        "graphics.dim"
+      ],
+      "i18nKeys": [],
+      "exports": [
+        "default",
+        "UiLayeredViewElement",
+        "open",
+        "close",
+        "toggle",
+        "replay",
+        "seek",
+        "setRate",
+        "setPreset",
+        "setLayerVisible",
+        "setTheme",
+        "unmount"
+      ],
+      "source": [
+        "osu.Game/Graphics/Containers/WaveContainer.cs:19-192",
+        "osu.Game/Overlays/WaveOverlayContainer.cs:35-48",
+        "osu.Game/Overlays/FullscreenOverlay.cs:47-129",
+        "osu.Game/OsuGame.cs:283-284,1108-1161"
+      ],
+      "note": "12 层并行的展开/收起编排；每层独立时长/缓动/延迟，收起用动画栅栏延迟清理"
     }
   ],
   "motion": {
@@ -168,6 +206,16 @@
     "effects": "05-motion/effects.js",
     "source": "全仓动效普查（2026-11-13）：523 文件含 Transform、27 种 Easing、约 173 处具名时长、140 条归档动效",
     "note": "motion.json 为可执行配置（曲线/时长/序列）；motion-inventory.json 为带源码行号的全量考据档案"
+  },
+  "layered": {
+    "inventory": "05-motion/expansion-inventory.json",
+    "presets": "05-motion/layered-view.json",
+    "engine": "05-motion/layered-view.js",
+    "geometry": "05-motion/layered-view.css",
+    "component": "04-components/ui-layered-view/ui-layered-view.js",
+    "statistics": "138 项展开/收起（叠层 50 / 图形 12 / 屏幕 30 / 折叠 26 / 复合 12 / 状态 8）+ 48 条逐图层编排",
+    "source": "全仓视图生命周期普查（2026-11-14）：470 文件含视图生命周期词、2580 次 Transform / 509 文件、132 个屏幕生命周期声明",
+    "note": "用户点名的浏览视图展开/收起：12 个独立动画图层，进场 800ms 出场 500ms，非对称缓动，OnComplete 栅栏"
   },
   "effects": {
     "shaders": {
@@ -191,6 +239,7 @@
   },
   "extraCss": [
     "05-motion/motion.css",
+    "05-motion/layered-view.css",
     "04-components/ui-action-rail/ui-action-rail.css",
     "04-components/ui-reveal-overlay/ui-reveal-overlay.css",
     "06-visual-effects/glow/glow.css",
@@ -199,6 +248,10 @@
   "extraFiles": [
     "05-motion/motion.json",
     "05-motion/effect-inventory.json",
+    "05-motion/expansion-inventory.json",
+    "05-motion/layered-view.json",
+    "05-motion/layered-view.js",
+    "05-motion/layered-view.css",
     "05-motion/motion.css",
     "05-motion/timeline.js",
     "05-motion/effects.js",
@@ -229,13 +282,16 @@
       "theme",
       "components",
       "motion",
-      "vfx",
+      "layers",
+      "effects",
       "data"
     ],
     "api": [
       "health",
       "manifest",
       "inventory",
+      "expansion",
+      "layers",
       "motion",
       "themes",
       "settings",
@@ -244,7 +300,7 @@
       "files",
       "validate"
     ],
-    "note": "完整预览站：hash 路由 6 个视图覆盖全部抽离资源；Python 3 标准库服务器提供 /api/* 与 no-store 缓存头"
+    "note": "完整预览站：hash 路由 7 个视图覆盖全部抽离资源；Python 3 标准库服务器提供 /api/* 与 no-store 缓存头"
   },
   "assembly": {
     "script": "10-templates/assemble.py",

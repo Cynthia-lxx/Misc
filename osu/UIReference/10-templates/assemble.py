@@ -228,7 +228,7 @@ def validate(root: Path, manifest: dict, settings: dict, index: dict, i18n: dict
 
     preview_dir = root / "10-templates/preview"
     for name in ("preview.css", "app.js", "views.js", "view-overview.js", "view-theme.js",
-                 "view-components.js", "view-motion.js", "view-effects.js", "view-data.js"):
+                 "view-components.js", "view-motion.js", "view-layers.js", "view-effects.js", "view-data.js"):
         if not (preview_dir / name).is_file():
             problems.append(f"missing preview module {name}")
 
@@ -423,11 +423,17 @@ def main(argv=None) -> int:
         # Remove generated files explicitly; some environments wrap shutil.rmtree
         # with a trash/recycle shim that does not work reliably on this path.
         for path in sorted(out.rglob("*"), key=lambda p: len(p.parts), reverse=True):
-            if path.is_file():
-                path.unlink()
-            elif path.is_dir():
-                path.rmdir()
-        out.rmdir()
+            try:
+                if path.is_file():
+                    path.unlink()
+                elif path.is_dir():
+                    path.rmdir()
+            except OSError:
+                pass  # some environments wrap rmdir with a trash shim
+        try:
+            out.rmdir()
+        except OSError:
+            pass
     try:
         result = assemble(root, out, args.theme, args.lang, args.check)
     except (OSError, ValueError, json.JSONDecodeError) as exc:

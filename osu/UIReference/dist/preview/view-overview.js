@@ -71,7 +71,8 @@ export default {
         <p>数字键 1–6 可直接切换视图；<code>L</code> 打开事件日志，<code>R</code> 切换 reduced motion。</p>
         ${buttonRow([
           ['ov-go-theme', '主题 / 排版'], ['ov-go-components', '组件'], ['ov-go-motion', '动效引擎'],
-          ['ov-go-effects', '视觉效果'], ['ov-go-data', '数据 / 装配'], ['ov-classic', '旧版单页演示'],
+          ['ov-go-layers', '图层编排 · 138 项'], ['ov-go-effects', '视觉效果'],
+          ['ov-go-data', '数据 / 装配'], ['ov-classic', '旧版单页演示'],
         ])}
       </section>
 
@@ -97,6 +98,7 @@ export default {
     on(root, '#ov-go-theme', 'click', go('theme'));
     on(root, '#ov-go-components', 'click', go('components'));
     on(root, '#ov-go-motion', 'click', go('motion'));
+    on(root, '#ov-go-layers', 'click', go('layers'));
     on(root, '#ov-go-effects', 'click', go('effects'));
     on(root, '#ov-go-data', 'click', go('data'));
     on(root, '#ov-classic', 'click', () => window.open('index.html', '_blank'));

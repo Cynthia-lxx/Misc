@@ -16,7 +16,14 @@
     "excludedFiles": [
       "00-overview/licence-audit.json",
       "00-overview/LICENSE-MIT.txt",
-      "00-overview/naming-map.json"
+      "00-overview/naming-map.json",
+      "05-motion/expansion-inventory.json",
+      "05-motion/layered-view.json",
+      "05-motion/layered-view.js",
+      "05-motion/layered-view.css",
+      "04-components/ui-layered-view/ui-layered-view.js",
+      "04-components/ui-layered-view/ui-layered-view.css",
+      "10-templates/preview/view-layers.js"
     ],
     "excludedDirs": ["dist", ".codebuddy", "__pycache__"],
     "structuredFiles": [
