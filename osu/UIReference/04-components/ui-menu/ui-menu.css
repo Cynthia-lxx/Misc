@@ -108,6 +108,16 @@
 }
 
 /* 分隔条：DrawableSpacer —— scaleY 0.6、2px 高、90% 宽 */
+/* StatefulMenuItem：10px 勾选槽（AlwaysPresent，避免文字跳动） */
+.check {
+  flex: none;
+  width: 10px;
+  margin: 0 10px;
+  font-size: 10px;
+  text-align: center;
+  color: var(--ui-accent, #66ccff);
+}
+
 .spacer {
   height: 2px;
   margin: 6px auto;

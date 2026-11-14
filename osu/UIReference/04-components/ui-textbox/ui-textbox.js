@@ -30,7 +30,7 @@ const FALLBACK_STYLES = `
 
 export class UiTextboxElement extends HTMLElement {
   static get observedAttributes() {
-    return ['placeholder', 'value', 'disabled', 'maxlength', 'variant', 'data-i18n-key'];
+    return ['placeholder', 'value', 'disabled', 'maxlength', 'variant', 'data-i18n-key', 'caps', 'status'];
   }
 
   constructor() {
@@ -67,9 +67,31 @@ export class UiTextboxElement extends HTMLElement {
     this._box.append(this._mirror, this._input, this._focusLine, this._charLayer);
     this.shadowRoot.append(this._style, this._box);
 
+    this._history = [];
+    this._historyIndex = 0;
     this._onInput = () => this._handleInput();
     this._onKeyDown = (event) => {
-      if (event.key === 'Enter') this._commit();
+      if (event.key === 'Enter') {
+        this._commit();
+        if (this.variant === 'history' && this._input.value.trim()) {
+          this._history.push(this._input.value); // HistoryTextBox.cs:83-91
+          this._historyIndex = this._history.length;
+        }
+      } else if (this.variant === 'history' && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+        // HistoryTextBox.cs:46-81 —— 无修饰键时上下翻阅，首次上翻缓存原文
+        if (!this._history.length) return;
+        event.preventDefault();
+        if (event.key === 'ArrowUp') {
+          if (this._historyIndex === this._history.length) this._originalMessage = this._input.value;
+          this._historyIndex = Math.max(0, this._historyIndex - 1);
+          this._input.value = this._history[this._historyIndex];
+        } else {
+          this._historyIndex = Math.min(this._history.length, this._historyIndex + 1);
+          this._input.value = this._historyIndex === this._history.length
+            ? (this._originalMessage ?? '') : this._history[this._historyIndex];
+        }
+        this._prevValue = this._input.value;
+      }
     };
     this._onFocus = () => {
       this.dataset.focused = 'true';
@@ -133,7 +155,12 @@ export class UiTextboxElement extends HTMLElement {
     this._prevValue = this._input.value;
     this._input.maxLength = Number(this.getAttribute('maxlength')) || 1000;
     this._input.disabled = this.hasAttribute('disabled');
+    this._input.type = this.variant === 'password' ? 'password' : 'text';
     this._box.dataset.variant = this.variant;
+    this._box.dataset.caps = String(this.hasAttribute('caps'));
+    this._box.dataset.status = this.getAttribute('status') || '';
+    this._focusLine.dataset.status = this.getAttribute('status') || '';
+    if (this.variant === 'focused') requestAnimationFrame(() => this._input.focus());
   }
 
   _handleInput() {

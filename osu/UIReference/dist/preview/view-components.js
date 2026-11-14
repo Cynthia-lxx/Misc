@@ -10,6 +10,14 @@ import '../components/ui-scroll/ui-scroll.js';
 import '../components/ui-breadcrumb/ui-breadcrumb.js';
 import '../components/ui-menu/ui-menu.js';
 import '../components/ui-hold-button/ui-hold-button.js';
+import '../components/ui-spinner/ui-spinner.js';
+import '../components/ui-progress/ui-progress.js';
+import '../components/ui-counter/ui-counter.js';
+import '../components/ui-graph/ui-graph.js';
+import '../components/ui-range-slider/ui-range-slider.js';
+import '../components/ui-motion-container/ui-motion-container.js';
+import '../components/ui-sections/ui-sections.js';
+import '../components/ui-hotkey/ui-hotkey.js';
 import { mount as mountPanel } from '../components/ui-panel/ui-panel.js';
 import '../04-components/ui-action-rail/ui-action-rail.js';
 import '../04-components/ui-reveal-overlay/ui-reveal-overlay.js';
@@ -160,6 +168,143 @@ export default {
             </ui-menu>
           </div>
           <div class="pv-row"><span class="pv-badge" id="cp-menu-value">selected: —</span></div>
+        </section>
+
+        <section class="pv-card">
+          <h2>ui-spinner · 加载族</h2>
+          <p>3150ms 旋转、500ms OutQuint 入场 / 250ms 离场；box / plain / inverted；dim 铺满父级并 clamp(20–80px)。按钮 <code>loading</code> 与 show-more 自动忙碌态。</p>
+          <div class="pv-row">
+            <ui-spinner id="cp-sp-main"></ui-spinner>
+            <ui-spinner variant="plain" inverted size="44"></ui-spinner>
+            <ui-button id="cp-sp-toggle" label="show / hide"></ui-button>
+            <ui-button label="submit" variant="show-more"></ui-button>
+          </div>
+          <div class="pv-row">
+            <div style="position:relative;width:180px;height:72px;border:1px solid var(--pv-line);border-radius:6px;display:grid;place-items:center">
+              <span class="pv-note">layer content</span>
+              <ui-spinner id="cp-sp-dim" dim active="false"></ui-spinner>
+            </div>
+            <ui-button id="cp-sp-dim-toggle" label="toggle dim"></ui-button>
+          </div>
+        </section>
+
+        <section class="pv-card">
+          <h2>ui-progress · 进度族</h2>
+          <p>四向生长（250ms InOutCubic）、seek 拖动发 seek/commit、FillColour 150ms OutQuint；expanding 4px↔2px 400ms OutElastic。</p>
+          <div class="pv-stack">
+            <ui-progress value="0.6" seek></ui-progress>
+            <ui-progress value="0.35" direction="rtl"></ui-progress>
+            <ui-progress value="0.8" direction="ttb" style="height:40px"></ui-progress>
+            <ui-progress value="0.5" direction="btt" style="height:40px"></ui-progress>
+            <div class="pv-row">
+              <ui-progress variant="expanding" style="flex:1"></ui-progress>
+              <ui-button id="cp-pg-expand" label="expand"></ui-button>
+              <ui-button id="cp-pg-collapse" label="collapse"></ui-button>
+            </div>
+          </div>
+        </section>
+
+        <section class="pv-card">
+          <h2>ui-counter · 滚动计数族</h2>
+          <p>DisplayedCount / Current 双值插值、比例时长、前导零、千分位、精度格式；tabular-nums 防滚宽抖动。</p>
+          <div class="pv-row">
+            <ui-counter class="cp-ct" format="plain" value="42"></ui-counter>
+            <ui-counter class="cp-ct" format="digits" value="123456" leading="8"></ui-counter>
+            <ui-counter class="cp-ct" format="separated" value="987654"></ui-counter>
+            <ui-counter class="cp-ct" format="accuracy" value="0.9876"></ui-counter>
+          </div>
+          <div class="pv-row"><ui-button id="cp-ct-bump" label="roll to random"></ui-button></div>
+        </section>
+
+        <section class="pv-card">
+          <h2>ui-graph · 图表族</h2>
+          <p>bar 250ms InOutCubic 逐帧插值、line 1500ms OutQuint 宽度揭示、segmented tier 分层、stars 80ms 错峰 OutElasticHalf。</p>
+          <div class="pv-stack">
+            <ui-graph class="cp-gr" variant="bar" values="[1,3,2,5,4,2,6,3]"></ui-graph>
+            <ui-graph class="cp-gr" variant="line" values="[1,3,2,5,4,2,6,3]" style="height:50px"></ui-graph>
+            <ui-graph class="cp-gr" variant="segmented" values="[1,3,2,5,4,2,6,3]" tiers="3" style="height:16px"></ui-graph>
+            <ui-graph class="cp-gr" variant="stars" value="6.5" stars="10"></ui-graph>
+          </div>
+          <div class="pv-row"><ui-button id="cp-gr-random" label="randomise"></ui-button></div>
+        </section>
+
+        <section class="pv-card">
+          <h2>范围滑块 / 变体族</h2>
+          <p>双端 minRange=0.1 钳制、nub 内嵌标签；plain / sheared(30px 斜切) / time(ms) / expandable；单滑块 sheared / time / expandable。</p>
+          <div class="pv-stack">
+            <ui-range-slider lower="0.2" upper="0.8" label="range"></ui-range-slider>
+            <ui-range-slider variant="sheared" lower="0.1" upper="0.9" label="sheared"></ui-range-slider>
+            <ui-range-slider variant="time" min="0" max="500" step="10" lower="100" upper="400" label="time"></ui-range-slider>
+            <ui-slider variant="sheared" min="0" max="100" value="60"></ui-slider>
+            <ui-slider variant="time" min="0" max="2000" step="10" value="500"></ui-slider>
+            <ui-slider variant="expandable" min="0" max="100" value="30"></ui-slider>
+          </div>
+        </section>
+
+        <section class="pv-card">
+          <h2>ui-motion-container / ui-sections</h2>
+          <p>shake ±8px 四段、parallax 指针跟随、hover 白→黄 500ms；分段标题 + 10% 视高滚动定位 + 拖拽重排（35ms 节流）。</p>
+          <div class="pv-row">
+            <ui-motion-container id="cp-mc-shake" variant="shake"><ui-button label="shake()"></ui-button></ui-motion-container>
+            <ui-motion-container variant="parallax" style="width:120px;height:60px"><div class="pv-badge">parallax</div></ui-motion-container>
+            <ui-motion-container variant="hover"><span class="pv-note">hover me</span></ui-motion-container>
+          </div>
+          <ui-sections id="cp-sec-main" sortable>
+            <div data-section="a" data-title="General" data-details="3 items"><p class="pv-note">general section content</p></div>
+            <div data-section="b" data-title="Interface"><p class="pv-note">interface section content</p></div>
+            <div data-section="c" data-title="Input"><p class="pv-note">input section content</p></div>
+          </ui-sections>
+        </section>
+
+        <section class="pv-card">
+          <h2>ui-hotkey / 按钮变体族</h2>
+          <p>HotkeyDisplay badge 链；ShearedButton / TwoLayerButton / DangerousRoundedButton / GrayButton / DialogButton / IconButton 全部映射为 <code>variant</code>。</p>
+          <div class="pv-row">
+            <ui-hotkey keys="Ctrl+C, Ctrl+Shift+V"></ui-hotkey>
+            <ui-hotkey keys="F2"></ui-hotkey>
+          </div>
+          <div class="pv-row">
+            <ui-button label="sheared" variant="sheared-button"></ui-button>
+            <ui-button label="layers" variant="two-layer"></ui-button>
+            <ui-button label="danger" variant="dangerous"></ui-button>
+            <ui-button label="◆" variant="gray"></ui-button>
+            <ui-button label="◇" variant="icon"></ui-button>
+            <ui-button label="dialog" variant="dialog"></ui-button>
+          </div>
+        </section>
+
+        <section class="pv-card">
+          <h2>输入框 / 标签变体族</h2>
+          <p>password 圆点 + caps 警告、history 上下翻阅、basic-search 右侧图标、sheared-search / sheared-filter 斜切框与状态行；tabs page / gradient-line / checkbox。</p>
+          <div class="pv-stack">
+            <div class="pv-row">
+              <ui-textbox variant="password" placeholder="password" caps></ui-textbox>
+              <ui-textbox variant="history" placeholder="history: enter then ↑"></ui-textbox>
+              <ui-textbox variant="basic-search" placeholder="search"></ui-textbox>
+            </div>
+            <div class="pv-row">
+              <ui-textbox variant="sheared-search" placeholder="sheared search"></ui-textbox>
+              <ui-textbox variant="sheared-filter" status="12 matches" placeholder="filter"></ui-textbox>
+            </div>
+            <ui-tabs variant="page" value="a"><ui-tab value="a" label="Page A"></ui-tab><ui-tab value="b" label="Page B"></ui-tab></ui-tabs>
+            <ui-tabs variant="gradient-line" value="a"><ui-tab value="a" label="Line A"></ui-tab><ui-tab value="b" label="Line B"></ui-tab></ui-tabs>
+            <ui-tabs variant="checkbox" value="a"><ui-tab value="a" label="Checked"></ui-tab><ui-tab value="b" label="Unchecked"></ui-tab></ui-tabs>
+          </div>
+        </section>
+
+        <section class="pv-card">
+          <h2>ui-menu · 状态项族</h2>
+          <p>toggle（bool ↔ ✓）/ ternary（False → Indeterminate ◉ → True ✓），点击不关闭菜单（CloseMenuOnClick = false）。</p>
+          <div class="pv-row">
+            <ui-button id="cp-state-open" label="open state menu"></ui-button>
+            <ui-menu for="cp-state-open">
+              <ui-item type="toggle" state="false" value="parallax" label="Parallax"></ui-item>
+              <ui-item type="toggle" state="true" value="voices" label="Interface voices"></ui-item>
+              <ui-spacer></ui-spacer>
+              <ui-item type="ternary" state="indeterminate" value="selection" label="Mixed selection"></ui-item>
+            </ui-menu>
+            <span class="pv-badge" id="cp-state-value">state: —</span>
+          </div>
         </section>
 
         <section class="pv-card">
@@ -334,6 +479,59 @@ export default {
     });
     const applyButton = root.querySelector('#cp-set-apply');
     applyButton?.addEventListener('ui-press', () => ctx.log('settings apply'));
+
+    /* ---- 加载族 ---- */
+    const spinner = root.querySelector('#cp-sp-main');
+    root.querySelector('#cp-sp-toggle')?.addEventListener('click', () => {
+      const active = spinner.getAttribute('active') === 'true';
+      active ? spinner.hide() : spinner.show();
+      ctx.log(`spinner → ${active ? 'hidden' : 'visible'}`);
+    });
+    const dimSpinner = root.querySelector('#cp-sp-dim');
+    root.querySelector('#cp-sp-dim-toggle')?.addEventListener('click', () => {
+      const on = dimSpinner.hasAttribute('active') && dimSpinner.getAttribute('active') === 'true';
+      if (on) { dimSpinner.setAttribute('active', 'false'); dimSpinner.removeAttribute('dim'); }
+      else { dimSpinner.setAttribute('dim', ''); dimSpinner.show(); }
+      ctx.log(`loading layer → ${on ? 'off' : 'on'}`);
+    });
+
+    /* ---- 进度 / 计数 / 图表族 ---- */
+    const expanding = root.querySelector('ui-progress[variant="expanding"]');
+    root.querySelector('#cp-pg-expand')?.addEventListener('click', () => expanding?.expand());
+    root.querySelector('#cp-pg-collapse')?.addEventListener('click', () => expanding?.collapse());
+    root.querySelector('ui-progress[seek]')?.addEventListener('ui-progress-commit', (event) => {
+      ctx.log(`progress commit: ${event.detail.value.toFixed(2)}`);
+    });
+    root.querySelector('#cp-ct-bump')?.addEventListener('click', () => {
+      for (const counter of root.querySelectorAll('.cp-ct')) {
+        const format = counter.getAttribute('format');
+        counter.value = format === 'accuracy' ? (0.8 + Math.random() * 0.2).toFixed(4)
+          : Math.round(Math.random() * 900000);
+      }
+      ctx.log('counters rolled');
+    });
+    root.querySelector('#cp-gr-random')?.addEventListener('click', () => {
+      const values = Array.from({ length: 8 }, () => Math.round(Math.random() * 6 + 1));
+      for (const graph of root.querySelectorAll('.cp-gr')) {
+        if (graph.getAttribute('variant') === 'stars') graph.setAttribute('value', String((Math.random() * 10).toFixed(1)));
+        else graph.setAttribute('values', JSON.stringify(values));
+      }
+      ctx.log('graphs redrawn');
+    });
+
+    /* ---- 容器族 ---- */
+    const shakeBox = root.querySelector('#cp-mc-shake');
+    shakeBox?.addEventListener('click', () => shakeBox.shake());
+    root.querySelector('#cp-sec-main')?.addEventListener('ui-section-move', (event) => {
+      ctx.log(`section moved: ${event.detail.id}`);
+    });
+
+    /* ---- 状态菜单项 ---- */
+    const stateValue = root.querySelector('#cp-state-value');
+    root.querySelector('ui-menu[for="cp-state-open"]')?.addEventListener('ui-menu-state', (event) => {
+      stateValue.textContent = `state: ${event.detail.value}=${event.detail.state}`;
+      ctx.log(`menu state: ${event.detail.value} → ${event.detail.state}`);
+    });
 
     /* ---- ui-panel ---- */
     let panel = null;

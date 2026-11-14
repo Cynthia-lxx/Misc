@@ -116,7 +116,93 @@ button[data-variant='danger']:hover:not(:disabled) {
   animation: ui-button-flash var(--_normal) var(--easing-out, ease-out);
 }
 
+/* ---- 上游按钮变体族（全部映射为 variant 属性） ---- */
+
+/* ShearedButton.cs:18-22,95-127,174-198 —— 高 50、圆角 7、边框 2、斜切渐变、hover 150ms */
+:host([variant='sheared-button']) button,
+button[data-variant='sheared-button'] {
+  height: 50px;
+  border-radius: 7px;
+  border-width: 2px;
+  border-image: linear-gradient(var(--ui-surface-sunken, #222), var(--ui-text, #fff)) 1;
+  transform: skewX(-11.5deg);
+  transition-duration: 150ms;
+}
+:host([variant='sheared-button']) button > *,
+button[data-variant='sheared-button'] > * { transform: skewX(11.5deg); }
+
+/* DangerousRoundedButton.cs:9-15 —— Pink3 危险色（复用既有 danger 语义） */
+:host([variant='dangerous']) button,
+button[data-variant='dangerous'] { border-color: var(--danger, #cc3378); background: var(--danger, #cc3378); }
+
+/* GrayButton.cs:24-47 / IconButton.cs:12-14,62-84 —— 30x30 纯图标、圆角 10、hover 500ms */
+:host([variant='gray']) button, button[data-variant='gray'],
+:host([variant='icon']) button, button[data-variant='icon'] {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 10px;
+  font-size: 18px;
+  transition-duration: 500ms;
+}
+:host([variant='gray']) button,
+button[data-variant='gray'] { background: var(--gray-4, #444); }
+:host([variant='icon']:hover) button,
+button[data-variant='icon']:hover { color: var(--state-warning, #ffcc22); }
+
+/* TwoLayerButton.cs:29-39,172-189 —— 100→140 宽，600ms OutElastic 展开双层 */
+:host([variant='two-layer']) button,
+button[data-variant='two-layer'] {
+  width: 100px;
+  height: 50px;
+  transition: width 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+:host([variant='two-layer']:hover) button,
+button[data-variant='two-layer']:hover { width: 140px; }
+
+/* DialogButton.cs:23-46,264-286 —— shear 0.2、28px 粗体、hover 宽度 0.8→0.9 400ms */
+:host([variant='dialog']) button,
+button[data-variant='dialog'] {
+  height: 48px;
+  font-size: 28px;
+  font-weight: var(--font-weight-bold, 700);
+  transform: skewX(-11.5deg) scaleX(0.8);
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1), filter 400ms ease-out;
+}
+:host([variant='dialog']:hover) button,
+button[data-variant='dialog']:hover { transform: skewX(-11.5deg) scaleX(0.9); filter: brightness(1.1); }
+:host([variant='dialog']) button > *,
+button[data-variant='dialog'] > * { transform: skewX(11.5deg); }
+
+/* ShowMoreButton.cs:45-52,99-137 —— 圆形 + 双 chevron + 加载时文字 200ms 淡出 */
+:host([variant='show-more']) button,
+button[data-variant='show-more'] {
+  border-radius: 999px;
+  font-size: var(--font-size-caption2, 12px);
+  font-weight: var(--font-weight-semibold, 600);
+}
+:host([variant='show-more']) button::before,
+button[data-variant='show-more']::before { content: '⌄'; margin-right: 10px; }
+:host([variant='show-more']) button::after,
+button[data-variant='show-more']::after { content: '⌄'; margin-left: 10px; background: none; opacity: 1; transition: none; }
+
+/* LoadingButton.cs:17-31,44-50 —— 12x12 spinner + 自动忙碌、内容 200ms 淡出 */
+.spinner {
+  display: none;
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  border: 2px solid var(--ui-text, #fff);
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: ui-button-spin 700ms linear infinite;
+}
+@keyframes ui-button-spin { to { transform: rotate(360deg); } }
+:host([loading]) .spinner { display: inline-block; }
+:host([loading]) .label { opacity: 0.4; transition: opacity 200ms cubic-bezier(0.22, 1, 0.36, 1); }
+
 @media (prefers-reduced-motion: reduce) {
   button { transition-duration: 0ms; }
   button:active:not(:disabled) { transform: none; }
+  .spinner { animation-duration: 0ms; }
 }

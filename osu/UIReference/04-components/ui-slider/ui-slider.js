@@ -178,6 +178,8 @@ export class UiSliderElement extends HTMLElement {
 
   _sync() {
     this._current = this._quantize(Number(this.getAttribute('value')));
+    this.dataset.variant = this.getAttribute('variant') || 'rounded';
+    this.dataset.expanded = String(this.getAttribute('expanded') !== 'false');
     if (!this._defaultLocked) {
       // 双击重置的基准 = 挂载时的初始 value；后续 value 变化不得覆盖。
       this._default = this._current;
@@ -249,7 +251,8 @@ export class UiSliderElement extends HTMLElement {
   _format(value) {
     const step = this._step;
     const decimals = step < 1 ? Math.min(5, Math.ceil(-Math.log10(step))) : 0;
-    return value.toFixed(decimals);
+    // TimeSlider.cs:11-13 —— tooltip 追加 " ms"
+    return `${value.toFixed(decimals)}${this.dataset.variant === 'time' ? ' ms' : ''}`;
   }
 
   /** Notch-tick visual substitute: 30ms throttled nub pulse, stronger pitch idea dropped. */

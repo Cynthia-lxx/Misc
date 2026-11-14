@@ -118,6 +118,7 @@ export class UiTabsElement extends HTMLElement {
   }
 
   _sync() {
+    this.dataset.variant = this.getAttribute('variant') || 'standard';
     const active = this.value;
     this._tabs.forEach((tab, index) => {
       const button = this._row.children[index];

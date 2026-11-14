@@ -126,6 +126,29 @@ export class UiMenuElement extends HTMLElement {
       row.dataset.type = el.getAttribute('type') || 'standard';
       if (el.hasAttribute('disabled')) row.dataset.disabled = 'true';
 
+      // StatefulMenuItem / ToggleMenuItem / TernaryStateMenuItem：
+      // 10px 勾选槽 + 点击不关闭菜单（DrawableStatefulMenuItem.cs:15）
+      const itemType = row.dataset.type;
+      const stateful = itemType === 'toggle' || itemType === 'ternary';
+      if (stateful) {
+        const check = document.createElement('span');
+        check.className = 'check';
+        const states = itemType === 'toggle' ? ['false', 'true'] : ['false', 'indeterminate', 'true'];
+        const icons = { false: '', indeterminate: '◉', true: '✓' };
+        let state = el.getAttribute('state') || 'false';
+        const paint = () => { check.textContent = icons[state] ?? ''; };
+        paint();
+        row.appendChild(check);
+        row.addEventListener('click', () => {
+          state = states[(states.indexOf(state) + 1) % states.length];
+          paint();
+          this._dispatch('ui-menu-state', { value: el.getAttribute('value') ?? label, state, type: itemType });
+          // 关键：状态项不关闭菜单（CloseMenuOnClick = false）
+        });
+        container.appendChild(row);
+        continue;
+      }
+
       const text = document.createElement('span');
       text.className = 'text';
       const normal = document.createElement('span');

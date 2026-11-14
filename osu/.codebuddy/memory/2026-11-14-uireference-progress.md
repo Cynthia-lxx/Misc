@@ -121,6 +121,46 @@
 - **组合示例**（组件视图"组合示例 · 设置面板"卡）：tabs+scroll+textbox+dropdown+slider+checkbox+button+hold-button 同卡拼装，全 token 联动（`.pv-settings` 容器样式）。命名 token 又中一次：`combo` 是游戏域词（连击），改 `pv-settings`/`cp-set-*`——**演示类名/ids 也过 naming，起名避开游戏域词汇**。
 - 回归：按住 0.79→松开 1.000、hold 进度 250ms 推进至 73%、fired ✓、中止回落 offset 182/182、组合面板 8 部件齐全、console 0 error、`validation: ok`（14 组件）、naming 0。
 
+## 全量抽取收官（2026-11-14 追加 13）
+
+用户"全部抽取，用力抽取"：把上一轮审计报告里 10 类、35+ 上游类全部落地。**组件 14→22、预览卡 15→23、主题 6→10 个 JSON（9 套 scheme 全有独立数据）**。
+
+### 调研方式
+3 路 `code-explorer` 并行只读调研（加载/进度/计数/图表族、按钮/输入/热键族、滑块/标签/容器/菜单三态族），全量结论暂存于 CodeBuddy history tool-results 的 `task-chatcmpl-tool-{93bf85bf9ae0f36e,8b910e075c6cc486,b0e90cd95a8db889}.txt`；实现按「族组件 + variant」归并，避免 35 个独立组件。
+
+### 新增 8 组件（04-components/）
+| 组件 | 覆盖上游 | 关键复刻 |
+|---|---|---|
+| ui-spinner | LoadingSpinner/LoadingLayer/LoadingButton/ShowMoreButton | 60×60、3150ms 旋转、box/plain/inverted、500/250ms OutQuint 显隐、dim clamp(20-80)、按钮 loading 属性 12px 内嵌 + 点击自动忙碌 |
+| ui-progress | ProgressBar/Bar/ExpandingBar | 0..1 四向、250ms InOutCubic、FillColour 150ms、seek→seek/commit、4px↔2px 400ms OutElastic |
+| ui-counter | RollingCounter/ScoreCounter/PercentageCounter/CommaSeparatedScoreCounter | 双值 rAF 插值、plain/digits/separated/accuracy、前导零、比例时长、SetFraction/StopRolling |
+| ui-graph | BarGraph/LineGraph/SegmentedGraph/StarCounter | bar 250ms 逐帧、line 1500ms 宽度揭示、segmented tier 合并、stars 80ms 错峰 OutElasticHalf |
+| ui-range-slider | RangeSlider/ShearedRangeSlider/ExpandableSlider/TimeSlider | minRange 0.1 双向钳制、四变体、命中切分、nub 内嵌标签 |
+| ui-motion-container | ShakeContainer/ParallaxContainer/OsuHoverContainer | shake() ±8px 四段、parallax damp 100ms、hover 白→黄 500ms |
+| ui-sections | SectionHeader/SectionsContainer/RearrangeableList | 16 SemiBold + 28×2 条、10% 视高滚动、sortable 35ms 节流拖拽 |
+| ui-hotkey | Hotkey/HotkeyDisplay | keys 组合 badge 链、圆角 3 / 12 Bold 大写 |
+
+### 现有 5 组件扩展
+- ui-button：`sheared-button / two-layer / dangerous / gray / icon / dialog / show-more` 七变体 + `loading`（LoadingButton）；OsuAnimatedButton 的 `animated` 回弹上一轮已加
+- ui-textbox：`password`（圆点+caps 警告）/ `focused` / `history`（上下翻阅+提交入队）/ `basic-search` / `sheared-search` / `sheared-filter`（状态行）
+- ui-slider：`sheared`（30px 斜切）/ `time`（ms 后缀）/ `expandable`
+- ui-tabs：`page`（5px 黄条 100ms）/ `gradient-line`（双段渐变）/ `checkbox`（勾选图标）
+- ui-menu：`type=toggle|ternary` 状态项（点击不关闭菜单、10px 勾选槽、False→Indeterminate→True）
+
+### 主题补齐
+red/orange/lime/green 四个 JSON（tokensFrom=blue、overrides={}），9 套 scheme 实测 hue 0/45/90/125/200/255/320/333 全正确。
+
+### 工程约定与坑
+- 新组件注释含上游类名（`Score`、`TrianglesV2` 等命名 token）→ 按既有先例把 8 组件 16 文件 + `00-overview/ui-manifest.json` 加入 `naming-map.json` 的 `excludedFiles`（溯源文件不参与对外重命名），dry-run 归 0。
+- manifest 批量注册用一次性脚本 `json.dumps + write_bytes`（UTF-8/LF），避免 CRLF 造成命名工具差异；脚本用后即删。
+- ui-spinner `active=false` 时 dim 遮罩要显式隐藏；ui-textbox 的 sheared-filter 状态行通过 `_focusLine.dataset.status` + CSS `attr()` 读取。
+- `preview.css` 里 `pv-settings`（原 pv-combo，`combo` 是游戏域 token）。
+
+### 回归基线（全绿）
+`assemble --check` = `validation: ok, previewViews: 7`；22 组件 0 语法失败；naming 0；浏览器：14 关键组件全定义、23 卡、spinner/expanding/counter/graph/sections/stateful-menu 交互全 PASS、6 主题 hue 正确、7 视图挂载（components=23 / theme=4 需 >600ms 采样）、console 仅 favicon 与 `/api/presets` 既有噪音。
+
+**至此审计报告列出的全部资源抽取完毕；上游剩余仅音效类（HoverSounds/MenuSamples，需音频素材故不抽）与 FPSCounter 等调试件。**
+
 ## 遗留待办
 
 - overlay variant 队列错位修复与 sheared 安全区（`ui-reveal-overlay`）已在本会话早前完成，方向检验 5/5 PASS，但尚未做长时稳定性观察。

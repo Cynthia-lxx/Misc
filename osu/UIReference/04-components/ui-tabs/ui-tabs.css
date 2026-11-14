@@ -73,6 +73,38 @@
 
 .tab:focus-visible { outline: var(--border-width, 2px) solid var(--ui-accent-strong, #66ccff); outline-offset: 2px; }
 
+/* ---- 标签变体族 ---- */
+/* PageTabControl.cs:29,40,63-85,88-126 —— 高 30、5px 黄底条、100ms 缩放指示 */
+:host([data-variant='page']) .tabs { height: 30px; }
+:host([data-variant='page']) .bar { height: 5px; background: var(--state-warning, #ffcc22); }
+:host([data-variant='page']) .bar { transition-duration: 100ms; }
+:host([data-variant='page']) .tab:hover .bar, :host([data-variant='page']) .tab[data-active='true'] .bar { transform: scaleY(1); }
+:host([data-variant='page']) .bar { transform: scaleY(0); transform-origin: bottom; }
+
+/* GradientLineTabControl.cs:39-71 —— 0.8 宽双段渐变的底部装饰线 */
+:host([data-variant='gradient-line']) { padding-bottom: 1px; }
+:host([data-variant='gradient-line']) .strip {
+  left: 10%;
+  right: 10%;
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ui-accent, #66ccff) 25%, var(--ui-accent, #66ccff) 75%, transparent);
+  opacity: 1;
+}
+:host([data-variant='gradient-line']) .bar { display: none; }
+
+/* OsuTabControlCheckbox.cs:49,92-96,126-140 —— 14px 勾选图标 + 1px 下划线 + 500ms */
+:host([data-variant='checkbox']) .tab { font-size: 14px; }
+:host([data-variant='checkbox']) .text::before {
+  content: '○';
+  display: inline-block;
+  width: 14px;
+  margin-right: 5px;
+  font-size: 14px;
+}
+:host([data-variant='checkbox']) .tab[data-active='true'] .text::before { content: '◉'; }
+:host([data-variant='checkbox']) .bar { height: 1px; }
+
 @media (prefers-reduced-motion: reduce) {
   .text, .bar, .strip { transition-duration: 0ms !important; }
 }

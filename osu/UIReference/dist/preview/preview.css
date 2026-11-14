@@ -199,6 +199,8 @@ button, select, input { font: inherit; color: inherit; }
   background: var(--pv-panel);
 }
 .pv-settings ui-scroll .pv-stack { padding: 12px 14px; }
+.pv-card [data-section] { padding: 4px 8px 10px; border-bottom: 1px solid var(--pv-line); }
+.pv-card [data-section] p { margin: 4px 0; }
 
 /* ---------- log panel ---------- */
 .pv-log-panel {

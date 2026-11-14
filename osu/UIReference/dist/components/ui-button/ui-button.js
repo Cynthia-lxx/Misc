@@ -33,7 +33,7 @@ const FALLBACK_STYLES = `
 
 export class UiButtonElement extends HTMLElement {
   static get observedAttributes() {
-    return ['label', 'variant', 'disabled', 'data-i18n-key', 'data-theme'];
+    return ['label', 'variant', 'disabled', 'data-i18n-key', 'data-theme', 'loading'];
   }
 
   constructor() {
@@ -48,10 +48,13 @@ export class UiButtonElement extends HTMLElement {
     this._button.setAttribute('type', 'button');
 
     const slot = document.createElement('slot');
+    this._spinner = document.createElement('span');
+    this._spinner.className = 'spinner';
+    this._spinner.setAttribute('aria-hidden', 'true');
     this._labelFallback = document.createElement('span');
     this._labelFallback.className = 'label';
     slot.appendChild(this._labelFallback);
-    this._button.appendChild(slot);
+    this._button.append(this._spinner, slot);
 
     this.shadowRoot.append(this._style, this._button);
 
@@ -75,6 +78,8 @@ export class UiButtonElement extends HTMLElement {
       // but nothing used to set it, so clicks appeared to do nothing.
       this.dataset.flash = '';
       window.setTimeout(() => { delete this.dataset.flash; }, 500);
+      // LoadingButton.cs:72-86：点击后自动进入忙碌态，防重复提交（show-more 语义）
+      if (this.getAttribute('variant') === 'show-more') this.setAttribute('loading', '');
       this.dispatchEvent(detail);
     };
     this._button.addEventListener('click', this._onPress);
@@ -161,7 +166,7 @@ export class UiButtonElement extends HTMLElement {
 
     const variant = this.getAttribute('variant') || 'default';
     this._button.dataset.variant = variant;
-    this._button.disabled = this.hasAttribute('disabled');
+    this._button.disabled = this.hasAttribute('disabled') || this.hasAttribute('loading');
     this._button.setAttribute('aria-disabled', String(this._button.disabled));
 
     if (label) {
