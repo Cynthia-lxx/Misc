@@ -143,11 +143,18 @@ function playEntrance(view, direction) {
   const scale = motionRate();
   if (scale <= 0) return;
   const dur = (ms) => Math.max(1, Math.round(ms * scale));
+  // 填充中的 transform 动画会让元素保持“计算值 ≠ none”，从而成为 position:fixed
+  // 后代（如 ui-reveal-overlay）的包含块——overlay 会贴到滚动内容顶部而非视口。
+  // 因此入场动画结束时立即 cancel，移除填充，让计算值回到 none。
+  const release = (animation) => {
+    if (!animation) return;
+    animation.finished.then(() => animation.cancel()).catch(() => {});
+  };
   // 1) 主机整体滑入（方向感知，ScreenStack push/pop）
-  animate(viewHost, [
+  release(animate(viewHost, [
     { opacity: 0, transform: `translateX(${46 * direction}px)` },
     { opacity: 1, transform: 'none' },
-  ], { duration: dur(340), easing: OUT_QUINT, fill: 'both' });
+  ], { duration: dur(340), easing: OUT_QUINT, fill: 'both' }));
 
   // 2) 卡片签名入场
   const cards = viewHost.querySelectorAll('.pv-card');
@@ -174,6 +181,7 @@ function playEntrance(view, direction) {
       { duration: dur(300), delay: per(40) * i, easing: OUT_QUINT }), {}),
   };
   (kinds[VIEW_META[view]?.enter] || kinds.rise)();
+  for (const card of cards) for (const anim of card.getAnimations()) release(anim);
 }
 
 async function renderRoute() {

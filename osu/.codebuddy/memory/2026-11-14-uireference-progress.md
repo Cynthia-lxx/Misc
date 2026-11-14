@@ -59,6 +59,26 @@
 - **两个新坑**：① `??` 与 `||` 链式混用是 SyntaxError（`a ?? (b) || c` 也报错），拆成多行赋值；② 演示数据里的 `value="multi"` 撞命名 token `"multi"→"group"`——演示/测试数据用词也要对照 naming-map。
 - 组件 8→10，组件视图 8 卡；`validation: ok`、naming 0、断言全绿（tabs 加粗/底栏渐入/strip 58px 跟随、cb 41px 中程宽/3 anims、i18n 标签热更新）。
 
+## overlay Replay 失效修复（2026-11-14 追加 5）
+
+用户报告"overlay 预览功能失效"。排查：open/close/变体切换/自动轮换/方向检验全部正常，**唯 Replay 重播入场 0 动画**。根因在 `_replayTask` 的 `open=false → void offsetWidth → open=true` 同帧重定向模式——浏览器把"过渡目标回到原值"判定为取消过渡而非重启动画（该模式自上一轮状态队列重写起就已埋雷，非新改动引入）。第一次修复（复用 _settleVariant 后同帧删 switching+置 open）仍被合并重算吞掉；最终方案是完整复用 open 的两段式：`_settleVariant()`（关过渡提交关闭态）→ `void offsetWidth + nextFrame` → 打开半程。回归：replay 6 动画 PASS、content 中程 y=642、5 variant 开合 + cycle 全 PASS。
+教训：**任何"重置后立刻回到同一状态"的过渡重播，必须隔着真实的样式变更事件帧提交中间态**，同帧合并会被 CSS 过渡取消机制吞掉；修复过渡类 bug 时直接复用已验证的路径（_settleVariant + open 半程），不要发明新的同帧技巧。
+
+## overlay 滚动定位劫持修复（2026-11-14 追加 6）
+
+用户报告：滚到最底后打开 overlay，它"躲在最上面"看不到——overlay 应相对整个视口。根因：路由入场动画（app.js `playEntrance`）对 `#pv-view` 用 `fill:'both'` 的 WAAPI transform 动画，**填充中的动画让计算 transform 保持 `matrix(1,0,0,1,0,0)`（≠ none），使 `#pv-view` 成为 position:fixed 后代（ui-reveal-overlay）的包含块**——fixed 变成相对滚动内容定位，overlay 停在内容区顶部（实测 scrollTop=1594 时 overlayTop=-1522）。修复：`release(anim)` 工具——动画 `finished.then(cancel)` 移除填充，主机滑入与 stagger 卡片动画全部接入；cancel 后计算值回到 `none`，包含块消失（实测滚到底 overlayTop=0/高 720，顶部打开与 replay 无回归）。
+要点：**对会承载 fixed 子元素（覆盖层/弹窗/tooltip）的滚动容器做 transform 动画时，绝不能让动画以 fill 常驻**——入场结束立即 cancel；cancel 的终值等于自然样式，视觉无跳变。另：改完 JS 后浏览器可能仍跑旧模块，验证前必须 `page.reload()`。
+
+## sheared 变体"整页"问题修正（2026-11-14 追加 7）
+
+用户指出 sheared overlay 糊成一整页。对照上游 `osu.Game/Overlays/Mods/ShearedOverlayContainer.cs:75-101` 确认偏差：上游结构 = 全屏暗化层（Background6 @ 0.75）+ 顶部斜切头部条（ShearedOverlayHeader.HEIGHT=70）+ header/footer 之间的主区内容，**不是一整块铺满全屏的斜面**。我们此前的 `.plate{inset:-12% -14%}` 以整屏为基准外扩，看起来就是一堵斜墙。修正（纯 CSS）：
+- `.dim`（sheared）→ `color-mix(surface 75%, transparent)`，页面透出；
+- `.plate` → `top:70px; left/right:0; bottom:0; margin:0 -14% -12%`（只盖主区，侧/底出血藏斜边），入场改从底部升起 `translateY(120%)→0`；
+- 头部条用 `.plate::before`（top:-34px, h:34px, 同坐标系继承斜切）随主体升起，不加新 DOM；
+- `.content` 同步 `top:70px`，安全区逻辑不变。
+实测：plateTop=70（视口 720）、两侧/底部出血、dim 75% 透明、replay 3 动画、正常关闭、naming 0。
+另记：playwright-cli 在 open 后紧跟 run-code 偶发执行上下文丢失（UtilityScript.evaluate 栈错），重开会话即恢复；结果通道不稳时用 `console.log` + `console` 命令取数。
+
 ## 遗留待办
 
 - overlay variant 队列错位修复与 sheared 安全区（`ui-reveal-overlay`）已在本会话早前完成，方向检验 5/5 PASS，但尚未做长时稳定性观察。

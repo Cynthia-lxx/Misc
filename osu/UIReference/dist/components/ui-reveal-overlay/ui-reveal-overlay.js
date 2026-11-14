@@ -173,16 +173,17 @@ export class UiRevealOverlayElement extends HTMLElement {
     return true;
   }
 
-  /** 重播入场：同帧内 open=false→true 的"重定向"会被浏览器当作回到原目标值而取消过渡，
-   * 必须像 _settleVariant 一样用 [data-switching] 关一帧过渡、先提交关闭态再打开。 */
+  /** 重播入场：同帧内 open=false→true 的"重定向"会被浏览器当作回到原目标值而取消过渡。
+   * 因此完全复用 open 的两段式：_settleVariant（关过渡提交关闭态）→ 逐帧 → 打开半程。 */
   async _replayTask() {
-    this.dataset.switching = 'true';
-    for (const animation of this.shadowRoot.getAnimations?.() || []) animation.cancel();
+    await this._settleVariant();
+
+    this._phase = 'opening';
+    this.dataset.visible = 'true';
     this.dataset.open = 'false';
     this._panel.dataset.open = 'false';
     void this._panel.offsetWidth;
     await nextFrame();
-    delete this.dataset.switching;
 
     this._opened = true;
     this._phase = 'open';

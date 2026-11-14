@@ -72,13 +72,18 @@
 :host([data-open='true']) .content { transform: translateY(0); }
 
 /* ---- sheared: shape and content are separate layers ----
- * The upstream ShearedOverlayContainer uses a ShearAligningWrapper to keep
- * content inside the slanted silhouette. Skewing the clipping container itself
- * would cut axis-aligned content at both slanted edges, so the slant lives on
- * a dedicated decorative plate while .content stays upright and unclipped. */
+ * Upstream ShearedOverlayContainer.cs:75-101 is NOT one giant slanted wall: it is a
+ * full-screen dim (Background6 @ 0.75), a sheared header bar on top
+ * (ShearedOverlayHeader.HEIGHT = 70) and a main content area between header and footer.
+ * So: dim covers the viewport, the sheared plate only covers the main area (top: 70px,
+ * inline bleed -14% / bottom bleed -12% to hide the slanted silhouette gaps), and the
+ * header bar is a ::before that rises together with the plate. */
 .plate { display: none; }
 
 :host([variant='sheared']) .waves { display: none; }
+:host([variant='sheared']) .dim {
+  background: color-mix(in srgb, var(--ui-surface, #2a2a2a) 75%, transparent);
+}
 :host([variant='sheared']) .panel {
   overflow: visible;
   background: transparent;
@@ -89,15 +94,29 @@
 :host([variant='sheared']) .plate {
   display: block;
   position: absolute;
-  inset: -12% -14%;
+  top: 70px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0 -14% -12%;
   background: var(--ui-surface-raised, #333);
   border-inline: 1px solid color-mix(in srgb, var(--ui-accent, #66ccff) 28%, transparent);
   box-shadow: 0 0 30px rgb(0 0 0 / 0.35);
-  transform: skewX(calc(var(--shear-deg) * -1)) translateY(-120%);
+  transform: skewX(calc(var(--shear-deg) * -1)) translateY(120%);
   opacity: 0;
   transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1), opacity 400ms cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
   z-index: 0;
+}
+/* 头部条：随主体一起从底部升起（处于主体坐标系内，天然继承斜切） */
+:host([variant='sheared']) .plate::before {
+  content: '';
+  position: absolute;
+  top: -34px;
+  left: 0;
+  right: 0;
+  height: 34px;
+  background: var(--ui-surface, #2a2a2a);
 }
 :host([variant='sheared'][data-open='true']) .plate {
   transform: skewX(calc(var(--shear-deg) * -1)) translateY(0);
@@ -106,6 +125,7 @@
 /* A real content safe area: inset from both slanted edges, never clipped. */
 :host([variant='sheared']) .content {
   --shear-safe: 14%;
+  top: 70px;
   transform: none;
   transition: none;
   overflow: auto;
