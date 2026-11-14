@@ -173,14 +173,24 @@ export class UiRevealOverlayElement extends HTMLElement {
     return true;
   }
 
-  _replayTask() {
+  /** 重播入场：同帧内 open=false→true 的"重定向"会被浏览器当作回到原目标值而取消过渡，
+   * 必须像 _settleVariant 一样用 [data-switching] 关一帧过渡、先提交关闭态再打开。 */
+  async _replayTask() {
+    this.dataset.switching = 'true';
     for (const animation of this.shadowRoot.getAnimations?.() || []) animation.cancel();
     this.dataset.open = 'false';
     this._panel.dataset.open = 'false';
     void this._panel.offsetWidth;
+    await nextFrame();
+    delete this.dataset.switching;
+
+    this._opened = true;
+    this._phase = 'open';
     this.dataset.open = 'true';
     this._panel.dataset.open = 'true';
-    this._phase = 'open';
+    this.dispatchEvent(new CustomEvent('ui-overlay-open', {
+      bubbles: true, composed: true, detail: { variant: this.variant },
+    }));
     return true;
   }
 

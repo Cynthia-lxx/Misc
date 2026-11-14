@@ -1,0 +1,223 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: UR
+      - generic [ref=e6]:
+        - text: UI Reference Kit
+        - generic [ref=e7]: preview / 2026-11-13
+    - navigation "Preview views" [ref=e8]:
+      - link "01 总览" [ref=e9] [cursor=pointer]:
+        - /url: "#/overview"
+        - generic [ref=e10]: "01"
+        - text: 总览
+      - link "02 主题 / 排版" [ref=e11] [cursor=pointer]:
+        - /url: "#/theme"
+        - generic [ref=e12]: "02"
+        - text: 主题 / 排版
+      - link "03 组件" [ref=e13] [cursor=pointer]:
+        - /url: "#/components"
+        - generic [ref=e14]: "03"
+        - text: 组件
+      - link "04 动效引擎" [ref=e15] [cursor=pointer]:
+        - /url: "#/motion"
+        - generic [ref=e16]: "04"
+        - text: 动效引擎
+      - link "05 图层编排" [ref=e17] [cursor=pointer]:
+        - /url: "#/layers"
+        - generic [ref=e18]: "05"
+        - text: 图层编排
+      - link "06 视觉效果" [ref=e19] [cursor=pointer]:
+        - /url: "#/effects"
+        - generic [ref=e20]: "06"
+        - text: 视觉效果
+      - link "07 数据 / 装配" [ref=e21] [cursor=pointer]:
+        - /url: "#/data"
+        - generic [ref=e22]: "07"
+        - text: 数据 / 装配
+    - generic [ref=e23]:
+      - generic [ref=e24]: preview server · :8190 · 63 files
+      - generic [ref=e27]: 12 API endpoints online
+      - generic [ref=e28]: MIT-derived · GPL-3.0 target
+  - main [ref=e29]:
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - heading "总览" [level=1] [ref=e32]
+        - paragraph [ref=e33]: 抽离成果全貌、许可边界、服务器状态与快速跳转
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - text: Theme
+          - combobox "Theme" [ref=e36] [cursor=pointer]:
+            - option "Red"
+            - option "Orange"
+            - option "Lime"
+            - option "Green"
+            - option "Aquamarine"
+            - option "Blue" [selected]
+            - option "Purple"
+            - option "Plum"
+            - option "Pink"
+        - generic [ref=e37]:
+          - text: Lang
+          - combobox "Lang" [ref=e38] [cursor=pointer]:
+            - option "en" [selected]
+            - option "zh-CN"
+        - generic [ref=e39]:
+          - text: Speed
+          - combobox "Speed" [ref=e40] [cursor=pointer]:
+            - option "0.5×"
+            - option "1×" [selected]
+            - option "1.5×"
+            - option "2×"
+        - 'button "Reduced motion: off" [ref=e42] [cursor=pointer]'
+        - button "Log 0" [ref=e46] [cursor=pointer]:
+          - generic:
+            - text: Log
+            - generic [ref=e47]: "3"
+    - generic [ref=e48]:
+      - generic [ref=e49]:
+        - generic [ref=e50]:
+          - heading "抽离成果速览" [level=2] [ref=e51]
+          - paragraph [ref=e52]:
+            - text: 静态资源包，无构建步骤；全部由
+            - code [ref=e53]: 10-templates/assemble.py
+            - text: 装配到
+            - code [ref=e54]: dist/
+            - text: 。
+          - generic [ref=e55]:
+            - term [ref=e56]: dist 文件
+            - definition [ref=e57]: "63"
+            - term [ref=e58]: 组件
+            - definition [ref=e59]: "7"
+            - term [ref=e60]: 主题方案
+            - definition [ref=e61]: "9"
+            - term [ref=e62]: 动效档案条目
+            - definition [ref=e63]: "140"
+            - term [ref=e64]: settings 项
+            - definition [ref=e65]: "16"
+            - term [ref=e66]: i18n 键
+            - definition [ref=e67]: "90"
+            - term [ref=e68]: Transform 文件（上游）
+            - definition [ref=e69]: "523"
+            - term [ref=e70]: Easing 类型（上游）
+            - definition [ref=e71]: "27"
+        - generic [ref=e72]:
+          - heading "服务器 / API" [level=2] [ref=e73]
+          - paragraph [ref=e74]:
+            - text: 预览服务器提供
+            - code [ref=e75]: /api/*
+            - text: 只读端点；无服务器时页面自动回退到 dist 内的静态 JSON。
+          - generic [ref=e76]: "{ \"ok\": true, \"host\": \"127.0.0.1\", \"port\": 8190, \"root\": \"P:\\\\Dev\\\\osu\\\\UIReference\", \"dist\": \"P:\\\\Dev\\\\osu\\\\UIReference\\\\dist\", \"files\": 63, \"python\": \"3.12.9\", \"endpoints\": [ \"/api/health\", \"/api/manifest\", \"/api/inventory\", \"/api/expansion\", \"/api/layers\", \"/api/motion\", \"/api/themes\", \"/api/settings\", \"/api/i18n/<lang>\", \"/api/audit\", \"/api/files\", \"/api/validate\" ], \"routes\": { \"/\": \"preview.html\", \"/classic\": \"index.html\" } }"
+          - heading "端点" [level=3] [ref=e77]
+          - generic [ref=e78]: /api/health /api/manifest /api/inventory /api/motion /api/themes /api/settings /api/i18n/<lang> /api/audit /api/files /api/validate
+        - generic [ref=e79]:
+          - heading "四层结构" [level=2] [ref=e80]
+          - paragraph [ref=e81]: 风格 → 组件 → 数据 → 装配，彼此以 JSON manifest 连接。
+          - generic [ref=e82]:
+            - term [ref=e83]: 风格/主题
+            - definition [ref=e84]: tokens.css + themes/*.json → themes.css（9 方案）
+            - term [ref=e85]: 组件
+            - definition [ref=e86]: 原生 ES module；Custom Elements / mount-unmount-setTheme
+            - term [ref=e87]: 动效
+            - definition [ref=e88]: motion.css + timeline.js + effects.js + motion-inventory.json
+            - term [ref=e89]: 视觉效果
+            - definition [ref=e90]: WebGL2 / Canvas 2D / CSS；shader 自写，未复制上游 GLSL
+            - term [ref=e91]: 数据
+            - definition [ref=e92]: manifest.json / settings.json / i18n / licence-audit.json
+            - term [ref=e93]: 装配
+            - definition [ref=e94]: assemble.py → dist/；preview_server.py 提供预览服务
+        - generic [ref=e95]:
+          - heading "许可边界" [level=2] [ref=e96]
+          - paragraph [ref=e97]: 上游 MIT → 目标仓库 GPL-3.0 单向兼容；MIT 声明必须保留。
+          - generic [ref=e98]:
+            - term [ref=e99]: 可用
+            - definition [ref=e100]: 9 类
+            - term [ref=e101]: 有条件
+            - definition [ref=e102]: 5 类
+            - term [ref=e103]: 排除
+            - definition [ref=e104]: 7 类
+            - term [ref=e105]: 义务
+            - definition [ref=e106]: 5 条
+            - term [ref=e107]: 声明文件
+            - definition [ref=e108]: dist/LICENSE-MIT.txt
+          - paragraph [ref=e109]: MIT 与 GPLv3 单向兼容：MIT 代码可并入 GPLv3 项目，合并作品整体按 GPL-3.0 分发；MIT 部分的版权与许可声明必须原样保留，不得改标为 GPL 或删除。
+      - generic [ref=e110]:
+        - heading "快速跳转" [level=2] [ref=e111]
+        - paragraph [ref=e112]:
+          - text: 数字键 1–6 可直接切换视图；
+          - code [ref=e113]: L
+          - text: 打开事件日志，
+          - code [ref=e114]: R
+          - text: 切换 reduced motion。
+        - generic [ref=e115]:
+          - button "主题 / 排版" [ref=e117] [cursor=pointer]
+          - button "组件" [ref=e121] [cursor=pointer]
+          - button "动效引擎" [ref=e125] [cursor=pointer]
+          - button "图层编排 · 138 项" [ref=e129] [cursor=pointer]
+          - button "视觉效果" [ref=e133] [cursor=pointer]
+          - button "数据 / 装配" [ref=e137] [cursor=pointer]
+          - button "旧版单页演示" [ref=e141] [cursor=pointer]
+      - generic [ref=e144]:
+        - heading "组件清单" [level=2] [ref=e145]
+        - table [ref=e146]:
+          - rowgroup [ref=e147]:
+            - row [ref=e148]:
+              - columnheader "ID" [ref=e149]
+              - columnheader "形态" [ref=e150]
+              - columnheader "挂载点" [ref=e151]
+              - columnheader "导出" [ref=e152]
+          - rowgroup [ref=e153]:
+            - row [ref=e154]:
+              - cell [ref=e155]:
+                - code [ref=e156]: ui-button
+              - cell "custom-element" [ref=e157]
+              - cell [ref=e158]:
+                - code [ref=e159]: "[data-ui-mount='button']"
+              - cell "default, UiButtonElement" [ref=e160]
+            - row [ref=e161]:
+              - cell [ref=e162]:
+                - code [ref=e163]: ui-panel
+              - cell "dom-factory" [ref=e164]
+              - cell [ref=e165]:
+                - code [ref=e166]: "[data-ui-mount='panel']"
+              - cell "mount, unmount, setTheme" [ref=e167]
+            - row [ref=e168]:
+              - cell [ref=e169]:
+                - code [ref=e170]: ui-action-rail
+              - cell "custom-element" [ref=e171]
+              - cell [ref=e172]:
+                - code [ref=e173]: "[data-ui-mount='menu-buttons']"
+              - cell "default, UiActionRailElement, setItems, setState, setTheme, unmount" [ref=e174]
+            - row [ref=e175]:
+              - cell [ref=e176]:
+                - code [ref=e177]: ui-reveal-overlay
+              - cell "custom-element" [ref=e178]
+              - cell [ref=e179]:
+                - code [ref=e180]: "[data-ui-mount='overlay']"
+              - cell "default, UiRevealOverlayElement, open, close, toggle, setTheme, unmount" [ref=e181]
+            - row [ref=e182]:
+              - cell [ref=e183]:
+                - code [ref=e184]: ui-layered-view
+              - cell "custom-element" [ref=e185]
+              - cell [ref=e186]:
+                - code [ref=e187]: "[data-ui-mount='layered-view']"
+              - cell "default, UiLayeredViewElement, open, close, toggle, replay, seek, setRate, setPreset, setLayerVisible, setTheme, unmount" [ref=e188]
+            - row [ref=e189]:
+              - cell [ref=e190]:
+                - code [ref=e191]: ui-textbox
+              - cell "custom-element" [ref=e192]
+              - cell [ref=e193]:
+                - code [ref=e194]: "[data-ui-mount='textbox']"
+              - cell "default, UiTextboxElement" [ref=e195]
+            - row [ref=e196]:
+              - cell [ref=e197]:
+                - code [ref=e198]: ui-slider
+              - cell "custom-element" [ref=e199]
+              - cell [ref=e200]:
+                - code [ref=e201]: "[data-ui-mount='slider']"
+              - cell "default, UiSliderElement" [ref=e202]
+      - generic [ref=e203]:
+        - heading "装配产物（前 40）" [level=2] [ref=e204]
+        - generic [ref=e205]: 04-components/ui-action-rail/ui-action-rail.css 04-components/ui-action-rail/ui-action-rail.js 04-components/ui-reveal-overlay/ui-reveal-overlay.css 04-components/ui-reveal-overlay/ui-reveal-overlay.js 05-motion/effect-inventory.json 05-motion/effects.js 05-motion/expansion-inventory.json 05-motion/layered-view.css 05-motion/layered-view.js 05-motion/layered-view.json 05-motion/motion.css 05-motion/motion.json 05-motion/timeline.js 06-visual-effects/compositions/entrance-timeline.js 06-visual-effects/compositions/status-pulse.css 06-visual-effects/compositions/status-pulse.js 06-visual-effects/geometry/edge-geometry.js 06-visual-effects/geometry/focus-mask.js 06-visual-effects/glow/glow.css 06-visual-effects/glow/glow.js 06-visual-effects/particles/particles.js 06-visual-effects/particles/presets.json LICENSE-MIT.txt components/ui-action-rail/ui-action-rail.css components/ui-action-rail/ui-action-rail.js components/ui-button/ui-button.css components/ui-button/ui-button.js components/ui-layered-view/ui-layered-view.css components/ui-layered-view/ui-layered-view.js components/ui-panel/ui-panel.css components/ui-panel/ui-panel.js components/ui-reveal-overlay/ui-reveal-overlay.css components/ui-reveal-overlay/ui-reveal-overlay.js components/ui-slider/ui-slider.css components/ui-slider/ui-slider.js components/ui-textbox/ui-textbox.css components/ui-textbox/ui-textbox.js i18n/en.json i18n/zh-CN.json index.html
+    - generic [ref=e206]:
+      - generic [ref=e207]: "view: overview"
+      - generic [ref=e208]: 63 dist files · hash-route · MIT-derived
