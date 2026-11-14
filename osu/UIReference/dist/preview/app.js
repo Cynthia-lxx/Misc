@@ -85,7 +85,11 @@ function setLang(code) {
   root.lang = code;
   const select = $('#pv-lang');
   if (select) select.value = code;
-  loadI18n(code).then((pack) => log(`language → ${code} (${Object.keys(pack || {}).length} keys)`));
+  loadI18n(code).then((pack) => {
+    // 通知带 data-i18n-key 的组件（ui-button / ui-textbox 等）重新解析文案。
+    document.dispatchEvent(new CustomEvent('ui-i18n-change', { detail: { lang: code } }));
+    log(`language → ${code} (${Object.keys(pack || {}).length} keys)`);
+  });
 }
 function setReduce(value) {
   state.reduce = Boolean(value);

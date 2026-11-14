@@ -159,12 +159,13 @@ button, select, input { font: inherit; color: inherit; }
 .pv-badge.ok { border-color: var(--state-success, #88da20); color: var(--state-success, #88da20); }
 .pv-badge.bad { border-color: var(--state-error, #ff6666); color: var(--state-error, #ff6666); }
 .pv-kv { display: grid; grid-template-columns: minmax(120px, auto) 1fr; gap: 4px 12px; font-size: var(--font-size-caption2, 12px); }
-.pv-kv dt { color: var(--pv-muted); }
-.pv-kv dd { margin: 0; font-variant-numeric: tabular-nums; }
-.pv-table { width: 100%; border-collapse: collapse; font-size: var(--font-size-caption2, 12px); }
-.pv-table th, .pv-table td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--pv-line); vertical-align: top; }
+.pv-kv dt { color: var(--pv-muted); overflow-wrap: anywhere; }
+.pv-kv dd { margin: 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.pv-table { width: 100%; max-width: 100%; border-collapse: collapse; font-size: var(--font-size-caption2, 12px); }
+/* 自适应列宽：不可断的长 token（--theme-hue 等）在列内自动换行，不再撑破卡片边界 */
+.pv-table th, .pv-table td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--pv-line); vertical-align: top; overflow-wrap: anywhere; }
 .pv-table th { color: var(--pv-muted); font-weight: var(--font-weight-semibold, 600); }
-.pv-table td code { font-size: var(--font-size-caption2, 12px); color: var(--pv-accent); }
+.pv-table td code { font-size: var(--font-size-caption2, 12px); color: var(--pv-accent); overflow-wrap: anywhere; }
 
 .pv-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 8px; }
 .pv-swatch { border: 1px solid var(--pv-line); border-radius: 7px; overflow: hidden; font-size: var(--font-size-caption2, 12px); }

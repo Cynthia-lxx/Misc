@@ -3,6 +3,9 @@ import { escapeHtml, buttonRow, on, setStatus, table } from './views.js';
 import '../components/ui-button/ui-button.js';
 import '../components/ui-textbox/ui-textbox.js';
 import '../components/ui-slider/ui-slider.js';
+import '../components/ui-dropdown/ui-dropdown.js';
+import '../components/ui-tabs/ui-tabs.js';
+import '../components/ui-checkbox/ui-checkbox.js';
 import { mount as mountPanel } from '../components/ui-panel/ui-panel.js';
 import '../04-components/ui-action-rail/ui-action-rail.js';
 import '../04-components/ui-reveal-overlay/ui-reveal-overlay.js';
@@ -67,6 +70,47 @@ export default {
             <ui-slider min="0" max="100" value="30" disabled></ui-slider>
           </div>
           <div class="pv-row"><span class="pv-note" id="cp-sl-status">changes: 0</span></div>
+        </section>
+
+        <section class="pv-card">
+          <h2>ui-dropdown</h2>
+          <p>菜单 300ms OutQuint 淡入+高度过渡、悬停条 100ms 入 / 600ms 出、悬停 chevron 滑入、头部 chevron 翻转、方向键预选 / Enter 选择 / Esc 关闭、长标签截断省略。</p>
+          <div class="pv-row">
+            <ui-dropdown id="cp-dd-main" placeholder="choose…">
+              <ui-option value="wave" label="Wave 四层旋转"></ui-option>
+              <ui-option value="sheared" label="Sheared 斜切"></ui-option>
+              <ui-option value="slide-x" label="Slide-X 侧栏"></ui-option>
+              <ui-option value="pop" label="Pop 环形弹性揭示"></ui-option>
+            </ui-dropdown>
+            <span class="pv-badge" id="cp-dd-value">value: —</span>
+            <ui-dropdown disabled placeholder="disabled"></ui-dropdown>
+          </div>
+        </section>
+
+        <section class="pv-card">
+          <h2>ui-tabs</h2>
+          <p>悬停/激活底栏 1px 淡入 500ms OutQuint、激活加粗白字 / 未激活 accent 字、<code>strip</code> 属性启用底线跟随、方向键 / Home / End。</p>
+          <div class="pv-row">
+            <ui-tabs id="cp-tabs-main" value="all" strip>
+              <ui-tab value="all" label="All"></ui-tab>
+              <ui-tab value="recent" label="Recently Played"></ui-tab>
+              <ui-tab value="favourite" label="Favourites"></ui-tab>
+              <ui-tab value="group" label="Group"></ui-tab>
+            </ui-tabs>
+          </div>
+          <div class="pv-row"><span class="pv-badge" id="cp-tabs-value">value: all</span></div>
+        </section>
+
+        <section class="pv-card">
+          <h2>ui-checkbox</h2>
+          <p>nub 靠右、选中 OutElasticHalf 弹出（width 38→50 / 内环 3→8.5）、未选 OutQuint 收回、悬停辉光、空格 / 回车切换。</p>
+          <div class="pv-row">
+            <ui-checkbox id="cp-cb-main" label="Parallax" checked></ui-checkbox>
+            <ui-checkbox label="Interface voices"></ui-checkbox>
+            <ui-checkbox label="Disabled" disabled checked></ui-checkbox>
+            <ui-checkbox data-i18n-key="ui.rotate_cursor"></ui-checkbox>
+          </div>
+          <div class="pv-row"><span class="pv-badge" id="cp-cb-value">checked: true</span></div>
         </section>
 
         <section class="pv-card">
@@ -161,6 +205,29 @@ export default {
       const nubAnims = slider.shadowRoot.querySelector('.nub').getAnimations().length;
       sliderStatus.textContent = `changes: ${sliderChanges} · nub anims: ${nubAnims}`;
       ctx.log(`slider → ${event.detail.value}`);
+    });
+
+    /* ---- ui-dropdown ---- */
+    const dropdown = root.querySelector('#cp-dd-main');
+    const ddValue = root.querySelector('#cp-dd-value');
+    dropdown.addEventListener('ui-select', (event) => {
+      ddValue.textContent = `value: ${event.detail.value}`;
+      ddValue.className = 'pv-badge ok';
+      ctx.log(`dropdown select: ${event.detail.value}`);
+    });
+
+    /* ---- ui-tabs / ui-checkbox ---- */
+    const tabs = root.querySelector('#cp-tabs-main');
+    const tabsValue = root.querySelector('#cp-tabs-value');
+    tabs.addEventListener('ui-select', (event) => {
+      tabsValue.textContent = `value: ${event.detail.value}`;
+      ctx.log(`tabs select: ${event.detail.value}`);
+    });
+    const checkbox = root.querySelector('#cp-cb-main');
+    const cbValue = root.querySelector('#cp-cb-value');
+    checkbox.addEventListener('ui-change', (event) => {
+      cbValue.textContent = `checked: ${event.detail.checked}`;
+      ctx.log(`checkbox → ${event.detail.checked}`);
     });
 
     /* ---- ui-panel ---- */

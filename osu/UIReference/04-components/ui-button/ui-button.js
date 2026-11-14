@@ -83,10 +83,14 @@ export class UiButtonElement extends HTMLElement {
   connectedCallback() {
     this._loadStyles();
     this._sync();
+    // 语言包切换后重解析 data-i18n-key 标签（宿主 app 分发 ui-i18n-change）。
+    this._onI18nChange = () => this._sync();
+    document.addEventListener('ui-i18n-change', this._onI18nChange);
   }
 
   disconnectedCallback() {
     this._button.removeEventListener('click', this._onPress);
+    document.removeEventListener('ui-i18n-change', this._onI18nChange);
   }
 
   attributeChangedCallback() {

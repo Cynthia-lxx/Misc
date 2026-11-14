@@ -253,6 +253,82 @@
         "osu.Game/Graphics/UserInterface/OsuSliderBar.cs:61-86"
       ],
       "note": "滑杆：accent/背景双箱轨道、nub 250ms OutQuint 跟随、hover/drag 辉光（40ms 闪 + 800ms 回落）、30ms 节流 tick 脉冲、双击恢复默认、方向键/翻页键/Shift 大步进"
+    },
+    {
+      "id": "ui-dropdown",
+      "kind": "custom-element",
+      "tag": "ui-dropdown",
+      "files": {
+        "js": "04-components/ui-dropdown/ui-dropdown.js",
+        "css": "04-components/ui-dropdown/ui-dropdown.css"
+      },
+      "mount": "[data-ui-mount='dropdown']",
+      "settings": [
+        "theme.scheme",
+        "motion.reduce",
+        "ui.hoverFeedback",
+        "motion.duration.transition"
+      ],
+      "i18nKeys": [],
+      "exports": [
+        "default",
+        "UiDropdownElement"
+      ],
+      "source": [
+        "osu.Game/Graphics/UserInterface/OsuDropdown.cs:79-127,247-254,326-335,346-462"
+      ],
+      "note": "下拉：菜单 300ms OutQuint 淡入+高度过渡、悬停条 100ms 入/600ms 出、悬停 chevron -3px 滑入、头部 chevron 纵向翻转、方向键预选/Enter 选择/Esc 关闭、选项标签截断省略"
+    },
+    {
+      "id": "ui-tabs",
+      "kind": "custom-element",
+      "tag": "ui-tabs",
+      "files": {
+        "js": "04-components/ui-tabs/ui-tabs.js",
+        "css": "04-components/ui-tabs/ui-tabs.css"
+      },
+      "mount": "[data-ui-mount='tabs']",
+      "settings": [
+        "theme.scheme",
+        "motion.reduce",
+        "ui.hoverFeedback",
+        "motion.duration.transition"
+      ],
+      "i18nKeys": [],
+      "exports": [
+        "default",
+        "UiTabsElement"
+      ],
+      "source": [
+        "osu.Game/Graphics/UserInterface/OsuTabControl.cs:31-53,88-101,121-146,177-213"
+      ],
+      "note": "选项卡：间距 10、文字 14px 上下边距 5、悬停/激活底栏 1px 淡入 500ms OutQuint、激活加粗白字/未激活 accent 字、strip 底线宽度 500ms OutQuint 跟随（strip 属性启用）、方向键/Home/End"
+    },
+    {
+      "id": "ui-checkbox",
+      "kind": "custom-element",
+      "tag": "ui-checkbox",
+      "files": {
+        "js": "04-components/ui-checkbox/ui-checkbox.js",
+        "css": "04-components/ui-checkbox/ui-checkbox.css"
+      },
+      "mount": "[data-ui-mount='checkbox']",
+      "settings": [
+        "theme.scheme",
+        "motion.reduce",
+        "ui.hoverFeedback",
+        "motion.duration.fast"
+      ],
+      "i18nKeys": [],
+      "exports": [
+        "default",
+        "UiCheckboxElement"
+      ],
+      "source": [
+        "osu.Game/Graphics/UserInterface/OsuCheckbox.cs:42-113",
+        "osu.Game/Graphics/UserInterface/Nub.cs:82-105,162-178"
+      ],
+      "note": "开关：nub 靠右（宽 50 + 间距 10）、选中 width 1.0/border 8.5 OutElasticHalf 200ms、未选 width 0.75/border 3 OutQuint 200ms、悬停辉光、切换脉冲、空格/回车切换、role=switch"
     }
   ],
   "motion": {
