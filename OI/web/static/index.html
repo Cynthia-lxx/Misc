@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="vendor/glow.css">
   <link rel="stylesheet" href="vendor/status-pulse.css">
   <link rel="stylesheet" href="console.css">
+  <link rel="stylesheet" href="analyze.css">
 </head>
 <body>
 <div class="oc-shell">
@@ -24,8 +25,9 @@
     <nav class="oc-nav" id="nav" aria-label="控制台视图">
       <a href="#workbench" data-view="workbench" class="is-active"><span class="oc-nav-idx">01</span><span>工作台</span><span class="oc-nav-key">W</span></a>
       <a href="#history" data-view="history"><span class="oc-nav-idx">02</span><span>会话历史</span><span class="oc-nav-key">H</span></a>
-      <a href="#settings" data-view="settings"><span class="oc-nav-idx">03</span><span>设置</span><span class="oc-nav-key">S</span></a>
-      <a href="#cheatsheet" data-view="cheatsheet"><span class="oc-nav-idx">04</span><span>命令速查</span><span class="oc-nav-key">?</span></a>
+      <a href="#analysis" data-view="analysis"><span class="oc-nav-idx">03</span><span>分析</span><span class="oc-nav-key">A</span></a>
+      <a href="#settings" data-view="settings"><span class="oc-nav-idx">04</span><span>设置</span><span class="oc-nav-key">S</span></a>
+      <a href="#cheatsheet" data-view="cheatsheet"><span class="oc-nav-idx">05</span><span>命令速查</span><span class="oc-nav-key">?</span></a>
     </nav>
 
     <div class="oc-side-foot">
@@ -152,6 +154,7 @@
                 <ui-button id="copy-btn" label="复制代码"></ui-button>
                 <ui-button id="save-btn" label="保存 .cpp"></ui-button>
                 <ui-button id="download-btn" label="下载"></ui-button>
+                <ui-button id="analyze-btn" label="分析此代码"></ui-button>
               </div>
               <div class="oc-inline-path">
                 <input type="text" id="save-name" value="solution.cpp" placeholder="solution.cpp（相对工作区，或绝对路径）">
@@ -183,6 +186,90 @@
             </div>
           </div>
           <div class="oc-history-list" id="history-list"></div>
+        </div>
+      </section>
+
+      <!-- ============================ 分析 ============================ -->
+      <section class="oc-view-panel is-hidden" data-panel="analysis">
+        <div class="oc-stack">
+          <div class="oc-card">
+            <div class="an-source-row">
+              <label>来源
+                <select id="an-source">
+                  <option value="output">当前输出</option>
+                  <option value="workspace">工作区题解</option>
+                  <option value="path">指定路径</option>
+                </select>
+              </label>
+              <select id="an-file" class="is-hidden"></select>
+              <span class="an-inline-path is-hidden" id="an-path-wrap"><input type="text" id="an-path" placeholder="如 P1007.cpp（相对工作区）"></span>
+              <ui-button id="an-run" variant="sheared" label="分析"></ui-button>
+              <ui-button id="an-rerun" label="重新分析"></ui-button>
+              <ui-button id="an-cache-clear" label="清缓存"></ui-button>
+              <label class="oc-switch">
+                <input type="checkbox" id="an-measure">
+                <span class="oc-switch-nub"></span>
+                <span>实测</span>
+              </label>
+              <span class="an-spacer"></span>
+              <span class="oc-badge" id="an-cache-badge">未分析</span>
+              <ui-button id="an-ai-toggle" label="AI: 开"></ui-button>
+              <span class="oc-badge" id="an-budget">额度 0/2 当量</span>
+            </div>
+            <div class="an-stdin-row is-hidden" id="an-stdin-row">
+              <textarea id="an-stdin" spellcheck="false" placeholder="样例输入 stdin（可选，实测时喂给程序）…"></textarea>
+            </div>
+          </div>
+
+          <div class="oc-card an-verdict">
+            <div class="an-verdict-main">
+              <span class="an-verdict-badge unknown" id="an-verdict-badge">?</span>
+              <div class="an-verdict-text">
+                <h2 id="an-verdict-title">尚未分析</h2>
+                <p id="an-verdict-reason">选择来源后点击「分析」；无法静态确定的内容会如实标注 unknown。</p>
+              </div>
+            </div>
+            <div class="an-overview" id="an-overview">
+              <div><b>—</b><span>峰值内存</span></div>
+              <div><b>—</b><span>复杂度</span></div>
+              <div><b>—</b><span>风格问题</span></div>
+              <div><b>—</b><span>性能提示</span></div>
+            </div>
+          </div>
+
+          <div class="an-grid" id="an-dims"></div>
+
+          <div class="oc-card">
+            <div class="oc-card-head">
+              <div><h2>实测</h2><p>编译与运行由工作区内置 MinGW64（GCC 4.9.2）完成，限时并采样峰值内存。</p></div>
+              <span class="oc-badge" id="an-toolchain-badge">…</span>
+              <span class="oc-badge" id="an-measure-badge">未分析</span>
+            </div>
+            <dl class="oc-kv" id="an-measure-kv"></dl>
+            <details class="an-details">
+              <summary>编译 / 运行日志</summary>
+              <pre class="oc-code an-log" id="an-measure-log"></pre>
+            </details>
+          </div>
+
+          <div class="oc-card">
+            <div class="oc-card-head">
+              <div><h2>AI 汇总</h2><p>每次分析自动一次短汇总：单轮、不携带任何对话历史、只传结构化摘要。</p></div>
+              <span class="oc-badge" id="an-ai-badge">待分析</span>
+            </div>
+            <ul class="an-ai-list" id="an-ai-list"></ul>
+            <div class="an-budget-bar"><i id="an-budget-fill"></i></div>
+            <p class="an-budget-note" id="an-budget-note">单次汇总消耗 0.1 次代码生成当量，上限 2 当量。</p>
+          </div>
+
+          <div class="oc-card">
+            <div class="oc-card-head">
+              <div><h2>代码证据</h2><p>命中行有左侧色条，点击指标里的行号可定位。</p></div>
+              <span class="oc-badge" id="an-evidence-badge"></span>
+            </div>
+            <pre class="oc-code an-code" id="an-code"></pre>
+            <div class="an-assumptions is-hidden" id="an-assumptions"></div>
+          </div>
         </div>
       </section>
 
@@ -240,7 +327,7 @@
                 <tr><td><code>/file [路径]</code></td><td>读取路径 / 载入文件</td><td>相对路径基于工作区</td></tr>
                 <tr><td><code>/save [路径]</code></td><td>保存 .cpp</td><td>自动补 .cpp 后缀与创建目录</td></tr>
                 <tr><td><code>/exit /q</code></td><td>关闭标签页</td><td>服务由 Ctrl+C 停止</td></tr>
-                <tr><td>直接输入文本</td><td>题面输入框 → 生成</td><td>取消勾选「新话题」即延续上下文</td></tr>
+                <tr><td>（新增）</td><td>分析 → 分析</td><td>内存 / 复杂度 / 风格冗余 / 性能体检；可选实测（内置 MinGW64）；每次分析自动一次短 AI 汇总</td></tr>
               </tbody>
             </table>
           </div>
@@ -250,14 +337,15 @@
               <dl class="oc-kv">
                 <dt>Ctrl / ⌘ + Enter</dt><dd>生成代码</dd>
                 <dt>Esc</dt><dd>停止生成 / 关闭日志</dd>
-                <dt>W / H / S / ?</dt><dd>切换视图（输入框外）</dd>
+                <dt>W / H / A / S / ?</dt><dd>切换视图（输入框外）</dd>
                 <dt>Ctrl + L</dt><dd>打开 / 关闭事件日志</dd>
               </dl>
             </div>
             <div class="oc-card">
               <div class="oc-card-head"><div><h2>关于</h2></div></div>
               <p class="oc-about">纯本地服务：Python 标准库 <code>http.server</code> + <code>openai</code> SDK，零新增依赖、零构建步骤。服务仅监听 <code>127.0.0.1</code>，配置与历史存于用户主目录。</p>
-              <p class="oc-about">界面样式参考 UI Reference Kit（MIT 派生，见 <code>vendor/LICENSE-MIT.txt</code>）：配色/排版/动效 token、9 套主题与 <code>ui-button</code> 组件。未使用任何品牌资源或字体二进制。</p>
+              <p class="oc-about">分析能力全部本地执行：内存/复杂度/风格/性能四类静态估算 + 可选的内置 MinGW64 编译实测；AI 仅在分析后做一次限量短汇总。分析指标不外发。</p>
+              <p class="oc-about">界面样式参考 UI Reference Kit（MIT 派生，见 <code>vendor/LICENSE-MIT.txt</code>）：配色/排版/动效 token、9 套主题与 <code>ui-button</code> 组件。分析视图信息架构参考 ComfyDL_UI profiling（三色判定、unknown 诚实标注、手动触发 + 缓存、master switch）。</p>
             </div>
           </div>
         </div>
@@ -286,5 +374,6 @@
 
 <script type="module" src="vendor/components/ui-button/ui-button.js"></script>
 <script type="module" src="console.js"></script>
+<script type="module" src="analyze.js"></script>
 </body>
 </html>

@@ -30,7 +30,7 @@ SYSTEM = (
 
 class Budget:
     def __init__(self):
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()  # re-entrant: set_enabled/reserve call state() while held
         self.enabled = True
         self.cap = DEFAULT_CAP
         self.used = 0.0
@@ -128,7 +128,12 @@ def summarize(report, config: dict) -> dict:
         return {"status": "skipped", "reason": "no_api_key", "text": "", "budget": state}
 
     try:
-        client = OpenAI(api_key=api_key, base_url=config.get("base_url"), timeout=REQUEST_TIMEOUT)
+        client = OpenAI(
+            api_key=api_key,
+            base_url=config.get("base_url"),
+            timeout=REQUEST_TIMEOUT,
+            max_retries=0,  # single-shot by design; retries would stretch the wait
+        )
         response = client.chat.completions.create(
             model=config.get("model") or "deepseek-chat",
             messages=[

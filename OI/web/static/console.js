@@ -581,6 +581,7 @@ function init() {
   const toggleLog = () => byId('log-panel').classList.toggle('is-open');
   bind('log-btn', toggleLog);
   bind('log-close', () => byId('log-panel').classList.remove('is-open'));
+  bind('analyze-btn', () => window.dispatchEvent(new CustomEvent('oi-analyze-current')));
   bind('log-clear', () => {
     byId('log-list').replaceChildren();
     state.logCount = 0;

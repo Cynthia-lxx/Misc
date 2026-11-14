@@ -67,9 +67,19 @@
 - 报告按 `sha256(code)+规则版本+实测标志` 缓存（进程内上限 8，带 error 不缓存）；编译产物与临时文件用完清理。
 - 日志复用现有 `log()` 与事件日志面板；不打印 API Key、不整份转储代码与编译 stderr。
 
-## 验证与踩坑（待实施后补充）
+## 验证与踩坑（2026-11-15 全部完成）
 
-- [ ] 内置工具链编译运行 `#include<bits/stdc++.h>` 通过
-- [ ] 工作区 `P*.cpp` 样本四类报告 + unknown 分支 + 缓存命中
-- [ ] 浏览器端到端（playwright-cli + `--browser=msedge`）分析视图、证据定位、AI 降级、9 主题、0 控制台错误
-- [ ] 隔离 HOME 测试时 JSON 必须**无 UTF-8 BOM**
+- [x] 内置工具链编译运行 `#include<bits/stdc++.h>` 通过：P1007.cpp 实测编译 2315 ms、运行 20.4 ms、峰值 1.95 MiB、退出码 0、text/data/bss 581368/91620/5888 B（浏览器端亦验证）。
+- [x] 工作区样本四类报告：`/api/analyze` 对 P1007.cpp 返回 verdict=yellow、四维齐全（memory/complexity/style/performance，8 findings）、unknown=1（memory.peak_bytes no_budget）；重复请求缓存命中；`DELETE /api/analyze/cache` 正常。
+- [x] AI 汇总链路：`POST /api/analyze/summary` 真实返回 4 条中文建议；按 digest 去重（第二次 status=cached）；disabled/budget_exhausted/skipped 降级路径均验证；预算记账 0.1 当量/次，cap 往返（2↔5）正常。
+- [x] 浏览器端到端（playwright-cli `--browser=msedge`，本机无 Chrome）：导航第 5 项、来源三选、报告渲染（判定卡/四维指标表/预算条/假设行/证据区 6 行命中/实测卡/AI 汇总列表）、证据定位点击 ln=10 → 对应行 is-flash、主题切换（blue→purple→red）即时生效且判定色固定为语义色（rgb(255,204,34) 不随主题）、reduced-motion 开关往返（data-reduce-motion）、控制台 **0 错误 0 警告**、工作台「分析此代码」入口点击后自动跳转 `#analysis` 并以 output 来源完成分析。
+- [x] 隔离 HOME 测试时 JSON 必须**无 UTF-8 BOM**（沿用首版结论，本轮未再触发）。
+
+### 本轮踩坑（重要）
+
+1. **Budget 自死锁（已修复）**：`ai_summary.py` 的 `Budget.set_enabled/set_cap/reserve` 在 `with self._lock:` 内调用 `state()`，后者再次抢同一把 `threading.Lock`（非重入）→ 调用过一次 `/api/analyze/enabled` 后所有要读预算状态的请求（包括每次 analyze）永久挂起。**修复：`_lock` 改 `threading.RLock`**。定位手段：`py-spy dump --pid`（`pip install py-spy`）直接看线程栈，比读代码猜快得多。
+2. **OpenAI SDK 默认重试 2 次**：即使传了 `timeout=20`，最坏等待 ~60s 超出命令超时。修复：`OpenAI(..., max_retries=0)`，保证汇总单发短超时。
+3. **PowerShell 引号陷阱**：单引号字符串里的 `\"` 不会还原成 `"`，导致 curl/Invoke-WebRequest 发出的 JSON 全是非法的。凡带 JSON body 的命令一律落盘 `--data-binary "@file"` 或用 python `urllib` 探针脚本。
+4. **venv 启动器换进程**：`OIenv\Scripts\python.exe` 启动后子进程命令行显示为 `C:\Python312\python.exe`（有 re-exec），Start-Process 的 stdout/stderr 重定向文件可能不落盘；判断服务状态以端口探测为准。
+5. **playwright-cli 快照 ref 会随重渲染失效**：报告渲染后旧 ref（如 e458）可能错位点到别的元素；回归验证一律用 `getElementById(...).click()` 而 ref 只用于初次定位。
+6. **商店版 python 存根**：`python` 解析到 Store 存根时 Start-Process 静默不监听；服务启动统一用 `P:\Dev\OI\OIenv\Scripts\python.exe`。
