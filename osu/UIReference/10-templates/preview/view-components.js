@@ -8,6 +8,7 @@ import '../components/ui-tabs/ui-tabs.js';
 import '../components/ui-checkbox/ui-checkbox.js';
 import '../components/ui-scroll/ui-scroll.js';
 import '../components/ui-breadcrumb/ui-breadcrumb.js';
+import '../components/ui-menu/ui-menu.js';
 import { mount as mountPanel } from '../components/ui-panel/ui-panel.js';
 import '../04-components/ui-action-rail/ui-action-rail.js';
 import '../04-components/ui-reveal-overlay/ui-reveal-overlay.js';
@@ -139,6 +140,27 @@ export default {
           <div class="pv-row"><span class="pv-badge" id="cp-crumb-value">value: all</span></div>
         </section>
 
+        <section class="pv-card" id="cp-menu-card">
+          <h2>ui-menu</h2>
+          <p>280ms OutQuint 淡入开 / 50ms 延迟淡出关、子菜单右上锚定（放不下自动翻面）、悬停 80ms 常规↔加粗互换、destructive/highlighted 文字色、disabled 0.2、分隔条、Esc / 点击外部关闭。</p>
+          <div class="pv-row">
+            <ui-button id="cp-menu-open" label="open menu"></ui-button>
+            <ui-menu for="cp-menu-open">
+              <ui-item value="copy" label="Copy" hotkey="Ctrl+C"></ui-item>
+              <ui-item value="rename" label="Rename" hotkey="F2"></ui-item>
+              <ui-item value="theme" label="Theme">
+                <ui-item value="dark" label="Dark"></ui-item>
+                <ui-item value="light" label="Light"></ui-item>
+                <ui-item value="nightcore" label="Nightcore" type="highlighted"></ui-item>
+              </ui-item>
+              <ui-spacer></ui-spacer>
+              <ui-item value="disabled-demo" label="Unavailable" disabled></ui-item>
+              <ui-item value="delete" label="Delete" type="destructive"></ui-item>
+            </ui-menu>
+          </div>
+          <div class="pv-row"><span class="pv-badge" id="cp-menu-value">selected: —</span></div>
+        </section>
+
         <section class="pv-card">
           <h2>ui-panel</h2>
           <p>纯 DOM 工厂，导出 <code>mount / unmount / setTheme</code>；选中发光与节拍脉冲。</p>
@@ -262,6 +284,14 @@ export default {
     breadcrumb.addEventListener('ui-select', (event) => {
       crumbValue.textContent = `value: ${event.detail.value}`;
       ctx.log(`breadcrumb select: ${event.detail.value}`);
+    });
+
+    /* ---- ui-menu ---- */
+    const contextMenu = root.querySelector('ui-menu');
+    const ctxMenuValue = root.querySelector('#cp-menu-value');
+    contextMenu.addEventListener('ui-select', (event) => {
+      ctxMenuValue.textContent = `selected: ${event.detail.value}`;
+      ctx.log(`menu select: ${event.detail.value}`);
     });
 
     /* ---- ui-panel ---- */

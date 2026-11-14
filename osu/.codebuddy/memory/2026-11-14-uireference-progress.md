@@ -98,6 +98,20 @@
 - **新坑（升级时序）**：innerHTML 挂载已定义的自定义元素时，`attributeChangedCallback` 在 `connectedCallback` 之前触发且元素已连接——**集合类字段（`_items` 等）必须在构造器初始化**，否则 `_paint` 读 undefined（`_selectedIndex` TypeError）。ui-tabs 构造器里有 `this._tabs=[]` 所以没踩；ui-breadcrumb 漏了，已修。
 - 回归：`validation: ok`（12 组件）、naming 0、面包屑 chevron 1/0 与 scaleX(0.8) 淡出淡回、滚动条拇指到底/最小高 30、console 0 error。
 
+## ui-menu 多级菜单抽取（2026-11-14 追加 11）——控件族收官
+
+组件 12→13。依据：`OsuMenu.cs:21-22,41-47,68-99,127-153` + `DrawableOsuMenuItem.cs:25-28,44-45,58-68,90-104,121-150` + `OsuContextMenu.cs:21-32`。
+
+- 开：FadeIn 280ms OutQuint（WAAPI）；关：**50ms 延迟后** FadeOut 280ms（`finished.then` 里再隐藏 host）；根面板按 trigger 定位（下方 6px，越界上翻/左夹取）。
+- 子菜单：`:scope > .submenu` 绝对定位于行内（left:100%+2px，右上锚定），右越界自动翻面（`data-flip`）；pointerenter 开/pointerleave 关（子菜单是行的 DOM 子节点，pointerleave 不会误触发）；开子菜单先关兄弟。
+- 条目：文字 17px、边距 10/4；**悬停 80ms 常规↔加粗互换用双叠 span**（normal/bold 各自 transition opacity，不跳宽）；type=destructive→`--state-error`、highlighted→`--state-warning`；disabled alpha 0.2；hotkey 属性渲染右侧 kbd；spacer=2px 90% 宽分隔。
+- OsuContextMenu 风味：圆角 5、MaxHeight 250 滚动、双阴影（10% r4 + 25% 大投影）。
+- 声明式树：`<ui-menu for="trigger-id">` 内嵌 `<ui-item label type hotkey disabled>` / `<ui-spacer>`，嵌套 ui-item 即子菜单。
+- 坑：view-components 里 `menu` 标识符已占用（overlay 演示），改 `contextMenu`。
+- 回归：根菜单 192px/5 项+分隔条、destructive rgb(237,17,33)、子菜单悬停展开 3 项、highlighted rgb(255,204,34)、选择后关闭+徽章更新、Esc 关闭、console 0 error、`validation: ok`、naming 0。
+
+**至此上游 UI 控件族抽取完成：13 组件（button/panel/action-rail/reveal-overlay/layered-view/textbox/slider/dropdown/tabs/checkbox/scroll/breadcrumb/menu）。**
+
 ## 遗留待办
 
 - overlay variant 队列错位修复与 sheared 安全区（`ui-reveal-overlay`）已在本会话早前完成，方向检验 5/5 PASS，但尚未做长时稳定性观察。
