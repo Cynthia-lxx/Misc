@@ -26,7 +26,7 @@ export default {
           <p>由 <code>preview_server.py</code> 提供；无服务器时自动回退到 dist 内静态 JSON。</p>
           <div class="pv-row">
             <select id="dt-endpoint" class="pv-input">${ENDPOINTS.map((e) => `<option value="${escapeHtml(e)}">/api/${escapeHtml(e)}</option>`).join('')}</select>
-            <button type="button" class="pv-btn" id="dt-fetch">fetch</button>
+            <ui-button id="dt-fetch" label="fetch"></ui-button>
           </div>
           <div class="pv-code" id="dt-result" style="max-height:280px">选择端点后点击 fetch。</div>
         </section>
@@ -46,8 +46,8 @@ export default {
             <span class="pv-note">示例：</span>
             <ui-button data-i18n-key="common.back"></ui-button>
             <ui-button data-i18n-key="common.next" variant="sheared"></ui-button>
-            <button type="button" class="pv-btn" id="dt-lang-en">switch to en</button>
-            <button type="button" class="pv-btn" id="dt-lang-zh">switch to zh-CN</button>
+            <ui-button id="dt-lang-en" label="switch to en"></ui-button>
+            <ui-button id="dt-lang-zh" label="switch to zh-CN"></ui-button>
           </div>
           ${table(['key', 'en', 'zh-CN'], keys.map((k) => [
             `<code>${escapeHtml(k)}</code>`, escapeHtml(en?.[k] || ''), escapeHtml(zh?.[k] || ''),

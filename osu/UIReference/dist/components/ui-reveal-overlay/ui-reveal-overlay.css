@@ -71,15 +71,52 @@
 }
 :host([data-open='true']) .content { transform: translateY(0); }
 
-/* ---- variant: sheared（ShearedOverlayContainer + Footer 联动） ---- */
+/* ---- sheared: shape and content are separate layers ----
+ * The upstream ShearedOverlayContainer uses a ShearAligningWrapper to keep
+ * content inside the slanted silhouette. Skewing the clipping container itself
+ * would cut axis-aligned content at both slanted edges, so the slant lives on
+ * a dedicated decorative plate while .content stays upright and unclipped. */
+.plate { display: none; }
+
 :host([variant='sheared']) .waves { display: none; }
 :host([variant='sheared']) .panel {
-  transform: skewX(calc(var(--shear-deg) * -1)) translateY(-100%);
+  overflow: visible;
+  background: transparent;
+  transform: none;
+  opacity: 1;
+  transition: none;
+}
+:host([variant='sheared']) .plate {
+  display: block;
+  position: absolute;
+  inset: -12% -14%;
+  background: var(--ui-surface-raised, #333);
+  border-inline: 1px solid color-mix(in srgb, var(--ui-accent, #66ccff) 28%, transparent);
+  box-shadow: 0 0 30px rgb(0 0 0 / 0.35);
+  transform: skewX(calc(var(--shear-deg) * -1)) translateY(-120%);
   opacity: 0;
   transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1), opacity 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  z-index: 0;
 }
-:host([variant='sheared']) .content { transform: skewX(var(--shear-deg)); transition: none; }
-:host([variant='sheared'][data-open='true']) .panel { transform: skewX(calc(var(--shear-deg) * -1)) translateY(0); opacity: 1; }
+:host([variant='sheared'][data-open='true']) .plate {
+  transform: skewX(calc(var(--shear-deg) * -1)) translateY(0);
+  opacity: 1;
+}
+/* A real content safe area: inset from both slanted edges, never clipped. */
+:host([variant='sheared']) .content {
+  --shear-safe: 14%;
+  transform: none;
+  transition: none;
+  overflow: auto;
+  padding-inline: max(32px, var(--shear-safe));
+  z-index: 1;
+}
+:host([variant='sheared'][data-safe-zone='true']) .content {
+  outline: 1px dashed color-mix(in srgb, var(--ui-accent, #66ccff) 70%, transparent);
+  outline-offset: -1px;
+  background: color-mix(in srgb, var(--ui-accent, #66ccff) 7%, transparent);
+}
 
 /* ---- variant: slide-x（SettingsPanel / NotificationOverlay） ---- */
 :host([variant='slide-x']) .waves { display: none; }
@@ -121,6 +158,18 @@
 :host([variant='pop'][data-open='true']) .panel { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 
 :host([data-activation='disabled']) { pointer-events: none; }
+
+/* Variant changes swap the closed-state transform. With transitions enabled
+ * the browser would animate old-closed -> new-closed, so the next enter would
+ * start from the previous variant's axis. The JS sets data-switching for one
+ * frame while the new closed state is established without animation. */
+:host([data-switching='true']) .panel,
+:host([data-switching='true']) .plate,
+:host([data-switching='true']) .wave,
+:host([data-switching='true']) .content,
+:host([data-switching='true']) .dim {
+  transition: none !important;
+}
 
 /* 全局动效降级 */
 :host-context([data-reduce-motion='true']) .wave,

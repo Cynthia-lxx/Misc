@@ -75,7 +75,7 @@ export default {
         <section class="pv-card">
           <h2>motion.css · 关键帧 / 工具类</h2>
           <p>点击任一 class 在示例块上重播；全部时长受 <code>--motion-scale</code> 与 reduced motion 控制。</p>
-          <div class="pv-row" id="mo-classes">${KEYFRAME_CLASSES.map((c) => `<button type="button" class="pv-btn" data-class="${c}">${c}</button>`).join('')}</div>
+          <div class="pv-row" id="mo-classes">${KEYFRAME_CLASSES.map((c) => `<ui-button data-class="${c}" label="${c}"></ui-button>`).join('')}</div>
           <div class="pv-stage" style="margin-top:10px"><div class="pv-glow-target" id="mo-class-target">sample</div></div>
         </section>
 

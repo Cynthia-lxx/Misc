@@ -75,12 +75,15 @@ export default {
           ${buttonRow([
             ['cp-ov-close', 'Close（退场）'], ['cp-ov-replay', 'Replay（重播入场）'],
             ['cp-ov-cycle', '自动轮换'], ['cp-ov-disabled', 'activation=disabled'],
+            ['cp-ov-axis', '连续切换方向检验'],
           ])}
           <div class="pv-row">
             <span class="pv-badge" id="cp-ov-badge">not tested</span>
             <span class="pv-note" id="cp-ov-state">overlay: closed</span>
+            <label class="pv-note"><input type="checkbox" id="cp-ov-safe"> 显示斜切内容安全区</label>
           </div>
           <div class="pv-code" id="cp-ov-diag">点击任一 variant 开始检验。</div>
+          <div id="cp-ov-axis-out" style="margin-top:8px"></div>
         </section>
 
         <section class="pv-card" style="grid-column:1/-1">
@@ -98,7 +101,7 @@ export default {
         <h2>Overlay content</h2>
         <p>当前 variant：<strong id="cp-ov-variant">wave</strong>。按 Esc 或点击遮罩关闭。</p>
         <p class="pv-note">Wave 四层 rotation 13/-7/4/-2、finalY -930/-560/-390/-220；content relative Y 200%→0。</p>
-        <button type="button" class="pv-btn" id="cp-ov-inner-close">Close</button>
+        <ui-button id="cp-ov-inner-close" label="Close"></ui-button>
       </ui-reveal-overlay>`;
 
     /* ---- ui-button ---- */
@@ -165,22 +168,23 @@ export default {
       ctx.log(`${label}: ${count} transitions`);
     };
 
+    const showVariant = async (id) => {
+      ctx.setReduce(false);
+      overlay.removeAttribute('data-activation');
+      await overlay.setVariant(id);
+      root.querySelector('#cp-ov-variant').textContent = id;
+      await overlay.open();
+    };
+
     for (const [id] of VARIANTS) {
       root.querySelector(`#cp-ov-${id}`).addEventListener('click', async () => {
-        ctx.setReduce(false);
-        overlay.removeAttribute('data-activation');
-        overlay.setAttribute('variant', id);
-        root.querySelector('#cp-ov-variant').textContent = id;
-        await overlay.open();
+        await showVariant(id);
         await probe(`open(${id})`);
       });
     }
     on(root, '#cp-ov-close', 'click', async () => {
       overlay.close();
       await probe('close (exit)', 120);
-      window.setTimeout(() => {
-        diag.textContent += `\nafter animation: visibility=${getComputedStyle(overlay).visibility}`;
-      }, 950);
     });
     on(root, '#cp-ov-inner-close', 'click', () => overlay.close());
     on(root, '#cp-ov-replay', 'click', async () => {
@@ -194,19 +198,65 @@ export default {
       setBadge('gated', null);
       overlay.removeAttribute('data-activation');
     });
+    on(root, '#cp-ov-safe', 'change', (event) => {
+      overlay.setSafeZone(event.currentTarget.checked);
+      ctx.log(`sheared safe zone → ${event.currentTarget.checked}`);
+    });
+
+    /* Regress the reported bug: switching variants must never reuse the
+     * previous geometry's axis for the first enter. */
+    const EXPECTED_AXIS = { wave: 'contentY', sheared: 'plateY', 'slide-x': 'X', 'slide-y': 'Y', pop: 'scale' };
+    let axisBusy = false;
+    on(root, '#cp-ov-axis', 'click', async (event) => {
+      if (axisBusy) return;
+      axisBusy = true;
+      event.currentTarget.dataset.active = 'true';
+      const out = root.querySelector('#cp-ov-axis-out');
+      out.innerHTML = '<span class="pv-note">依次切换 5 个 variant 并采样入场方向…</span>';
+      const rows = [];
+      for (const [id] of VARIANTS) {
+        await showVariant(id);
+        await new Promise((resolve) => window.setTimeout(resolve, 130));
+        const shadow = overlay.shadowRoot;
+        const panel = new DOMMatrix(getComputedStyle(shadow.querySelector('.panel')).transform);
+        const plate = new DOMMatrix(getComputedStyle(shadow.querySelector('.plate')).transform);
+        const content = new DOMMatrix(getComputedStyle(shadow.querySelector('.content')).transform);
+        let actual = 'none';
+        if (id === 'pop') actual = panel.a < 0.99 ? 'scale' : 'none';
+        else if (id === 'wave') actual = Math.abs(content.f) > 20 ? 'contentY' : 'none';
+        else if (id === 'sheared') actual = Math.abs(plate.f) > 20 ? 'plateY' : 'none';
+        else actual = Math.abs(panel.e) > Math.abs(panel.f) ? 'X' : 'Y';
+        rows.push([
+          `<code>${escapeHtml(id)}</code>`,
+          `<span class="pv-note">${EXPECTED_AXIS[id]}</span>`,
+          escapeHtml(actual),
+          `${Math.round(panel.e)} / ${Math.round(panel.f)}`,
+          `<span class="pv-badge ${actual === EXPECTED_AXIS[id] ? 'ok' : 'bad'}">${actual === EXPECTED_AXIS[id] ? 'PASS' : 'FAIL'}</span>`,
+        ]);
+        await overlay.close();
+      }
+      out.innerHTML = table(['variant', '期望轴', '实测轴', 'tx / ty', '结论'], rows);
+      const passed = rows.filter((row) => row[4].includes('PASS')).length;
+      setBadge(`方向检验 ${passed}/${VARIANTS.length} PASS`, passed === VARIANTS.length);
+      ctx.log(`variant axis regression: ${passed}/${VARIANTS.length} PASS`);
+      axisBusy = false;
+      event.currentTarget.dataset.active = 'false';
+    });
 
     let timer = null;
     on(root, '#cp-ov-cycle', 'click', (event) => {
       if (timer) { clearInterval(timer); timer = null; event.currentTarget.dataset.active = 'false'; return; }
       event.currentTarget.dataset.active = 'true';
       let index = 0;
+      let busy = false;
       const step = async () => {
+        if (busy) return;
+        busy = true;
         const [id] = VARIANTS[index % VARIANTS.length];
-        overlay.setAttribute('variant', id);
-        root.querySelector('#cp-ov-variant').textContent = id;
-        await overlay.open();
+        await showVariant(id);
         await probe(`cycle(${id})`, 120);
         index += 1;
+        busy = false;
       };
       step();
       timer = window.setInterval(step, 2600);

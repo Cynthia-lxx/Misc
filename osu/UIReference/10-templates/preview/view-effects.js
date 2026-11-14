@@ -60,7 +60,7 @@ export default {
           ${canvasCard('vx-particles', 'Canvas 2D · additive')}
           <div class="pv-row">
             <label>preset <select id="vx-p-preset" class="pv-input">${presetNames.map((n) => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('')}</select></label>
-            <button type="button" class="pv-btn" id="vx-p-burst">burst(60)</button>
+            <ui-button id="vx-p-burst" label="burst(60)"></ui-button>
           </div>
           <div class="pv-row"><span class="pv-note" id="vx-p-stat">painted: —</span></div>
         </section>

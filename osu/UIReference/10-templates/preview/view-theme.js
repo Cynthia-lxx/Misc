@@ -69,7 +69,7 @@ export default {
 
     const schemesHost = root.querySelector('#th-schemes');
     schemesHost.innerHTML = schemes.map((s) =>
-      `<button type="button" class="pv-btn" data-scheme="${escapeHtml(s.id)}" data-active="${s.id === ctx.state.theme}">${escapeHtml(s.id)} <span class="pv-note">${s.hue}°</span></button>`).join('');
+      `<ui-button data-scheme="${escapeHtml(s.id)}" data-active="${s.id === ctx.state.theme}">${escapeHtml(s.id)} <span class="pv-note">${s.hue}°</span></ui-button>`).join('');
 
     function showScheme(id) {
       const s = schemes.find((x) => x.id === id) || {};

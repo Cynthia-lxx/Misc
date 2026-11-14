@@ -90,6 +90,13 @@ button[data-variant='sheared']:active:not(:disabled) {
   transform: skewX(-11.5deg) scale(0.97);
 }
 
+/* 激活/切换态：dataset.active='true'（工具栏开关、自动轮换等 toggle 按钮） */
+:host([data-active='true']) button,
+button[data-active='true'] {
+  border-color: var(--ui-accent, #66ccff);
+  background: color-mix(in srgb, var(--ui-accent, #66ccff) 22%, var(--ui-surface-raised, #333));
+}
+
 button[data-variant='danger'] {
   border-color: var(--danger, #cc3378);
   background: color-mix(in srgb, var(--danger, #cc3378) 25%, var(--ui-surface-raised, #333));

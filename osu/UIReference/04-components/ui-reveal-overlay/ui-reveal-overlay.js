@@ -5,12 +5,17 @@
  * Overlays/SettingsPanel.cs:170-204, Overlays/Dialog/PopupDialog.cs:324-354.
  *
  * Five overlay reveal geometries with real enter/exit transitions.
- * Visibility is gated by `data-visible` (visibility/pointer-events), NOT by
- * `display:none`: switching display and transform in the same style
- * recalculation gives the browser no before-change style, so transitions are
- * skipped entirely. `open()` waits for the shadow stylesheet, then forces a
- * layout frame before flipping `data-open`; `close()` waits for the running
- * animations to finish before hiding.
+ *
+ * Transitions are serialised through a small state queue. A variant change
+ * swaps the *closed* transform (e.g. translateX(-100%) -> translateY(100%));
+ * with transitions enabled the browser animates that rule change too, so the
+ * following enter would start from the previous variant's axis. Changing the
+ * variant therefore sets [data-switching] to disable transitions for one frame
+ * while the new closed state is committed, then the queued open() runs.
+ *
+ * Visibility is gated by visibility/pointer-events, never display:none, so a
+ * before-change style always exists. close() waits for all running animations
+ * before hiding (the OnComplete fence).
  */
 
 const STYLE_URL = new URL('./ui-reveal-overlay.css', import.meta.url);
@@ -27,6 +32,7 @@ const FALLBACK_STYLES = `
           visibility: hidden; pointer-events: none; }
   :host([data-visible='true']) { visibility: visible; pointer-events: auto; }
   .panel { position: absolute; inset: 0; background: var(--ui-surface, #2a2a2a); }
+  .plate { display: none; }
 `;
 
 const nextFrame = () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
@@ -49,6 +55,10 @@ export class UiRevealOverlayElement extends HTMLElement {
     this._panel.setAttribute('part', 'panel');
     this._panel.dataset.open = 'false';
 
+    this._plate = document.createElement('div');
+    this._plate.className = 'plate';
+    this._plate.setAttribute('aria-hidden', 'true');
+
     this._waves = document.createElement('div');
     this._waves.className = 'waves';
     this._waves.setAttribute('aria-hidden', 'true');
@@ -64,9 +74,10 @@ export class UiRevealOverlayElement extends HTMLElement {
 
     this._content = document.createElement('div');
     this._content.className = 'content';
+    this._content.setAttribute('part', 'content');
     this._content.appendChild(document.createElement('slot'));
 
-    this._panel.append(this._waves, this._content);
+    this._panel.append(this._plate, this._waves, this._content);
     this.shadowRoot.append(this._style, this._dim, this._panel);
 
     this._onDimClick = () => this.close();
@@ -75,6 +86,10 @@ export class UiRevealOverlayElement extends HTMLElement {
 
     this._stylesReady = null;
     this._hideToken = 0;
+    this._queue = Promise.resolve();
+    this._variantSettled = null;
+    this._opened = false;
+    this._phase = 'closed';
   }
 
   connectedCallback() {
@@ -89,8 +104,37 @@ export class UiRevealOverlayElement extends HTMLElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'variant' && oldValue && oldValue !== newValue && this.dataset?.open === 'true') {
-      this.replay();
+    if (name === 'variant' && oldValue && oldValue !== newValue) {
+      // Queue a transition-free reset to the new variant's closed state.
+      // open() awaits this, so consumers may freely use setAttribute + open().
+      this._variantSettled = this._enqueue(() => this._settleVariant());
+    }
+  }
+
+  _enqueue(task) {
+    const next = this._queue.then(task, task);
+    this._queue = next.catch(() => {});
+    return next;
+  }
+
+  async _settleVariant() {
+    this.dataset.switching = 'true';
+    for (const animation of this.shadowRoot.getAnimations?.() || []) animation.cancel();
+    this._opened = false;
+    this._phase = 'closed';
+    this.dataset.open = 'false';
+    this._panel.dataset.open = 'false';
+    void this._panel.offsetWidth;
+    await nextFrame();
+    delete this.dataset.switching;
+  }
+
+  async _waitForStylesAndVariant() {
+    if (this._stylesReady) await this._stylesReady;
+    if (this._variantSettled) {
+      const pending = this._variantSettled;
+      this._variantSettled = null;
+      await pending;
     }
   }
 
@@ -103,17 +147,24 @@ export class UiRevealOverlayElement extends HTMLElement {
 
   get variant() { return this.getAttribute('variant') || 'wave'; }
   get activation() { return this.getAttribute('data-activation') || 'all'; }
-  get isOpen() { return this.dataset.open === 'true'; }
+  get isOpen() { return this._opened; }
+  get phase() { return this._phase; }
 
-  async open() {
+  async _openTask() {
     if (this.activation === 'disabled') return false;
-    if (this._stylesReady) await this._stylesReady;
-    if (this.isOpen) { this.replay(); return true; }
+    await this._waitForStylesAndVariant();
+    if (this._opened) return this._replayTask();
 
     this._hideToken += 1;
+    this._phase = 'opening';
     this.dataset.visible = 'true';
-    await nextFrame(); // give the browser a before-change style to transition from
+    this.dataset.open = 'false';
+    this._panel.dataset.open = 'false';
+    void this._panel.offsetWidth;
+    await nextFrame();
 
+    this._opened = true;
+    this._phase = 'open';
     this.dataset.open = 'true';
     this._panel.dataset.open = 'true';
     this.dispatchEvent(new CustomEvent('ui-overlay-open', {
@@ -122,18 +173,21 @@ export class UiRevealOverlayElement extends HTMLElement {
     return true;
   }
 
-  /** Re-run the enter animation from its first frame. */
-  replay() {
+  _replayTask() {
     for (const animation of this.shadowRoot.getAnimations?.() || []) animation.cancel();
     this.dataset.open = 'false';
     this._panel.dataset.open = 'false';
-    void this._panel.offsetWidth; // force synchronous reflow
+    void this._panel.offsetWidth;
     this.dataset.open = 'true';
     this._panel.dataset.open = 'true';
+    this._phase = 'open';
+    return true;
   }
 
-  close() {
-    if (!this.isOpen && this.dataset.visible !== 'true') return;
+  async _closeTask() {
+    if (!this._opened && this.dataset.visible !== 'true') return false;
+    this._opened = false;
+    this._phase = 'closing';
     this.dataset.open = 'false';
     this._panel.dataset.open = 'false';
     this.dispatchEvent(new CustomEvent('ui-overlay-close', {
@@ -145,12 +199,33 @@ export class UiRevealOverlayElement extends HTMLElement {
     const finished = running.length
       ? Promise.allSettled(running.map((animation) => animation.finished))
       : Promise.resolve();
-    Promise.race([finished, delay(1000)]).then(() => {
-      if (token === this._hideToken && !this.isOpen) this.dataset.visible = 'false';
-    });
+    await Promise.race([finished, delay(1200)]);
+    if (token === this._hideToken && !this._opened) {
+      this.dataset.visible = 'false';
+      this._phase = 'closed';
+    }
+    return true;
   }
 
+  open() { return this._enqueue(() => this._openTask()); }
+  close() { return this._enqueue(() => this._closeTask()); }
+  replay() { return this._enqueue(() => this._replayTask()); }
   toggle() { return this.isOpen ? (this.close(), false) : this.open(); }
+
+  /** Change geometry and wait until the new closed state is committed. */
+  async setVariant(name) {
+    if (name === this.variant) return this;
+    this.setAttribute('variant', name);
+    await this._waitForStylesAndVariant();
+    return this;
+  }
+
+  /** Visualise the sheared content safe area (preview / debugging aid). */
+  setSafeZone(visible) {
+    if (visible) this.dataset.safeZone = 'true';
+    else delete this.dataset.safeZone;
+    return this;
+  }
 
   /** Current transition count — used by the preview site as a regression assertion. */
   get animationCount() { return (this.shadowRoot.getAnimations?.() || []).length; }

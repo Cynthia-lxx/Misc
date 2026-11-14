@@ -59,5 +59,5 @@ export function canvasCard(id, caption, height = 150) {
 }
 
 export function buttonRow(buttons) {
-  return `<div class="pv-row">${buttons.map(([id, label]) => `<button type="button" class="pv-btn" id="${id}">${escapeHtml(label)}</button>`).join('')}</div>`;
+  return `<div class="pv-row">${buttons.map(([id, label]) => `<ui-button id="${id}" label="${escapeHtml(label)}"></ui-button>`).join('')}</div>`;
 }

@@ -4,6 +4,8 @@
  */
 
 import { VIEWS, VIEW_ORDER, VIEW_META } from './views.js';
+import '../components/ui-button/ui-button.js';
+import { animate, stagger } from '../05-motion/effects.js';
 
 const configEl = document.getElementById('pv-config');
 const config = (() => { try { return JSON.parse(configEl?.textContent || '{}'); } catch { return {}; } })();
@@ -34,11 +36,14 @@ function log(text, level = 'info') {
   logList.prepend(li);
   while (logList.children.length > 120) logList.lastElementChild.remove();
 }
-$('#pv-log-toggle')?.addEventListener('click', () => {
-  const panel = $('#pv-log-panel');
-  panel.hidden = !panel.hidden;
-});
-$('#pv-log-close')?.addEventListener('click', () => { $('#pv-log-panel').hidden = true; });
+const logPanel = $('#pv-log-panel');
+function toggleLogPanel(force) {
+  if (!logPanel) return;
+  const open = typeof force === 'boolean' ? force : !logPanel.classList.contains('is-open');
+  logPanel.classList.toggle('is-open', open);
+}
+$('#pv-log-toggle')?.addEventListener('click', () => toggleLogPanel());
+$('#pv-log-close')?.addEventListener('click', () => toggleLogPanel(false));
 $('#pv-log-clear')?.addEventListener('click', () => { logList.replaceChildren(); logTotal = 0; logCount.textContent = '0'; });
 
 /* ---------------- API ---------------- */
@@ -88,7 +93,7 @@ function setReduce(value) {
   applyMotionScale();
   const button = $('#pv-reduce');
   if (button) {
-    button.textContent = `Reduced motion: ${state.reduce ? 'on' : 'off'}`;
+    button.setAttribute('label', `Reduced motion: ${state.reduce ? 'on' : 'off'}`);
     button.dataset.active = String(state.reduce);
   }
   log(`reduced motion → ${state.reduce ? 'on' : 'off'}`);
@@ -114,6 +119,22 @@ function buildNav() {
     `<a href="#/${id}" data-view="${id}"><span class="pv-nav-idx">${String(index + 1).padStart(2, '0')}</span>${VIEW_META[id].title}</a>`).join('');
 }
 
+/** 卡片入场：stagger 库 + animate 库；时长/步长按 rate 预缩放（motionScale 只认 reduce 开关）。 */
+function staggerEntrance(host) {
+  if (state.reduce) return;
+  const cards = host.querySelectorAll('.pv-card');
+  if (!cards.length) return;
+  const scale = 1 / state.rate;
+  stagger(cards, (el, index) => animate(el, [
+    { opacity: 0, transform: 'translateY(10px) scale(0.985)' },
+    { opacity: 1, transform: 'none' },
+  ], {
+    duration: Math.max(1, Math.round(300 * scale)),
+    delay: Math.round(40 * scale) * index,
+    fill: 'both',
+  }), { step: Math.round(40 * scale) });
+}
+
 async function renderRoute() {
   const id = (location.hash.replace(/^#\/?/, '') || 'overview').split(/[?&]/)[0];
   const view = VIEWS[id] ? id : 'overview';
@@ -126,6 +147,7 @@ async function renderRoute() {
   $('#pv-foot-left').textContent = `view: ${view}`;
   try {
     cleanup = await VIEWS[view].mount(viewHost, ctx) || null;
+    staggerEntrance(viewHost);
     log(`view → ${view}`);
   } catch (error) {
     console.error(`[preview] view ${view} failed`, error);
@@ -140,7 +162,7 @@ window.addEventListener('keydown', (event) => {
   if (event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement) return;
   const index = Number(event.key);
   if (index >= 1 && index <= VIEW_ORDER.length) location.hash = `#/${VIEW_ORDER[index - 1]}`;
-  if (event.key.toLowerCase() === 'l') $('#pv-log-toggle')?.click();
+  if (event.key.toLowerCase() === 'l') toggleLogPanel();
   if (event.key.toLowerCase() === 'r') setReduce(!state.reduce);
 });
 

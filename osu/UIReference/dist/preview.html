@@ -60,8 +60,8 @@
             <option value="1.5">1.5×</option>
             <option value="2">2×</option>
           </select></label>
-          <button type="button" id="pv-reduce" class="pv-btn">Reduced motion: off</button>
-          <button type="button" id="pv-log-toggle" class="pv-btn">Log <span id="pv-log-count">0</span></button>
+          <ui-button id="pv-reduce" label="Reduced motion: off"></ui-button>
+          <ui-button id="pv-log-toggle">Log <span id="pv-log-count">0</span></ui-button>
         </div>
       </header>
 
@@ -74,8 +74,8 @@
     </main>
   </div>
 
-  <aside class="pv-log-panel" id="pv-log-panel" hidden>
-    <header><strong>Event log</strong><span><button type="button" id="pv-log-clear" class="pv-btn">clear</button> <button type="button" id="pv-log-close" class="pv-btn">×</button></span></header>
+  <aside class="pv-log-panel" id="pv-log-panel">
+    <header><strong>Event log</strong><span><ui-button id="pv-log-clear" label="clear"></ui-button> <ui-button id="pv-log-close" label="×"></ui-button></span></header>
     <ul id="pv-log-list"></ul>
   </aside>
 

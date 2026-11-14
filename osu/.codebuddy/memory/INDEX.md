@@ -48,3 +48,5 @@
 - 若续查：① `TrianglesV2` + `ModFlashlight` 的 UBO/DrawNode 逐行拆解；② Intro 绝对时间轴整理成可复用动效编排表；③ 从这套 VFX 提炼可移植到自家项目的实现要点；④ 补 UI/DrawNode 绘制专项基准（`osu.Game.Benchmarks/` 现有 13 个用例全是 CPU 算法）。
 
 （状态：两轮调研完成并落盘，2026-11-13；主报告 5 份 + 本索引。）
+
+> 增补：`UIReference` 抽离库/预览站的实施进度见 `2026-11-14-uireference-progress.md`（2026-11-14 起会话记录，含命名 token 与 dist 路径两个坑、回归基线）。
