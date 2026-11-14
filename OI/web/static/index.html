@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="blue">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-store">
+  <title>OI Code Console</title>
+  <!-- UI style tokens: MIT-derived UI Reference Kit (see vendor/LICENSE-MIT.txt) -->
+  <link rel="stylesheet" href="vendor/tokens.css">
+  <link rel="stylesheet" href="vendor/themes.css">
+  <link rel="stylesheet" href="vendor/motion.css">
+  <link rel="stylesheet" href="vendor/glow.css">
+  <link rel="stylesheet" href="vendor/status-pulse.css">
+  <link rel="stylesheet" href="console.css">
+</head>
+<body>
+<div class="oc-shell">
+  <aside class="oc-side">
+    <div class="oc-brand">
+      <span class="oc-brand-mark">&lt;/&gt;</span>
+      <span class="oc-brand-text">OI Code Console<small>DeepSeek · C++14 · local</small></span>
+    </div>
+
+    <nav class="oc-nav" id="nav" aria-label="控制台视图">
+      <a href="#workbench" data-view="workbench" class="is-active"><span class="oc-nav-idx">01</span><span>工作台</span><span class="oc-nav-key">W</span></a>
+      <a href="#history" data-view="history"><span class="oc-nav-idx">02</span><span>会话历史</span><span class="oc-nav-key">H</span></a>
+      <a href="#settings" data-view="settings"><span class="oc-nav-idx">03</span><span>设置</span><span class="oc-nav-key">S</span></a>
+      <a href="#cheatsheet" data-view="cheatsheet"><span class="oc-nav-idx">04</span><span>命令速查</span><span class="oc-nav-key">?</span></a>
+    </nav>
+
+    <div class="oc-side-foot">
+      <div class="oc-side-row"><span class="oc-dot" id="api-dot"></span><span id="api-status">正在检查服务…</span></div>
+      <div class="oc-side-row oc-muted" id="model-status">model: —</div>
+      <div class="oc-side-row oc-muted" id="history-status">history: 0 条</div>
+      <div class="oc-side-row oc-muted">UI kit · MIT-derived</div>
+    </div>
+  </aside>
+
+  <main class="oc-main">
+    <header class="oc-top">
+      <div class="oc-head-title">
+        <h1 id="view-title">工作台</h1>
+        <p id="view-desc">粘贴题面或输入修改要求，生成符合个人风格的 C++14 代码</p>
+      </div>
+      <div class="oc-controls">
+        <label>Theme
+          <select id="theme-select">
+            <option value="red">Red</option>
+            <option value="orange">Orange</option>
+            <option value="lime">Lime</option>
+            <option value="green">Green</option>
+            <option value="aquamarine">Aquamarine</option>
+            <option value="blue" selected>Blue</option>
+            <option value="purple">Purple</option>
+            <option value="plum">Plum</option>
+            <option value="pink">Pink</option>
+          </select>
+        </label>
+        <ui-button id="reduce-btn" label="动效: 开"></ui-button>
+        <ui-button id="log-btn" label="日志 0"></ui-button>
+      </div>
+    </header>
+
+    <div class="oc-view" id="view">
+      <!-- ============================ 工作台 ============================ -->
+      <section class="oc-view-panel oc-workbench" data-panel="workbench">
+        <div class="oc-grid">
+          <div class="oc-stack">
+            <div class="oc-card">
+              <div class="oc-card-head">
+                <div>
+                  <h2>题面 / 指令</h2>
+                  <p>直接粘贴题面，或用自然语言描述对上一版代码的修改要求。</p>
+                </div>
+                <span class="oc-badge" id="mode-badge">新话题</span>
+              </div>
+
+              <textarea id="prompt" spellcheck="false" placeholder="在此粘贴 OI 题面（含输入/输出格式、样例、数据范围）…&#10;&#10;例如：给定 n 个整数，求最大子段和。n ≤ 1e5。"></textarea>
+
+              <div class="oc-row oc-source-row">
+                <ui-button id="clipboard-btn" label="读剪贴板"></ui-button>
+                <ui-button id="file-btn" label="读取路径"></ui-button>
+                <label class="oc-file-btn">
+                  <span>载入文件</span>
+                  <input type="file" id="file-input" accept=".txt,.md,.cpp,.in,text/plain" hidden>
+                </label>
+                <ui-button id="sample-btn" label="示例题面"></ui-button>
+                <ui-button id="clear-prompt-btn" label="清空"></ui-button>
+              </div>
+
+              <div class="oc-inline-path">
+                <input type="text" id="file-path" placeholder="文件路径，如 P1007.txt 或绝对/相对路径（相对工作区解析）">
+              </div>
+
+              <div class="oc-params">
+                <label class="oc-switch">
+                  <input type="checkbox" id="new-topic" checked>
+                  <span class="oc-switch-nub"></span>
+                  <span>新话题（清空上下文重新开始）</span>
+                </label>
+                <label class="oc-range">
+                  <span>Temperature</span>
+                  <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.3">
+                  <output id="temperature-out">0.3</output>
+                </label>
+              </div>
+
+              <div class="oc-row oc-action-row">
+                <ui-button id="generate-btn" variant="sheared" label="生成代码"></ui-button>
+                <ui-button id="stop-btn" label="停止" disabled></ui-button>
+                <span class="oc-hint">Ctrl / ⌘ + Enter 生成</span>
+              </div>
+            </div>
+
+            <div class="oc-card">
+              <div class="oc-card-head">
+                <div><h2>对话时间线</h2><p>与 CLI 共用 ~/.oicoder_history.json，最近 20 条作为上下文。</p></div>
+                <span class="oc-badge" id="timeline-count">0 条</span>
+              </div>
+              <div class="oc-timeline" id="timeline"></div>
+            </div>
+          </div>
+
+          <div class="oc-stack">
+            <div class="oc-card oc-output-card" id="output-card">
+              <div class="oc-card-head">
+                <div><h2>输出</h2><p id="output-sub">等待生成…</p></div>
+                <span class="oc-badge" id="code-badge">无代码</span>
+              </div>
+
+              <div class="oc-tabs" role="tablist">
+                <button type="button" class="is-active" data-tab="code" role="tab">代码</button>
+                <button type="button" data-tab="raw" role="tab">原始响应</button>
+                <button type="button" data-tab="rules" role="tab">风格规则</button>
+              </div>
+
+              <div class="oc-code-wrap">
+                <div class="oc-code-empty" id="code-empty">
+                  <span class="oc-empty-mark">{ }</span>
+                  <strong>还没有输出</strong>
+                  <span>填写题面后点击「生成代码」，结果会实时出现在这里。</span>
+                </div>
+                <pre class="oc-code is-hidden" id="code-view" aria-label="生成的代码"></pre>
+                <pre class="oc-code oc-raw is-hidden" id="raw-view" aria-label="原始响应"></pre>
+                <div class="oc-code oc-rules is-hidden" id="rules-view" aria-label="系统提示词"></div>
+              </div>
+
+              <div class="oc-progress" id="progress"><i></i></div>
+              <div class="oc-status-line" id="status-line">空闲</div>
+
+              <div class="oc-row oc-output-actions">
+                <ui-button id="copy-btn" label="复制代码"></ui-button>
+                <ui-button id="save-btn" label="保存 .cpp"></ui-button>
+                <ui-button id="download-btn" label="下载"></ui-button>
+              </div>
+              <div class="oc-inline-path">
+                <input type="text" id="save-name" value="solution.cpp" placeholder="solution.cpp（相对工作区，或绝对路径）">
+              </div>
+            </div>
+
+            <div class="oc-card oc-meta-card">
+              <div class="oc-card-head"><div><h2>本次运行</h2><p>来自 /api/status 与流式响应。</p></div></div>
+              <dl class="oc-kv" id="run-meta">
+                <dt>模型</dt><dd id="meta-model">—</dd>
+                <dt>耗时</dt><dd id="meta-time">—</dd>
+                <dt>字符数</dt><dd id="meta-chars">—</dd>
+                <dt>代码行数</dt><dd id="meta-lines">—</dd>
+                <dt>工作区</dt><dd id="meta-workspace">—</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ 会话历史 ============================ -->
+      <section class="oc-view-panel is-hidden" data-panel="history">
+        <div class="oc-card">
+          <div class="oc-card-head">
+            <div><h2>会话历史</h2><p>服务端持久化，CLI 的 /show 与此处看到的是同一份记录。</p></div>
+            <div class="oc-row">
+              <ui-button id="history-refresh" label="刷新"></ui-button>
+              <ui-button id="history-clear" variant="danger" label="清空历史"></ui-button>
+            </div>
+          </div>
+          <div class="oc-history-list" id="history-list"></div>
+        </div>
+      </section>
+
+      <!-- ============================ 设置 ============================ -->
+      <section class="oc-view-panel is-hidden" data-panel="settings">
+        <div class="oc-grid">
+          <div class="oc-card">
+            <div class="oc-card-head"><div><h2>API 与生成参数</h2><p>写入 ~/.oicoder_config.json，与 CLI 的 /setkey、/model、/config 互通。</p></div></div>
+            <form id="config-form" class="oc-form" autocomplete="off">
+              <label><span>API Key</span><input type="password" id="cfg-api-key" placeholder="留空表示保持当前值"></label>
+              <label><span>Base URL</span><input type="text" id="cfg-base-url"></label>
+              <label><span>模型</span><input type="text" id="cfg-model"></label>
+              <label><span>Max tokens</span><input type="number" id="cfg-max-tokens" min="1" max="65536" step="1"></label>
+              <label><span>Temperature</span><input type="number" id="cfg-temperature" min="0" max="2" step="0.1"></label>
+              <div class="oc-row">
+                <ui-button id="config-save" variant="sheared" label="保存设置"></ui-button>
+                <ui-button id="config-reload" label="重新载入"></ui-button>
+              </div>
+            </form>
+          </div>
+
+          <div class="oc-stack">
+            <div class="oc-card">
+              <div class="oc-card-head"><div><h2>当前配置</h2><p>敏感值已脱敏。</p></div></div>
+              <dl class="oc-kv" id="config-table"></dl>
+            </div>
+            <div class="oc-card">
+              <div class="oc-card-head"><div><h2>外观</h2><p>9 套 HSL 主题，切换会写入本地存储。</p></div></div>
+              <div class="oc-swatches" id="theme-swatches"></div>
+              <div class="oc-row oc-theme-row">
+                <ui-button id="theme-reduce" label="动效: 开"></ui-button>
+                <ui-button id="theme-reset" label="恢复默认 (Blue)"></ui-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ 命令速查 ============================ -->
+      <section class="oc-view-panel is-hidden" data-panel="cheatsheet">
+        <div class="oc-grid">
+          <div class="oc-card">
+            <div class="oc-card-head"><div><h2>CLI → Web 对照</h2><p>原 OI.py 的每条命令在控制台里的落点。</p></div></div>
+            <table class="oc-table">
+              <thead><tr><th>CLI 命令</th><th>Web 操作</th><th>说明</th></tr></thead>
+              <tbody>
+                <tr><td><code>/help /?</code></td><td>本页</td><td>命令与快捷键说明</td></tr>
+                <tr><td><code>/setkey</code></td><td>设置 → API Key</td><td>留空保持原值</td></tr>
+                <tr><td><code>/config</code></td><td>设置 → 当前配置</td><td>API Key 脱敏展示</td></tr>
+                <tr><td><code>/model</code></td><td>设置 → 模型</td><td>deepseek-chat / deepseek-reasoner 等</td></tr>
+                <tr><td><code>/clear</code></td><td>历史 → 清空历史</td><td>同时清空服务端上下文</td></tr>
+                <tr><td><code>/show</code></td><td>会话历史 / 时间线</td><td>完整消息，含代码预览</td></tr>
+                <tr><td><code>/copy /cp</code></td><td>输出 → 复制代码</td><td>浏览器剪贴板 + 系统剪贴板兜底</td></tr>
+                <tr><td><code>/clipboard /cb</code></td><td>读剪贴板</td><td>读取系统剪贴板填入题面</td></tr>
+                <tr><td><code>/file [路径]</code></td><td>读取路径 / 载入文件</td><td>相对路径基于工作区</td></tr>
+                <tr><td><code>/save [路径]</code></td><td>保存 .cpp</td><td>自动补 .cpp 后缀与创建目录</td></tr>
+                <tr><td><code>/exit /q</code></td><td>关闭标签页</td><td>服务由 Ctrl+C 停止</td></tr>
+                <tr><td>直接输入文本</td><td>题面输入框 → 生成</td><td>取消勾选「新话题」即延续上下文</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="oc-stack">
+            <div class="oc-card">
+              <div class="oc-card-head"><div><h2>快捷键</h2></div></div>
+              <dl class="oc-kv">
+                <dt>Ctrl / ⌘ + Enter</dt><dd>生成代码</dd>
+                <dt>Esc</dt><dd>停止生成 / 关闭日志</dd>
+                <dt>W / H / S / ?</dt><dd>切换视图（输入框外）</dd>
+                <dt>Ctrl + L</dt><dd>打开 / 关闭事件日志</dd>
+              </dl>
+            </div>
+            <div class="oc-card">
+              <div class="oc-card-head"><div><h2>关于</h2></div></div>
+              <p class="oc-about">纯本地服务：Python 标准库 <code>http.server</code> + <code>openai</code> SDK，零新增依赖、零构建步骤。服务仅监听 <code>127.0.0.1</code>，配置与历史存于用户主目录。</p>
+              <p class="oc-about">界面样式参考 UI Reference Kit（MIT 派生，见 <code>vendor/LICENSE-MIT.txt</code>）：配色/排版/动效 token、9 套主题与 <code>ui-button</code> 组件。未使用任何品牌资源或字体二进制。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="oc-foot">
+      <span id="foot-left">ready</span>
+      <span id="foot-right">hash-route · no build step</span>
+    </footer>
+  </main>
+</div>
+
+<aside class="oc-log-panel" id="log-panel" aria-label="事件日志">
+  <header>
+    <strong>Event log</strong>
+    <span>
+      <ui-button id="log-clear" label="clear"></ui-button>
+      <ui-button id="log-close" label="×"></ui-button>
+    </span>
+  </header>
+  <ul id="log-list"></ul>
+</aside>
+
+<div class="ui-status-pulse-layer" aria-hidden="true"><div class="ui-status-pulse-host" id="pulse-host"><span class="ui-status-pulse" id="pulse-text">OK</span></div></div>
+
+<script type="module" src="vendor/components/ui-button/ui-button.js"></script>
+<script type="module" src="console.js"></script>
+</body>
+</html>
