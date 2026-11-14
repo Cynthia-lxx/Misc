@@ -5,7 +5,7 @@
 
 import { VIEWS, VIEW_ORDER, VIEW_META } from './views.js';
 import '../components/ui-button/ui-button.js';
-import { animate, stagger } from '../05-motion/effects.js';
+import { animate, stagger, shearSlide } from '../05-motion/effects.js';
 
 const configEl = document.getElementById('pv-config');
 const config = (() => { try { return JSON.parse(configEl?.textContent || '{}'); } catch { return {}; } })();
@@ -113,41 +113,92 @@ $('#pv-reduce')?.addEventListener('click', () => setReduce(!state.reduce));
 const nav = $('#pv-nav');
 const viewHost = $('#pv-view');
 let cleanup = null;
+let routeToken = 0;
+let currentView = null;
 
 function buildNav() {
   nav.innerHTML = VIEW_ORDER.map((id, index) =>
     `<a href="#/${id}" data-view="${id}"><span class="pv-nav-idx">${String(index + 1).padStart(2, '0')}</span>${VIEW_META[id].title}</a>`).join('');
 }
 
-/** 卡片入场：stagger 库 + animate 库；时长/步长按 rate 预缩放（motionScale 只认 reduce 开关）。 */
-function staggerEntrance(host) {
-  if (state.reduce) return;
-  const cards = host.querySelectorAll('.pv-card');
-  if (!cards.length) return;
-  const scale = 1 / state.rate;
-  stagger(cards, (el, index) => animate(el, [
-    { opacity: 0, transform: 'translateY(10px) scale(0.985)' },
+/* 路由与入场动效，参照上游屏幕/覆盖层模式：
+ * - 路由切换 = ScreenStack push/pop：方向感知整体滑动，退场 InQuint 快、入场 OutQuint；
+ * - 每视图签名入场映射上游模式：rise=菜单列上浮、fade=设置覆盖层淡入、
+ *   up=斜切面板上升、x=设置面板侧滑、scale=全屏覆盖层展开、
+ *   elastic=命中反馈 OutElastic 弹入、shear=斜切列 ±Y 交替（库原语 shearSlide）。
+ * effects.js 的 motionScale() 只认 reduce 开关，速率缩放在此手动完成。 */
+const OUT_QUINT = 'cubic-bezier(0.22, 1, 0.36, 1)';
+const OUT_ELASTIC = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
+const IN_QUINT = 'cubic-bezier(0.64, 0, 0.78, 0)';
+
+function motionRate() {
+  return state.reduce ? 0 : 1 / state.rate;
+}
+
+function playEntrance(view, direction) {
+  const scale = motionRate();
+  if (scale <= 0) return;
+  const dur = (ms) => Math.max(1, Math.round(ms * scale));
+  // 1) 主机整体滑入（方向感知，ScreenStack push/pop）
+  animate(viewHost, [
+    { opacity: 0, transform: `translateX(${46 * direction}px)` },
     { opacity: 1, transform: 'none' },
-  ], {
-    duration: Math.max(1, Math.round(300 * scale)),
-    delay: Math.round(40 * scale) * index,
-    fill: 'both',
-  }), { step: Math.round(40 * scale) });
+  ], { duration: dur(340), easing: OUT_QUINT, fill: 'both' });
+
+  // 2) 卡片签名入场
+  const cards = viewHost.querySelectorAll('.pv-card');
+  if (!cards.length) return;
+  const per = (ms) => Math.round(ms * scale);
+  const kinds = {
+    fade: () => stagger(cards, (el, i) => animate(el,
+      [{ opacity: 0 }, { opacity: 1 }], { duration: dur(240), delay: per(45) * i }), {}),
+    up: () => stagger(cards, (el, i) => animate(el,
+      [{ opacity: 0, transform: 'translateY(26px)' }, { opacity: 1, transform: 'none' }],
+      { duration: dur(420), delay: per(55) * i, easing: OUT_QUINT }), {}),
+    x: () => stagger(cards, (el, i) => animate(el,
+      [{ opacity: 0, transform: 'translateX(-30px)' }, { opacity: 1, transform: 'none' }],
+      { duration: dur(420), delay: per(55) * i, easing: OUT_QUINT }), {}),
+    scale: () => stagger(cards, (el, i) => animate(el,
+      [{ opacity: 0, transform: 'scale(0.97)' }, { opacity: 1, transform: 'none' }],
+      { duration: dur(360), delay: per(45) * i, easing: OUT_QUINT }), {}),
+    elastic: () => stagger(cards, (el, i) => animate(el,
+      [{ opacity: 0, transform: 'scale(0.9)' }, { opacity: 1, transform: 'none' }],
+      { duration: dur(640), delay: per(70) * i, easing: OUT_ELASTIC }), {}),
+    shear: () => shearSlide(cards, { distance: 90, duration: dur(400), step: per(30) }),
+    rise: () => stagger(cards, (el, i) => animate(el,
+      [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }],
+      { duration: dur(300), delay: per(40) * i, easing: OUT_QUINT }), {}),
+  };
+  (kinds[VIEW_META[view]?.enter] || kinds.rise)();
 }
 
 async function renderRoute() {
+  const token = ++routeToken;
   const id = (location.hash.replace(/^#\/?/, '') || 'overview').split(/[?&]/)[0];
   const view = VIEWS[id] ? id : 'overview';
+  const direction = currentView === null ? 1
+    : Math.sign(VIEW_ORDER.indexOf(view) - VIEW_ORDER.indexOf(currentView)) || 1;
+  currentView = view;
   if (typeof cleanup === 'function') { try { cleanup(); } catch (e) { log(`cleanup: ${e.message}`, 'warn'); } }
   cleanup = null;
+  // 退场：旧视图整体滑出（InQuint，短促）
+  if (viewHost.childElementCount && motionRate() > 0) {
+    await animate(viewHost, [
+      { opacity: 1, transform: 'none' },
+      { opacity: 0, transform: `translateX(${-34 * direction}px)` },
+    ], { duration: Math.max(1, Math.round(160 / state.rate)), easing: IN_QUINT, fill: 'forwards' }).finished;
+    if (token !== routeToken) return; // 快速连续切换：放弃本次挂载
+  }
   viewHost.replaceChildren();
+  viewHost.getAnimations().forEach((a) => a.cancel()); // 清除退场 fill 残留
   $('#pv-view-title').textContent = VIEW_META[view].title;
   $('#pv-view-desc').textContent = VIEW_META[view].desc;
   for (const link of nav.querySelectorAll('[data-view]')) link.classList.toggle('is-active', link.dataset.view === view);
   $('#pv-foot-left').textContent = `view: ${view}`;
   try {
     cleanup = await VIEWS[view].mount(viewHost, ctx) || null;
-    staggerEntrance(viewHost);
+    if (token !== routeToken) return;
+    playEntrance(view, direction);
     log(`view → ${view}`);
   } catch (error) {
     console.error(`[preview] view ${view} failed`, error);

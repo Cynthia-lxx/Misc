@@ -20,6 +20,16 @@
 
 `assemble.py --check` → `validation: ok, previewViews: 7`；naming dry-run 0 改动；浏览器（playwright-cli `--browser=chromium`，系统 Chrome 不存在，默认 browser=open 会失败）断言：工具栏 ui-button 化（shadow 高 32）、reduce 切换 label/active/reduceMotion 联动、日志面板 `.is-open` opacity=1、7 视图卡片挂载 + stagger `getAnimations()` 计数正常、purple 主题 accent 跟随 `hsl(255…)`、console 仅 favicon 与 `/api/presets`（静态回退，`ctx.json` 带 fallbackPath）两处既有噪音。
 
+## 动效丰富化：路由切换 + 每视图签名入场（2026-11-14 追加）
+
+用户反馈"预览器基本只有淡入、切换没动效"后，对齐上游模式补齐：
+
+- **路由切换 = ScreenStack push/pop**（app.js `renderRoute`）：按 `VIEW_ORDER` 序号差算方向，旧视图整体 `translateX(-34×dir)` 滑出（InQuint 160ms）→ 挂载 → 主机 `translateX(+46×dir)` 滑入（OutQuint 340ms）。新增 `routeToken` 守卫防快速连切竞态；退场用 `fill:'forwards'` + `getAnimations().cancel()` 清残留。
+- **每视图签名入场**（`views.js` VIEW_META 新增 `enter` 字段 + app.js `playEntrance`）：overview=rise / theme=fade / components=up / motion=x / layers=scale / effects=elastic(OutElastic) / data=shear(复用库原语 `shearSlide` ±90px 交替)。全部 WAAPI，时长按 `1/rate` 手动预缩放（effects.js `motionScale()` 只认 reduce）。
+- **日志面板改横向滑入**（translateX 20px，对齐上游通知从侧边滑入）。
+- 回归：boot 主机滑入 1 anim；effects 途中采样 `cardScale=0.9, opacity=0`（elastic 起点命中）；反向切换 650ms 时主机入场动画在跑；reduce 开启后切换 0 动画。**命名 token 又中两次**：注释里的 `ModSelect` 是裸 token（已改写"斜切面板"）——写含上游类名的注释前先想 naming。
+- 观感判定留给用户；若嫌退场 160ms 等待拖慢切换，可把 `await` 退场改为不等待并行滑动。
+
 ## 遗留待办
 
 - overlay variant 队列错位修复与 sheared 安全区（`ui-reveal-overlay`）已在本会话早前完成，方向检验 5/5 PASS，但尚未做长时稳定性观察。
