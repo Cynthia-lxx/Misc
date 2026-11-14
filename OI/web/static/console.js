@@ -9,6 +9,7 @@ const THEME_HUE = { red: 0, orange: 45, lime: 90, green: 125, aquamarine: 160, b
 const VIEW_META = {
   workbench: ['工作台', '粘贴题面或输入修改要求，生成符合个人风格的 C++14 代码'],
   history: ['会话历史', '服务端持久化的完整对话，与 CLI 的 /show 同源'],
+  analysis: ['分析', '内存 / 复杂度 / 风格冗余 / 性能四类体检，纯本地分析 + 一次短 AI 汇总'],
   settings: ['设置', 'API 与生成参数写入 ~/.oicoder_config.json，CLI 同步生效'],
   cheatsheet: ['命令速查', '原 OI.py 命令在控制台中的落点，以及快捷键'],
 };
@@ -632,11 +633,12 @@ function init() {
       return;
     }
     if (typing || e.ctrlKey || e.metaKey || e.altKey) return;
-    const keyMap = { w: 'workbench', h: 'history', s: 'settings', '?': 'cheatsheet' };
+    const keyMap = { w: 'workbench', h: 'history', a: 'analysis', s: 'settings', '?': 'cheatsheet' };
     const view = keyMap[e.key.toLowerCase()];
     if (view) { e.preventDefault(); location.hash = view; }
   });
 
+  window.__oiConsole = { state, setView, log, pulse, warn, highlightCpp };
   log('OI Code Console 已启动');
   Promise.allSettled([refreshStatus(), loadHistory()]).then((results) => {
     const failed = results.find((r) => r.status === 'rejected');

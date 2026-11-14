@@ -23,6 +23,7 @@ import sys
 import threading
 import traceback
 import webbrowser
+from collections import OrderedDict
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlparse
@@ -30,15 +31,20 @@ from urllib.parse import unquote, urlparse
 WEB_DIR = Path(__file__).resolve().parent
 ROOT_DIR = WEB_DIR.parent
 STATIC_DIR = WEB_DIR / "static"
-sys.path.insert(0, str(ROOT_DIR))
+sys.path.insert(0, str(WEB_DIR))
+sys.path.insert(1, str(ROOT_DIR))
 
 import OI as oi  # noqa: E402  (project CLI: config / history / prompt / helpers)
 from openai import OpenAI  # noqa: E402
+
+from analyzer import ai_summary, engine, toolchain  # noqa: E402
 
 STATE_LOCK = threading.Lock()
 MAX_BODY = 8 * 1024 * 1024
 MAX_FILE = 2 * 1024 * 1024
 CONFIG_KEYS = ("base_url", "model", "max_tokens", "temperature")
+ANALYSIS_REPORTS: OrderedDict[str, object] = OrderedDict()
+ANALYSIS_REPORT_LIMIT = 8
 
 try:
     sys.stdout.reconfigure(encoding="utf-8")
@@ -80,9 +86,17 @@ def status_payload() -> dict:
     }
 
 
+def _remember_report(report) -> None:
+    with STATE_LOCK:
+        ANALYSIS_REPORTS[report.digest] = report
+        ANALYSIS_REPORTS.move_to_end(report.digest)
+        while len(ANALYSIS_REPORTS) > ANALYSIS_REPORT_LIMIT:
+            ANALYSIS_REPORTS.popitem(last=False)
+
+
 class ConsoleHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "OICodeConsole/1.0"
+    server_version = "OICodeConsole/1.1"
 
     # ------------------------------------------------------------------ helpers
     def log_message(self, fmt, *args):
@@ -153,6 +167,15 @@ class ConsoleHandler(BaseHTTPRequestHandler):
                 with STATE_LOCK:
                     messages = [dict(m) for m in oi.history.messages]
                 return self._json({"ok": True, "messages": messages})
+            if path == "/api/analyze/files":
+                return self._json({
+                    "ok": True,
+                    "files": engine.list_cpp_files(),
+                    "toolchain": toolchain.available(),
+                    "cache": engine.cache_size(),
+                })
+            if path == "/api/analyze/enabled":
+                return self._json({"ok": True, **ai_summary.state()})
             if path == "/favicon.ico":
                 return self._headers(204, length=0)
             if path.startswith("/api/"):
@@ -168,6 +191,8 @@ class ConsoleHandler(BaseHTTPRequestHandler):
             with STATE_LOCK:
                 oi.history.clear()
             return self._json({"ok": True, "history_count": 0})
+        if path == "/api/analyze/cache":
+            return self._json({"ok": True, "cleared": engine.clear_cache()})
         return self._error("unknown endpoint", 404)
 
     def do_POST(self):
@@ -188,6 +213,14 @@ class ConsoleHandler(BaseHTTPRequestHandler):
                 return self._read_file(body)
             if path == "/api/clipboard":
                 return self._clipboard(body)
+            if path == "/api/analyze":
+                return self._analyze(body)
+            if path == "/api/analyze/summary":
+                return self._analyze_summary(body)
+            if path == "/api/analyze/enabled":
+                return self._json({"ok": True, **ai_summary.set_enabled(body.get("enabled"))})
+            if path == "/api/analyze/budget":
+                return self._json({"ok": True, **ai_summary.set_cap(body.get("cap"))})
             return self._error("unknown endpoint", 404)
         except Exception as exc:
             traceback.print_exc()
@@ -349,6 +382,46 @@ class ConsoleHandler(BaseHTTPRequestHandler):
             return self._json({"ok": True})
         return self._error("unknown clipboard action")
 
+    # ------------------------------------------------------------------ analyze
+    def _analyze(self, body: dict):
+        try:
+            code, source = engine.resolve_code(body)
+        except ValueError as exc:
+            return self._error(exc)
+        run = bool(body.get("run"))
+        stdin = str(body.get("stdin") or "")
+        assumptions = body.get("assumptions") if isinstance(body.get("assumptions"), dict) else None
+
+        report, cached = engine.analyse(code, source, assumptions, run, stdin)
+        if run and not cached:
+            report.measurements = toolchain.measure(
+                code, stdin,
+                timeout=float(body.get("timeout") or toolchain.DEFAULT_RUN_SECONDS),
+                memory_limit=int(body.get("memory_limit") or toolchain.DEFAULT_MEMORY_BYTES),
+            )
+        report.ai_summary = {"status": "pending", "text": "", "budget": ai_summary.state()}
+        _remember_report(report)
+        return self._json({
+            "ok": True,
+            "report": report.as_dict(),
+            "cached": cached,
+            "code": code,
+            "budget": ai_summary.state(),
+        })
+
+    def _analyze_summary(self, body: dict):
+        digest = str(body.get("digest") or "")
+        with STATE_LOCK:
+            report = ANALYSIS_REPORTS.get(digest)
+        if report is None:
+            return self._error("报告不存在或已过期，请重新分析", 404)
+        with STATE_LOCK:
+            cfg = dict(oi.config.data)
+        # network I/O happens outside the lock; failures degrade, never raise
+        result = ai_summary.summarize(report, cfg)
+        report.ai_summary = result
+        return self._json({"ok": True, "ai_summary": result})
+
 
 def main():
     parser = argparse.ArgumentParser(description="OI Code Console")
@@ -362,6 +435,7 @@ def main():
     server.daemon_threads = True
     print("OI Code Console  ->  %s" % url)
     print("Workspace        ->  %s" % ROOT_DIR)
+    print("Toolchain        ->  %s" % ("vendored" if toolchain.available()["available"] else "MISSING"))
     print("Config           ->  %s" % oi.CONFIG_FILE)
     print("History          ->  %s" % oi.HISTORY_FILE)
     print("Press Ctrl+C to stop.")
