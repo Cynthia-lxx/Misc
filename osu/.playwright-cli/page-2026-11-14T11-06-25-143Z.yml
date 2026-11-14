@@ -1,0 +1,78 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: UR
+      - generic [ref=e6]:
+        - text: UI Reference Kit
+        - generic [ref=e7]: preview / 2026-11-13
+    - navigation "Preview views" [ref=e8]:
+      - link "01 总览" [ref=e9] [cursor=pointer]:
+        - /url: "#/overview"
+        - generic [ref=e10]: "01"
+        - text: 总览
+      - link "02 主题 / 排版" [ref=e11] [cursor=pointer]:
+        - /url: "#/theme"
+        - generic [ref=e12]: "02"
+        - text: 主题 / 排版
+      - link "03 组件" [ref=e13] [cursor=pointer]:
+        - /url: "#/components"
+        - generic [ref=e14]: "03"
+        - text: 组件
+      - link "04 动效引擎" [ref=e15] [cursor=pointer]:
+        - /url: "#/motion"
+        - generic [ref=e16]: "04"
+        - text: 动效引擎
+      - link "05 图层编排" [ref=e17] [cursor=pointer]:
+        - /url: "#/layers"
+        - generic [ref=e18]: "05"
+        - text: 图层编排
+      - link "06 视觉效果" [ref=e19] [cursor=pointer]:
+        - /url: "#/effects"
+        - generic [ref=e20]: "06"
+        - text: 视觉效果
+      - link "07 数据 / 装配" [ref=e21] [cursor=pointer]:
+        - /url: "#/data"
+        - generic [ref=e22]: "07"
+        - text: 数据 / 装配
+    - generic [ref=e23]:
+      - generic [ref=e24]: checking server…
+      - generic [ref=e27]: static mode fallback available
+      - generic [ref=e28]: MIT-derived · GPL-3.0 target
+  - main [ref=e29]:
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - heading "总览" [level=1] [ref=e32]
+        - paragraph [ref=e33]: 抽离成果全貌、许可边界、服务器状态与快速跳转
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - text: Theme
+          - combobox "Theme" [ref=e36] [cursor=pointer]:
+            - option "Red"
+            - option "Orange"
+            - option "Lime"
+            - option "Green"
+            - option "Aquamarine"
+            - option "Blue" [selected]
+            - option "Purple"
+            - option "Plum"
+            - option "Pink"
+        - generic [ref=e37]:
+          - text: Lang
+          - combobox "Lang" [ref=e38] [cursor=pointer]:
+            - option "en" [selected]
+            - option "zh-CN"
+        - generic [ref=e39]:
+          - text: Speed
+          - combobox "Speed" [ref=e40] [cursor=pointer]:
+            - option "0.5×"
+            - option "1×" [selected]
+            - option "1.5×"
+            - option "2×"
+        - 'button "Reduced motion: off" [ref=e42] [cursor=pointer]'
+        - button "Log 0" [ref=e46] [cursor=pointer]:
+          - generic:
+            - text: Log
+            - generic [ref=e47]: "1"
+    - generic [ref=e49]:
+      - generic [ref=e50]: "view: overview"
+      - generic [ref=e51]: 69 dist files · hash-route · MIT-derived
