@@ -134,6 +134,10 @@
 }
 .ui-wave {
   position: relative;
+  height: 100%;
+  min-height: 120px;
+  display: grid;
+  place-items: center;
   overflow: hidden;
   isolation: isolate;
 }
@@ -144,13 +148,23 @@
   height: 150%;
   border-radius: 40%;
   background: var(--ui-surface, #2a2a2a);
+  /* 四层用递增亮度区分，否则叠在一起看不出"四层" */
+  filter: brightness(calc(0.82 + var(--ui-wave-tint, 0) * 0.12));
   box-shadow: 0 0 20px rgb(0 0 0 / 20%);
   transform: rotate(var(--ui-wave-rotation, 0deg)) translateY(100%);
-  animation: ui-wave-sweep var(--_d-intro) var(--easing-out-sine, ease-out) both;
+  animation: ui-wave-sweep var(--_d-entrance) var(--easing-out-sine, ease-out) both;
   animation-delay: calc(var(--_wave-stagger) * var(--ui-wave-index, 0) * var(--motion-scale, 1));
 }
 .ui-wave__content {
   position: relative;
+  z-index: 5;
+  min-width: 55%;
+  padding: 12px 18px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--ui-accent, #66ccff) 45%, transparent);
+  background: color-mix(in srgb, var(--ui-surface-raised, #333) 92%, transparent);
+  color: var(--ui-text, #fff);
+  text-align: center;
   transform: translateY(200%);
   transition: transform 800ms var(--easing-out, ease-out);
 }
@@ -196,7 +210,7 @@
 @keyframes ui-scatter-shape { from { opacity: 1; } to { opacity: 0; } }
 @keyframes ui-shake { 0%,100% { transform: translate(0,0); } 25% { transform: translate(2px,0); } 75% { transform: translate(-2px,0); } }
 
-.ui-motion-elastic { animation: ui-elastic-pop var(--_d-intro) var(--easing-elastic, ease-out) both; }
+.ui-motion-elastic { animation: ui-elastic-pop var(--_d-entrance) var(--easing-elastic, ease-out) both; }
 .ui-motion-ripple { animation: ui-ripple 700ms var(--easing-out-expo, ease-out) both; }
 .ui-motion-pulse { animation: ui-pulse-beat 500ms var(--easing-out, ease-out) both; }
 .ui-motion-glow { animation: ui-glow-pulse 800ms var(--easing-in-out, ease-in-out) infinite; }

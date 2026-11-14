@@ -78,13 +78,17 @@ export function waveReveal(container, options = {}) {
   const wave = document.createElement('div');
   wave.className = 'ui-wave';
   const rotations = options.rotations || [13, -7, 4, -2];
-  const positions = options.positions || [-930, -560, -390, -220];
+  // 上游 FinalPosition 按全屏高度标定（-930/-560/-390/-220）；演示容器往往只有
+  // 150px，直接用会把四层全推出视口，只剩静态边角。按容器高度折算成比例终值。
+  const height = container.clientHeight || 400;
+  const positions = options.positions || [-0.95, -0.62, -0.40, -0.22].map((r) => Math.round(r * height));
   rotations.forEach((rotation, index) => {
     const layer = document.createElement('div');
     layer.className = 'ui-wave__layer';
     layer.style.setProperty('--ui-wave-rotation', `${rotation}deg`);
     layer.style.setProperty('--ui-wave-y', `${positions[index]}px`);
     layer.style.setProperty('--ui-wave-index', String(index));
+    layer.style.setProperty('--ui-wave-tint', String(index));
     wave.appendChild(layer);
   });
   const content = document.createElement('div');
@@ -92,12 +96,15 @@ export function waveReveal(container, options = {}) {
   content.append(...[...container.children]);
   wave.appendChild(content);
   container.appendChild(wave);
+  // 关键：CSS 选择器挂在 .ui-wave 上（子元素），状态必须写在 wave 本身，
+  // 否则 content 永远停在 translateY(200%) —— 看起来"什么都没 reveal"。
+  wave.dataset.open = 'false';
   container.dataset.open = 'false';
 
   return {
     element: wave,
-    open() { container.dataset.open = 'true'; },
-    close() { container.dataset.open = 'false'; },
+    open() { wave.dataset.open = 'true'; container.dataset.open = 'true'; },
+    close() { wave.dataset.open = 'false'; container.dataset.open = 'false'; },
     destroy() { wave.remove(); },
   };
 }

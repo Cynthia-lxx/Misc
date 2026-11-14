@@ -161,6 +161,22 @@ red/orange/lime/green 四个 JSON（tokensFrom=blue、overrides={}），9 套 sc
 
 **至此审计报告列出的全部资源抽取完毕；上游剩余仅音效类（HoverSounds/MenuSamples，需音频素材故不抽）与 FPSCounter 等调试件。**
 
+## 用户批量反馈修复（2026-11-14 追加 14）
+
+用户带 8 张截图反馈一批交互/视觉问题，"请继续"后逐项复现定位并修复。**先复现再动手，避免凭截图猜**（状态反馈按钮复现其实是工作的，真失效的是别处）。
+
+1. **ui-menu 外点不关闭 / 子菜单被挡 / x 滚动条**：`:host` 是 fixed 全屏层且开启时 `pointer-events:auto`，点击任何地方 composedPath 都含 host → 外点判定永不成立；`.root{overflow-y:auto;max-height:250}` 裁掉 absolute 子菜单并生成横向滚动条。修：host 始终 `pointer-events:none`、`.root` 与 `.submenu` 自己接管、外点判定改为检查 path 是否含 `.root/.submenu/trigger`；`.root{overflow:visible;max-height:none}`。
+2. **textbox 输入数字跳视图**：document 级 keydown 用 `event.target instanceof HTMLInputElement`，shadow 内 input 被 retarget 成宿主 → 失效。改用 `event.composedPath()` 检查 input/textarea/select/contenteditable + UI-TEXTBOX/UI-DROPDOWN/UI-MENU/UI-RANGE-SLIDER 宿主。
+3. **motion.css 关键帧按钮"没反应" + WaveReveal 静态**：`.ui-motion-elastic` 与 `.ui-wave-sweep` 引用了**未定义的 `--_d-intro`**（实际变量是 `--_d-entrance`），animation 简写整条被丢弃 → getAnimations()=0。两处改用 `--_d-entrance`（别名会撞命名 token `intro:`）。
+4. **WaveReveal 看不懂**：`waveReveal()` 把 `data-open` 设在 container 上，而 CSS 选择器挂在 `.ui-wave` 子元素 → content 永远停在 `translateY(200%)`；上游把波片终值按全屏标成 -930/-560/-390/-220px，150px 演示容器里全飞出视野。修：状态写到 wave 本身、终值按 `container.clientHeight` 折算成比例、四层用 `filter:brightness` 区分、content 加可见卡片样式、motion 视图加图例与 close 按钮。
+5. **ui-dropdown "半透明穿透"**：实际是 `contain:layout` 创建层叠上下文，后面的兄弟 host 画在展开菜单之上。修：`:host([data-open]){z-index:100}` + `.menu` 改不透明 `--ui-surface-raised` + isolation。
+6. **工具栏/各视图 select → ui-dropdown**：shell.html 三个 + view-data 的 API 端点 + view-layers(2)/view-motion(1)/view-effects(1) 全部换；assemble.py `build_preview_html` 新占位符 `__THEME_UI_OPTIONS__`/`__LANG_UI_OPTIONS__` 生成 `<ui-option>`；所有 `change` 绑定改 `ui-select`（`event.detail.value`），`select.value=` 改 `setAttribute('value')`（ui-dropdown 只有 getter）。全部视图 `select` 计数归零。
+7. **语言切换无可见变化**：新增 `CHROME_I18N`（en/zh-CN）覆盖顶栏标签、brand、footer、日志标题、reduce 按钮、7 视图标题/描述、侧栏导航；`setLang`/boot 调 `applyChromeI18n()`。卡片正文按用户猜测保持单语。
+8. **ui-counter 太慢**：新增 `fast` 属性（≤250ms 落到准确值，保留上游 1000ms 结算模式）；演示中 3 个计数器启用。
+9. **状态反馈可见性**（复现其实功能正常，只是太隐蔽）：默认 renderer 显示类型名、`active: N · last: TYPE`、host 高亮边框。
+
+回归：`validation: ok`、naming 0、7 视图挂载、T1~T9 全 PASS（子菜单 visible/overflow visible、外点关闭、textbox 输入 12 不跳视图、elastic 1 动画、wave contentY=0 + 4 层 4 动画、语言切中文、主题 purple、dropdown 不透明 rgb+`z-index:100`、counter 250ms 到值、状态反馈 last:SUCCESS、motion 域筛选 140→29、API fetch 返回 JSON）、console 仅 favicon 与 `/api/presets` 既有噪音。
+
 ## 遗留待办
 
 - overlay variant 队列错位修复与 sheared 安全区（`ui-reveal-overlay`）已在本会话早前完成，方向检验 5/5 PASS，但尚未做长时稳定性观察。

@@ -17,7 +17,7 @@ export default {
         <h2>浏览视图展开 / 收起 · 多图层复刻</h2>
         <p>用户点名的界面：一个按钮触发 <b>12 个独立动画图层</b>同时起跑 —— 屏幕暗化、视窗裁切、4 条不同角度与终点的旋转波片、相对位移 2× 父高的内容层、固定头部、过滤、卡片流（30ms 错峰）、回顶按钮与页脚。进场 800ms / 出场 500ms，缓动 Out 系 ↔ In 系，收起用动画结束栅栏延迟清理。切换 preset 可对比另外 4 类编排。</p>
         <div class="pv-row">
-          <label>编排 <select id="ly-preset" class="pv-input">${presetNames.map((n) => `<option value="${escapeHtml(n)}">${escapeHtml(presets[n].label || n)}</option>`).join('')}</select></label>
+          <label>编排 <ui-dropdown id="ly-preset" value="${escapeHtml(presetNames[0] || '')}">${presetNames.map((n) => `<ui-option value="${escapeHtml(n)}" label="${escapeHtml(presets[n].label || n)}"></ui-option>`).join('')}</ui-dropdown></label>
           <span class="pv-badge" id="ly-badge">未检验</span>
           <span class="pv-note" id="ly-state">phase: closed</span>
         </div>
@@ -53,7 +53,7 @@ export default {
           <h2>全仓展开 / 收起动效档案 · ${inventory?.statistics?.items || 0} 项</h2>
           <p>实测：叠层 PopIn 38 / PopOut 34、图形层 23、屏幕生命周期声明 132、可展开家族 22 个文件、序列编排 192+ 文件、Transform 调用 2580 次 / 509 文件。</p>
           <div class="pv-row">
-            <label>域 <select id="ly-domain" class="pv-input"><option value="">全部</option>${domains.map((d) => `<option value="${escapeHtml(d)}">${escapeHtml(d)} (${inventory.byDomain[d]})</option>`).join('')}</select></label>
+            <label>域 <ui-dropdown id="ly-domain" value=""><ui-option value="" label="全部"></ui-option>${domains.map((d) => `<ui-option value="${escapeHtml(d)}" label="${escapeHtml(d)} (${inventory.byDomain[d]})"></ui-option>`).join('')}</ui-dropdown></label>
             <label>搜索 <input id="ly-search" class="pv-input" placeholder="名称 / 参数 / 源码" style="width:220px"></label>
             <span class="pv-note" id="ly-count"></span>
           </div>
@@ -136,8 +136,8 @@ export default {
     bar.addEventListener('input', () => { timeLabel.textContent = `${bar.value}ms`; });
     bar.addEventListener('change', () => view.seek(Number(bar.value)));
 
-    root.querySelector('#ly-preset').addEventListener('change', async (event) => {
-      const name = event.target.value;
+    root.querySelector('#ly-preset').addEventListener('ui-select', async (event) => {
+      const name = event.detail.value;
       await view.setPreset(name);
       renderPreset(name);
       ctx.log(`layered preset → ${name}`);
@@ -176,7 +176,7 @@ export default {
         `<span class="pv-note">${escapeHtml(item[5])}</span>`,
       ]));
     };
-    domainSelect.addEventListener('change', renderInventory);
+    domainSelect.addEventListener('ui-select', renderInventory);
     searchInput.addEventListener('input', renderInventory);
     renderInventory();
 

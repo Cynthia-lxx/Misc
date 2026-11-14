@@ -57,6 +57,8 @@ export default {
             </div>
           </div>
           <h3>waveReveal 目标（4 层旋转波浪 + content 相对位移）</h3>
+          <p class="pv-note">四层角度 13° / -7° / 4° / -2°，100ms 错峰；终值按容器高度折算（上游按全屏 -930/-560/-390/-220）。打开后内容层从 200% 相对位移落回，收起反向。</p>
+          ${buttonRow([['mo-wave-close', 'close()']])}
           <div class="pv-stage" id="mo-wave-host" style="height:150px"><div style="padding:12px">wave content</div></div>
         </section>
 
@@ -83,7 +85,7 @@ export default {
           <h2>motion-inventory.json · 全量动效档案</h2>
           <p>上游 <b>${inventory?.statistics?.filesWithTransforms || '—'}</b> 个文件含 Transform、<b>${inventory?.statistics?.easingEnumTypes || '—'}</b> 种 Easing、<b>${inventory?.statistics?.namedDurationConstants || '—'}</b> 处具名时长常量；本档案收录 <b>${Object.values(inventory?.entries || {}).reduce((n, l) => n + l.length, 0)}</b> 条。</p>
           <div class="pv-row">
-            <label>域 <select id="mo-domain" class="pv-input"><option value="">全部</option>${domains.map((d) => `<option value="${escapeHtml(d)}">${escapeHtml(d)} (${inventory.entries[d].length})</option>`).join('')}</select></label>
+            <label>域 <ui-dropdown id="mo-domain" value=""><ui-option value="" label="全部"></ui-option>${domains.map((d) => `<ui-option value="${escapeHtml(d)}" label="${escapeHtml(d)} (${inventory.entries[d].length})"></ui-option>`).join('')}</ui-dropdown></label>
             <label>搜索 <input id="mo-search" class="pv-input" placeholder="名称 / 源码 / 缓动" style="width:200px"></label>
             <span class="pv-note" id="mo-count"></span>
           </div>
@@ -123,11 +125,12 @@ export default {
     on(root, '#mo-wave', 'click', () => {
       wave?.destroy();
       const host = root.querySelector('#mo-wave-host');
-      host.innerHTML = '<div style="padding:12px">wave content</div>';
+      host.innerHTML = '<div><b>内容层 · 相对位移 200% → 0</b><br><span class="pv-note">四层波浪在其下方依次扫入</span></div>';
       wave = waveReveal(host);
       window.setTimeout(() => wave.open(), 30);
       say('waveReveal.open()');
     });
+    on(root, '#mo-wave-close', 'click', () => { wave?.close(); say('waveReveal.close()'); });
     on(root, '#mo-circular', 'click', () => { circularReveal(target); say('circularReveal()'); });
     on(root, '#mo-parallax', 'click', (event) => {
       if (parallaxHandle) { parallaxHandle.destroy(); parallaxHandle = null; event.currentTarget.dataset.active = 'false'; say('parallax off'); }
@@ -221,7 +224,7 @@ export default {
       countLabel.textContent = `${rows.length} 条匹配`;
       invTable.innerHTML = table(['域', '名称', '动作', 'ms', '缓动', '源码'], rows.slice(0, 60));
     };
-    domainSelect.addEventListener('change', renderInventory);
+    domainSelect.addEventListener('ui-select', renderInventory);
     searchInput.addEventListener('input', renderInventory);
     renderInventory();
 

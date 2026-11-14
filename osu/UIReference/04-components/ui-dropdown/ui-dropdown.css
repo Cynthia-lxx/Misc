@@ -10,6 +10,9 @@
   width: 200px;
   contain: layout style;
 }
+/* 打开的 dropdown 必须整体抬到兄弟控件之上：contain:layout 会创建层叠上下文，
+ * 否则后面的兄弟（如 disabled dropdown）会画在展开菜单之上，看起来像"半透明穿透"。 */
+:host([data-open='true']) { z-index: 100; }
 
 :host([data-disabled='true']) { opacity: 0.3; pointer-events: none; }
 
@@ -60,8 +63,9 @@
   z-index: 60;
   padding: 5px; /* ItemsContainer.Padding */
   border-radius: var(--corner-radius, 5px);
-  background: var(--ui-surface-sunken, #222);
+  background: var(--ui-surface-raised, #333); /* 不透明底，避免下层控件文字透出 */
   box-shadow: 0 10px 30px color-mix(in srgb, var(--gray-0, #000) 45%, transparent);
+  isolation: isolate;
   overflow: hidden;
   box-sizing: border-box;
   visibility: hidden;

@@ -287,20 +287,21 @@ def build_preview_html(root: Path, manifest: dict, index: dict, themes: dict,
                        lang: str, theme: str, languages: list, config: dict) -> str:
     """Generate dist/preview.html from the preview application shell."""
     shell = (root / manifest["preview"]["shell"]).read_text(encoding="utf-8")
-    theme_options = "\n".join(
-        f'            <option value="{tid}"{" selected" if tid == theme else ""}>{themes[tid]["label"]}</option>'
+    # 预览工具栏用库自己的 ui-dropdown（option 是 ui-option 而非原生 option）
+    theme_ui_options = "\n".join(
+        f'            <ui-option value="{tid}" label="{themes[tid]["label"]}"></ui-option>'
         for tid in [s["id"] for s in index["schemes"]]
     )
-    lang_options = "\n".join(
-        f'            <option value="{code}"{" selected" if code == lang else ""}>{code}</option>'
+    lang_ui_options = "\n".join(
+        f'            <ui-option value="{code}" label="{code}"></ui-option>'
         for code in languages
     )
     extra_css = "\n".join(
         f'  <link rel="stylesheet" href="{rel}">' for rel in manifest.get("extraCss", [])
     )
     return (shell
-            .replace("__THEME_OPTIONS__", theme_options)
-            .replace("__LANG_OPTIONS__", lang_options)
+            .replace("__THEME_UI_OPTIONS__", theme_ui_options)
+            .replace("__LANG_UI_OPTIONS__", lang_ui_options)
             .replace("__EXTRA_CSS__", extra_css)
             .replace("__APP_CONFIG__", json.dumps(config, ensure_ascii=False))
             .replace("__BUILD__", config["build"])

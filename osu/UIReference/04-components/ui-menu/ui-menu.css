@@ -12,19 +12,22 @@
 :host {
   position: fixed;
   inset: 0;
+  /* host 覆盖全屏只为定位；绝不能吞掉点击，否则外点关闭永远不触发 */
   pointer-events: none;
   visibility: hidden;
   z-index: var(--z-overlay, 2100);
   contain: layout style;
 }
-:host([data-open='true']) { pointer-events: auto; }
 
-/* OsuContextMenu：ContextMenuGray 不透明底、圆角 5、阴影 black 10% r4 */
+/* OsuContextMenu：不透明底、圆角 5、阴影 black 10% r4。
+ * overflow 必须 visible：子菜单以 absolute 溢出到右侧，
+ * 滚动容器会裁掉它并顺带生成横向滚动条（一级菜单与滚动条无法同时操作）。 */
 .root {
   position: absolute;
   min-width: 140px;
-  max-height: 250px; /* OsuContextMenu.MaxHeight */
-  overflow-y: auto;
+  max-height: none;
+  overflow: visible;
+  pointer-events: auto;
   padding: 4px 5px; /* items vertical 4 / base 5 */
   border-radius: var(--corner-radius, 5px);
   background: var(--ui-surface-raised, #333);

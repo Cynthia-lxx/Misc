@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: MIT — data / assembly view. */
 import { escapeHtml, buttonRow, on, table, kv } from './views.js';
 import '../components/ui-button/ui-button.js';
+import '../components/ui-dropdown/ui-dropdown.js';
 
 const ENDPOINTS = [
   'health', 'manifest', 'inventory', 'motion', 'themes', 'settings',
@@ -25,7 +26,7 @@ export default {
           <h2>API 端点</h2>
           <p>由 <code>preview_server.py</code> 提供；无服务器时自动回退到 dist 内静态 JSON。</p>
           <div class="pv-row">
-            <select id="dt-endpoint" class="pv-input">${ENDPOINTS.map((e) => `<option value="${escapeHtml(e)}">/api/${escapeHtml(e)}</option>`).join('')}</select>
+            <ui-dropdown id="dt-endpoint" value="health">${ENDPOINTS.map((e) => `<ui-option value="${escapeHtml(e)}" label="/api/${escapeHtml(e)}"></ui-option>`).join('')}</ui-dropdown>
             <ui-button id="dt-fetch" label="fetch"></ui-button>
           </div>
           <div class="pv-code" id="dt-result" style="max-height:280px">选择端点后点击 fetch。</div>

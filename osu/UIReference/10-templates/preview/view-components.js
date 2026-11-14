@@ -206,11 +206,11 @@ export default {
 
         <section class="pv-card">
           <h2>ui-counter · 滚动计数族</h2>
-          <p>DisplayedCount / Current 双值插值、比例时长、前导零、千分位、精度格式；tabular-nums 防滚宽抖动。</p>
+          <p>DisplayedCount / Current 双值插值、比例时长、前导零、千分位、精度格式；<code>fast</code> 属性把动效压到 ~250ms 以适配生产力 UI（去掉即上游结算界面的 1000ms）。</p>
           <div class="pv-row">
-            <ui-counter class="cp-ct" format="plain" value="42"></ui-counter>
-            <ui-counter class="cp-ct" format="digits" value="123456" leading="8"></ui-counter>
-            <ui-counter class="cp-ct" format="separated" value="987654"></ui-counter>
+            <ui-counter class="cp-ct" fast format="plain" value="42"></ui-counter>
+            <ui-counter class="cp-ct" fast format="digits" value="123456" leading="8"></ui-counter>
+            <ui-counter class="cp-ct" fast format="separated" value="987654"></ui-counter>
             <ui-counter class="cp-ct" format="accuracy" value="0.9876"></ui-counter>
           </div>
           <div class="pv-row"><ui-button id="cp-ct-bump" label="roll to random"></ui-button></div>

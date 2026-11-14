@@ -5,6 +5,7 @@
 
 import { VIEWS, VIEW_ORDER, VIEW_META } from './views.js';
 import '../components/ui-button/ui-button.js';
+import '../components/ui-dropdown/ui-dropdown.js';
 import { animate, stagger, shearSlide } from '../05-motion/effects.js';
 
 const configEl = document.getElementById('pv-config');
@@ -68,6 +69,55 @@ async function loadI18n(code) {
   return pack;
 }
 
+/* ---------------- 预览器 chrome 双语（卡片内容按设计保持单语） ---------------- */
+const CHROME_I18N = {
+  en: {
+    brand: 'UI Reference Kit', theme: 'Theme', lang: 'Lang', speed: 'Speed',
+    log: 'Log', eventLog: 'Event log', footer: 'MIT-derived · GPL-3.0 target',
+    reduceOn: 'Reduced motion: on', reduceOff: 'Reduced motion: off',
+    views: {
+      overview: ['总览', VIEW_META.overview.desc], theme: ['主题 / 排版', VIEW_META.theme.desc],
+      components: ['组件', VIEW_META.components.desc], motion: ['动效引擎', VIEW_META.motion.desc],
+      layers: ['图层编排', VIEW_META.layers.desc], effects: ['视觉效果', VIEW_META.effects.desc],
+      data: ['数据 / 装配', VIEW_META.data.desc],
+    },
+  },
+  'zh-CN': {
+    brand: 'UI 参考套件', theme: '主题', lang: '语言', speed: '速度',
+    log: '日志', eventLog: '事件日志', footer: 'MIT 衍生 · GPL-3.0 目标',
+    reduceOn: '降低动效：开', reduceOff: '降低动效：关',
+    views: {
+      overview: ['总览', '抽离成果全貌、许可边界、服务器状态与快速跳转'],
+      theme: ['主题 / 排版', '9 套主题、CSS 自定义属性色板、字号层级与设置项'],
+      components: ['组件', '全部组件的状态、变体、事件与入/出场动效'],
+      motion: ['动效引擎', 'effects.js 全部导出、timeline.js 时间轴、motion.css 关键帧'],
+      layers: ['图层编排', '展开/收起全量档案 + 多层并行揭示的可交互复刻'],
+      effects: ['视觉效果', 'WebGL 描边、粒子、光锥、辉光、入场序列、状态反馈'],
+      data: ['数据 / 装配', 'manifest、i18n、settings、许可审计、API 与装配校验'],
+    },
+  },
+};
+
+function chromeDict() { return CHROME_I18N[state.lang] || CHROME_I18N.en; }
+
+function applyChromeI18n() {
+  const dict = chromeDict();
+  for (const el of document.querySelectorAll('[data-i18n]')) {
+    const key = el.dataset.i18n;
+    if (dict[key]) el.textContent = dict[key];
+  }
+  const button = $('#pv-reduce');
+  if (button) button.setAttribute('label', state.reduce ? dict.reduceOn : dict.reduceOff);
+  buildNav();
+  if (currentView) {
+    const view = dict.views?.[currentView];
+    if (view) {
+      $('#pv-view-title').textContent = view[0];
+      $('#pv-view-desc').textContent = view[1];
+    }
+  }
+}
+
 /* ---------------- global controls ---------------- */
 function applyMotionScale() {
   root.style.setProperty('--motion-scale', state.reduce ? '0' : String(1 / state.rate));
@@ -75,17 +125,18 @@ function applyMotionScale() {
 function setTheme(name) {
   state.theme = name;
   root.dataset.theme = name;
-  const select = $('#pv-theme');
-  if (select) select.value = name;
+  const control = $('#pv-theme');
+  if (control) control.setAttribute('value', name);
   window.dispatchEvent(new CustomEvent('pv-theme-change', { detail: { theme: name } }));
   log(`theme → ${name}`);
 }
 function setLang(code) {
   state.lang = code;
   root.lang = code;
-  const select = $('#pv-lang');
-  if (select) select.value = code;
+  const control = $('#pv-lang');
+  if (control) control.setAttribute('value', code);
   loadI18n(code).then((pack) => {
+    applyChromeI18n();
     // 通知带 data-i18n-key 的组件（ui-button / ui-textbox 等）重新解析文案。
     document.dispatchEvent(new CustomEvent('ui-i18n-change', { detail: { lang: code } }));
     log(`language → ${code} (${Object.keys(pack || {}).length} keys)`);
@@ -97,7 +148,8 @@ function setReduce(value) {
   applyMotionScale();
   const button = $('#pv-reduce');
   if (button) {
-    button.setAttribute('label', `Reduced motion: ${state.reduce ? 'on' : 'off'}`);
+    const dict = chromeDict();
+    button.setAttribute('label', state.reduce ? dict.reduceOn : dict.reduceOff);
     button.dataset.active = String(state.reduce);
   }
   log(`reduced motion → ${state.reduce ? 'on' : 'off'}`);
@@ -105,12 +157,15 @@ function setReduce(value) {
 function setRate(value) {
   state.rate = Number(value) || 1;
   applyMotionScale();
+  const control = $('#pv-rate');
+  if (control) control.setAttribute('value', String(state.rate));
   log(`speed → ${state.rate}×`);
 }
 
-$('#pv-theme')?.addEventListener('change', (e) => setTheme(e.target.value));
-$('#pv-lang')?.addEventListener('change', (e) => setLang(e.target.value));
-$('#pv-rate')?.addEventListener('change', (e) => setRate(e.target.value));
+// 工具栏现在是库自己的 ui-dropdown；它发 ui-select（detail.value），不是原生 change
+$('#pv-theme')?.addEventListener('ui-select', (e) => setTheme(e.detail.value));
+$('#pv-lang')?.addEventListener('ui-select', (e) => setLang(e.detail.value));
+$('#pv-rate')?.addEventListener('ui-select', (e) => setRate(e.detail.value));
 $('#pv-reduce')?.addEventListener('click', () => setReduce(!state.reduce));
 
 /* ---------------- router ---------------- */
@@ -122,7 +177,10 @@ let currentView = null;
 
 function buildNav() {
   nav.innerHTML = VIEW_ORDER.map((id, index) =>
-    `<a href="#/${id}" data-view="${id}"><span class="pv-nav-idx">${String(index + 1).padStart(2, '0')}</span>${VIEW_META[id].title}</a>`).join('');
+    `<a href="#/${id}" data-view="${id}"><span class="pv-nav-idx">${String(index + 1).padStart(2, '0')}</span>${chromeDict().views?.[id]?.[0] || VIEW_META[id].title}</a>`).join('');
+  for (const link of nav.querySelectorAll('[data-view]')) {
+    link.classList.toggle('is-active', link.dataset.view === currentView);
+  }
 }
 
 /* 路由与入场动效，参照上游屏幕/覆盖层模式：
@@ -203,8 +261,9 @@ async function renderRoute() {
   }
   viewHost.replaceChildren();
   viewHost.getAnimations().forEach((a) => a.cancel()); // 清除退场 fill 残留
-  $('#pv-view-title').textContent = VIEW_META[view].title;
-  $('#pv-view-desc').textContent = VIEW_META[view].desc;
+  const viewText = chromeDict().views?.[view] || [VIEW_META[view].title, VIEW_META[view].desc];
+  $('#pv-view-title').textContent = viewText[0];
+  $('#pv-view-desc').textContent = viewText[1];
   for (const link of nav.querySelectorAll('[data-view]')) link.classList.toggle('is-active', link.dataset.view === view);
   $('#pv-foot-left').textContent = `view: ${view}`;
   try {
@@ -222,7 +281,14 @@ async function renderRoute() {
 
 window.addEventListener('hashchange', renderRoute);
 window.addEventListener('keydown', (event) => {
-  if (event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement) return;
+  // shadow DOM 里的 input 在 document 上会被 retarget 成宿主元素，
+  // 必须用 composedPath 穿透判断，否则在 ui-textbox 里打数字会触发视图跳转。
+  const path = event.composedPath?.() || [];
+  const typing = path.some((node) => node instanceof Element && (
+    node.matches?.('input, textarea, select, [contenteditable="true"]')
+    || ['UI-TEXTBOX', 'UI-DROPDOWN', 'UI-MENU', 'UI-RANGE-SLIDER'].includes(node.tagName)
+  ));
+  if (typing) return;
   const index = Number(event.key);
   if (index >= 1 && index <= VIEW_ORDER.length) location.hash = `#/${VIEW_ORDER[index - 1]}`;
   if (event.key.toLowerCase() === 'l') toggleLogPanel();
@@ -262,6 +328,7 @@ async function boot() {
   applyMotionScale();
   setReduce(false);
   await loadI18n(state.lang);
+  applyChromeI18n();
   $('#pv-foot-right').textContent = `${state.distFiles.length} dist files · hash-route · MIT-derived`;
 
   api('health').then((health) => {

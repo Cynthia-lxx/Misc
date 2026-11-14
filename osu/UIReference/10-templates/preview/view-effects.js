@@ -59,7 +59,7 @@ export default {
           <p>固定容量环形缓冲 + 单批次绘制，位置/alpha/scale/angle 全是时间函数，无物理积分。</p>
           ${canvasCard('vx-particles', 'Canvas 2D · additive')}
           <div class="pv-row">
-            <label>preset <select id="vx-p-preset" class="pv-input">${presetNames.map((n) => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('')}</select></label>
+            <label>preset <ui-dropdown id="vx-p-preset" value="${escapeHtml(presetNames[0] || '')}">${presetNames.map((n) => `<ui-option value="${escapeHtml(n)}" label="${escapeHtml(n)}"></ui-option>`).join('')}</ui-dropdown></label>
             <ui-button id="vx-p-burst" label="burst(60)"></ui-button>
           </div>
           <div class="pv-row"><span class="pv-note" id="vx-p-stat">painted: —</span></div>
@@ -155,7 +155,7 @@ export default {
       say(`particles preset: ${pPreset.value}`);
     };
     buildParticles();
-    pPreset.addEventListener('change', buildParticles);
+    pPreset.addEventListener('ui-select', buildParticles);
     on(root, '#vx-p-burst', 'click', () => { particles.burst(60); say('particles.burst(60)'); });
 
     /* ---- focusMask ---- */
@@ -209,9 +209,14 @@ export default {
     /* ---- status-pulse ---- */
     const jHost = root.querySelector('#vx-j-host');
     const jState = root.querySelector('#vx-j-state');
-    const syncStatusPulse = () => { jState.textContent = `active: ${statusPulseLayer?.activeCount || 0}`; };
+    let lastType = '—';
+    const syncStatusPulse = () => {
+      jState.textContent = `active: ${statusPulseLayer?.activeCount || 0} · last: ${lastType}`;
+      jHost.dataset.pulsing = String(Boolean(statusPulseLayer?.activeCount));
+    };
     const buildStatusPulse = () => {
       statusPulseLayer?.unmount();
+      // 默认渲染器也显示类型名，让"点了有没有触发"一眼可见（上游是数字文本）
       const renderer = customRenderer ? {
         createPiece(type) {
           const el = document.createElement('div');
@@ -220,7 +225,15 @@ export default {
           el.latestTransformEndTime = 900;
           return el;
         },
-      } : undefined;
+      } : {
+        createPiece(type) {
+          const el = document.createElement('div');
+          el.className = `ui-status-pulse ui-status-pulse--${type}`;
+          el.textContent = type.toUpperCase();
+          el.latestTransformEndTime = 900;
+          return el;
+        },
+      };
       statusPulseLayer = createStatusPulseLayer(jHost, { renderer, poolSize: 12 });
       syncStatusPulse();
     };
@@ -229,6 +242,7 @@ export default {
     document.addEventListener('ui-status-pulse', onStatusPulse);
     for (const type of ['success', 'info', 'notice', 'warning', 'error']) {
       root.querySelector(`#vx-j-${type}`).addEventListener('click', () => {
+        lastType = type.toUpperCase();
         lastPulseId = statusPulseLayer.apply({ type, x: 90 + Math.random() * 240, y: 60, timeAbsolute: performance.now() });
         say(`status-pulse.apply(${type})`);
         syncStatusPulse();

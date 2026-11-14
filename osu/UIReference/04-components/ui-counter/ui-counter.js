@@ -68,6 +68,9 @@ export class UiCounterElement extends HTMLElement {
     // 比例时长：小幅变化几乎瞬时（accuracy = |Δ|*duration*100；digits/separated = |Δ|）
     if (format === 'accuracy') duration = Math.min(duration, Math.abs(target - this._displayed) * duration * 100);
     else if (format === 'digits' || format === 'separated') duration = Math.min(duration, Math.abs(target - this._displayed));
+    // fast：生产力 UI 场景——数值仍需插值动效，但要在 ~250ms 内落到准确值，
+    // 不做结算界面那种 1000ms 长滚动。
+    if (this.hasAttribute('fast')) duration = Math.min(duration, 250);
     duration = Math.max(0, Math.round(duration * Math.abs(scale)));
     const from = this._displayed;
     const start = performance.now();

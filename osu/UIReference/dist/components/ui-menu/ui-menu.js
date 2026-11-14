@@ -48,7 +48,13 @@ export class UiMenuElement extends HTMLElement {
 
     this._onTriggerClick = () => this.toggle();
     this._onOutsidePointerDown = (event) => {
-      if (this._open && !event.composedPath().includes(this)) this.close();
+      if (!this._open) return;
+      // host 是全屏透明层，composedPath 里天然包含它，不能据此判断"点在菜单内"。
+      // 只有命中根面板 / 子菜单 / 触发按钮才算内点。
+      const path = event.composedPath();
+      const inside = path.some((node) => node === this._trigger
+        || node.classList?.contains('root') || node.classList?.contains('submenu'));
+      if (!inside) this.close();
     };
     this._onKeyDown = (event) => {
       if (event.key === 'Escape' && this._open) {
