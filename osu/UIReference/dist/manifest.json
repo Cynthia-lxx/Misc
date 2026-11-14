@@ -329,6 +329,57 @@
         "osu.Game/Graphics/UserInterface/Nub.cs:82-105,162-178"
       ],
       "note": "开关：nub 靠右（宽 50 + 间距 10）、选中 width 1.0/border 8.5 OutElasticHalf 200ms、未选 width 0.75/border 3 OutQuint 200ms、悬停辉光、切换脉冲、空格/回车切换、role=switch"
+    },
+    {
+      "id": "ui-scroll",
+      "kind": "custom-element",
+      "tag": "ui-scroll",
+      "files": {
+        "js": "04-components/ui-scroll/ui-scroll.js",
+        "css": "04-components/ui-scroll/ui-scroll.css"
+      },
+      "mount": "[data-ui-mount='scroll']",
+      "settings": [
+        "theme.scheme",
+        "motion.reduce",
+        "ui.hoverFeedback",
+        "motion.duration.fast"
+      ],
+      "i18nKeys": [],
+      "exports": [
+        "default",
+        "UiScrollElement"
+      ],
+      "source": [
+        "osu.Game/Graphics/Containers/OsuScrollContainer.cs:32-33,67-73,79-157"
+      ],
+      "note": "滚动容器：原生滚动 + 自绘滚动条（宽 10 + 3px 边距、圆角 5、最小拇指 30）、Gray8→GrayF 悬停 100ms、拖拽 Highlight1 高亮、轨道点击绝对滚动（含拇指半径居中修正）、内容自适应 ResizeObserver"
+    },
+    {
+      "id": "ui-breadcrumb",
+      "kind": "custom-element",
+      "tag": "ui-breadcrumb",
+      "files": {
+        "js": "04-components/ui-breadcrumb/ui-breadcrumb.js",
+        "css": "04-components/ui-breadcrumb/ui-breadcrumb.css"
+      },
+      "mount": "[data-ui-mount='breadcrumb']",
+      "settings": [
+        "theme.scheme",
+        "motion.reduce",
+        "ui.hoverFeedback",
+        "motion.duration.transition"
+      ],
+      "i18nKeys": [],
+      "exports": [
+        "default",
+        "UiBreadcrumbElement"
+      ],
+      "source": [
+        "osu.Game/Graphics/UserInterface/BreadcrumbControl.cs:20-46,48-111",
+        "osu.Game/Graphics/UserInterface/OsuTabControl.cs:121-146"
+      ],
+      "note": "面包屑：高 32 / 间距 10 / 文字 18px、选中之后的项 500ms OutQuint 淡出+横向缩至 0.8、选中项之前的项显示分隔 chevron、激活白字加粗+底栏、方向键/Home/End 仅在可见项间移动"
     }
   ],
   "motion": {

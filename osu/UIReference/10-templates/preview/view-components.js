@@ -6,6 +6,8 @@ import '../components/ui-slider/ui-slider.js';
 import '../components/ui-dropdown/ui-dropdown.js';
 import '../components/ui-tabs/ui-tabs.js';
 import '../components/ui-checkbox/ui-checkbox.js';
+import '../components/ui-scroll/ui-scroll.js';
+import '../components/ui-breadcrumb/ui-breadcrumb.js';
 import { mount as mountPanel } from '../components/ui-panel/ui-panel.js';
 import '../04-components/ui-action-rail/ui-action-rail.js';
 import '../04-components/ui-reveal-overlay/ui-reveal-overlay.js';
@@ -111,6 +113,30 @@ export default {
             <ui-checkbox data-i18n-key="ui.rotate_cursor"></ui-checkbox>
           </div>
           <div class="pv-row"><span class="pv-badge" id="cp-cb-value">checked: true</span></div>
+        </section>
+
+        <section class="pv-card">
+          <h2>ui-scroll</h2>
+          <p>自绘滚动条（宽 10、圆角 5、最小拇指 30）：悬停 GrayF、拖拽 accent 高亮、轨道点击绝对滚动、原生滚动条隐藏。</p>
+          <ui-scroll id="cp-scroll-main" style="height:180px">
+            <div class="pv-code" style="max-height:none">scroll me —
+              ${Array.from({ length: 14 }, (_, i) => `\nline ${String(i + 1).padStart(2, '0')} — The quick brown fox jumps over the lazy dog.`).join('')}
+            </div>
+          </ui-scroll>
+        </section>
+
+        <section class="pv-card">
+          <h2>ui-breadcrumb</h2>
+          <p>选中之后的项 500ms OutQuint 淡出+横向缩至 0.8、之前的项带分隔 chevron、激活白字加粗+底栏。</p>
+          <div class="pv-row">
+            <ui-breadcrumb id="cp-crumb-main" value="all">
+              <ui-crumb value="all" label="All"></ui-crumb>
+              <ui-crumb value="favourite" label="Favourites"></ui-crumb>
+              <ui-crumb value="recent" label="Recently Played"></ui-crumb>
+              <ui-crumb value="group" label="Group"></ui-crumb>
+            </ui-breadcrumb>
+          </div>
+          <div class="pv-row"><span class="pv-badge" id="cp-crumb-value">value: all</span></div>
         </section>
 
         <section class="pv-card">
@@ -228,6 +254,14 @@ export default {
     checkbox.addEventListener('ui-change', (event) => {
       cbValue.textContent = `checked: ${event.detail.checked}`;
       ctx.log(`checkbox → ${event.detail.checked}`);
+    });
+
+    /* ---- ui-breadcrumb ---- */
+    const breadcrumb = root.querySelector('#cp-crumb-main');
+    const crumbValue = root.querySelector('#cp-crumb-value');
+    breadcrumb.addEventListener('ui-select', (event) => {
+      crumbValue.textContent = `value: ${event.detail.value}`;
+      ctx.log(`breadcrumb select: ${event.detail.value}`);
     });
 
     /* ---- ui-panel ---- */

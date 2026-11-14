@@ -84,6 +84,20 @@
 用户截图指出 sheared 板"根本不是斜的"。根因：**斜切板的左右出血（14%≈179px）大于斜切在视口内的水平投影（tan 11.5° × 视口高 ≈146px），斜边永远藏在视口外**——从最初的全页版到主区版都如此，sheared 从未真正显示过斜面。修正：板子 `left/right: 4%` 内缩（斜边落进视口，对角线可见；transform-origin 默认中心，顶角内缩/底角外扩各约 80px），仅底部保留 -40px 出血（底轮廓不出视口，同上游）；`.content` 同步 `left/right:4%` 且 `padding-inline: max(32px, 14%, calc(tan(var(--shear-deg)) * 100vh))`（CSS 三角函数，Chrome 111+，14% 兜底）。实测 bboxLeft=-19 < layoutLeft=51、bboxWiderThanLayout=true、top=70。
 **通用教训：skewX 类装饰面如果两侧出血超过 tan(角度)×可见高度，斜切在视口内完全不可见；出血量必须按 tan(角度)×(viewportHeight-plateTop) 精确算，或者干脆内缩让斜边可见。**
 
+## sheared 内容硬切修复（2026-11-14 追加 9）
+
+用户指出：有板子的 overlay 里内容"先硬切出来、板子后弹出；收起时板子先收、内容后消失"。排查 shadow 结构（`.panel` 含 `.plate/.waves/.content` 三个兄弟）：wave 变体 content 自带 translateY 过渡、slide-x/y/pop 的 content 在 panel 内随板运动，都正常；**唯独 sheared 的 plate 独立动画而 content `transition:none`**——内容硬切。修复（纯 CSS 时序编排）：content `opacity 0→1`，开 = 板子先起、内容延迟 140ms 后 300ms OutQuint 渐入；收 = 内容 180ms 快隐（先于板子的 400ms 退场完成）。data-switching 通配已覆盖 content，变体切换不受影响。实测：OPEN-MID opacity 0.54/plate moving、CLOSE-MID opacity 0.17/plate still moving。
+通用原则：**任何"装饰板独立动画"的覆盖层，content 必须有自己的 opacity 时序（开：晚于板起点；收：早于板终点）**，不能依赖板子捎带。
+
+## ui-scroll + ui-breadcrumb 抽取（2026-11-14 追加 10）
+
+"继续剩余抽离"：组件 10→12，预览剩余候选清单清空（SearchTextBox 已作为 ui-textbox 的 search 变体覆盖）。
+
+- **ui-scroll**（04-components/ui-scroll/）：依据 `OsuScrollContainer.cs:32-33,67-73,79-157`。原生滚动 + 隐藏原生条 + 自绘拇指（宽 10、圆角 5、内缩 3、最小 30=width×3）；Gray8→GrayF 悬停 100ms、拖拽 `data-dragging`→accent 高亮；轨道点击绝对滚动（点击点即拇指中心，对应 ScrollToAbsolutePosition 的半径修正）；`ResizeObserver`（viewport+flow）同步拇指；上游 additive blending 以半透明近似。宿主高度由使用方定（默认 240px）。
+- **ui-breadcrumb**（04-components/ui-breadcrumb/）：依据 `BreadcrumbControl.cs:20-46,48-111` + OsuTabItem 样式。高 32/间距 10/文字 18px/右留白 20；**选中之后的项 500ms OutQuint 淡出+scaleX(0.8)（保持占位）**，之前的项显示分隔 chevron（选中项自身无 chevron），激活白字加粗+底栏；方向键/Home/End 仅在可见项间移动；`<ui-crumb value label>` 声明。
+- **新坑（升级时序）**：innerHTML 挂载已定义的自定义元素时，`attributeChangedCallback` 在 `connectedCallback` 之前触发且元素已连接——**集合类字段（`_items` 等）必须在构造器初始化**，否则 `_paint` 读 undefined（`_selectedIndex` TypeError）。ui-tabs 构造器里有 `this._tabs=[]` 所以没踩；ui-breadcrumb 漏了，已修。
+- 回归：`validation: ok`（12 组件）、naming 0、面包屑 chevron 1/0 与 scaleX(0.8) 淡出淡回、滚动条拇指到底/最小高 30、console 0 error。
+
 ## 遗留待办
 
 - overlay variant 队列错位修复与 sheared 安全区（`ui-reveal-overlay`）已在本会话早前完成，方向检验 5/5 PASS，但尚未做长时稳定性观察。

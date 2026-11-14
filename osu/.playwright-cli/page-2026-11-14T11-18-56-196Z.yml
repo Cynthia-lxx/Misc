@@ -1,0 +1,320 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: UR
+      - generic [ref=e6]:
+        - text: UI Reference Kit
+        - generic [ref=e7]: preview / 2026-11-13
+    - navigation "Preview views" [ref=e8]:
+      - link "01 总览" [ref=e9] [cursor=pointer]:
+        - /url: "#/overview"
+        - generic [ref=e10]: "01"
+        - text: 总览
+      - link "02 主题 / 排版" [ref=e11] [cursor=pointer]:
+        - /url: "#/theme"
+        - generic [ref=e12]: "02"
+        - text: 主题 / 排版
+      - link "03 组件" [ref=e13] [cursor=pointer]:
+        - /url: "#/components"
+        - generic [ref=e14]: "03"
+        - text: 组件
+      - link "04 动效引擎" [ref=e15] [cursor=pointer]:
+        - /url: "#/motion"
+        - generic [ref=e16]: "04"
+        - text: 动效引擎
+      - link "05 图层编排" [ref=e17] [cursor=pointer]:
+        - /url: "#/layers"
+        - generic [ref=e18]: "05"
+        - text: 图层编排
+      - link "06 视觉效果" [ref=e19] [cursor=pointer]:
+        - /url: "#/effects"
+        - generic [ref=e20]: "06"
+        - text: 视觉效果
+      - link "07 数据 / 装配" [ref=e21] [cursor=pointer]:
+        - /url: "#/data"
+        - generic [ref=e22]: "07"
+        - text: 数据 / 装配
+    - generic [ref=e23]:
+      - generic [ref=e24]: preview server · :8190 · 69 files
+      - generic [ref=e27]: 12 API endpoints online
+      - generic [ref=e28]: MIT-derived · GPL-3.0 target
+  - main [ref=e29]:
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - heading "组件" [level=1] [ref=e32]
+        - paragraph [ref=e33]: 5 个组件的全部状态、变体、事件与入/出场动效
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - text: Theme
+          - combobox "Theme" [ref=e36] [cursor=pointer]:
+            - option "Red"
+            - option "Orange"
+            - option "Lime"
+            - option "Green"
+            - option "Aquamarine"
+            - option "Blue" [selected]
+            - option "Purple"
+            - option "Plum"
+            - option "Pink"
+        - generic [ref=e37]:
+          - text: Lang
+          - combobox "Lang" [ref=e38] [cursor=pointer]:
+            - option "en" [selected]
+            - option "zh-CN"
+        - generic [ref=e39]:
+          - text: Speed
+          - combobox "Speed" [ref=e40] [cursor=pointer]:
+            - option "0.5×"
+            - option "1×" [selected]
+            - option "1.5×"
+            - option "2×"
+        - 'button "Reduced motion: off" [ref=e42] [cursor=pointer]'
+        - button "Log 0" [ref=e46] [cursor=pointer]:
+          - generic:
+            - text: Log
+            - generic [ref=e47]: "3"
+    - generic [ref=e49]:
+      - generic [ref=e50]:
+        - heading "ui-button" [level=2] [ref=e51]
+        - paragraph [ref=e52]:
+          - text: Custom Element + Shadow DOM；四态、sheared/danger 变体、i18n 标签、点击
+          - code [ref=e53]: data-flash
+          - text: 闪光。
+        - generic [ref=e54]:
+          - button "Default" [ref=e56] [cursor=pointer]
+          - button "Sheared" [ref=e60] [cursor=pointer]
+          - button "Danger" [ref=e64] [cursor=pointer]
+          - button "Disabled" [disabled] [ref=e68]
+          - button "Back" [ref=e72] [cursor=pointer]
+        - generic [ref=e75]: "presses: 0"
+      - generic [ref=e77]:
+        - heading "ui-textbox" [level=2] [ref=e78]
+        - paragraph [ref=e79]:
+          - text: 聚焦 3px 描边、逐字坠落入场、光标节拍脉冲、Enter 提交闪烁、非法输入红闪；
+          - code [ref=e80]: search
+          - text: /
+          - code [ref=e81]: number
+          - text: 变体。
+        - generic [ref=e82]:
+          - textbox "type here…" [ref=e85]
+          - textbox "User search" [ref=e88]
+          - textbox [ref=e91]: "42"
+          - textbox "disabled" [disabled] [ref=e94]
+        - generic [ref=e95]: change 0 · commit 0 · error 0
+      - generic [ref=e97]:
+        - heading "ui-slider" [level=2] [ref=e98]
+        - paragraph [ref=e99]: nub 250ms OutQuint 跟随、hover/drag 辉光、30ms 节流 tick 脉冲、双击恢复默认、方向键 / Shift×10 / PgUp·PgDn / Home·End。
+        - generic [ref=e100]:
+          - slider "slider" [ref=e101]:
+            - generic [ref=e102] [cursor=pointer]
+          - status [ref=e106]: "70"
+        - generic [ref=e107]:
+          - slider "slider" [ref=e108]:
+            - generic [ref=e109] [cursor=pointer]
+          - slider "slider"
+        - generic [ref=e113]: "changes: 0"
+      - generic [ref=e115]:
+        - heading "ui-dropdown" [level=2] [ref=e116]
+        - paragraph [ref=e117]: 菜单 300ms OutQuint 淡入+高度过渡、悬停条 100ms 入 / 600ms 出、悬停 chevron 滑入、头部 chevron 翻转、方向键预选 / Enter 选择 / Esc 关闭、长标签截断省略。
+        - generic [ref=e118]:
+          - button "choose…" [ref=e120] [cursor=pointer]:
+            - generic [aria-hidden] [ref=e122]: ▾
+          - generic [ref=e123]: "value: —"
+          - generic:
+            - button "disabled" [disabled]:
+              - generic [aria-hidden]: ▾
+      - generic [ref=e124]:
+        - heading "ui-tabs" [level=2] [ref=e125]
+        - paragraph [ref=e126]:
+          - text: 悬停/激活底栏 1px 淡入 500ms OutQuint、激活加粗白字 / 未激活 accent 字、
+          - code [ref=e127]: strip
+          - text: 属性启用底线跟随、方向键 / Home / End。
+        - tablist [ref=e130]:
+          - tab "All" [selected] [ref=e131] [cursor=pointer]
+          - tab "Recently Played" [ref=e132] [cursor=pointer]
+          - tab "Favourites" [ref=e133] [cursor=pointer]
+          - tab "Group" [ref=e134] [cursor=pointer]
+        - generic [ref=e135]: "value: all"
+      - generic [ref=e137]:
+        - heading "ui-checkbox" [level=2] [ref=e138]
+        - paragraph [ref=e139]: nub 靠右、选中 OutElasticHalf 弹出（width 38→50 / 内环 3→8.5）、未选 OutQuint 收回、悬停辉光、空格 / 回车切换。
+        - generic [ref=e140]:
+          - switch "Parallax" [checked] [ref=e141] [cursor=pointer]
+          - switch "Interface voices" [ref=e144]
+          - switch "Disabled" [checked] [ref=e147]
+          - switch "Rotate cursor when dragging" [ref=e150]
+        - generic [ref=e153]: "checked: true"
+      - generic [ref=e155]:
+        - heading "ui-panel" [level=2] [ref=e156]
+        - paragraph [ref=e157]:
+          - text: 纯 DOM 工厂，导出
+          - code [ref=e158]: mount / unmount / setTheme
+          - text: ；选中发光与节拍脉冲。
+        - generic [ref=e159]:
+          - button "mount" [ref=e161] [cursor=pointer]
+          - button "unmount" [ref=e164] [cursor=pointer]
+          - button "toggle selected" [ref=e167] [cursor=pointer]
+          - button "toggle beat" [ref=e170] [cursor=pointer]
+          - button "setTheme(pink)" [ref=e173] [cursor=pointer]
+        - button "Panel component mount / unmount / setTheme" [pressed] [ref=e176] [cursor=pointer]:
+          - generic [ref=e177]:
+            - generic [ref=e178]: Panel component
+            - generic [ref=e179]: mount / unmount / setTheme
+        - generic [ref=e180]: "handle: mounted"
+      - generic [ref=e182]:
+        - heading "ui-action-rail" [level=2] [ref=e183]
+        - paragraph [ref=e184]:
+          - text: 锚点右侧横排楔形按钮：4 种宽度状态、
+          - code [ref=e185]: "-20px"
+          - text: 负间距、
+          - code [ref=e186]: Shear 0.2 / -0.2
+          - text: 反切、节拍驱动 hover、加性按压层、键盘导航、hub 追踪。
+        - generic [ref=e188]:
+          - button "Menu" [ref=e189]: ●
+          - toolbar [ref=e190]:
+            - button [aria-hidden] [ref=e191]:
+              - generic [ref=e192]: ⚙ Settings
+            - button [aria-hidden] [ref=e194]:
+              - generic [ref=e195]: ▶ Play
+            - button [aria-hidden] [ref=e197]:
+              - generic [ref=e198]: ✎ Edit
+            - button [aria-hidden] [ref=e200]:
+              - generic [ref=e201]: ⌕ Browse
+            - button [aria-hidden] [ref=e203]:
+              - generic [ref=e204]: ● Solo
+            - button [aria-hidden] [ref=e206]:
+              - generic [ref=e207]: ●● Multi
+            - button [aria-hidden] [ref=e209]:
+              - generic [ref=e210]: ▤ Modify item
+            - button [aria-hidden] [ref=e212]:
+              - generic [ref=e213]: ◈ Modify theme
+        - generic [ref=e215]:
+          - button "Initial" [ref=e217] [cursor=pointer]
+          - button "Primary" [ref=e220] [cursor=pointer]
+          - button "Play" [ref=e223] [cursor=pointer]
+          - button "Multi" [ref=e226] [cursor=pointer]
+          - button "Edit" [ref=e229] [cursor=pointer]
+          - button "Transition" [ref=e232] [cursor=pointer]
+          - button "Exit" [ref=e235] [cursor=pointer]
+        - generic [ref=e237]:
+          - strong [ref=e238]: "state: initial"
+          - generic [ref=e239]: hover 楔形按钮查看 160→240px OutElastic 与图标节拍心跳
+      - generic [ref=e240]:
+        - heading "ui-reveal-overlay · 入/出场动效检验" [level=2] [ref=e241]
+        - paragraph [ref=e242]:
+          - text: 5 种几何 variant。关键回归断言：打开后读取
+          - code [ref=e243]: shadowRoot.getAnimations()
+          - text: ，必须 > 0 才算真的播放了过渡；关闭后等动画结束才隐藏。
+        - generic [ref=e244]:
+          - button "Wave 四层旋转揭示" [ref=e246] [cursor=pointer]
+          - button "Sheared 斜切下滑" [ref=e249] [cursor=pointer]
+          - button "Slide-X 侧栏" [ref=e252] [cursor=pointer]
+          - button "Slide-Y 底部" [ref=e255] [cursor=pointer]
+          - button "Pop 环形弹性" [ref=e258] [cursor=pointer]
+        - generic [ref=e260]:
+          - button "Close（退场）" [ref=e262] [cursor=pointer]
+          - button "Replay（重播入场）" [ref=e265] [cursor=pointer]
+          - button "自动轮换" [ref=e268] [cursor=pointer]
+          - button "activation=disabled" [ref=e271] [cursor=pointer]
+          - button "连续切换方向检验" [ref=e274] [cursor=pointer]
+        - generic [ref=e276]:
+          - generic [ref=e277]: not tested
+          - generic [ref=e278]: "overlay: closed"
+          - generic [ref=e279]:
+            - checkbox "显示斜切内容安全区" [ref=e280]
+            - text: 显示斜切内容安全区
+        - generic [ref=e281]: 点击任一 variant 开始检验。
+      - generic [ref=e282]:
+        - heading "清单" [level=2] [ref=e283]
+        - table [ref=e284]:
+          - rowgroup [ref=e285]:
+            - row [ref=e286]:
+              - columnheader "组件" [ref=e287]
+              - columnheader "形态" [ref=e288]
+              - columnheader "挂载点" [ref=e289]
+              - columnheader "导出" [ref=e290]
+              - columnheader "来源" [ref=e291]
+          - rowgroup [ref=e292]:
+            - row [ref=e293]:
+              - cell [ref=e294]:
+                - code [ref=e295]: ui-button
+              - cell "custom-element" [ref=e296]
+              - cell [ref=e297]:
+                - code [ref=e298]: "[data-ui-mount='button']"
+              - cell "default, UiButtonElement" [ref=e299]
+              - cell "osu.Game/Graphics/UserInterface/OsuButton.cs:133-176" [ref=e300]
+            - row [ref=e301]:
+              - cell [ref=e302]:
+                - code [ref=e303]: ui-panel
+              - cell "dom-factory" [ref=e304]
+              - cell [ref=e305]:
+                - code [ref=e306]: "[data-ui-mount='panel']"
+              - cell "mount, unmount, setTheme" [ref=e307]
+              - cell "osu.Game/Screens/Select/Panel.cs:135-205,331-385" [ref=e308]
+            - row [ref=e309]:
+              - cell [ref=e310]:
+                - code [ref=e311]: ui-action-rail
+              - cell "custom-element" [ref=e312]
+              - cell [ref=e313]:
+                - code [ref=e314]: "[data-ui-mount='menu-buttons']"
+              - cell "default, UiActionRailElement, setItems, setState, setTheme, unmount" [ref=e315]
+              - cell "osu.Game/Screens/Menu/ButtonSystem.cs:38-137,424-528" [ref=e316]
+            - row [ref=e317]:
+              - cell [ref=e318]:
+                - code [ref=e319]: ui-reveal-overlay
+              - cell "custom-element" [ref=e320]
+              - cell [ref=e321]:
+                - code [ref=e322]: "[data-ui-mount='overlay']"
+              - cell "default, UiRevealOverlayElement, open, close, toggle, setTheme, unmount" [ref=e323]
+              - cell "osu.Game/Graphics/Containers/WaveContainer.cs:19-192" [ref=e324]
+            - row [ref=e325]:
+              - cell [ref=e326]:
+                - code [ref=e327]: ui-layered-view
+              - cell "custom-element" [ref=e328]
+              - cell [ref=e329]:
+                - code [ref=e330]: "[data-ui-mount='layered-view']"
+              - cell "default, UiLayeredViewElement, open, close, toggle, replay, seek, setRate, setPreset, setLayerVisible, setTheme, unmount" [ref=e331]
+              - cell "osu.Game/Graphics/Containers/WaveContainer.cs:19-192" [ref=e332]
+            - row [ref=e333]:
+              - cell [ref=e334]:
+                - code [ref=e335]: ui-textbox
+              - cell "custom-element" [ref=e336]
+              - cell [ref=e337]:
+                - code [ref=e338]: "[data-ui-mount='textbox']"
+              - cell "default, UiTextboxElement" [ref=e339]
+              - cell "osu.Game/Graphics/UserInterface/OsuTextBox.cs:73-93,258-282,321-397" [ref=e340]
+            - row [ref=e341]:
+              - cell [ref=e342]:
+                - code [ref=e343]: ui-slider
+              - cell "custom-element" [ref=e344]
+              - cell [ref=e345]:
+                - code [ref=e346]: "[data-ui-mount='slider']"
+              - cell "default, UiSliderElement" [ref=e347]
+              - cell "osu.Game/Graphics/UserInterface/RoundedSliderBar.cs:62-129,190-205" [ref=e348]
+            - row [ref=e349]:
+              - cell [ref=e350]:
+                - code [ref=e351]: ui-dropdown
+              - cell "custom-element" [ref=e352]
+              - cell [ref=e353]:
+                - code [ref=e354]: "[data-ui-mount='dropdown']"
+              - cell "default, UiDropdownElement" [ref=e355]
+              - cell "osu.Game/Graphics/UserInterface/OsuDropdown.cs:79-127,247-254,326-335,346-462" [ref=e356]
+            - row [ref=e357]:
+              - cell [ref=e358]:
+                - code [ref=e359]: ui-tabs
+              - cell "custom-element" [ref=e360]
+              - cell [ref=e361]:
+                - code [ref=e362]: "[data-ui-mount='tabs']"
+              - cell "default, UiTabsElement" [ref=e363]
+              - cell "osu.Game/Graphics/UserInterface/OsuTabControl.cs:31-53,88-101,121-146,177-213" [ref=e364]
+            - row [ref=e365]:
+              - cell [ref=e366]:
+                - code [ref=e367]: ui-checkbox
+              - cell "custom-element" [ref=e368]
+              - cell [ref=e369]:
+                - code [ref=e370]: "[data-ui-mount='checkbox']"
+              - cell "default, UiCheckboxElement" [ref=e371]
+              - cell "osu.Game/Graphics/UserInterface/OsuCheckbox.cs:42-113" [ref=e372]
+    - generic [ref=e373]:
+      - generic [ref=e374]: "view: components"
+      - generic [ref=e375]: 69 dist files · hash-route · MIT-derived
