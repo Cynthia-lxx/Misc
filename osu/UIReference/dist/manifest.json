@@ -196,6 +196,63 @@
         "osu.Game/OsuGame.cs:283-284,1108-1161"
       ],
       "note": "12 层并行的展开/收起编排；每层独立时长/缓动/延迟，收起用动画栅栏延迟清理"
+    },
+    {
+      "id": "ui-textbox",
+      "kind": "custom-element",
+      "tag": "ui-textbox",
+      "files": {
+        "js": "04-components/ui-textbox/ui-textbox.js",
+        "css": "04-components/ui-textbox/ui-textbox.css"
+      },
+      "mount": "[data-ui-mount='textbox']",
+      "settings": [
+        "theme.scheme",
+        "motion.reduce",
+        "ui.hoverFeedback",
+        "motion.duration.fast"
+      ],
+      "i18nKeys": [
+        "common.name",
+        "ui.user_search"
+      ],
+      "exports": [
+        "default",
+        "UiTextboxElement"
+      ],
+      "source": [
+        "osu.Game/Graphics/UserInterface/OsuTextBox.cs:73-93,258-282,321-397",
+        "osu.Game/Graphics/UserInterface/SearchTextBox.cs:15-19",
+        "osu.Game/Graphics/UserInterface/OsuNumberBox.cs"
+      ],
+      "note": "文本输入：聚焦 3px 描边、Background5/4/Commit 三态背景、逐字坠落入场（FallingDownContainer 替身）、光标节拍脉冲、search/number 变体、非法输入红闪"
+    },
+    {
+      "id": "ui-slider",
+      "kind": "custom-element",
+      "tag": "ui-slider",
+      "files": {
+        "js": "04-components/ui-slider/ui-slider.js",
+        "css": "04-components/ui-slider/ui-slider.css"
+      },
+      "mount": "[data-ui-mount='slider']",
+      "settings": [
+        "theme.scheme",
+        "motion.reduce",
+        "ui.hoverFeedback",
+        "motion.duration.normal"
+      ],
+      "i18nKeys": [],
+      "exports": [
+        "default",
+        "UiSliderElement"
+      ],
+      "source": [
+        "osu.Game/Graphics/UserInterface/RoundedSliderBar.cs:62-129,190-205",
+        "osu.Game/Graphics/UserInterface/Nub.cs:82-105,162-178",
+        "osu.Game/Graphics/UserInterface/OsuSliderBar.cs:61-86"
+      ],
+      "note": "滑杆：accent/背景双箱轨道、nub 250ms OutQuint 跟随、hover/drag 辉光（40ms 闪 + 800ms 回落）、30ms 节流 tick 脉冲、双击恢复默认、方向键/翻页键/Shift 大步进"
     }
   ],
   "motion": {

@@ -1,6 +1,8 @@
 /* SPDX-License-Identifier: MIT — Component gallery with live assertions. */
 import { escapeHtml, buttonRow, on, setStatus, table } from './views.js';
 import '../components/ui-button/ui-button.js';
+import '../components/ui-textbox/ui-textbox.js';
+import '../components/ui-slider/ui-slider.js';
 import { mount as mountPanel } from '../components/ui-panel/ui-panel.js';
 import '../04-components/ui-action-rail/ui-action-rail.js';
 import '../04-components/ui-reveal-overlay/ui-reveal-overlay.js';
@@ -39,6 +41,32 @@ export default {
             <ui-button data-i18n-key="common.back"></ui-button>
           </div>
           <div class="pv-row"><span class="pv-note" data-status>presses: 0</span></div>
+        </section>
+
+        <section class="pv-card">
+          <h2>ui-textbox</h2>
+          <p>聚焦 3px 描边、逐字坠落入场、光标节拍脉冲、Enter 提交闪烁、非法输入红闪；<code>search</code> / <code>number</code> 变体。</p>
+          <div class="pv-row">
+            <ui-textbox id="cp-tb-main" placeholder="type here…"></ui-textbox>
+            <ui-textbox variant="search" data-i18n-key="ui.user_search"></ui-textbox>
+            <ui-textbox variant="number" value="42"></ui-textbox>
+            <ui-textbox placeholder="disabled" disabled></ui-textbox>
+          </div>
+          <div class="pv-row"><span class="pv-note" id="cp-tb-status">change 0 · commit 0 · error 0</span></div>
+        </section>
+
+        <section class="pv-card">
+          <h2>ui-slider</h2>
+          <p>nub 250ms OutQuint 跟随、hover/drag 辉光、30ms 节流 tick 脉冲、双击恢复默认、方向键 / Shift×10 / PgUp·PgDn / Home·End。</p>
+          <div class="pv-row">
+            <ui-slider id="cp-sl-main" min="0" max="100" step="1" value="70"></ui-slider>
+            <output id="cp-sl-out">70</output>
+          </div>
+          <div class="pv-row">
+            <ui-slider min="0" max="1" step="0.05" value="0.5"></ui-slider>
+            <ui-slider min="0" max="100" value="30" disabled></ui-slider>
+          </div>
+          <div class="pv-row"><span class="pv-note" id="cp-sl-status">changes: 0</span></div>
         </section>
 
         <section class="pv-card">
@@ -108,6 +136,32 @@ export default {
     let presses = 0;
     const onPress = () => { presses += 1; setStatus(root, `presses: ${presses}`); };
     root.addEventListener('ui-press', onPress);
+
+    /* ---- ui-textbox ---- */
+    const tbStatus = root.querySelector('#cp-tb-status');
+    const tbEvents = { change: 0, commit: 0, error: 0 };
+    const tbSync = () => { tbStatus.textContent = `change ${tbEvents.change} · commit ${tbEvents.commit} · error ${tbEvents.error}`; };
+    for (const name of ['ui-text-change', 'ui-text-commit', 'ui-text-error']) {
+      const kind = name.split('-')[2];
+      root.addEventListener(name, (event) => {
+        tbEvents[kind] += 1;
+        tbSync();
+        ctx.log(`textbox ${name}: ${event.detail.value}`);
+      });
+    }
+
+    /* ---- ui-slider ---- */
+    const slider = root.querySelector('#cp-sl-main');
+    const sliderOut = root.querySelector('#cp-sl-out');
+    const sliderStatus = root.querySelector('#cp-sl-status');
+    let sliderChanges = 0;
+    slider.addEventListener('ui-change', (event) => {
+      sliderChanges += 1;
+      sliderOut.textContent = String(event.detail.value);
+      const nubAnims = slider.shadowRoot.querySelector('.nub').getAnimations().length;
+      sliderStatus.textContent = `changes: ${sliderChanges} · nub anims: ${nubAnims}`;
+      ctx.log(`slider → ${event.detail.value}`);
+    });
 
     /* ---- ui-panel ---- */
     let panel = null;
