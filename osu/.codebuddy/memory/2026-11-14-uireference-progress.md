@@ -79,6 +79,11 @@
 实测：plateTop=70（视口 720）、两侧/底部出血、dim 75% 透明、replay 3 动画、正常关闭、naming 0。
 另记：playwright-cli 在 open 后紧跟 run-code 偶发执行上下文丢失（UtilityScript.evaluate 栈错），重开会话即恢复；结果通道不稳时用 `console.log` + `console` 命令取数。
 
+## sheared 斜边不可见修正（2026-11-14 追加 8）
+
+用户截图指出 sheared 板"根本不是斜的"。根因：**斜切板的左右出血（14%≈179px）大于斜切在视口内的水平投影（tan 11.5° × 视口高 ≈146px），斜边永远藏在视口外**——从最初的全页版到主区版都如此，sheared 从未真正显示过斜面。修正：板子 `left/right: 4%` 内缩（斜边落进视口，对角线可见；transform-origin 默认中心，顶角内缩/底角外扩各约 80px），仅底部保留 -40px 出血（底轮廓不出视口，同上游）；`.content` 同步 `left/right:4%` 且 `padding-inline: max(32px, 14%, calc(tan(var(--shear-deg)) * 100vh))`（CSS 三角函数，Chrome 111+，14% 兜底）。实测 bboxLeft=-19 < layoutLeft=51、bboxWiderThanLayout=true、top=70。
+**通用教训：skewX 类装饰面如果两侧出血超过 tan(角度)×可见高度，斜切在视口内完全不可见；出血量必须按 tan(角度)×(viewportHeight-plateTop) 精确算，或者干脆内缩让斜边可见。**
+
 ## 遗留待办
 
 - overlay variant 队列错位修复与 sheared 安全区（`ui-reveal-overlay`）已在本会话早前完成，方向检验 5/5 PASS，但尚未做长时稳定性观察。

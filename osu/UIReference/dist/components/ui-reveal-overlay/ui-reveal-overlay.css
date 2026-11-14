@@ -75,9 +75,10 @@
  * Upstream ShearedOverlayContainer.cs:75-101 is NOT one giant slanted wall: it is a
  * full-screen dim (Background6 @ 0.75), a sheared header bar on top
  * (ShearedOverlayHeader.HEIGHT = 70) and a main content area between header and footer.
- * So: dim covers the viewport, the sheared plate only covers the main area (top: 70px,
- * inline bleed -14% / bottom bleed -12% to hide the slanted silhouette gaps), and the
- * header bar is a ::before that rises together with the plate. */
+ * The plate is inset 4% from the viewport edges ON PURPOSE: the slanted side edges must
+ * land INSIDE the viewport, otherwise the shear is invisible (a bleed larger than
+ * tan(11.5deg) x viewportHeight ≈ 146px hides the diagonal completely). Only the bottom
+ * edge bleeds (-40px) so the bottom silhouette stays off-screen like upstream. */
 .plate { display: none; }
 
 :host([variant='sheared']) .waves { display: none; }
@@ -95,10 +96,9 @@
   display: block;
   position: absolute;
   top: 70px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: 0 -14% -12%;
+  left: 4%;
+  right: 4%;
+  bottom: -40px;
   background: var(--ui-surface-raised, #333);
   border-inline: 1px solid color-mix(in srgb, var(--ui-accent, #66ccff) 28%, transparent);
   box-shadow: 0 0 30px rgb(0 0 0 / 0.35);
@@ -122,14 +122,17 @@
   transform: skewX(calc(var(--shear-deg) * -1)) translateY(0);
   opacity: 1;
 }
-/* A real content safe area: inset from both slanted edges, never clipped. */
+/* A real content safe area: inset from both slanted edges, never clipped.
+ * tan(11.5deg) x 100vh covers the maximal horizontal run of the slanted edge
+ * within the visible area (CSS trig, Chrome 111+; 14% is the fallback). */
 :host([variant='sheared']) .content {
-  --shear-safe: 14%;
   top: 70px;
+  left: 4%;
+  right: 4%;
   transform: none;
   transition: none;
   overflow: auto;
-  padding-inline: max(32px, var(--shear-safe));
+  padding-inline: max(32px, 14%, calc(tan(var(--shear-deg)) * 100vh));
   z-index: 1;
 }
 :host([variant='sheared'][data-safe-zone='true']) .content {
