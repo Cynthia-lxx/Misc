@@ -78,6 +78,38 @@ export class UiButtonElement extends HTMLElement {
       this.dispatchEvent(detail);
     };
     this._button.addEventListener('click', this._onPress);
+
+    /* OsuAnimatedButton.cs:123-133 —— "bounce on click"：按住时 2000ms OutQuint 缓慢
+     * 缩向 0.75，松开时 1000ms OutElastic 回弹（此处以单峰弹性贝塞尔近似）。
+     * 通过 animated 属性启用，普通按钮保持 OsuButton 行为。 */
+    this._pressAnimation = null;
+    this._onAnimatedPointerDown = () => {
+      if (!this.hasAttribute('animated') || this._button.disabled) return;
+      this._pressAnimation?.cancel();
+      this._pressAnimation = this._button.animate(
+        [{ transform: `scale(${this._currentScale()})` }, { transform: 'scale(0.75)' }],
+        { duration: this._scaled(2000), easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' });
+    };
+    this._onAnimatedPointerRelease = () => {
+      if (!this.hasAttribute('animated')) return;
+      this._pressAnimation?.cancel();
+      this._pressAnimation = this._button.animate(
+        [{ transform: `scale(${this._currentScale()})` }, { transform: 'scale(1)' }],
+        { duration: this._scaled(1000), easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)', fill: 'forwards' });
+    };
+    this._button.addEventListener('pointerdown', this._onAnimatedPointerDown);
+    this._button.addEventListener('pointerup', this._onAnimatedPointerRelease);
+    this._button.addEventListener('pointerleave', this._onAnimatedPointerRelease);
+  }
+
+  _currentScale() {
+    const transform = getComputedStyle(this._button).transform;
+    return transform === 'none' ? 1 : new DOMMatrix(transform).a;
+  }
+
+  _scaled(ms) {
+    const scale = Number(getComputedStyle(this).getPropertyValue('--motion-scale')) || 1;
+    return Math.max(1, Math.round(ms * Math.abs(scale)));
   }
 
   connectedCallback() {
@@ -90,6 +122,9 @@ export class UiButtonElement extends HTMLElement {
 
   disconnectedCallback() {
     this._button.removeEventListener('click', this._onPress);
+    this._button.removeEventListener('pointerdown', this._onAnimatedPointerDown);
+    this._button.removeEventListener('pointerup', this._onAnimatedPointerRelease);
+    this._button.removeEventListener('pointerleave', this._onAnimatedPointerRelease);
     document.removeEventListener('ui-i18n-change', this._onI18nChange);
   }
 

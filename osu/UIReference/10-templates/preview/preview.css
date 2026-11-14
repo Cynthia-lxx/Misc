@@ -186,6 +186,20 @@ button, select, input { font: inherit; color: inherit; }
 .pv-type-demo { line-height: 1.2; margin: 6px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pv-note { font-size: var(--font-size-caption2, 12px); color: var(--pv-muted); }
 
+/* ---------- 组合示例：设置面板 ---------- */
+.pv-settings {
+  border: 1px solid var(--pv-line);
+  border-radius: var(--pv-radius);
+  background: var(--pv-panel-2);
+  overflow: hidden;
+}
+.pv-settings-head {
+  padding: 10px 14px 4px;
+  border-bottom: 1px solid var(--pv-line);
+  background: var(--pv-panel);
+}
+.pv-settings ui-scroll .pv-stack { padding: 12px 14px; }
+
 /* ---------- log panel ---------- */
 .pv-log-panel {
   position: fixed; right: 14px; bottom: 14px; width: 360px; max-width: calc(100vw - 28px);

@@ -9,6 +9,7 @@ import '../components/ui-checkbox/ui-checkbox.js';
 import '../components/ui-scroll/ui-scroll.js';
 import '../components/ui-breadcrumb/ui-breadcrumb.js';
 import '../components/ui-menu/ui-menu.js';
+import '../components/ui-hold-button/ui-hold-button.js';
 import { mount as mountPanel } from '../components/ui-panel/ui-panel.js';
 import '../04-components/ui-action-rail/ui-action-rail.js';
 import '../04-components/ui-reveal-overlay/ui-reveal-overlay.js';
@@ -144,7 +145,7 @@ export default {
           <h2>ui-menu</h2>
           <p>280ms OutQuint 淡入开 / 50ms 延迟淡出关、子菜单右上锚定（放不下自动翻面）、悬停 80ms 常规↔加粗互换、destructive/highlighted 文字色、disabled 0.2、分隔条、Esc / 点击外部关闭。</p>
           <div class="pv-row">
-            <ui-button id="cp-menu-open" label="open menu"></ui-button>
+            <ui-button id="cp-menu-open" label="open menu" animated></ui-button>
             <ui-menu for="cp-menu-open">
               <ui-item value="copy" label="Copy" hotkey="Ctrl+C"></ui-item>
               <ui-item value="rename" label="Rename" hotkey="F2"></ui-item>
@@ -159,6 +160,38 @@ export default {
             </ui-menu>
           </div>
           <div class="pv-row"><span class="pv-badge" id="cp-menu-value">selected: —</span></div>
+        </section>
+
+        <section class="pv-card">
+          <h2>组合示例 · 设置面板</h2>
+          <p>tabs + scroll + textbox + dropdown + slider + checkbox + button + hold-button 拼装；全部吃同一套 token，切主题整体联动。open menu 按钮带 <code>animated</code>（按住缓慢收缩、松开弹性回弹）。</p>
+          <div class="pv-settings">
+            <div class="pv-settings-head">
+              <ui-tabs id="cp-set-tabs" value="general">
+                <ui-tab value="general" label="General"></ui-tab>
+                <ui-tab value="interface" label="Interface"></ui-tab>
+              </ui-tabs>
+            </div>
+            <ui-scroll style="height:190px">
+              <div class="pv-stack" style="padding-right:10px">
+                <div class="pv-row"><label style="min-width:110px">name</label><ui-textbox variant="search" placeholder="type here…"></ui-textbox></div>
+                <div class="pv-row"><label style="min-width:110px">background</label>
+                  <ui-dropdown value="seasonal">
+                    <ui-option value="always" label="Always"></ui-option>
+                    <ui-option value="seasonal" label="Seasonal"></ui-option>
+                    <ui-option value="never" label="Never"></ui-option>
+                  </ui-dropdown>
+                </div>
+                <div class="pv-row"><label style="min-width:110px">cursor size</label><ui-slider min="0" max="2" step="0.05" value="1"></ui-slider></div>
+                <div class="pv-row"><ui-checkbox label="Parallax" checked></ui-checkbox></div>
+                <div class="pv-row"><ui-checkbox data-i18n-key="ui.rotate_cursor"></ui-checkbox></div>
+              </div>
+            </ui-scroll>
+            <div class="pv-row" style="justify-content:flex-end">
+              <ui-button id="cp-set-apply" label="Apply"></ui-button>
+              <ui-hold-button id="cp-set-hold" label="reset" dangerous></ui-hold-button>
+            </div>
+          </div>
         </section>
 
         <section class="pv-card">
@@ -293,6 +326,14 @@ export default {
       ctxMenuValue.textContent = `selected: ${event.detail.value}`;
       ctx.log(`menu select: ${event.detail.value}`);
     });
+
+    /* ---- 组合示例 / ui-hold-button ---- */
+    const holdButton = root.querySelector('#cp-set-hold');
+    holdButton.addEventListener('ui-confirm', (event) => {
+      ctx.log(`hold-confirm (${event.detail.dangerous ? 'dangerous' : 'normal'})`);
+    });
+    const applyButton = root.querySelector('#cp-set-apply');
+    applyButton?.addEventListener('ui-press', () => ctx.log('settings apply'));
 
     /* ---- ui-panel ---- */
     let panel = null;

@@ -112,6 +112,15 @@
 
 **至此上游 UI 控件族抽取完成：13 组件（button/panel/action-rail/reveal-overlay/layered-view/textbox/slider/dropdown/tabs/checkbox/scroll/breadcrumb/menu）。**
 
+## OsuAnimatedButton 回弹 + ui-hold-button + 组合示例（2026-11-14 追加 12）
+
+用户"一起做"：动效侧剩余件 + 组合示例。
+
+- **ui-button `animated` 属性**（OsuAnimatedButton.cs:123-133）：按住 2000ms OutQuint 缩向 0.75、松开 1000ms 回弹（OutElastic 以单峰贝塞尔 cubic-bezier(0.34,1.56,0.64,1) 近似）；WAAPI fill:forwards 链，每次取消前动画并从当前计算 scale 起播（`getComputedStyle().transform==='none'` 守卫，DOMMatrix('none') 会抛）。默认关闭，加 animated 才启用。
+- **ui-hold-button**（HoldToConfirmContainer.cs:27,91-124 + HoldToConfirmOverlay.cs:52-58）：组件 13→14。环形 SVG 进度（12 点起，accent / dangerous→错误色）；激活延迟读设置 `--hold-activation-delay`（默认 200，dangerous 固定 500）；进度 rAF 引擎：BeginConfirm 从当前值 Out 缓动推进（时长=delay×(1-p)），Abort 保持 200ms 后 InSine 衰减，fired 发一次 ui-confirm、释放后重新武装（演示语义）；空格/回车等价长按。**坑：fired 分支 dispatch 后忘了 _render()，✓ 不显示；改完必须 reload 浏览器再验。**
+- **组合示例**（组件视图"组合示例 · 设置面板"卡）：tabs+scroll+textbox+dropdown+slider+checkbox+button+hold-button 同卡拼装，全 token 联动（`.pv-settings` 容器样式）。命名 token 又中一次：`combo` 是游戏域词（连击），改 `pv-settings`/`cp-set-*`——**演示类名/ids 也过 naming，起名避开游戏域词汇**。
+- 回归：按住 0.79→松开 1.000、hold 进度 250ms 推进至 73%、fired ✓、中止回落 offset 182/182、组合面板 8 部件齐全、console 0 error、`validation: ok`（14 组件）、naming 0。
+
 ## 遗留待办
 
 - overlay variant 队列错位修复与 sheared 安全区（`ui-reveal-overlay`）已在本会话早前完成，方向检验 5/5 PASS，但尚未做长时稳定性观察。

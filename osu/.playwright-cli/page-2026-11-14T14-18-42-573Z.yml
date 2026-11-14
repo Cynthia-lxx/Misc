@@ -1,0 +1,372 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: UR
+      - generic [ref=e6]:
+        - text: UI Reference Kit
+        - generic [ref=e7]: preview / 2026-11-13
+    - navigation "Preview views" [ref=e8]:
+      - link "01 总览" [ref=e9] [cursor=pointer]:
+        - /url: "#/overview"
+        - generic [ref=e10]: "01"
+        - text: 总览
+      - link "02 主题 / 排版" [ref=e11] [cursor=pointer]:
+        - /url: "#/theme"
+        - generic [ref=e12]: "02"
+        - text: 主题 / 排版
+      - link "03 组件" [ref=e13] [cursor=pointer]:
+        - /url: "#/components"
+        - generic [ref=e14]: "03"
+        - text: 组件
+      - link "04 动效引擎" [ref=e15] [cursor=pointer]:
+        - /url: "#/motion"
+        - generic [ref=e16]: "04"
+        - text: 动效引擎
+      - link "05 图层编排" [ref=e17] [cursor=pointer]:
+        - /url: "#/layers"
+        - generic [ref=e18]: "05"
+        - text: 图层编排
+      - link "06 视觉效果" [ref=e19] [cursor=pointer]:
+        - /url: "#/effects"
+        - generic [ref=e20]: "06"
+        - text: 视觉效果
+      - link "07 数据 / 装配" [ref=e21] [cursor=pointer]:
+        - /url: "#/data"
+        - generic [ref=e22]: "07"
+        - text: 数据 / 装配
+    - generic [ref=e23]:
+      - generic [ref=e24]: preview server · :8190 · 77 files
+      - generic [ref=e27]: 12 API endpoints online
+      - generic [ref=e28]: MIT-derived · GPL-3.0 target
+  - main [ref=e29]:
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - heading "主题 / 排版" [level=1] [ref=e32]
+        - paragraph [ref=e33]: 9 套主题、CSS 自定义属性色板、字号层级与 settings 项
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - text: Theme
+          - combobox "Theme" [ref=e36] [cursor=pointer]:
+            - option "Red"
+            - option "Orange"
+            - option "Lime"
+            - option "Green"
+            - option "Aquamarine"
+            - option "Blue" [selected]
+            - option "Purple"
+            - option "Plum"
+            - option "Pink"
+        - generic [ref=e37]:
+          - text: Lang
+          - combobox "Lang" [ref=e38] [cursor=pointer]:
+            - option "en" [selected]
+            - option "zh-CN"
+        - generic [ref=e39]:
+          - text: Speed
+          - combobox "Speed" [ref=e40] [cursor=pointer]:
+            - option "0.5×"
+            - option "1×" [selected]
+            - option "1.5×"
+            - option "2×"
+        - 'button "Reduced motion: off" [ref=e42] [cursor=pointer]'
+        - button "Log 0" [ref=e46] [cursor=pointer]:
+          - generic:
+            - text: Log
+            - generic [ref=e47]: "3"
+    - generic [ref=e49]:
+      - generic [ref=e50]:
+        - heading "主题方案" [level=2] [ref=e51]
+        - paragraph [ref=e52]:
+          - text: 每个方案一个 hue，由
+          - code [ref=e53]: OverlayColourProvider
+          - text: 公式派生整套层级；点击即时切换
+          - code [ref=e54]: data-theme
+          - text: 。
+        - generic [ref=e55]:
+          - button "red 0°" [ref=e57] [cursor=pointer]:
+            - generic:
+              - text: red
+              - generic [ref=e58]: 0°
+          - button "orange 45°" [ref=e60] [cursor=pointer]:
+            - generic:
+              - text: orange
+              - generic [ref=e61]: 45°
+          - button "lime 90°" [ref=e63] [cursor=pointer]:
+            - generic:
+              - text: lime
+              - generic [ref=e64]: 90°
+          - button "green 125°" [ref=e66] [cursor=pointer]:
+            - generic:
+              - text: green
+              - generic [ref=e67]: 125°
+          - button "aquamarine 160°" [ref=e69] [cursor=pointer]:
+            - generic:
+              - text: aquamarine
+              - generic [ref=e70]: 160°
+          - button "blue 200°" [ref=e72] [cursor=pointer]:
+            - generic:
+              - text: blue
+              - generic [ref=e73]: 200°
+          - button "purple 255°" [ref=e75] [cursor=pointer]:
+            - generic:
+              - text: purple
+              - generic [ref=e76]: 255°
+          - button "plum 320°" [ref=e78] [cursor=pointer]:
+            - generic:
+              - text: plum
+              - generic [ref=e79]: 320°
+          - button "pink 333°" [ref=e81] [cursor=pointer]:
+            - generic:
+              - text: pink
+              - generic [ref=e82]: 333°
+        - generic [ref=e83]: "current: blue"
+        - heading "当前方案" [level=3] [ref=e85]
+        - generic [ref=e86]: "{ \"id\": \"blue\", \"hue\": 200, \"usedBy\": \"List view / ItemListing（上游 SongSelect.cs:116）\", \"provider\": \"HSL(hue, s, l) · OverlayColourProvider.cs:29-54\" }"
+        - paragraph [ref=e87]:
+          - text: themes.css 内
+          - code [ref=e88]: "[data-theme=...]"
+          - text: 块数：9
+      - generic [ref=e89]:
+        - heading "主题 token（实时计算值）" [level=2] [ref=e90]
+        - paragraph [ref=e91]: 色块读取的是浏览器 computed style，主题切换后点「刷新」即可看到全部变量同步变化。
+        - generic [ref=e92]:
+          - button "刷新色板" [ref=e94] [cursor=pointer]
+          - button "自动轮换" [ref=e98] [cursor=pointer]
+        - generic [ref=e101]:
+          - generic [ref=e102]:
+            - generic [ref=e104]: "--colour-0"
+            - generic [ref=e105]: hsl(200 100.0% 80.0%)
+          - generic [ref=e106]:
+            - generic [ref=e108]: "--colour-1"
+            - generic [ref=e109]: hsl(200 100.0% 70.0%)
+          - generic [ref=e110]:
+            - generic [ref=e112]: "--colour-2"
+            - generic [ref=e113]: hsl(200 80.0% 60.0%)
+          - generic [ref=e114]:
+            - generic [ref=e116]: "--colour-3"
+            - generic [ref=e117]: hsl(200 60.0% 50.0%)
+          - generic [ref=e118]:
+            - generic [ref=e120]: "--colour-4"
+            - generic [ref=e121]: hsl(200 40.0% 30.0%)
+          - generic [ref=e122]:
+            - generic [ref=e124]: "--ui-accent"
+            - generic [ref=e125]: hsl(200 100.0% 70.0%)
+          - generic [ref=e126]:
+            - generic [ref=e128]: "--ui-accent-strong"
+            - generic [ref=e129]: hsl(200 100.0% 70.0%)
+          - generic [ref=e130]:
+            - generic [ref=e132]: "--ui-text"
+            - generic [ref=e133]: hsl(200 40.0% 100.0%)
+          - generic [ref=e134]:
+            - generic [ref=e136]: "--ui-text-muted"
+            - generic [ref=e137]: hsl(200 40.0% 70.0%)
+          - generic [ref=e138]:
+            - generic [ref=e140]: "--ui-surface"
+            - generic [ref=e141]: hsl(200 10.0% 20.0%)
+          - generic [ref=e142]:
+            - generic [ref=e144]: "--ui-surface-raised"
+            - generic [ref=e145]: hsl(200 10.0% 30.0%)
+          - generic [ref=e146]:
+            - generic [ref=e148]: "--ui-surface-sunken"
+            - generic [ref=e149]: hsl(200 10.0% 10.0%)
+          - generic [ref=e150]:
+            - generic [ref=e152]: "--ui-border"
+            - generic [ref=e153]: hsl(200 20.0% 30.0%)
+          - generic [ref=e154]:
+            - generic [ref=e156]: "--pink-1"
+            - generic [ref=e157]: "#ff66ab"
+          - generic [ref=e158]:
+            - generic [ref=e160]: "--purple-1"
+            - generic [ref=e161]: "#8c66ff"
+          - generic [ref=e162]:
+            - generic [ref=e164]: "--blue-1"
+            - generic [ref=e165]: "#66ccff"
+          - generic [ref=e166]:
+            - generic [ref=e168]: "--green-1"
+            - generic [ref=e169]: "#66ff73"
+          - generic [ref=e170]:
+            - generic [ref=e172]: "--lime-1"
+            - generic [ref=e173]: "#b2ff66"
+          - generic [ref=e174]:
+            - generic [ref=e176]: "--orange-1"
+            - generic [ref=e177]: "#ffd966"
+          - generic [ref=e178]:
+            - generic [ref=e180]: "--red-1"
+            - generic [ref=e181]: "#ff6666"
+          - generic [ref=e182]:
+            - generic [ref=e184]: "--state-info"
+            - generic [ref=e185]: "#66ccff"
+          - generic [ref=e186]:
+            - generic [ref=e188]: "--state-success"
+            - generic [ref=e189]: "#88b300"
+          - generic [ref=e190]:
+            - generic [ref=e192]: "--state-warning"
+            - generic [ref=e193]: "#ffcc22"
+          - generic [ref=e194]:
+            - generic [ref=e196]: "--state-error"
+            - generic [ref=e197]: "#ed1121"
+          - generic [ref=e198]:
+            - generic [ref=e200]: "--state-approved"
+            - generic [ref=e201]: "#b3ff66"
+          - generic [ref=e202]:
+            - generic [ref=e204]: "--state-featured"
+            - generic [ref=e205]: "#ff66ab"
+          - generic [ref=e206]:
+            - generic [ref=e208]: "--state-verified"
+            - generic [ref=e209]: "#66ccff"
+          - generic [ref=e210]:
+            - generic [ref=e212]: "--gray-3"
+            - generic [ref=e213]: "#333333"
+          - generic [ref=e214]:
+            - generic [ref=e216]: "--gray-7"
+            - generic [ref=e217]: "#777777"
+          - generic [ref=e218]:
+            - generic [ref=e220]: "--gray-b"
+            - generic [ref=e221]: "#bbbbbb"
+          - generic [ref=e222]:
+            - generic [ref=e224]: "--gray-f"
+            - generic [ref=e225]: "#ffffff"
+      - generic [ref=e226]:
+        - heading "CSS 自定义属性表" [level=2] [ref=e227]
+        - paragraph [ref=e228]: tokens.css 的排版 / 动效 / 图形变量。
+        - table [ref=e230]:
+          - rowgroup [ref=e231]:
+            - row [ref=e232]:
+              - columnheader "变量" [ref=e233]
+              - columnheader "计算值" [ref=e234]
+          - rowgroup [ref=e235]:
+            - row [ref=e236]:
+              - cell [ref=e237]:
+                - code [ref=e238]: "--theme-hue"
+              - cell "200" [ref=e239]
+            - row [ref=e240]:
+              - cell [ref=e241]:
+                - code [ref=e242]: "--ui-accent"
+              - cell "hsl(200 100.0% 70.0%)" [ref=e243]
+            - row [ref=e244]:
+              - cell [ref=e245]:
+                - code [ref=e246]: "--ui-surface"
+              - cell "hsl(200 10.0% 20.0%)" [ref=e247]
+            - row [ref=e248]:
+              - cell [ref=e249]:
+                - code [ref=e250]: "--ui-border"
+              - cell "hsl(200 20.0% 30.0%)" [ref=e251]
+            - row [ref=e252]:
+              - cell [ref=e253]:
+                - code [ref=e254]: "--corner-radius"
+              - cell "5px" [ref=e255]
+            - row [ref=e256]:
+              - cell [ref=e257]:
+                - code [ref=e258]: "--corner-radius-large"
+              - cell "10px" [ref=e259]
+            - row [ref=e260]:
+              - cell [ref=e261]:
+                - code [ref=e262]: "--control-height"
+              - cell "40px" [ref=e263]
+            - row [ref=e264]:
+              - cell [ref=e265]:
+                - code [ref=e266]: "--footer-height"
+              - cell "50px" [ref=e267]
+            - row [ref=e268]:
+              - cell [ref=e269]:
+                - code [ref=e270]: "--spacing-xs"
+              - cell "7px" [ref=e271]
+            - row [ref=e272]:
+              - cell [ref=e273]:
+                - code [ref=e274]: "--spacing-sm"
+              - cell "10px" [ref=e275]
+            - row [ref=e276]:
+              - cell [ref=e277]:
+                - code [ref=e278]: "--spacing-md"
+              - cell "14px" [ref=e279]
+            - row [ref=e280]:
+              - cell [ref=e281]:
+                - code [ref=e282]: "--edge-margin"
+              - cell "12px" [ref=e283]
+            - row [ref=e284]:
+              - cell [ref=e285]:
+                - code [ref=e286]: "--shear"
+              - cell "0.2" [ref=e287]
+            - row [ref=e288]:
+              - cell [ref=e289]:
+                - code [ref=e290]: "--font-family"
+              - cell "\"Torus\", \"Torus Alternate\", \"Inter\", \"Segoe UI\", system-ui, -apple-system, \"Microsoft YaHei\", sans-serif" [ref=e291]
+            - row [ref=e292]:
+              - cell [ref=e293]:
+                - code [ref=e294]: "--font-size-title"
+              - cell "32px" [ref=e295]
+            - row [ref=e296]:
+              - cell [ref=e297]:
+                - code [ref=e298]: "--font-size-body"
+              - cell "16px" [ref=e299]
+            - row [ref=e300]:
+              - cell [ref=e301]:
+                - code [ref=e302]: "--font-size-caption2"
+              - cell "12px" [ref=e303]
+            - row [ref=e304]:
+              - cell [ref=e305]:
+                - code [ref=e306]: "--duration-fast"
+              - cell "120ms" [ref=e307]
+            - row [ref=e308]:
+              - cell [ref=e309]:
+                - code [ref=e310]: "--duration-normal"
+              - cell "300ms" [ref=e311]
+            - row [ref=e312]:
+              - cell [ref=e313]:
+                - code [ref=e314]: "--duration-transition"
+              - cell "500ms" [ref=e315]
+            - row [ref=e316]:
+              - cell [ref=e317]:
+                - code [ref=e318]: "--duration-intro"
+              - cell "—" [ref=e319]
+            - row [ref=e320]:
+              - cell [ref=e321]:
+                - code [ref=e322]: "--motion-scale"
+              - cell "1" [ref=e323]
+            - row [ref=e324]:
+              - cell [ref=e325]:
+                - code [ref=e326]: "--parallax-strength"
+              - cell "1" [ref=e327]
+            - row [ref=e328]:
+              - cell [ref=e329]:
+                - code [ref=e330]: "--blur-level"
+              - cell "0" [ref=e331]
+            - row [ref=e332]:
+              - cell [ref=e333]:
+                - code [ref=e334]: "--dim-level"
+              - cell "0.5" [ref=e335]
+      - generic [ref=e336]:
+        - heading "排版层级" [level=2] [ref=e337]
+        - paragraph [ref=e338]: Torus / Inter 族名 + 系统回退栈（不分发字体文件）。
+        - generic [ref=e339]:
+          - generic [ref=e340]: Title 32 · Ag 中文 123
+          - generic [ref=e341]: Subtitle 28 · Ag 中文 123
+          - generic [ref=e342]: Heading1 22 · Ag 中文 123
+          - generic [ref=e343]: Heading2 18 · Ag 中文 123
+          - generic [ref=e344]: Body 16 · Ag 中文 123
+          - generic [ref=e345]: Caption1 14 · Ag 中文 123
+          - generic [ref=e346]: Caption2 12 · Ag 中文 123
+        - heading "settings 中的主题项" [level=3] [ref=e347]
+        - table [ref=e349]:
+          - rowgroup [ref=e350]:
+            - row [ref=e351]:
+              - columnheader "ID" [ref=e352]
+              - columnheader "类型" [ref=e353]
+              - columnheader "默认" [ref=e354]
+              - columnheader "作用" [ref=e355]
+          - rowgroup [ref=e356]:
+            - row [ref=e357]:
+              - cell [ref=e358]:
+                - code [ref=e359]: theme.scheme
+              - cell "enum" [ref=e360]
+              - cell "argon" [ref=e361]
+              - cell "data-theme" [ref=e362]
+            - row [ref=e363]:
+              - cell [ref=e364]:
+                - code [ref=e365]: theme.hue
+              - cell "number" [ref=e366]
+              - cell "200" [ref=e367]
+              - cell "--theme-hue" [ref=e368]
+    - generic [ref=e369]:
+      - generic [ref=e370]: "view: theme"
+      - generic [ref=e371]: 77 dist files · hash-route · MIT-derived

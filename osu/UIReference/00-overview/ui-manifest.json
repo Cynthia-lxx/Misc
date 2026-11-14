@@ -407,6 +407,32 @@
         "osu.Game/Graphics/UserInterface/OsuContextMenu.cs:21-32"
       ],
       "note": "多级菜单：FadeIn 280 OutQuint 开、50ms 延迟后 FadeOut 关、子菜单右上锚定+视口翻面、悬停 80ms 常规↔加粗文字互换（双 span 不跳宽）、destructive/highlighted 文字色、disabled 0.2、分隔条 scaleY 0.6、MaxHeight 250 滚动、Esc/外点关闭"
+    },
+    {
+      "id": "ui-hold-button",
+      "kind": "custom-element",
+      "tag": "ui-hold-button",
+      "files": {
+        "js": "04-components/ui-hold-button/ui-hold-button.js",
+        "css": "04-components/ui-hold-button/ui-hold-button.css"
+      },
+      "mount": "[data-ui-mount='hold-button']",
+      "settings": [
+        "theme.scheme",
+        "motion.reduce",
+        "ui.holdActivationDelay",
+        "motion.duration.normal"
+      ],
+      "i18nKeys": [],
+      "exports": [
+        "default",
+        "UiHoldButtonElement"
+      ],
+      "source": [
+        "osu.Game/Graphics/Containers/HoldToConfirmContainer.cs:27,91-124",
+        "osu.Game/Overlays/HoldToConfirmOverlay.cs:52-58"
+      ],
+      "note": "长按确认：环形 SVG 进度（12 点起、accent / dangerous 走错误色）、激活延迟读 --hold-activation-delay（dangerous 固定 500ms）、进度 Out 推进、中止保持 200ms 后 InSine 衰减、完成发一次 ui-confirm、空格/回车等价长按"
     }
   ],
   "motion": {
