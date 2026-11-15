@@ -51,9 +51,13 @@
   animation-timing-function: var(--ease-out-expo);
   animation-fill-mode: both;
 }
-/* mount 期间的暂停态：动画停在第 0 帧（opacity 0），内容就绪后由
- * enterPage 摘除 .page-waiting 起播 —— 内容绝不先亮后灭 */
+/* mount 期间与动画起播空窗期的可见性锁定：
+ * - .page-waiting 只负责暂停动画（等 mount 完成）
+ * - .page-hidden 负责 opacity:0（普通声明，动画期间被动画声明覆盖）
+ * 两者由 enterPage 分阶段摘除：先摘 waiting 起播，animationstart 时摘
+ * hidden —— 即使 Chrome 延迟数十毫秒才真正起播，内容也不会漏亮一帧 */
 .page-waiting { animation-play-state: paused !important; }
+.page-hidden { opacity: 0; }
 
 @keyframes ntl-fade-in-up {
   from { opacity: 0; transform: translateY(14px); }

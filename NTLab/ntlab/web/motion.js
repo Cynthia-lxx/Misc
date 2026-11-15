@@ -130,9 +130,11 @@ export function assignIndices(container, selector = ":scope > *") {
 export function enterPage(el) {
   const dbg = (msg) => { if (MOTION_DEBUG) (window).__ntlMotionLog?.log?.(`enterPage ${msg} ${ts()}`); };
   const scale = motionScale();
-  // router 已在 mount 前挂好 .page-entering（paused）；这里摘除暂停起播
+  // router 已在 mount 前挂好 page-entering(page-waiting + page-hidden)；
+  // 这里摘除暂停起播；page-hidden 继续锁 opacity:0 直到动画真正起播，
+  // 消灭「摘除 paused → animationstart」空窗期的全亮闪帧。
   if (scale === 0) {
-    el.classList.remove("page-entering", "page-waiting");
+    el.classList.remove("page-entering", "page-waiting", "page-hidden");
     dbg("reduced motion → classes removed immediately");
     return;
   }
@@ -140,18 +142,17 @@ export function enterPage(el) {
   // 强制一次样式失效，确保 paused→running 从第 0 帧起播
   void el.offsetWidth;
   el.classList.remove("page-waiting");
-  dbg(".page-waiting removed → animation starts");
   onceOwnAnimation(el, "ntl-page-in", () => {
-    el.classList.remove("page-entering");
-    dbg(".page-entering removed (own anim done)");
+    el.classList.remove("page-entering", "page-hidden");
+    dbg("page-in done → page-entering/page-hidden removed");
   });
-  // safety net
+  // safety net：动画迟迟不起播或没跑完时兜底显形
   setTimeout(() => {
-    if (el.classList.contains("page-entering")) {
-      el.classList.remove("page-entering");
-      dbg(".page-entering removed (safety timeout)");
+    if (el.classList.contains("page-entering") || el.classList.contains("page-hidden")) {
+      el.classList.remove("page-entering", "page-hidden");
+      dbg("classes removed (safety timeout)");
     }
-  }, dur(220) + 120);
+  }, dur(220) + 200);
 }
 
 /** Exit animation; resolves when done (or immediately under reduced motion). */
