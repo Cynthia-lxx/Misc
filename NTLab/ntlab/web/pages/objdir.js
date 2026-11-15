@@ -1,6 +1,7 @@
 /* ObjDir — NT object-manager namespace browser: lazy tree (left) + detail (right). */
 
 import { apiGet } from "../api.js";
+import { swapContent } from "../motion.js";
 
 export async function mount(el) {
   el.innerHTML = `
@@ -103,7 +104,7 @@ export async function mount(el) {
           <dt>路径</dt><dd>${esc(node.id)}</dd></div></div>`;
       }
       wrap.appendChild(body);
-      detail.replaceChildren(wrap);
+      swapContent(detail, wrap, { outMs: 100, inMs: 320 });
     } catch (err) {
       detail.innerHTML = `<div class="error-box"><span class="code">${esc(err.detail?.status ?? err.code ?? "")}</span> ${esc(err.message)}</div>`;
     }

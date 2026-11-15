@@ -37,6 +37,11 @@ const STYLE = `
   .badge.directory { color: #66ccff; background: rgba(102, 204, 255, 0.12); }
   .badge.symlink { color: #ff66aa; background: rgba(255, 102, 170, 0.12); }
   .kids.loading { opacity: 0.5; }
+  .kids > li {
+    animation: tree-row-in calc(240ms * var(--motion-scale, 1)) cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(20ms * var(--ui-index, 0) * var(--motion-scale, 1));
+  }
+  @keyframes tree-row-in { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
   .err { color: #ff8899; font-size: 12px; padding: 4px 8px 4px 36px; }
 `;
 
@@ -124,7 +129,13 @@ export class UiTreeElement extends HTMLElement {
       const children = this.loadChildren ? await this.loadChildren(node) : [];
       node._kidsEl.classList.remove("loading");
       node._kidsEl.replaceChildren();
-      for (const child of children) node._kidsEl.appendChild(this._makeNode(child, node._kidsEl));
+      // cap stagger so huge directories (500+ entries) don't feel laggy
+      children.forEach((child, i) => { child._staggerIndex = Math.min(i, 24); });
+      for (const child of children) {
+        const li = this._makeNode(child, node._kidsEl);
+        li.style.setProperty("--ui-index", child._staggerIndex);
+        node._kidsEl.appendChild(li);
+      }
       if (!children.length) {
         const empty = document.createElement("div");
         empty.className = "err";

@@ -27,6 +27,11 @@ const STYLE = `
     padding: 6px 12px; border-bottom: 1px solid color-mix(in srgb, var(--ui-border) 55%, transparent);
     white-space: nowrap; max-width: 420px; overflow: hidden; text-overflow: ellipsis;
   }
+  tbody tr {
+    animation: table-row-in calc(260ms * var(--motion-scale, 1)) cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(14ms * min(var(--ui-index, 0), 30) * var(--motion-scale, 1));
+  }
+  @keyframes table-row-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
   tbody tr { transition: background 90ms ease-out; }
   tbody tr:hover { background: color-mix(in srgb, var(--ui-accent) 7%, transparent); }
   td.num, th.num { text-align: right; }
@@ -108,8 +113,10 @@ export class UiTableElement extends HTMLElement {
     table.appendChild(thead);
 
     const tbody = document.createElement("tbody");
+    let rowIndex = 0;
     for (const row of this._sorted()) {
       const tr = document.createElement("tr");
+      tr.style.setProperty("--ui-index", rowIndex++);
       for (const col of this._columns) {
         const td = document.createElement("td");
         if (col.type === "num" || col.type === "hex") td.classList.add("num");

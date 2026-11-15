@@ -32,5 +32,10 @@ export async function mount(el) {
         <div class="go" style="color:var(--ui-text-muted)">敬请期待</div>
       </div>
     </div>`;
+  // stagger the tool cards (grid rhythm: 60ms/card)
+  const grid = frag.querySelector(".tool-grid");
+  grid.classList.add("motion-stagger");
+  grid.dataset.stagger = "grid";
+  [...grid.children].forEach((card, i) => card.style.setProperty("--ui-index", i));
   el.appendChild(frag);
 }

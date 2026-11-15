@@ -1,6 +1,7 @@
 /* PE Viewer page: path input + drag-drop upload + tabbed detail. */
 
 import { apiGet, apiPost, apiUpload } from "../api.js";
+import { swapContent } from "../motion.js";
 
 const QUICK_FILES = [
   "C:\\Windows\\System32\\ntdll.dll",
@@ -104,18 +105,20 @@ export async function mount(el) {
     const views = { summary: () => summaryView(s), headers: () => headersView(path) };
     async function selectTab(e) {
       const v = e.detail.value;
-      if (views[v]) { body.replaceChildren(views[v]()); return; }
-      body.replaceChildren(spinnerRow("加载中…"));
+      if (views[v]) { swapContent(body, views[v]()); return; }
+      swapContent(body, spinnerRow("加载中…"));
       try {
-        if (v === "imports") body.replaceChildren(await tableView(`/api/pe/imports?path=${encodeURIComponent(path)}`, 250, importCols()));
-        else if (v === "exports") body.replaceChildren(await tableView(`/api/pe/exports?path=${encodeURIComponent(path)}`, 250, exportCols()));
-        else if (v === "resources") body.replaceChildren(await tableView(`/api/pe/resources?path=${encodeURIComponent(path)}`, 500, resCols()));
-        else if (v === "signature") body.replaceChildren(await signatureView(path));
-      } catch (err) { body.replaceChildren(errRow(err)); }
+        if (v === "imports") await tableView(`/api/pe/imports?path=${encodeURIComponent(path)}`, 250, importCols()).then((t) => swapContent(body, t));
+        else if (v === "exports") await tableView(`/api/pe/exports?path=${encodeURIComponent(path)}`, 250, exportCols()).then((t) => swapContent(body, t));
+        else if (v === "resources") await tableView(`/api/pe/resources?path=${encodeURIComponent(path)}`, 500, resCols()).then((t) => swapContent(body, t));
+        else if (v === "signature") await signatureView(path).then((t) => swapContent(body, t));
+      } catch (err) { swapContent(body, errRow(err)); }
     }
     tabs.addEventListener("ui-select", selectTab);
-    result.replaceChildren(tabs, body);
     body.replaceChildren(views.summary());
+    const wrap = document.createElement("div");
+    wrap.append(tabs, body);
+    swapContent(result, wrap, { outMs: 80, inMs: 380 });
   }
 }
 

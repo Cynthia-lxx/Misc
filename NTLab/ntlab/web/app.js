@@ -24,6 +24,9 @@ register("objdir", objdir);
 const content = document.getElementById("content");
 start(content);
 
+// sidebar nav stagger + version info
+document.querySelectorAll("#nav a").forEach((a, i) => a.style.setProperty("--ui-index", i));
+
 apiGet("/api/system/info").then((info) => {
   const ver = document.getElementById("ver");
   if (ver) ver.textContent = `NTLab v${info.ntlab} · Win build ${info.build}`;
