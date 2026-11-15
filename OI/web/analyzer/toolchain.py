@@ -109,7 +109,8 @@ def _size_of(exe: Path, env: dict) -> dict:
 
 
 def measure(code: str, stdin: str = "", timeout: float = DEFAULT_RUN_SECONDS,
-            memory_limit: int = DEFAULT_MEMORY_BYTES) -> dict:
+            memory_limit: int = DEFAULT_MEMORY_BYTES,
+            limits: dict | None = None) -> dict:
     """Compile once, run once under a wall clock + sampled memory ceiling."""
     if not GXX.is_file():
         return {"status": "failed", "reason": "vendored toolchain missing (toolchain/MinGW64/bin/g++.exe)"}
@@ -178,7 +179,7 @@ def measure(code: str, stdin: str = "", timeout: float = DEFAULT_RUN_SECONDS,
             sampler.join(timeout=0.2)
         wall_ms = round((time.perf_counter() - start) * 1000, 1)
 
-        return {
+        result = {
             "status": "ok" if not timed_out and exit_code == 0 else ("timeout" if timed_out else "failed"),
             "reason": "" if not timed_out and exit_code == 0 else ("wall timeout" if timed_out else f"exit code {exit_code}"),
             "phase": "run",
@@ -194,6 +195,37 @@ def measure(code: str, stdin: str = "", timeout: float = DEFAULT_RUN_SECONDS,
             "compiler": "g++ (tdm64-1) 4.9.2 -std=c++14 -O2",
             "stdin_bytes": len(stdin.encode("utf-8", "replace")),
         }
+
+        # judge against user-supplied problem limits (OI 时空限制)
+        if isinstance(limits, dict) and (limits.get("time_ms") or limits.get("memory_mb")):
+            result["time_limit_ms"] = int(limits["time_ms"]) if limits.get("time_ms") else None
+            result["memory_limit_mb"] = int(limits["memory_mb"]) if limits.get("memory_mb") else None
+            time_exceeded = bool(
+                result["time_limit_ms"]
+                and result["status"] in ("ok", "timeout")
+                and wall_ms > result["time_limit_ms"]
+            )
+            mem_exceeded = bool(
+                result["memory_limit_mb"]
+                and peak[0]
+                and peak[0] > result["memory_limit_mb"] * 1024 * 1024
+            )
+            result["time_exceeded"] = time_exceeded
+            result["memory_exceeded"] = mem_exceeded
+            if time_exceeded or mem_exceeded:
+                reasons = []
+                if time_exceeded:
+                    reasons.append(f"耗时 {wall_ms:.0f}ms 超过题目时限 {result['time_limit_ms']}ms")
+                if mem_exceeded:
+                    reasons.append(
+                        f"峰值 {peak[0] / 1048576:.2f}MiB 超过题面空间限制 {result['memory_limit_mb']}MiB"
+                    )
+                result["limit_verdict"] = "fail"
+                result["limit_reason"] = "；".join(reasons)
+                result["status"] = "timeout" if time_exceeded and result["status"] == "ok" else result["status"]
+            else:
+                result["limit_verdict"] = "pass"
+        return result
 
 
 # --------------------------------------------------------------------------

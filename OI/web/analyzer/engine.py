@@ -69,11 +69,13 @@ def resolve_code(body: dict) -> tuple[str, dict]:
     }
 
 
-def signature(code: str, assumptions: dict | None, run: bool, stdin: str) -> str:
+def signature(code: str, assumptions: dict | None, run: bool, stdin: str,
+              limits: dict | None = None) -> str:
     payload = {
         "v": R.REPORT_VERSION,
         "code": hashlib.sha256(code.encode("utf-8", "replace")).hexdigest(),
         "assumptions": dict(sorted((assumptions or {}).items())),
+        "limits": dict(sorted((limits or {}).items())),
         "run": bool(run),
         "stdin": hashlib.sha256(stdin.encode("utf-8", "replace")).hexdigest(),
     }
@@ -81,9 +83,9 @@ def signature(code: str, assumptions: dict | None, run: bool, stdin: str) -> str
 
 
 def analyse(code: str, source: dict, assumptions: dict | None = None,
-            run: bool = False, stdin: str = "") -> tuple[R.AnalysisReport, bool]:
+            run: bool = False, stdin: str = "", limits: dict | None = None) -> tuple[R.AnalysisReport, bool]:
     """Return (report, cache_hit). Reports carrying an error are not cached."""
-    key = signature(code, assumptions, run, stdin)
+    key = signature(code, assumptions, run, stdin, limits)
     with _CACHE_LOCK:
         cached = _CACHE.get(key)
         if cached is not None:
@@ -111,6 +113,7 @@ def analyse(code: str, source: dict, assumptions: dict | None = None,
         measurements={"status": "skipped", "reason": "run not requested"},
         ai_summary={"status": "pending", "text": "", "budget_used": 0, "budget_cap": 0},
         unknown_count=sum(1 for f in findings if f.verdict == "unknown"),
+        limits=dict(limits or {}),
         error=error,
     )
     if error is None:

@@ -3,6 +3,7 @@
    generation into the editor. Debug dock lives in debug.js. */
 
 import { createEditor } from './editor.js';
+import { currentLimits } from './analyze.js';
 
 const byId = (id) => document.getElementById(id);
 const shell = () => window.__oiConsole;
@@ -228,6 +229,30 @@ function renderMetrics(report) {
     wrap.appendChild(row);
   }
 
+  // measured vs problem limits (when the user filled them in the analysis view)
+  const measure = report.measurements || {};
+  const limits = report.limits || {};
+  if (measure.status === 'ok' && (limits.time_ms || limits.memory_mb)) {
+    const cells = [];
+    if (limits.time_ms) {
+      cells.push(`时 ${measure.wall_ms}/${limits.time_ms}ms${measure.time_exceeded ? ' ✗超时' : ' ✓'}`);
+    }
+    if (limits.memory_mb && measure.peak_bytes) {
+      cells.push(`存 ${(measure.peak_bytes / 1048576).toFixed(2)}/${limits.memory_mb}MiB${measure.memory_exceeded ? ' ✗超限' : ' ✓'}`);
+    }
+    const row = document.createElement('div');
+    row.className = 'ide-metric-row';
+    const badgeEl = document.createElement('span');
+    badgeEl.className = `oc-badge v-${measure.limit_verdict === 'fail' ? 'red' : 'green'}`;
+    badgeEl.textContent = '限制';
+    const detail = document.createElement('code');
+    detail.textContent = cells.join(' · ');
+    const count = document.createElement('span');
+    count.textContent = measure.limit_verdict === 'fail' ? '!' : '✓';
+    row.append(badgeEl, detail, count);
+    wrap.appendChild(row);
+  }
+
   const ai = report.ai_summary || {};
   renderAiSummary(ai, report);
 }
@@ -259,7 +284,7 @@ async function analyzeCurrent() {
   try {
     const data = await S.api('/api/analyze', {
       method: 'POST',
-      body: JSON.stringify({ code: editorApi.getValue(), run: false }),
+      body: JSON.stringify({ code: editorApi.getValue(), run: false, limits: currentLimits() }),
     });
     lastReport = data.report;
     renderMetrics(lastReport);
@@ -389,6 +414,23 @@ function init() {
   byId('ide-generate').addEventListener('click', () => window.dispatchEvent(new CustomEvent('oi-prompt-overlay')));
   byId('ide-palette').addEventListener('click', () => window.dispatchEvent(new CustomEvent('oi-palette')));
   byId('ide-full-report').addEventListener('click', () => { location.hash = 'analysis'; });
+  S.api('/api/analyze/enabled').then((d) => {
+    byId('ide-ai-toggle').setAttribute('label', `AI 汇总: ${d.enabled ? '开' : '关'}`);
+  }).catch(() => {});
+  byId('ide-ai-toggle').addEventListener('click', async () => {
+    const btn = byId('ide-ai-toggle');
+    try {
+      const data = await S.api('/api/analyze/enabled', {
+        method: 'POST',
+        body: JSON.stringify({ enabled: btn.getAttribute('label').includes(': 开') ? false : true }),
+      });
+      btn.setAttribute('label', `AI 汇总: ${data.enabled ? '开' : '关'}`);
+      S.log(`AI 自动汇总已${data.enabled ? '开启' : '关闭'}（本地报告不受影响）`, 'ok');
+      renderAiSummary({ status: data.enabled ? 'skipped' : 'disabled', reason: data.enabled ? '' : '已手动关闭', budget: data });
+    } catch (err) {
+      S.warn(`切换 AI 开关失败: ${err.message}`);
+    }
+  });
   byId('ide-analyze').addEventListener('click', () => {
     location.hash = 'analysis';
     window.dispatchEvent(new CustomEvent('oi-analyze-current'));

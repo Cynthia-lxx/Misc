@@ -126,9 +126,29 @@ function renderBudgetLine() {
 }
 
 /* ------------------------------------------------------------ analyse */
+export function currentLimits() {
+  const timeMs = parseInt((byId('an-limit-time') || {}).value, 10);
+  const memMb = parseInt((byId('an-limit-mem') || {}).value, 10);
+  const limits = {};
+  if (Number.isFinite(timeMs) && timeMs > 0) limits.time_ms = timeMs;
+  if (Number.isFinite(memMb) && memMb > 0) limits.memory_mb = memMb;
+  try {
+    localStorage.setItem('oi-limits', JSON.stringify(limits));
+  } catch { /* storage optional */ }
+  return limits;
+}
+
+function restoreLimits() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('oi-limits') || '{}');
+    if (saved.time_ms && byId('an-limit-time')) byId('an-limit-time').value = saved.time_ms;
+    if (saved.memory_mb && byId('an-limit-mem')) byId('an-limit-mem').value = saved.memory_mb;
+  } catch { /* noop */ }
+}
+
 function currentBody() {
   const kind = byId('an-source').value;
-  const body = { run: byId('an-measure').checked, stdin: byId('an-stdin').value };
+  const body = { run: byId('an-measure').checked, stdin: byId('an-stdin').value, limits: currentLimits() };
   if (kind === 'output') {
     const code = (window.__oiIde && window.__oiIde.getCode()) || '';
     if (!code) throw new Error('编辑器还没有代码，先写代码或让 AI 生成');
@@ -311,12 +331,21 @@ function renderMeasurements() {
   };
 
   if (measure.status === 'ok') {
-    badge.textContent = '实测完成';
-    badge.className = 'oc-badge ok';
+    badge.textContent = measure.limit_verdict === 'fail' ? '超出题目限制' : '实测完成';
+    badge.className = 'oc-badge ' + (measure.limit_verdict === 'fail' ? 'bad' : 'ok');
     addRow('编译耗时', `${measure.compile_ms} ms`);
     addRow('运行耗时', `${measure.wall_ms} ms`);
     addRow('峰值内存', measure.peak_bytes ? fmtBytes(measure.peak_bytes) : '未采样到');
     addRow('退出码', measure.exit_code);
+    if (measure.limit_verdict === 'fail') addRow('限制判定', measure.limit_reason || 'TLE/MLE');
+    if (measure.time_limit_ms) {
+      addRow(`时限判定`, `${measure.wall_ms} / ${measure.time_limit_ms} ms`
+        + (measure.time_exceeded ? '（超时）' : '（通过）'));
+    }
+    if (measure.memory_limit_mb && measure.peak_bytes) {
+      addRow('空间判定', `${fmtBytes(measure.peak_bytes)} / ${measure.memory_limit_mb} MiB`
+        + (measure.memory_exceeded ? '（超限）' : '（通过）'));
+    }
     if (measure.segments?.status === 'ok') {
       addRow('text/data/bss', `${measure.segments.text} / ${measure.segments.data} / ${measure.segments.bss} B`);
     }
@@ -457,6 +486,7 @@ function init() {
 
   refreshFiles();
   refreshBudget();
+  restoreLimits();
   renderMeasurements();
 }
 

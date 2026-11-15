@@ -37,6 +37,7 @@ sys.path.insert(1, str(ROOT_DIR))
 import OI as oi  # noqa: E402  (project CLI: config / history / prompt / helpers)
 from openai import OpenAI  # noqa: E402
 
+import prompt_store  # noqa: E402  (style template store)
 from analyzer import ai_summary, debugger, engine, toolchain  # noqa: E402
 
 STATE_LOCK = threading.Lock()
@@ -178,6 +179,16 @@ class ConsoleHandler(BaseHTTPRequestHandler):
                 return self._json({"ok": True, **ai_summary.state()})
             if path == "/api/debug/info":
                 return self._json({"ok": True, **debugger.available()})
+            if path == "/api/prompts":
+                data = prompt_store.load()
+                return self._json({
+                    "ok": True,
+                    "active": data["active"],
+                    "templates": [
+                        {**t, "text": t["text"] if t.get("text") else prompt_store.resolve_text(t)}
+                        for t in data["templates"]
+                    ],
+                })
             if path == "/favicon.ico":
                 return self._headers(204, length=0)
             if path.startswith("/api/"):
@@ -219,6 +230,8 @@ class ConsoleHandler(BaseHTTPRequestHandler):
                 return self._analyze(body)
             if path == "/api/analyze/summary":
                 return self._analyze_summary(body)
+            if path == "/api/prompts":
+                return self._prompts(body)
             if path == "/api/analyze/enabled":
                 return self._json({"ok": True, **ai_summary.set_enabled(body.get("enabled"))})
             if path == "/api/analyze/budget":
@@ -267,9 +280,10 @@ class ConsoleHandler(BaseHTTPRequestHandler):
         new_topic = bool(body.get("new_topic"))
 
         with STATE_LOCK:
-            # The CLI only injects the system prompt on the first turn; every
-            # request here carries it so style rules also apply to follow-ups.
-            messages = [{"role": "system", "content": oi.SYSTEM_PROMPT}]
+            # System prompt = the active style template (prompt_store), with
+            # the CLI prompt as fallback; every request carries it so style
+            # rules also apply to follow-ups.
+            messages = [{"role": "system", "content": prompt_store.active_text()}]
             if new_topic:
                 oi.history.clear()
             else:
@@ -401,14 +415,25 @@ class ConsoleHandler(BaseHTTPRequestHandler):
         run = bool(body.get("run"))
         stdin = str(body.get("stdin") or "")
         assumptions = body.get("assumptions") if isinstance(body.get("assumptions"), dict) else None
+        limits = body.get("limits") if isinstance(body.get("limits"), dict) else None
+        limits = {k: int(v) for k, v in (limits or {}).items()
+                  if k in ("time_ms", "memory_mb") and isinstance(v, (int, float)) and v > 0} or None
 
-        report, cached = engine.analyse(code, source, assumptions, run, stdin)
+        report, cached = engine.analyse(code, source, assumptions, run, stdin, limits)
         if run and not cached:
+            run_timeout = float(body.get("timeout") or toolchain.DEFAULT_RUN_SECONDS)
+            if limits and limits.get("time_ms"):
+                # keep the process kill-timeout close to the problem limit
+                run_timeout = max(1.5, min(toolchain.MAX_RUN_SECONDS, limits["time_ms"] / 1000 * 1.2 + 1.0))
             report.measurements = toolchain.measure(
                 code, stdin,
-                timeout=float(body.get("timeout") or toolchain.DEFAULT_RUN_SECONDS),
+                timeout=run_timeout,
                 memory_limit=int(body.get("memory_limit") or toolchain.DEFAULT_MEMORY_BYTES),
+                limits=limits,
             )
+            if report.measurements.get("limit_verdict") == "fail":
+                report.verdict = "red"
+                report.verdict_reason = (report.verdict_reason or "") + "；" + report.measurements.get("limit_reason", "超出题目限制")
         report.ai_summary = {"status": "pending", "text": "", "budget": ai_summary.state()}
         _remember_report(report)
         return self._json({
@@ -418,6 +443,33 @@ class ConsoleHandler(BaseHTTPRequestHandler):
             "code": code,
             "budget": ai_summary.state(),
         })
+
+    def _prompts(self, body: dict):
+        action = str(body.get("action") or "")
+        if action == "save_new":
+            text = str(body.get("text") or "").strip()
+            if not text:
+                return self._error("模板内容不能为空", 400)
+            entry = prompt_store.create(str(body.get("name") or "未命名模板"), text)
+            return self._json({"ok": True, "active": entry["id"]})
+        if action == "update":
+            updated = prompt_store.update(
+                str(body.get("id") or ""),
+                body.get("name") if body.get("name") is not None else None,
+                body.get("text") if body.get("text") is not None else None,
+            )
+            if updated is None:
+                return self._error("模板不存在或为内置模板", 400)
+            return self._json({"ok": True})
+        if action == "activate":
+            if not prompt_store.activate(str(body.get("id") or "")):
+                return self._error("模板不存在", 404)
+            return self._json({"ok": True})
+        if action == "delete":
+            if not prompt_store.delete(str(body.get("id") or "")):
+                return self._error("模板不存在或为内置模板", 400)
+            return self._json({"ok": True})
+        return self._error("unknown action", 400)
 
     def _analyze_summary(self, body: dict):
         digest = str(body.get("digest") or "")

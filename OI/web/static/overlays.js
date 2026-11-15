@@ -143,7 +143,7 @@ function saveOverlay() {
 /* ------------------------------------------------------------ AI prompt */
 function promptOverlay() {
   const s = S();
-  openOverlay('AI 生成题解', '题面 → 流式写入编辑器', (body, done) => {
+  openOverlay('AI 生成题解', '必用 AI · 题面 → 流式写入编辑器（1 次生成 ≈ 1 次代码生成用量，不带历史）', (body, done) => {
     const area = document.createElement('textarea');
     area.className = 'ov-prompt-area';
     area.placeholder = '粘贴题目描述（可含样例输入输出）…';

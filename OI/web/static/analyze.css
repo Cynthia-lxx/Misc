@@ -14,6 +14,35 @@
 #an-run { --control-height: 38px; --border-width: 2px; --ui-border: var(--oc-accent); }
 .an-inline-path { flex: 1; min-width: 220px; }
 .an-inline-path input { width: 100%; font-family: var(--font-family-mono, monospace); }
+.an-limit { font-variant-numeric: tabular-nums; }
+.an-limit input {
+  width: 88px; background: var(--oc-panel-2); border: 1px solid var(--oc-line);
+  border-radius: var(--corner-radius, 5px); padding: 5px 8px;
+  font-size: var(--font-size-caption2, 12px); color: var(--oc-text);
+}
+.an-limit input:focus { outline: none; border-color: var(--oc-accent); }
+
+/* settings: prompt template editor */
+.prompt-ctrl select {
+  background: var(--oc-panel-2); border: 1px solid var(--oc-line); border-radius: var(--corner-radius, 5px);
+  padding: 6px 9px; font-size: var(--font-size-caption2, 12px); color: var(--oc-text); min-width: 220px;
+}
+.prompt-name {
+  display: block; width: 100%; margin: 8px 0;
+  background: var(--oc-panel-2); border: 1px solid var(--oc-line); border-radius: var(--corner-radius, 5px);
+  padding: 7px 10px; font-size: var(--font-size-caption2, 12px); color: var(--oc-text);
+}
+.prompt-name:focus { outline: none; border-color: var(--oc-accent); }
+.prompt-text {
+  display: block; width: 100%; min-height: 220px; max-height: 380px; resize: vertical;
+  background: var(--oc-panel-2); border: 1px solid var(--oc-line); border-radius: var(--corner-radius, 5px);
+  padding: 10px 12px; font-family: var(--font-family-mono, monospace); font-size: 12px; line-height: 1.6;
+  color: var(--oc-text); margin-bottom: 8px;
+}
+.prompt-text:focus { outline: none; border-color: var(--oc-accent); }
+.prompt-text[readonly] { opacity: .75; }
+.ide-ai-ctrl { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+.an-limit-hint { font-size: 11px; color: var(--oc-muted); opacity: .8; cursor: help; }
 .an-stdin-row { margin-top: 10px; }
 .an-stdin-row textarea {
   display: block; width: 100%; min-height: 64px; resize: vertical;

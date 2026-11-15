@@ -114,7 +114,11 @@
             <div class="ide-side-body is-hidden" id="ide-side-ai">
               <ul class="an-ai-list" id="ide-ai-list"></ul>
               <div class="an-budget-bar"><i id="ide-ai-fill"></i></div>
-              <p class="an-budget-note" id="ide-ai-note">AI 汇总随分析自动生成（单轮、限量 0.1 当量/次）。</p>
+              <p class="an-budget-note" id="ide-ai-note">AI 汇总随分析自动生成：单轮、不携带历史、只传结构化摘要，0.1 当量/次，默认上限 2 当量。</p>
+              <div class="ide-ai-ctrl">
+                <ui-button id="ide-ai-toggle" label="AI 汇总: 开"></ui-button>
+                <span class="an-limit-hint" title="可选用 AI：关闭后分析仍返回完整本地报告，仅省去自动汇总">可关闭 ⓘ</span>
+              </div>
             </div>
           </aside>
         </div>
@@ -178,6 +182,9 @@
               <ui-button id="an-run" variant="sheared" label="分析"></ui-button>
               <ui-button id="an-rerun" label="重新分析"></ui-button>
               <ui-button id="an-cache-clear" label="清缓存"></ui-button>
+              <label class="an-limit">时限 ms <input type="number" id="an-limit-time" min="100" step="100" placeholder="如 1000"></label>
+              <label class="an-limit">空间 MB <input type="number" id="an-limit-mem" min="1" step="1" placeholder="如 256"></label>
+              <span class="an-limit-hint" title="填写题目时空限制后，实测会判定 TLE/MLE 并计入总判定">限制判定 ⓘ</span>
               <label class="oc-switch">
                 <input type="checkbox" id="an-measure">
                 <span class="oc-switch-nub"></span>
@@ -290,6 +297,21 @@
                 <ui-button id="theme-reset" label="恢复默认 (Blue)"></ui-button>
               </div>
             </div>
+            <div class="oc-card">
+              <div class="oc-card-head"><div><h2>提示词模板</h2><p>AI 生成代码使用的风格系统提示词。内置「标准 OI 风格」与你的原版；可编辑副本并另存为自定义模板，随时切换。</p></div></div>
+              <div class="oc-row prompt-ctrl">
+                <select id="prompt-select"></select>
+                <span class="an-limit-hint" id="prompt-active-hint"></span>
+              </div>
+              <input type="text" id="prompt-name" class="prompt-name" placeholder="模板名称（另存时使用）">
+              <textarea id="prompt-text" class="prompt-text" spellcheck="false" placeholder="系统提示词内容…"></textarea>
+              <div class="oc-row">
+                <ui-button id="prompt-activate" variant="sheared" label="激活此模板"></ui-button>
+                <ui-button id="prompt-save" label="保存修改"></ui-button>
+                <ui-button id="prompt-new" label="另存为新模板"></ui-button>
+                <ui-button id="prompt-delete" label="删除"></ui-button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -377,5 +399,6 @@
 <script type="module" src="overlays.js"></script>
 <script type="module" src="debug.js"></script>
 <script type="module" src="analyze.js"></script>
+<script type="module" src="prompts.js"></script>
 </body>
 </html>

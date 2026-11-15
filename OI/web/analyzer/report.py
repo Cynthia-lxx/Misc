@@ -111,6 +111,7 @@ class AnalysisReport:
     measurements: dict
     ai_summary: dict
     unknown_count: int
+    limits: dict = dataclasses.field(default_factory=dict)
     error: str | None = None
 
     def as_dict(self) -> dict:
@@ -125,6 +126,7 @@ class AnalysisReport:
             "measurements": self.measurements,
             "ai_summary": self.ai_summary,
             "unknown_count": self.unknown_count,
+            "limits": self.limits,
             "error": self.error,
         }
 
