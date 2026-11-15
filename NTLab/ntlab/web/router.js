@@ -24,7 +24,7 @@ export async function render(content) {
   await exitPage(content);
   content.replaceChildren();
   const el = document.createElement("div");
-  el.className = "page";
+  el.className = `page page--${name}`;
   content.appendChild(el);
   await page.mount(el);
   enterPage(el);

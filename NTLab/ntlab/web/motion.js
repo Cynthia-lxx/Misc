@@ -11,6 +11,17 @@ export function motionScale() {
 
 const dur = (ms) => ms * motionScale();
 
+/** Animate out oldEl, replace with newEl (node or factory), animate in.
+ * animationend bubbles — only react to the element's OWN animation. */
+function onceOwnAnimation(el, name, cb) {
+  const handler = (e) => {
+    if (e.target !== el || e.animationName !== name) return;
+    el.removeEventListener("animationend", handler);
+    cb();
+  };
+  el.addEventListener("animationend", handler);
+}
+
 /** Animate out oldEl, replace with newEl (node or factory), animate in. */
 export function swapContent(host, makeNew, { outMs = 120, inMs = 300 } = {}) {
   const old = host.firstElementChild;
@@ -20,14 +31,15 @@ export function swapContent(host, makeNew, { outMs = 120, inMs = 300 } = {}) {
     host.replaceChildren(next);
     if (scale > 0) {
       next.classList.add("swap-in");
-      next.addEventListener("animationend", () => next.classList.remove("swap-in"), { once: true });
+      onceOwnAnimation(next, "ntl-swap-in", () => next.classList.remove("swap-in"));
     }
   };
   if (old && scale > 0) {
     old.classList.add("swap-out");
-    old.addEventListener("animationend", finish, { once: true });
-    // safety net if animationend never fires (e.g. display:none ancestor)
-    setTimeout(() => { if (old.isConnected) finish(); }, dur(outMs) + 80);
+    let done = false;
+    onceOwnAnimation(old, "ntl-swap-out", () => { done = true; finish(); });
+    // safety net if the animation never fires (e.g. hidden ancestor)
+    setTimeout(() => { if (!done) finish(); }, dur(outMs) + 80);
   } else {
     finish();
   }
@@ -38,17 +50,19 @@ export function assignIndices(container, selector = ":scope > *") {
   container.querySelectorAll(selector).forEach((el, i) => el.style.setProperty("--ui-index", i));
 }
 
-/** Fade-and-slide entrance for a freshly rendered container (router pages). */
+/** Entrance for a freshly rendered page. The container only does a subtle
+ * fade; each page adds its own flavour via .page--<name> rules in motion.css
+ * (per-region directions/rhythms, per motion.json). */
 export function enterPage(el) {
   const scale = motionScale();
   el.classList.add("page-entering");
-  el.addEventListener("animationend", () => el.classList.remove("page-entering"), { once: true });
-  // stagger first-level blocks
-  [...el.children].forEach((child, i) => child.style.setProperty("--ui-index", i));
-  el.classList.add("motion-stagger");
   if (scale === 0) {
-    el.classList.remove("page-entering", "motion-stagger");
+    el.classList.remove("page-entering");
+    return;
   }
+  onceOwnAnimation(el, "ntl-page-in", () => el.classList.remove("page-entering"));
+  // safety net
+  setTimeout(() => el.classList.remove("page-entering"), dur(220) + 120);
 }
 
 /** Exit animation; resolves when done (or immediately under reduced motion). */
@@ -60,7 +74,7 @@ export function exitPage(el) {
     inner.classList.add("page-exiting");
     let done = false;
     const finish = () => { if (!done) { done = true; resolve(); } };
-    inner.addEventListener("animationend", finish, { once: true });
+    onceOwnAnimation(inner, "ntl-page-out", finish);
     setTimeout(finish, dur(180) + 80);
   });
 }

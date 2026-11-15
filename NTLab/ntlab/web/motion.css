@@ -1,8 +1,11 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
  * NTLab motion layer — modelled on the vendor kit's motion language
  * (P:/Dev/osu/UIReference 05-motion/motion.css, motion.json).
- * Durations multiply by --motion-scale (vendor tokens.css zeroes it under
- * prefers-reduced-motion), so every rule here degrades automatically.
+ *
+ * NOTE: animation-* LONGHANDS only. Chrome rejects `animation:` shorthands
+ * whose duration is a calc() (verified 2026-11-15), so shorthand silently
+ * no-ops — longhand with calc(… * var(--motion-scale)) is safe and
+ * auto-degrades under prefers-reduced-motion (vendor tokens zero the scale).
  */
 
 :root {
@@ -17,38 +20,108 @@
   --stagger-sidebar: 40ms;
   --stagger-list: 20ms;
   --d-page-out: calc(180ms * var(--motion-scale, 1));
-  --d-page-in: calc(500ms * var(--motion-scale, 1));
 }
 
 /* ================================================================
- * 1. 页面路由切换：出场（in 曲线）→ 入场（out 曲线 + 编排）
+ * 1. 页面路由切换：容器只做轻微淡入淡出；区域级方向/节奏由
+ *    .page--<name> 各自编排（对齐 motion.json 的 screen 语义：
+ *    出场统一、入场各屏自带风格）
  * ================================================================ */
 
 @keyframes ntl-page-out {
-  from { opacity: 1; transform: translateY(0) scale(1); }
-  to   { opacity: 0; transform: translateY(-12px) scale(0.995); }
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
 @keyframes ntl-page-in {
-  from { opacity: 0; transform: translateY(18px) scale(0.996); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-.page-exiting { animation: ntl-page-out var(--d-page-out) var(--ease-in-sine) both; pointer-events: none; }
-.page-entering { animation: ntl-page-in var(--d-page-in) var(--ease-out-expo) both; }
+.page-exiting {
+  animation-name: ntl-page-out;
+  animation-duration: var(--d-page-out);
+  animation-timing-function: var(--ease-in-sine);
+  animation-fill-mode: both;
+  pointer-events: none;
+}
+.page-entering {
+  animation-name: ntl-page-in;
+  animation-duration: calc(220ms * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-out-expo);
+  animation-fill-mode: both;
+}
 
-/* 页面内一级块的错峰入场：给容器加 .motion-stagger，子块按 --ui-index 依次浮入 */
 @keyframes ntl-fade-in-up {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* 错峰工具类：容器加 .motion-stagger，子块按 --ui-index 依次浮入 */
 .motion-stagger > * {
-  animation: ntl-fade-in-up calc(var(--duration-normal, 300ms) * var(--motion-scale, 1)) var(--ease-out-expo) both;
+  animation-name: ntl-fade-in-up;
+  animation-duration: calc(var(--duration-normal, 300ms) * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-out-expo);
+  animation-fill-mode: both;
   animation-delay: calc(var(--stagger-column) * var(--ui-index, 0) * var(--motion-scale, 1));
 }
 .motion-stagger[data-stagger='grid'] > * {
   animation-delay: calc(60ms * var(--ui-index, 0) * var(--motion-scale, 1));
+}
+
+/* ---- 各页面专属编排 ------------------------------------------- */
+
+@keyframes ntl-slide-in-top { from { opacity: 0; transform: translateY(-18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes ntl-slide-in-left { from { opacity: 0; transform: translateX(-26px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes ntl-slide-in-right { from { opacity: 0; transform: translateX(26px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes ntl-pop-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* PE 解剖器：标题自上而下落定 → 参数面板浮起 → drop-zone 弹性撑开 → 芯片错峰 */
+.page--pe .page-head {
+  animation-name: ntl-slide-in-top;
+  animation-duration: calc(400ms * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-out-expo);
+  animation-fill-mode: both;
+}
+.page--pe .page-head + .panel {
+  animation-name: ntl-fade-in-up;
+  animation-duration: calc(320ms * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-out-expo);
+  animation-fill-mode: both;
+  animation-delay: calc(90ms * var(--motion-scale, 1));
+}
+.page--pe .drop-zone {
+  animation-name: ntl-pop-in, ntl-drop-breathe;
+  animation-duration: calc(440ms * var(--motion-scale, 1)), 2.6s;
+  animation-timing-function: var(--ease-elastic), var(--ease-in-out);
+  animation-delay: calc(170ms * var(--motion-scale, 1)), calc(700ms * var(--motion-scale, 1));
+  animation-fill-mode: both, none;
+  animation-iteration-count: 1, infinite;
+}
+.page--pe .chips {
+  animation-name: ntl-fade-in-up;
+  animation-duration: calc(280ms * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-out-expo);
+  animation-fill-mode: both;
+  animation-delay: calc(240ms * var(--motion-scale, 1));
+}
+
+/* ObjDir：左树自左入、右详情自右入（osu modSelectColumns 的交替方向语言） */
+.page--objdir .objdir-left {
+  animation-name: ntl-slide-in-left;
+  animation-duration: calc(420ms * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-out-expo);
+  animation-fill-mode: both;
+}
+.page--objdir .objdir-right {
+  animation-name: ntl-slide-in-right;
+  animation-duration: calc(420ms * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-out-expo);
+  animation-fill-mode: both;
+  animation-delay: calc(110ms * var(--motion-scale, 1));
 }
 
 /* ================================================================
@@ -61,7 +134,10 @@
 }
 
 #nav a {
-  animation: ntl-nav-in calc(var(--duration-normal, 300ms) * var(--motion-scale, 1)) var(--ease-out-expo) both;
+  animation-name: ntl-nav-in;
+  animation-duration: calc(var(--duration-normal, 300ms) * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-out-expo);
+  animation-fill-mode: both;
   animation-delay: calc(var(--stagger-sidebar) * var(--ui-index, 0) * var(--motion-scale, 1));
   position: relative;
 }
@@ -87,9 +163,20 @@
   0%, 100% { box-shadow: 0 0 10px color-mix(in srgb, var(--ui-accent) 38%, transparent); }
   50%      { box-shadow: 0 0 20px color-mix(in srgb, var(--ui-accent) 62%, transparent); }
 }
-.brand-mark { animation: ntl-brand-breathe 3s var(--ease-in-out) infinite; }
+.brand-mark {
+  animation-name: ntl-brand-breathe;
+  animation-duration: 3s;
+  animation-timing-function: var(--ease-in-out);
+  animation-iteration-count: infinite;
+}
 
-.sidebar-foot { animation: ntl-fade-in-up calc(var(--duration-normal) * var(--motion-scale, 1)) var(--ease-out-expo) 400ms both; }
+.sidebar-foot {
+  animation-name: ntl-fade-in-up;
+  animation-duration: calc(var(--duration-normal) * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-out-expo);
+  animation-fill-mode: both;
+  animation-delay: calc(400ms * var(--motion-scale, 1));
+}
 
 /* ================================================================
  * 3. 首页：hero 双层入场 + 卡片 hover 弹性图标 + 箭头滑入
@@ -99,13 +186,23 @@
   from { opacity: 0; transform: translateY(24px); filter: blur(6px); }
   to   { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
-.hero { animation: ntl-hero-in calc(var(--duration-entrance, 800ms) * var(--motion-scale, 1)) var(--ease-out-pow10) both; }
+.hero {
+  animation-name: ntl-hero-in;
+  animation-duration: calc(var(--duration-entrance, 800ms) * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-out-pow10);
+  animation-fill-mode: both;
+}
 
 @keyframes ntl-glow-drift {
   0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.9; }
   50%      { transform: translate(-24px, 14px) scale(1.08); opacity: 1; }
 }
-.hero .glow { animation: ntl-glow-drift 9s var(--ease-in-out) infinite; }
+.hero .glow {
+  animation-name: ntl-glow-drift;
+  animation-duration: 9s;
+  animation-timing-function: var(--ease-in-out);
+  animation-iteration-count: infinite;
+}
 
 .tool-card .ico { transition: transform 500ms var(--ease-elastic, cubic-bezier(0.34, 1.56, 0.64, 1)); }
 .tool-card:hover .ico { transform: scale(1.2) rotate(-8deg); }
@@ -125,13 +222,28 @@
   from { opacity: 1; transform: translateY(0); }
   to   { opacity: 0; transform: translateY(-8px); }
 }
-.swap-in { animation: ntl-swap-in calc(var(--duration-normal, 300ms) * var(--motion-scale, 1)) var(--ease-out-expo) both; }
-.swap-out { animation: ntl-swap-out calc(var(--duration-fast, 120ms) * var(--motion-scale, 1)) var(--ease-in-sine) both; }
+.swap-in {
+  animation-name: ntl-swap-in;
+  animation-duration: calc(var(--duration-normal, 300ms) * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-out-expo);
+  animation-fill-mode: both;
+}
+.swap-out {
+  animation-name: ntl-swap-out;
+  animation-duration: calc(var(--duration-fast, 120ms) * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-in-sine);
+  animation-fill-mode: both;
+}
 
-/* 加载行淡入淡出 */
-.loading-row { animation: ntl-fade-in-up calc(var(--duration-fast) * var(--motion-scale, 1)) var(--ease-out) both; }
+/* 加载行淡入 */
+.loading-row {
+  animation-name: ntl-fade-in-up;
+  animation-duration: calc(var(--duration-fast, 120ms) * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-out);
+  animation-fill-mode: both;
+}
 
-/* 错误框：滑入 + 一次轻晃（不可用时静默降级） */
+/* 错误框：滑入 + 一次轻晃 */
 @keyframes ntl-error-shake {
   0%   { transform: translateX(0); }
   20%  { transform: translateX(-6px); }
@@ -140,20 +252,23 @@
   100% { transform: translateX(0); }
 }
 .error-box {
-  animation: ntl-fade-in-up var(--_d-normal, 200ms) var(--ease-out-expo) both,
-             ntl-error-shake 280ms var(--ease-out) 120ms both;
+  animation-name: ntl-fade-in-up, ntl-error-shake;
+  animation-duration: calc(200ms * var(--motion-scale, 1)), 280ms;
+  animation-timing-function: var(--ease-out-expo), var(--ease-out);
+  animation-delay: 0ms, calc(120ms * var(--motion-scale, 1));
+  animation-fill-mode: both, both;
+  animation-iteration-count: 1, 1;
 }
 
 /* ================================================================
- * 5. 输入区：drop-zone 呼吸描边 + hover 提亮 + chip 微浮
+ * 5. 输入区：drop-zone hover 反馈 + chip 微浮
  * ================================================================ */
 
 @keyframes ntl-drop-breathe {
   0%, 100% { border-color: var(--ui-border); }
   50%      { border-color: color-mix(in srgb, var(--ui-accent) 45%, var(--ui-border)); }
 }
-.drop-zone { animation: ntl-drop-breathe 2.6s var(--ease-in-out) infinite; }
-.drop-zone.hover { animation: none; }
+.drop-zone.hover { animation-play-state: paused; }
 
 .chip { transition: transform 120ms var(--ease-out), border-color 120ms var(--ease-out), color 120ms var(--ease-out); }
 .chip:hover { transform: translateY(-2px); }
@@ -164,5 +279,5 @@
  *    这里只关掉无限循环动画，避免残余闪烁）
  * ================================================================ */
 @media (prefers-reduced-motion: reduce) {
-  .brand-mark, .hero .glow, .drop-zone { animation: none !important; }
+  .brand-mark, .hero .glow, .page--pe .drop-zone { animation-play-state: paused !important; }
 }

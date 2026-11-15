@@ -35,10 +35,13 @@ def create_app() -> FastAPI:
         return JSONResponse(status_code=status, content={"error": exc.to_dict()})
 
     @app.middleware("http")
-    async def no_cache_api(request: Request, call_next):
+    async def cache_headers(request: Request, call_next):
         response = await call_next(request)
         if request.url.path.startswith("/api"):
             response.headers["Cache-Control"] = "no-store"
+        else:
+            # 静态资源允许缓存但必须先 revalidate（ETag/Last-Modified），避免改版后浏览器吃旧文件
+            response.headers["Cache-Control"] = "no-cache"
         return response
 
     # SPA: index at root, everything else static
