@@ -55,7 +55,7 @@ function log(message, level = '') {
   list.scrollTop = list.scrollHeight;
   state.logCount += 1;
   byId('log-btn').setAttribute('label', `日志 ${state.logCount}`);
-  byId('foot-left').textContent = message;
+  setStatus(message);
 }
 
 function setStatus(message, kind = '') {

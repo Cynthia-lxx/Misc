@@ -61,6 +61,17 @@ def available() -> dict:
 
 _TOKEN_RE = re.compile(r"^(\d*)([*^~&=@])(.*)$", re.S)
 
+# gdbserver writes its own diagnostics to stderr; keep them out of the
+# child's stderr stream (an OI solution will never print lines like these).
+_GDBSERVER_NOISE_RE = re.compile(
+    r"^(Process .+ created|Listening on port|Remote debugging from host"
+    r"|Child exited|Child terminated|GDBserver exiting|Event loop|All threads)"
+)
+
+
+class _NoiseFilter:
+    """Legacy wrapper kept minimal; no longer used directly."""
+
 
 def _mi_unquote(text: str) -> str:
     """Decode a MI c-string body (lossy but good enough for display)."""
@@ -112,20 +123,31 @@ def _pick_port() -> int:
 
 
 class _OutputTap:
-    """Background reader for one gdbserver pipe; keeps a capped tail."""
+    """Background reader for one gdbserver pipe; keeps a capped tail.
 
-    def __init__(self, stream):
+    `noise_re` lines (gdbserver diagnostics) are kept only in the raw
+    buffer, not in the display text."""
+
+    def __init__(self, stream, noise_re=None):
         self._stream = stream
+        self._noise_re = noise_re
         self._lock = threading.Lock()
         self._lines: list = []
+        self._raw: list = []
         self.exhausted = False
         self.thread = threading.Thread(target=self._pump, daemon=True)
 
     def _pump(self) -> None:
         try:
             for line in self._stream:
+                stripped = line.rstrip("\r\n")
                 with self._lock:
-                    self._lines.append(line.rstrip("\r\n"))
+                    self._raw.append(stripped)
+                    while len(self._raw) > 400:
+                        self._raw.pop(0)
+                    if self._noise_re and self._noise_re.match(stripped.strip()):
+                        continue
+                    self._lines.append(stripped)
                     while len(self._lines) > 400:
                         self._lines.pop(0)
         except Exception:
@@ -138,6 +160,10 @@ class _OutputTap:
     def text(self) -> str:
         with self._lock:
             return "\n".join(self._lines)[-MAX_OUT_BUFFER:]
+
+    def raw_text(self) -> str:
+        with self._lock:
+            return "\n".join(self._raw)[-MAX_OUT_BUFFER:]
 
 
 class _Session:
@@ -391,7 +417,7 @@ class _Session:
             self.error = f"gdbserver launch failed: {type(exc).__name__}"
             return self.state()
         self.out_tap = _OutputTap(self.gdbserver.stdout)
-        self.err_tap = _OutputTap(self.gdbserver.stderr)
+        self.err_tap = _OutputTap(self.gdbserver.stderr, noise_re=_GDBSERVER_NOISE_RE)
         self.out_tap.start()
         self.err_tap.start()
 
@@ -401,7 +427,7 @@ class _Session:
         while time.time() < deadline and not ready:
             if self.gdbserver.poll() is not None:
                 break
-            text = self.err_tap.text() + "\n" + self.out_tap.text()
+            text = self.err_tap.raw_text() + "\n" + self.out_tap.raw_text()
             if "Listening on port" in text:
                 ready = True
                 break

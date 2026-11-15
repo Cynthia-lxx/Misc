@@ -1,0 +1,21 @@
+[   37302ms] TypeError: Cannot set properties of null (setting 'textContent')
+    at log (http://127.0.0.1:8765/console.js:58:33)
+    at http://127.0.0.1:8765/console.js:397:5
+    at init (http://127.0.0.1:8765/console.js:405:5)
+    at http://127.0.0.1:8765/console.js:408:1
+[   37323ms] TypeError: Cannot set properties of null (setting 'textContent')
+    at Object.log (http://127.0.0.1:8765/console.js:58:33)
+    at init (http://127.0.0.1:8765/ide.js:400:5)
+    at http://127.0.0.1:8765/ide.js:409:25
+[   37323ms] ReferenceError: isOpen is not defined
+    at init (http://127.0.0.1:8765/overlays.js:332:54)
+    at http://127.0.0.1:8765/overlays.js:336:25
+[   37325ms] TypeError: Cannot set properties of null (setting 'textContent')
+    at Object.log (http://127.0.0.1:8765/console.js:58:33)
+    at init (http://127.0.0.1:8765/debug.js:215:5)
+    at http://127.0.0.1:8765/debug.js:218:25
+[   37330ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://www.chromium.org/developers/design-documents/create-amazing-password-forms) %o @ http://127.0.0.1:8765/:0
+[   70777ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://www.chromium.org/developers/design-documents/create-amazing-password-forms) %o @ http://127.0.0.1:8765/:0
+[  147662ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://www.chromium.org/developers/design-documents/create-amazing-password-forms) %o @ http://127.0.0.1:8765/:0
+[  183209ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://www.chromium.org/developers/design-documents/create-amazing-password-forms) %o @ http://127.0.0.1:8765/:0
+[  367743ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://www.chromium.org/developers/design-documents/create-amazing-password-forms) %o @ http://127.0.0.1:8765/:0

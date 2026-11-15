@@ -126,6 +126,8 @@ async function createEditor(container, options = {}) {
   }
 
   /** Highlight the line where the debugger currently stopped (1-based, 0 clears). */
+  let debugLine = null;
+
   function setDebugLine(line1) {
     if (debugLine !== null) {
       editor.removeLineClass(debugLine - 1, 'background', DEBUG_CLASS);

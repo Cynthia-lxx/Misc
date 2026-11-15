@@ -329,6 +329,7 @@ function init() {
   window.addEventListener('oi-prompt-overlay', promptOverlay);
   window.addEventListener('oi-palette', paletteOverlay);
   window.addEventListener('oi-goto', gotoOverlay);
+  const isOpen = () => !byId('ov-layer').classList.contains('is-hidden');
   window.__oiOverlays = { openOverlay, closeOverlay, isOpen, promptOverlay };
   window.__oiConsole.log('overlay 层就绪', 'ok');
 }
