@@ -23,3 +23,4 @@
 - **提交格式**：`[OI] [标签] 简述`，标签如 `feat` / `web` / `fix` / `env` / `config` / `UI`；多个主题用 `&` 连接（例：`[OI] [feat] DBG & IDE & MemProfiling & Analysis`）。
 - **安全红线**：`git add` 必须显式指定只属于本项目的路径（如 `-- OI/`）；禁用 `git add -A` / `git add .`；用 `-m` 提交、**绝不使用 `-am`**（`-a` 会把别的目录的改动一并暂存）。暂存后先 `git status --short` 核对全部条目都限定在 `OI/` 内再 commit。
 - 已跟踪文件的删除也用路径限定的 `git add -u -- OI/` 暂存；新增文件逐个显式 `git add -- 路径`。
+- **commit 后必须 push**（同步 GM 规范 ⑤）：一次 CRAFT 的「提交 + 推送」才算闭环。
