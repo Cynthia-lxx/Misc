@@ -100,11 +100,58 @@ export async function mount(el) {
   const tabsEl = el.querySelector("#pg-tabs");
   const searchEl = el.querySelector("#pg-search");
   const catalogEl = el.querySelector("#pg-catalog");
+  const pgLeft = el.querySelector(".pg-left");
+
+  // 左栏 = 队列步骤的「家门口」：拖步骤到这里松手即移除
+  pgLeft.addEventListener("dragover", (e) => {
+    if (![...e.dataTransfer.types].includes("text/pg-move")) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    pgLeft.classList.add("pg-danger");
+  });
+  pgLeft.addEventListener("dragleave", () => pgLeft.classList.remove("pg-danger"));
+  pgLeft.addEventListener("drop", (e) => {
+    pgLeft.classList.remove("pg-danger");
+    const from = Number(e.dataTransfer.getData("text/pg-move"));
+    if (!Number.isFinite(from) || !queue[from]) return;
+    e.preventDefault();
+    queue.splice(from, 1);
+    if (editingIdx === from) editingIdx = -1;
+    else if (editingIdx > from) editingIdx--;
+    showTab("queue");
+  });
 
   let selected = null;                       // 当前选中的 spec
   let queue = [];                            // [{api, args, sig}]
   let session = null;                        // 最近一次执行结果
   let sessions = [];                         // 历史会话（服务端内存）
+  let editingIdx = -1;                       // 队列中正在编辑参数的步骤
+
+  const specByName = new Map(apis.map((a) => [a.name, a]));
+
+  /** 队列步骤的默认参数：取白名单默认值（出参/自动参数除外）。 */
+  function defaultArgs(spec) {
+    const args = {};
+    for (const p of spec.params) {
+      if (!AUTO_PARAM(p) && p.default != null) args[p.name] = p.default;
+    }
+    return args;
+  }
+
+  function sigOf(name, args) {
+    const spec = specByName.get(name);
+    // 按白名单参数顺序展示；未在 schema 中的键（不应出现）排在其后
+    const keys = spec
+      ? [...spec.params.filter((p) => !AUTO_PARAM(p)).map((p) => p.name),
+         ...Object.keys(args).filter((k) => !spec.params.some((p) => p.name === k))]
+      : Object.keys(args);
+    return `${name}(${keys.filter((k) => args[k] != null).map((k) => `${k}=${args[k]}`).join(", ")})`;
+  }
+
+  function paramTooltip(p) {
+    const def = p.default != null ? `默认 ${p.default}` : "无默认值";
+    return `${p.name} (${p.type}) — ${p.desc || "无说明"}；${def}；可写 $N / $N.ret / $N.out.字段 引用第 N 步`;
+  }
 
   const tab = (value, label) => {
     const t = document.createElement("span");
@@ -130,6 +177,13 @@ export async function mount(el) {
         selected = a;
         renderCatalog(filter);
         if (currentTab === "call") swap(renderCallCard());
+      });
+      // 拖拽：把 API 拎进右侧队列（拖动开始时自动切到队列标签，让用户看到投放区）
+      d.draggable = true;
+      d.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("text/pg-api", a.name);
+        e.dataTransfer.effectAllowed = "copy";
+        showTab("queue");
       });
       return d;
     }));
@@ -286,6 +340,40 @@ export async function mount(el) {
     return wrap;
   }
 
+  /* ---- 队列步骤的紧凑参数编辑器（点击步骤行展开） ---- */
+  function buildEditor(st, i) {
+    const spec = specByName.get(st.api);
+    const ed = document.createElement("div");
+    ed.className = "pg-edit";
+    const h = document.createElement("span");
+    h.className = "pg-edit-h";
+    h.textContent = `编辑 #${i + 1} ${st.api}`;
+    ed.appendChild(h);
+    for (const p of spec.params.filter((p) => !AUTO_PARAM(p))) {
+      const fld = document.createElement("span");
+      fld.className = "fld";
+      const label = document.createElement("label");
+      label.textContent = p.name;
+      label.title = paramTooltip(p);
+      const input = document.createElement("input");
+      input.value = st.args[p.name] != null ? String(st.args[p.name]) : "";
+      input.title = paramTooltip(p);
+      input.placeholder = p.desc || p.type;
+      input.addEventListener("input", () => {
+        const v = input.value.trim();
+        if (v === "") delete st.args[p.name];
+        else st.args[p.name] = v;
+        st.sig = sigOf(st.api, st.args);
+        const row = ed.previousElementSibling;
+        const sigEl = row && row.querySelector(".sig");
+        if (sigEl) sigEl.textContent = st.sig;
+      });
+      fld.append(label, input);
+      ed.appendChild(fld);
+    }
+    return ed;
+  }
+
   /* ---- 队列 ---- */
   function queueView() {
     const wrap = document.createElement("div");
@@ -297,23 +385,96 @@ export async function mount(el) {
     panel.appendChild(h);
 
     const list = document.createElement("div");
+    const clearIndicators = () => list.querySelectorAll(".pg-drop-before, .pg-drop-after")
+      .forEach((n) => n.classList.remove("pg-drop-before", "pg-drop-after"));
+
     queue.forEach((st, i) => {
       const row = document.createElement("div");
       row.className = "step";
+      row.dataset.idx = String(i);
       row.innerHTML = `<span class="no">#${i + 1}</span><span class="sig">${esc(st.sig)}</span>`;
+      row.title = "点击编辑参数 · 拖动调整顺序 · 拖回左侧列表移除";
       const del = document.createElement("ui-button");
       del.setAttribute("label", "移除");
-      del.addEventListener("click", () => { queue.splice(i, 1); swap(queueView()); });
+      del.addEventListener("click", (e) => {
+        e.stopPropagation();
+        queue.splice(i, 1);
+        if (editingIdx === i) editingIdx = -1;
+        else if (editingIdx > i) editingIdx--;
+        swap(queueView());
+      });
       row.appendChild(del);
+
+      // 拖拽排序（编辑态下不拖）
+      row.draggable = editingIdx !== i;
+      row.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("text/pg-move", String(i));
+        e.dataTransfer.effectAllowed = "move";
+        row.classList.add("dragging");
+      });
+      row.addEventListener("dragend", clearIndicators);
+      // 点击行 → 展开/收起紧凑参数编辑器
+      row.addEventListener("click", () => {
+        editingIdx = editingIdx === i ? -1 : i;
+        swap(queueView());
+      });
       list.appendChild(row);
+
+      if (editingIdx === i) {
+        list.appendChild(buildEditor(st, i));
+      }
     });
     if (!queue.length) {
       const empty = document.createElement("p");
       empty.className = "table-meta";
-      empty.textContent = "队列为空：在调用卡中「加入队列」，或在下方写脚本。";
+      empty.textContent = "队列为空：把左侧 API 拖进来、点击步骤编辑参数，或在下方写脚本。";
       list.appendChild(empty);
     }
     panel.appendChild(list);
+
+    // ---- 队列列表作为投放区：新增（API）与排序（步骤移动） ----
+    function dropIndex(e) {
+      const rows = [...list.querySelectorAll(".step")];
+      for (const r of rows) {
+        const rc = r.getBoundingClientRect();
+        if (e.clientY < rc.top + rc.height / 2) return Number(r.dataset.idx);
+      }
+      return rows.length;
+    }
+    list.addEventListener("dragover", (e) => {
+      if (![...e.dataTransfer.types].some((t) => t === "text/pg-api" || t === "text/pg-move")) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = e.dataTransfer.types.includes("text/pg-api") ? "copy" : "move";
+      clearIndicators();
+      const idx = dropIndex(e);
+      const rows = [...list.querySelectorAll(".step")];
+      const anchor = rows[idx === queue.length ? idx - 1 : idx];
+      if (anchor) anchor.classList.add(idx === queue.length ? "pg-drop-after" : "pg-drop-before");
+    });
+    list.addEventListener("drop", (e) => {
+      e.preventDefault();
+      clearIndicators();
+      const to = dropIndex(e);
+      const apiName = e.dataTransfer.getData("text/pg-api");
+      if (apiName) {
+        const spec = specByName.get(apiName);
+        if (!spec) return;
+        queue.splice(to, 0, { api: apiName, args: defaultArgs(spec), sig: sigOf(apiName, defaultArgs(spec)) });
+        if (editingIdx >= to) editingIdx++;
+        swap(queueView());
+        return;
+      }
+      const from = Number(e.dataTransfer.getData("text/pg-move"));
+      if (Number.isFinite(from) && from !== to) {
+        const [step] = queue.splice(from, 1);
+        const target = from < to ? to - 1 : to;
+        queue.splice(target, 0, step);
+        if (editingIdx === from) editingIdx = target;
+        else if (from < editingIdx && target < editingIdx) editingIdx--;
+        else if (from > editingIdx && target >= editingIdx) editingIdx++;
+        swap(queueView());
+      }
+    });
 
     const btns = document.createElement("div");
     btns.style.cssText = "display:flex;gap:8px;margin:10px 0";

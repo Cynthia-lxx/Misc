@@ -199,7 +199,34 @@ html, body {
   display: flex; gap: 8px; align-items: center; padding: 5px 8px;
   border: 1px solid color-mix(in srgb, var(--ui-border) 60%, transparent);
   border-radius: 6px; margin-bottom: 6px; font-size: 12px;
+  cursor: grab;
 }
+.pg-steps .step:active { cursor: grabbing; }
+.pg-steps .step.dragging { opacity: 0.35; }
+.pg-steps .step.pg-drop-before { box-shadow: 0 -2px 0 0 var(--ui-accent, #4aa3ff); }
+.pg-steps .step.pg-drop-after { box-shadow: 0 2px 0 0 var(--ui-accent, #4aa3ff); }
+.pg-left.pg-danger { outline: 2px dashed #ff8899; outline-offset: -4px; }
+.pg-left.pg-danger::after {
+  content: "松手移除该步骤";
+  position: sticky; display: block; text-align: center;
+  color: #ff8899; font-size: 12px; padding: 8px 0;
+}
+.pg-edit {
+  display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center;
+  padding: 8px 10px; margin: -2px 0 6px;
+  border: 1px dashed color-mix(in srgb, var(--ui-accent) 50%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ui-accent) 6%, transparent);
+}
+.pg-edit .pg-edit-h { font-size: 11px; color: var(--ui-text-muted, #888); flex: 0 0 auto; }
+.pg-edit .fld { display: flex; align-items: center; gap: 5px; }
+.pg-edit .fld label { font-size: 11px; color: var(--ui-text-muted, #888); cursor: help; white-space: nowrap; }
+.pg-edit .fld input {
+  width: 150px; font-family: var(--ntlab-font-mono); font-size: 12px;
+  background: var(--ui-surface, #1c1c1c); color: var(--ui-text, #ddd);
+  border: 1px solid var(--ui-border, #333); border-radius: 4px; padding: 3px 6px;
+}
+.pg-edit .fld input:focus { border-color: var(--ui-accent); outline: none; }
 .pg-steps .step .no { color: var(--ui-text-muted, #888); flex: 0 0 22px; }
 .pg-steps .step .sig { font-family: var(--ntlab-font-mono); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pg-step-card {
