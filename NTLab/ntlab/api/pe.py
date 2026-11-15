@@ -97,8 +97,9 @@ def search(
     mode: str = "text",
     start: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(ge=1, le=200)] = 100,
+    case_sensitive: bool = False,
 ) -> dict:
-    return hexdump.search(_require_path(path), q, mode, start, limit)
+    return hexdump.search(_require_path(path), q, mode, start, limit, case_sensitive=case_sensitive)
 
 
 @router.get("/disasm")

@@ -281,13 +281,17 @@ async function tableView(url, pageLimit, cols, onRowActivate) {
   const meta = document.createElement("p");
   meta.className = "table-meta";
 
+  const cs = caseToggle();
   const applyFilter = () => {
-    const q = input.value.trim().toLowerCase();
+    const raw = input.value.trim();
+    const q = cs._box.checked ? raw : raw.toLowerCase();
+    const norm = (s) => (cs._box.checked ? String(s) : String(s).toLowerCase());
     table.rows = q
-      ? items.filter((row) => Object.values(row).some((v) => v != null && String(v).toLowerCase().includes(q)))
+      ? items.filter((row) => Object.values(row).some((v) => v != null && norm(v).includes(q)))
       : items;
     meta.textContent = q ? `匹配 ${table.rows.length} 条` : "";
   };
+  cs._box.addEventListener("change", applyFilter);
 
   const input = document.createElement("input");
   input.className = "filter-input";
@@ -309,7 +313,8 @@ async function tableView(url, pageLimit, cols, onRowActivate) {
 
   const wrap = document.createElement("div");
   wrap.style.cssText = "display:flex;flex-direction:column;height:100%;min-height:0";
-  wrap.append(input, meta, table);
+  cs.style.marginBottom = "8px";
+  wrap.append(input, cs, meta, table);
   applyFilter();
   return wrap;
 }
@@ -342,6 +347,19 @@ function toolBtn(label, onClick, variant) {
   return b;
 }
 
+/** "Aa" case-sensitivity checkbox（默认不区分大小写，勾选后区分）。 */
+function caseToggle() {
+  const label = document.createElement("label");
+  label.style.cssText =
+    "display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;user-select:none;"
+    + "color:var(--ui-text-muted,#888);white-space:nowrap;margin-bottom:0";
+  const box = document.createElement("input");
+  box.type = "checkbox";
+  label._box = box;
+  label.append(box, document.createTextNode("Aa 区分大小写"));
+  return label;
+}
+
 async function stringsView(path) {
   const sep = path.includes("?") ? "&" : "?";
   const base = `/api/pe/strings?path=${encodeURIComponent(path)}`;
@@ -367,13 +385,17 @@ async function stringsView(path) {
 
   const meta = document.createElement("p");
   meta.className = "table-meta";
+  const cs = caseToggle();
   const applyFilter = () => {
-    const q = input.value.trim().toLowerCase();
+    const raw = input.value.trim();
+    const q = cs._box.checked ? raw : raw.toLowerCase();
+    const norm = (s) => (cs._box.checked ? s : s.toLowerCase());
     table.rows = q
-      ? items.filter((r) => r.text.toLowerCase().includes(q))
+      ? items.filter((r) => norm(r.text).includes(q))
       : items;
     meta.textContent = q ? `匹配 ${table.rows.length} 条` : "";
   };
+  cs._box.addEventListener("change", applyFilter);
   const input = document.createElement("input");
   input.className = "filter-input";
   input.type = "search";
@@ -391,7 +413,8 @@ async function stringsView(path) {
 
   const wrap = document.createElement("div");
   wrap.style.cssText = "display:flex;flex-direction:column;height:100%;min-height:0";
-  wrap.append(input, meta, table);
+  cs.style.marginBottom = "8px";
+  wrap.append(input, cs, meta, table);
   applyFilter();
   return wrap;
 }
@@ -447,6 +470,8 @@ function hexView(path, startRva = 0) {
   let searchState = [];
   let searchIdx = 0;
 
+  const searchCs = caseToggle();
+
   async function doSearch() {
     const text = searchInput.value.trim();
     const hexq = hexInput.value.trim();
@@ -454,7 +479,8 @@ function hexView(path, startRva = 0) {
     const mode = hexq ? "hex" : "text";
     if (!q) return;
     const startAt = Math.max(0, (view._currentRva ?? 0) + 1);
-    const r = await apiGet(`/api/pe/search?path=${encodeURIComponent(path)}&q=${encodeURIComponent(q)}&mode=${mode}&start=${startAt}&limit=100`);
+    const r = await apiGet(`/api/pe/search?path=${encodeURIComponent(path)}&q=${encodeURIComponent(q)}&mode=${mode}`
+      + `&start=${startAt}&limit=100&case_sensitive=${searchCs._box.checked}`);
     if (!r.matches.length) {
       meta.textContent = `从 ${fsize(startAt)} 起未找到 “${q}”`;
       return;
@@ -473,6 +499,7 @@ function hexView(path, startRva = 0) {
     }, "accent"),
     searchInput,
     hexInput,
+    searchCs,
     toolBtn("搜索", () => doSearch().catch((err) => { meta.textContent = err.message; }), "accent"),
     toolBtn("下一个", () => {
       if (!searchState.length) return doSearch().catch((err) => { meta.textContent = err.message; });

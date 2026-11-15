@@ -91,7 +91,8 @@ def hexdump(path: str, rva: int | None = None, file_offset: int | None = None,
     }
 
 
-def search(path: str, q: str, mode: str = "text", start: int = 0, limit: int = 100) -> dict[str, Any]:
+def search(path: str, q: str, mode: str = "text", start: int = 0, limit: int = 100,
+           case_sensitive: bool = False) -> dict[str, Any]:
     """IDA Search: text (ASCII) or hex byte-pattern, returns matches after start."""
     pe = get_pe(path)
     data = pe.__data__
@@ -110,17 +111,30 @@ def search(path: str, q: str, mode: str = "text", start: int = 0, limit: int = 1
 
     matches = []
     pos = max(0, min(start, len(data) - 1))
-    while len(matches) < limit:
-        pos = data.find(needle, pos)
-        if pos < 0:
-            break
-        loc = _locate(pe, pos)
-        matches.append({
-            "file_offset": pos,
-            "rva": loc["rva"],
-            "section": loc["section"],
-            "preview": data[pos: pos + min(64, len(needle) * 2)].decode("latin-1", "replace"),
-        })
-        pos += 1  # allow overlapping matches
-    return {"total": len(matches), "mode": mode, "pattern": q,
+    if mode == "text" and not case_sensitive:
+        rx = re.compile(re.escape(needle), re.IGNORECASE)
+        for m in rx.finditer(data, pos):
+            loc = _locate(pe, m.start())
+            matches.append({
+                "file_offset": m.start(),
+                "rva": loc["rva"],
+                "section": loc["section"],
+                "preview": data[m.start(): m.start() + min(64, len(needle) * 2)].decode("latin-1", "replace"),
+            })
+            if len(matches) >= limit:
+                break
+    else:
+        while len(matches) < limit:
+            pos = data.find(needle, pos)
+            if pos < 0:
+                break
+            loc = _locate(pe, pos)
+            matches.append({
+                "file_offset": pos,
+                "rva": loc["rva"],
+                "section": loc["section"],
+                "preview": data[pos: pos + min(64, len(needle) * 2)].decode("latin-1", "replace"),
+            })
+            pos += 1  # allow overlapping matches
+    return {"total": len(matches), "mode": mode, "pattern": q, "case_sensitive": case_sensitive,
             "matches": matches, "file_size": len(data)}

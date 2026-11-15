@@ -55,6 +55,24 @@ def test_search_text_and_hex():
 
 
 @requires_kernel32
+def test_search_case_sensitivity():
+    data = _load(KERNEL32).__data__
+    idx = data.find(b"KERNEL32.dll")
+    assert idx > 0  # kernel32 导出名为混合大小写
+    # 默认忽略大小写：小写查询也能命中
+    ins = hexdump.search(KERNEL32, "kernel32.dll", mode="text", start=0, limit=10)
+    assert any(m["file_offset"] == idx for m in ins["matches"])
+    # 开启区分大小写：小写查询不命中，精确大小写命中
+    sens = hexdump.search(KERNEL32, "kernel32.dll", mode="text", start=0, limit=10, case_sensitive=True)
+    assert not sens["matches"]
+    exact = hexdump.search(KERNEL32, "KERNEL32.dll", mode="text", start=0, limit=10, case_sensitive=True)
+    assert any(m["file_offset"] == idx for m in exact["matches"])
+    # hex 模式与该开关无关（字节本就无大小写）
+    hx = hexdump.search(KERNEL32, "4B4552 4E", mode="hex", start=idx, limit=5, case_sensitive=True)
+    assert hx["matches"] and hx["matches"][0]["file_offset"] == idx
+
+
+@requires_kernel32
 def test_disasm_at_entry():
     pe = _load(KERNEL32)
     ep = pe.OPTIONAL_HEADER.AddressOfEntryPoint
