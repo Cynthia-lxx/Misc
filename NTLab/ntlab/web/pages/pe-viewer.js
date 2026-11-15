@@ -25,19 +25,24 @@ function pushRecent(path) {
 
 export async function mount(el) {
   el.innerHTML = `
-    <div class="page-head">
-      <h1>PE 分析器<span class="page-hint" title="输入本地 PE 文件路径，或直接拖一个 exe/dll/sys 进来">?</span></h1>
-    </div>
-    <div class="panel">
-      <div style="display:flex; gap:10px; align-items:center">
-        <ui-textbox id="pe-path" style="flex:1" placeholder="C:\\Windows\\System32\\kernel32.dll"></ui-textbox>
-        <ui-button id="pe-go" variant="accent">解析</ui-button>
+    <div id="pe-top">
+      <div class="page-head pe-top-extra">
+        <h1>PE 分析器<span class="page-hint" title="输入本地 PE 文件路径，或直接拖一个 exe/dll/sys 进来">?</span></h1>
       </div>
-      <div class="chips" id="pe-chips"></div>
-      <div class="chips" id="pe-recent"></div>
-    </div>
-    <div class="drop-zone" id="pe-drop" style="margin-top:14px">
-      或把 PE 文件拖到这里（≤ 64 MB）
+      <div class="panel">
+        <div style="display:flex; gap:10px; align-items:center">
+          <ui-textbox id="pe-path" style="flex:1" placeholder="C:\\Windows\\System32\\kernel32.dll"></ui-textbox>
+          <ui-button id="pe-go" variant="accent">解析</ui-button>
+          <ui-button id="pe-fold" title="收起文件选择区">▲</ui-button>
+        </div>
+        <div class="pe-top-extra">
+          <div class="chips" id="pe-chips"></div>
+          <div class="chips" id="pe-recent"></div>
+        </div>
+      </div>
+      <div class="drop-zone pe-top-extra" id="pe-drop" style="margin-top:14px">
+        或把 PE 文件拖到这里（≤ 64 MB）
+      </div>
     </div>
     <div id="pe-error"></div>
     <div id="pe-result" class="pe-result"></div>`;
@@ -84,6 +89,16 @@ export async function mount(el) {
   el.querySelector("#pe-go").addEventListener("click", () => parse(pathBox.value));
   pathBox.addEventListener("ui-text-commit", (e) => parse(e.detail?.value ?? pathBox.value));
   pathBox.addEventListener("keydown", (e) => { if (e.key === "Enter") parse(pathBox.value); });
+
+  // 顶部文件选择区折叠：解析成功后自动收起，为结果区让出垂直空间
+  const topArea = el.querySelector("#pe-top");
+  const foldBtn = el.querySelector("#pe-fold");
+  function setTopCollapsed(collapsed) {
+    topArea.classList.toggle("collapsed", collapsed);
+    foldBtn.setAttribute("label", collapsed ? "▼" : "▲");
+    foldBtn.setAttribute("title", collapsed ? "展开文件选择区" : "收起文件选择区");
+  }
+  foldBtn.addEventListener("click", () => setTopCollapsed(!topArea.classList.contains("collapsed")));
 
   const drop = el.querySelector("#pe-drop");
   ["dragover", "dragenter"].forEach((ev) => drop.addEventListener(ev, (e) => {
@@ -195,6 +210,7 @@ export async function mount(el) {
       pushRecent(path.trim());
       renderChips();
       await renderResult(summary, path.trim());
+      setTopCollapsed(true);
       if (push) pushNav({ path: path.trim(), tab: "summary", addr: null });
     } catch (err) {
       result.innerHTML = "";

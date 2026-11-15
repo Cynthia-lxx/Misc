@@ -151,6 +151,11 @@ html, body {
   vertical-align: 3px;
 }
 
+/* PE 分析器：顶部文件选择区可折叠（解析成功后自动收起，为结果区让出垂直空间） */
+#pe-top.collapsed .page-head,
+#pe-top.collapsed .pe-top-extra { display: none; }
+#pe-top.collapsed .panel { margin-bottom: 10px; }
+
 /* PE 分析器：结果区占满剩余高度，标签体内部滚动 */
 .pe-result { flex: 1; min-height: 0; display: flex; flex-direction: column; margin-top: 14px; }
 .pe-result-wrap { display: flex; flex-direction: column; flex: 1; min-height: 0; }
