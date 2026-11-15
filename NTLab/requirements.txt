@@ -7,6 +7,9 @@ python-multipart>=0.0.9   # file upload support
 # Windows PE parsing
 pefile>=2023.2.7
 
+# Disassembly (IDA-flavored views; BSD licensed)
+capstone>=5.0
+
 # NT API / system access
 pywin32>=306
 

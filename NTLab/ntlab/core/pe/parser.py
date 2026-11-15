@@ -13,6 +13,7 @@ from typing import Any
 import pefile
 
 from ntlab.core.errors import InvalidPathError, NotFoundError, ParseError
+from .demangle import demangle as _demangle
 
 # ---------------------------------------------------------------- constants
 
@@ -98,6 +99,34 @@ def _load(path: str, fast: bool = True) -> pefile.PE:
     while len(_CACHE) > _CACHE_MAX:
         _CACHE.pop(next(iter(_CACHE)))
     return pe
+
+
+# public aliases / helpers for sibling modules (hexdump, disasm, ...)
+
+def get_pe(path: str, fast: bool = True) -> pefile.PE:
+    """Cached PE object for the given file path."""
+    return _load(path, fast=fast)
+
+
+def section_of_rva(pe: pefile.PE, rva: int) -> str | None:
+    for s in pe.sections:
+        if s.VirtualAddress <= rva < s.VirtualAddress + max(s.Misc_VirtualSize, s.SizeOfRawData):
+            return s.Name.rstrip(b"\x00").decode("utf-8", "replace")
+    return None
+
+
+def offset_of_rva(pe: pefile.PE, rva: int) -> int:
+    try:
+        return pe.get_offset_from_rva(rva)
+    except Exception as exc:  # pefile raises on unmapped RVA
+        raise InvalidPathError(f"RVA 0x{rva:X} not mapped to a file offset") from exc
+
+
+def rva_of_offset(pe: pefile.PE, off: int) -> int:
+    for s in pe.sections:
+        if s.PointerToRawData <= off < s.PointerToRawData + s.SizeOfRawData:
+            return s.VirtualAddress + (off - s.PointerToRawData)
+    return off  # header region: identity mapping (best effort)
 
 
 _ATTR_GROUPS = {
@@ -239,6 +268,7 @@ def imports(path: str, offset: int = 0, limit: int = 200) -> dict[str, Any]:
             rows.append({
                 "dll": dll,
                 "function": name,
+                "demangled": _demangle(name),
                 "ordinal": imp.ordinal,
                 "hint": imp.hint,
                 "iat_rva": imp.address - pe.OPTIONAL_HEADER.ImageBase if imp.address else None,
@@ -263,6 +293,7 @@ def exports(path: str, offset: int = 0, limit: int = 200) -> dict[str, Any]:
         rows.append({
             "ordinal": sym.ordinal,
             "name": name,
+            "demangled": _demangle(name),
             "rva": sym.address,
             "forwarder": sym.forwarder.decode("utf-8", "replace") if sym.forwarder else None,
         })

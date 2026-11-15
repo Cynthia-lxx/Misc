@@ -1,0 +1,85 @@
+"""Tests for IDA-flavored views: strings / hexdump / search / disasm / xrefs / demangle."""
+
+from __future__ import annotations
+
+import os
+
+import pytest
+
+from ntlab.core.pe import demangle, disasm, hexdump
+from ntlab.core.pe.parser import _load
+from ntlab.core.errors import InvalidPathError
+
+KERNEL32 = os.path.join(os.environ.get("WINDIR", r"C:\Windows"), "System32", "kernel32.dll")
+
+requires_kernel32 = pytest.mark.skipif(
+    not os.path.isfile(KERNEL32), reason="kernel32.dll unavailable")
+
+
+@requires_kernel32
+def test_strings_finds_ascii_and_utf16():
+    r = hexdump.strings(KERNEL32, offset=0, limit=200)
+    assert r["total"] > 100
+    encs = {i["encoding"] for i in r["items"]}
+    assert "ascii" in encs
+    assert all(i["text"] for i in r["items"])
+    # pagination
+    r2 = hexdump.strings(KERNEL32, offset=200, limit=100)
+    assert r2["items"][0]["file_offset"] >= r["items"][-1]["file_offset"]
+    # every string has a section mapping
+    assert all(i["section"] for i in r["items"])
+
+
+@requires_kernel32
+def test_hexdump_rows_aligned():
+    pe = _load(KERNEL32)
+    ep = pe.OPTIONAL_HEADER.AddressOfEntryPoint
+    r = hexdump.hexdump(KERNEL32, rva=ep, size=64)
+    assert len(r["rows"]) == 4
+    assert r["rows"][0]["rva"] % 16 == 0
+    assert r["section"] == ".text"
+    assert r["image_base"] > 0
+    # file-offset variant agrees
+    r2 = hexdump.hexdump(KERNEL32, file_offset=r["file_offset"], size=16)
+    assert r2["rows"][0]["hex"] == r["rows"][0]["hex"]
+
+
+@requires_kernel32
+def test_search_text_and_hex():
+    r = hexdump.search(KERNEL32, "MZ", mode="text", start=0, limit=10)
+    assert r["matches"][0]["file_offset"] == 0
+    rh = hexdump.search(KERNEL32, "4d5a", mode="hex", start=0, limit=10)
+    assert rh["matches"][0]["file_offset"] == 0
+    with pytest.raises(InvalidPathError):
+        hexdump.search(KERNEL32, "zz", mode="hex")
+
+
+@requires_kernel32
+def test_disasm_at_entry():
+    pe = _load(KERNEL32)
+    ep = pe.OPTIONAL_HEADER.AddressOfEntryPoint
+    r = disasm.disasm(KERNEL32, rva=ep, count=20)
+    assert len(r["items"]) >= 10
+    assert all(i["mnemonic"] for i in r["items"])
+    assert r["items"][0]["rva"] == ep
+    assert r["next_rva"] > ep
+    with pytest.raises(InvalidPathError):
+        disasm.disasm(KERNEL32, rva=0xFFFFFFFF)
+
+
+@requires_kernel32
+def test_xrefs_to_entry_has_callers():
+    pe = _load(KERNEL32)
+    ep = pe.OPTIONAL_HEADER.AddressOfEntryPoint
+    r = disasm.xrefs_to(KERNEL32, ep)
+    assert isinstance(r["total_refs"], int)
+    for c in r["callers"]:
+        assert 0 <= c["rva"] < pe.OPTIONAL_HEADER.SizeOfImage
+
+
+def test_demangle_msvc_names():
+    d = demangle.demangle("?foo@Bar@@QEAAXXZ")
+    assert d and "Bar::foo" in d and "void" in d
+    assert demangle.demangle("CreateFileW") is None
+    assert demangle.demangle(None) is None
+    assert demangle.demangle("??_7type_info@@6B@") is not None

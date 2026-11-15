@@ -9,6 +9,9 @@ from typing import Annotated
 from fastapi import APIRouter, Query, UploadFile
 
 from ntlab.core import pe as pe_core
+from ntlab.core.pe import demangle as dm_core
+from ntlab.core.pe import disasm
+from ntlab.core.pe import hexdump
 from ntlab.core.errors import InvalidPathError
 
 router = APIRouter()
@@ -65,6 +68,60 @@ def resources(path: str) -> dict:
 @router.get("/signature")
 def signature(path: str) -> dict:
     return pe_core.signature(_require_path(path))
+
+
+@router.get("/strings")
+def strings(
+    path: str,
+    min_len: Annotated[int, Query(ge=4, le=64)] = 5,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=2000)] = 500,
+) -> dict:
+    return hexdump.strings(_require_path(path), min_len, offset, limit)
+
+
+@router.get("/hex")
+def hex_view(
+    path: str,
+    rva: int | None = None,
+    off: int | None = None,
+    size: Annotated[int, Query(ge=16, le=4096)] = 256,
+) -> dict:
+    return hexdump.hexdump(_require_path(path), rva=rva, file_offset=off, size=size)
+
+
+@router.get("/search")
+def search(
+    path: str,
+    q: str,
+    mode: str = "text",
+    start: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=200)] = 100,
+) -> dict:
+    return hexdump.search(_require_path(path), q, mode, start, limit)
+
+
+@router.get("/disasm")
+def disasm_view(
+    path: str,
+    rva: Annotated[int, Query(ge=0)] = 0,
+    count: Annotated[int, Query(ge=1, le=1000)] = 200,
+) -> dict:
+    return disasm.disasm(_require_path(path), rva, count)
+
+
+@router.get("/xrefs")
+def xrefs_to(
+    path: str,
+    rva: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=200)] = 200,
+) -> dict:
+    return disasm.xrefs_to(_require_path(path), rva, limit)
+
+
+@router.get("/demangle")
+def demangle(name: str) -> dict:
+    return {"name": name, "demangled": dm_core.demangle(name)}
 
 
 @router.post("/upload")
