@@ -52,10 +52,14 @@
   animation-fill-mode: both;
 }
 /* mount 期间与动画起播空窗期的可见性锁定：
+ * - #content:not(.ready) 从「首帧绘制」起就隐藏内容——不依赖 JS 执行
+ *   时机（deferred module 之前 Chrome 可能先绘一帧裸内容，那也是闪）；
+ *   app.js 在 enterPage 起播时补上 .ready（此刻 page-hidden 已锁 0）
  * - .page-waiting 只负责暂停动画（等 mount 完成）
  * - .page-hidden 负责 opacity:0（普通声明，动画期间被动画声明覆盖）
- * 两者由 enterPage 分阶段摘除：先摘 waiting 起播，animationstart 时摘
- * hidden —— 即使 Chrome 延迟数十毫秒才真正起播，内容也不会漏亮一帧 */
+ * 由 enterPage 分阶段摘除：摘 waiting 起播 + 补 ready，animationstart
+ * 后内容仍锁 0 直到动画真正接管，摘 hidden；animationend 摘 entering */
+#content:not(.ready) { visibility: hidden; }
 .page-waiting { animation-play-state: paused !important; }
 .page-hidden { opacity: 0; }
 

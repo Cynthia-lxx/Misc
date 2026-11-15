@@ -104,6 +104,7 @@ html, body {
   flex: 1;
   min-width: 0;
   overflow-y: auto;
+  scrollbar-gutter: stable;   /* 滚动条出现/消失不再挤压内容（layout-shift） */
   padding: 28px 34px 46px;
 }
 

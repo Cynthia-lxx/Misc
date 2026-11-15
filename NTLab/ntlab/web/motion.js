@@ -135,6 +135,7 @@ export function enterPage(el) {
   // 消灭「摘除 paused → animationstart」空窗期的全亮闪帧。
   if (scale === 0) {
     el.classList.remove("page-entering", "page-waiting", "page-hidden");
+    el.closest("#content")?.classList.add("ready");
     dbg("reduced motion → classes removed immediately");
     return;
   }
@@ -142,6 +143,10 @@ export function enterPage(el) {
   // 强制一次样式失效，确保 paused→running 从第 0 帧起播
   void el.offsetWidth;
   el.classList.remove("page-waiting");
+  // .ready 解除 CSS 层的 #content 预隐藏；此刻 page-hidden 仍锁 opacity 0，
+  // 动画起播前不会漏亮（含首帧早于模块执行的场景）
+  el.closest("#content")?.classList.add("ready");
+  dbg(".ready added (content still locked by page-hidden)");
   onceOwnAnimation(el, "ntl-page-in", () => {
     el.classList.remove("page-entering", "page-hidden");
     dbg("page-in done → page-entering/page-hidden removed");
