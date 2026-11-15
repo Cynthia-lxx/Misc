@@ -132,7 +132,26 @@ html, body {
 
 .page-head p { margin: 0; color: var(--ui-text-muted, #888); font-size: 13px; }
 
-/* PE 解剖器：结果区占满剩余高度，标签体内部滚动 */
+/* 页头悬停提示：操作说明收纳进 tooltip */
+.page-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  margin-left: 7px;
+  border: 1px solid var(--ui-border, #444);
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ui-text-muted, #888);
+  cursor: help;
+  user-select: none;
+  vertical-align: 3px;
+}
+
+/* PE 分析器：结果区占满剩余高度，标签体内部滚动 */
 .pe-result { flex: 1; min-height: 0; display: flex; flex-direction: column; margin-top: 14px; }
 .pe-result-wrap { display: flex; flex-direction: column; flex: 1; min-height: 0; }
 .pe-tabbody { flex: 1; min-height: 0; overflow: auto; margin-top: 12px; padding-right: 4px; }

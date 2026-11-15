@@ -3,8 +3,8 @@
 ## Phase 1 — 骨架 + 只读探索器（当前）
 
 - [x] 项目骨架 / venv / AGENTS / docs
-- [ ] PE 解剖器（DOS 头、节表、导入、导出、资源、签名、PDB）
-- [ ] ObjDir（NT 名字空间树、懒加载、符号链接目标）
+- [ ] PE 分析器（DOS 头、节表、导入、导出、资源、签名、PDB）
+- [ ] ObjDir（NT 命名空间树、懒加载、符号链接目标）
 
 ## Phase 2 — WinAPI Playground
 

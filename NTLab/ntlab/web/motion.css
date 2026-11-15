@@ -90,7 +90,7 @@
   to   { opacity: 1; transform: scale(1); }
 }
 
-/* PE 解剖器：标题自上而下落定 → 参数面板浮起 → drop-zone 弹性撑开 → 芯片错峰 */
+/* PE 分析器：标题自上而下落定 → 参数面板浮起 → drop-zone 弹性撑开 → 芯片错峰 */
 .page--pe .page-head {
   animation-name: ntl-slide-in-top;
   animation-duration: calc(400ms * var(--motion-scale, 1));

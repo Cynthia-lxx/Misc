@@ -26,8 +26,7 @@ function pushRecent(path) {
 export async function mount(el) {
   el.innerHTML = `
     <div class="page-head">
-      <h1>PE 解剖器</h1>
-      <p>输入本地 PE 文件路径，或直接拖一个 exe/dll/sys 进来。</p>
+      <h1>PE 分析器<span class="page-hint" title="输入本地 PE 文件路径，或直接拖一个 exe/dll/sys 进来">?</span></h1>
     </div>
     <div class="panel">
       <div style="display:flex; gap:10px; align-items:center">
@@ -38,7 +37,7 @@ export async function mount(el) {
       <div class="chips" id="pe-recent"></div>
     </div>
     <div class="drop-zone" id="pe-drop" style="margin-top:14px">
-      或把 PE 文件拖到这里（≤ 64 MB，会上传到本地 server 解析）
+      或把 PE 文件拖到这里（≤ 64 MB）
     </div>
     <div id="pe-error"></div>
     <div id="pe-result" class="pe-result"></div>`;

@@ -6,8 +6,8 @@ import { swapContent } from "../motion.js";
 export async function mount(el) {
   el.innerHTML = `
     <div class="page-head">
-      <h1>ObjDir</h1>
-      <p>NT 对象管理器名字空间。点击目录节点懒加载展开；右侧显示对象详情。全程只读。</p>
+      <h1>ObjDir<span class="page-hint" title="点击目录节点展开子目录；右侧显示所选对象详情">?</span></h1>
+      <p>NT 对象管理器命名空间</p>
     </div>
     <div class="objdir">
       <div class="panel objdir-left"><div class="loading-row"><ui-spinner></ui-spinner> 正在探测根目录…</div></div>
