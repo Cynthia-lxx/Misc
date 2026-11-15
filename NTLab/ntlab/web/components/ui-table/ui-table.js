@@ -9,7 +9,9 @@
 
 const STYLE = `
   :host { display: block; font: inherit; }
-  .wrap { overflow: auto; border: 1px solid var(--ui-border, #2a2a2a); border-radius: 8px; }
+  :host([fill]) { height: 100%; min-height: 0; }
+  :host([fill]) .wrap { height: 100%; box-sizing: border-box; }
+  .wrap { overflow: auto; border: 1px solid var(--ui-border, #2a2a2a); border-radius: 8px; max-height: var(--ui-table-max-height, 520px); }
   table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
   thead th {
     position: sticky; top: 0; z-index: 1;

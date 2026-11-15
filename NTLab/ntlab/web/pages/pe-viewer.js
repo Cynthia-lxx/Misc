@@ -11,6 +11,18 @@ const QUICK_FILES = [
   "C:\\Windows\\System32\\notepad.exe",
 ];
 
+const RECENT_KEY = "ntlab.recent-pe";
+
+function loadRecent() {
+  try { return JSON.parse(localStorage.getItem(RECENT_KEY)) ?? []; } catch { return []; }
+}
+
+function pushRecent(path) {
+  const list = loadRecent().filter((p) => p !== path);
+  list.unshift(path);
+  localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, 5)));
+}
+
 export async function mount(el) {
   el.innerHTML = `
     <div class="page-head">
@@ -23,25 +35,52 @@ export async function mount(el) {
         <ui-button id="pe-go" variant="accent">解析</ui-button>
       </div>
       <div class="chips" id="pe-chips"></div>
+      <div class="chips" id="pe-recent"></div>
     </div>
     <div class="drop-zone" id="pe-drop" style="margin-top:14px">
       或把 PE 文件拖到这里（≤ 64 MB，会上传到本地 server 解析）
     </div>
     <div id="pe-error"></div>
-    <div id="pe-result" style="margin-top:18px"></div>`;
+    <div id="pe-result" class="pe-result"></div>`;
 
   const pathBox = el.querySelector("#pe-path");
   const result = el.querySelector("#pe-result");
   const errBox = el.querySelector("#pe-error");
 
-  for (const f of QUICK_FILES) {
+  function addChip(container, path, removable) {
     const chip = document.createElement("button");
     chip.className = "chip";
-    chip.textContent = f.split("\\").pop();
-    chip.title = f;
-    chip.addEventListener("click", () => { pathBox.value = f; parse(f); });
-    el.querySelector("#pe-chips").appendChild(chip);
+    chip.textContent = path.split("\\").pop();
+    chip.title = path;
+    chip.addEventListener("click", () => { pathBox.value = path; parse(path); });
+    if (removable) {
+      chip.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        const list = loadRecent().filter((p) => p !== path);
+        localStorage.setItem(RECENT_KEY, JSON.stringify(list));
+        renderChips();
+      });
+    }
+    container.appendChild(chip);
   }
+
+  function renderChips() {
+    const quick = el.querySelector("#pe-chips");
+    const recent = el.querySelector("#pe-recent");
+    quick.replaceChildren();
+    for (const f of QUICK_FILES) addChip(quick, f, false);
+    const rec = loadRecent();
+    recent.replaceChildren();
+    if (rec.length) {
+      const label = document.createElement("span");
+      label.className = "table-meta";
+      label.style.margin = "0 6px 0 0";
+      label.textContent = "最近：";
+      recent.appendChild(label);
+      for (const p of rec) addChip(recent, p, true);
+    }
+  }
+  renderChips();
 
   el.querySelector("#pe-go").addEventListener("click", () => parse(pathBox.value));
   pathBox.addEventListener("ui-text-commit", (e) => parse(e.detail?.value ?? pathBox.value));
@@ -85,6 +124,8 @@ export async function mount(el) {
     setLoading(true);
     try {
       const summary = await apiPost("/api/pe/parse", { path: path.trim() });
+      pushRecent(path.trim());
+      renderChips();
       await renderResult(summary, path.trim());
     } catch (err) {
       result.innerHTML = "";
@@ -98,7 +139,7 @@ export async function mount(el) {
     const tabs = document.createElement("ui-tabs");
     tabs.setAttribute("value", "summary");
     const body = document.createElement("div");
-    body.style.marginTop = "14px";
+    body.className = "pe-tabbody";
     tabs.append(
       tab("summary", "概览"), tab("headers", "DOS/文件头"), tab("imports", "导入表"),
       tab("exports", "导出表"), tab("resources", "资源"), tab("signature", "签名/PDB"));
@@ -108,15 +149,16 @@ export async function mount(el) {
       if (views[v]) { swapContent(body, views[v]()); return; }
       swapContent(body, spinnerRow("加载中…"));
       try {
-        if (v === "imports") await tableView(`/api/pe/imports?path=${encodeURIComponent(path)}`, 250, importCols()).then((t) => swapContent(body, t));
-        else if (v === "exports") await tableView(`/api/pe/exports?path=${encodeURIComponent(path)}`, 250, exportCols()).then((t) => swapContent(body, t));
-        else if (v === "resources") await tableView(`/api/pe/resources?path=${encodeURIComponent(path)}`, 500, resCols()).then((t) => swapContent(body, t));
+        if (v === "imports") await tableView(`/api/pe/imports?path=${encodeURIComponent(path)}`, 500, importCols()).then((t) => swapContent(body, t));
+        else if (v === "exports") await tableView(`/api/pe/exports?path=${encodeURIComponent(path)}`, 2000, exportCols()).then((t) => swapContent(body, t));
+        else if (v === "resources") await tableView(`/api/pe/resources?path=${encodeURIComponent(path)}`, 1000, resCols()).then((t) => swapContent(body, t));
         else if (v === "signature") await signatureView(path).then((t) => swapContent(body, t));
       } catch (err) { swapContent(body, errRow(err)); }
     }
     tabs.addEventListener("ui-select", selectTab);
     body.replaceChildren(views.summary());
     const wrap = document.createElement("div");
+    wrap.className = "pe-result-wrap";
     wrap.append(tabs, body);
     swapContent(result, wrap, { outMs: 80, inMs: 380 });
   }
@@ -209,13 +251,32 @@ async function headersView(path) {
 async function tableView(url, limit, cols) {
   const data = await apiGet(`${url}${url.includes("?") ? "&" : "?"}offset=0&limit=${limit}`);
   const table = document.createElement("ui-table");
+  table.setAttribute("fill", "");
   table.columns = cols;
-  table.rows = data.items;
-  const head = document.createElement("p");
-  head.style.cssText = "color:var(--ui-text-muted);margin:0 0 10px;font-size:12.5px";
-  head.textContent = `共 ${data.total} 条，显示前 ${Math.min(limit, data.total)} 条（双击行无操作；排序点表头）`;
+
+  const meta = document.createElement("p");
+  meta.className = "table-meta";
+
+  const applyFilter = () => {
+    const q = input.value.trim().toLowerCase();
+    const rows = !q ? data.items : data.items.filter((row) =>
+      Object.values(row).some((v) => v != null && String(v).toLowerCase().includes(q)));
+    table.rows = rows;
+    meta.textContent = q
+      ? `匹配 ${rows.length} / ${data.total} 条（过滤 “${input.value.trim()}”）`
+      : `共 ${data.total} 条${data.total > limit ? `，已载入前 ${Math.min(limit, data.total)} 条` : ""}（排序点表头；表格内滚动）`;
+  };
+
+  const input = document.createElement("input");
+  input.className = "filter-input";
+  input.type = "search";
+  input.placeholder = "过滤（名称 / DLL / RVA…）";
+  input.addEventListener("input", applyFilter);
+
   const wrap = document.createElement("div");
-  wrap.append(head, table);
+  wrap.style.cssText = "display:flex;flex-direction:column;height:100%;min-height:0";
+  wrap.append(input, meta, table);
+  applyFilter();
   return wrap;
 }
 

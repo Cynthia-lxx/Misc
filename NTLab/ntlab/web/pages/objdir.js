@@ -11,11 +11,43 @@ export async function mount(el) {
     </div>
     <div class="objdir">
       <div class="panel objdir-left"><div class="loading-row"><ui-spinner></ui-spinner> 正在探测根目录…</div></div>
-      <div class="objdir-right"><div class="panel" id="obj-detail">选择左侧一个对象查看详情。</div></div>
+      <div class="objdir-right">
+        <div class="crumb" id="obj-crumb"><span class="sep">在左侧选择一个对象</span></div>
+        <div class="panel" id="obj-detail">选择左侧一个对象查看详情。</div>
+      </div>
     </div>`;
 
   const left = el.querySelector(".objdir-left");
   const detail = el.querySelector("#obj-detail");
+  const crumb = el.querySelector("#obj-crumb");
+
+  function renderCrumb(path) {
+    crumb.replaceChildren();
+    const parts = path === "\\" ? [""] : path.split("\\").filter(Boolean);
+    const mk = (label, target, isLast) => {
+      if (isLast) {
+        const span = document.createElement("span");
+        span.textContent = label || "\\";
+        span.style.cssText = "color:var(--ui-text,#eee);font-weight:700;padding:2px 5px";
+        return span;
+      }
+      const a = document.createElement("a");
+      a.href = "#";
+      a.textContent = label || "\\";
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        showDetail({ id: target, expandable: true, type: "Directory" });
+      });
+      return a;
+    };
+    crumb.appendChild(mk("\\", "\\", parts.length === 0));
+    let acc = "";
+    parts.forEach((seg, i) => {
+      acc = acc === "" ? "\\" + seg : acc + "\\" + seg;
+      crumb.appendChild(Object.assign(document.createElement("span"), { className: "sep", textContent: "‹" }));
+      crumb.appendChild(mk(seg, acc, i === parts.length - 1));
+    });
+  }
 
   let roots;
   try {
@@ -53,10 +85,12 @@ export async function mount(el) {
   left.replaceChildren(tree);
 
   async function showDetail(node) {
+    renderCrumb(node.id);
     detail.replaceChildren(spinnerRow());
     try {
       const info = await apiGet("/api/ntobj/object", { path: node.id, type: node.type ?? "" });
       const wrap = document.createElement("div");
+      wrap.style.cssText = "display:flex;flex-direction:column;height:100%;min-height:0";
       const head = document.createElement("div");
       head.style.cssText = "display:flex;align-items:center;gap:10px;margin-bottom:14px";
       const h2 = document.createElement("h2");
@@ -78,24 +112,47 @@ export async function mount(el) {
         body.innerHTML = `<div class="loading-row"><ui-spinner></ui-spinner> 正在枚举子对象…</div>`;
         try {
           const r = await apiGet("/api/ntobj/list", { path: node.id });
+          const rows = r.entries.map((e2) => ({
+            ...e2,
+            kind: e2.is_directory ? "可展开" : e2.is_symlink ? "符号链接" : "叶子",
+          }));
           const table = document.createElement("ui-table");
+          table.setAttribute("fill", "");
           table.columns = [
             { key: "name", label: "对象名", type: "mono" },
             { key: "type", label: "类型" },
             { key: "kind", label: "种类" },
           ];
-          table.rows = r.entries.map((e2) => ({
-            ...e2,
-            kind: e2.is_directory ? "可展开" : e2.is_symlink ? "符号链接" : "叶子",
-          }));
+
+          const meta = document.createElement("p");
+          meta.className = "table-meta";
+          const applyFilter = () => {
+            const q = input.value.trim().toLowerCase();
+            const filtered = !q ? rows : rows.filter((row) =>
+              row.name.toLowerCase().includes(q) || row.type.toLowerCase().includes(q));
+            table.rows = filtered;
+            meta.textContent = q ? `匹配 ${filtered.length} / ${rows.length} 项` : `共 ${rows.length} 项${r.truncated ? "（已截断）" : ""} · 双击行可深入 · 表格内滚动`;
+          };
+
+          const input = document.createElement("input");
+          input.className = "filter-input";
+          input.type = "search";
+          input.placeholder = "按名称/类型过滤…";
+          input.addEventListener("input", applyFilter);
+
           table.addEventListener("ui-row-activate", (ev) => {
             const row = ev.detail.row;
             if (row.is_directory || row.is_symlink) {
-              // navigate by selecting in tree is complex; jump detail directly
               showDetail({ id: joinPath(node.id, row.name), type: row.type, expandable: row.is_directory });
             }
           });
-          body.replaceChildren(table);
+
+          const listWrap = document.createElement("div");
+          listWrap.style.cssText = "display:flex;flex-direction:column;height:100%;min-height:0";
+          listWrap.append(input, meta, table);
+          applyFilter();
+          body.replaceChildren(listWrap);
+          body.style.cssText = "flex:1;min-height:0;display:flex;flex-direction:column";
         } catch (err) {
           body.innerHTML = `<div class="error-box"><span class="code">${esc(err.detail?.status ?? "")}</span> ${esc(err.message)}</div>`;
         }

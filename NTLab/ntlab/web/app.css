@@ -103,22 +103,75 @@ html, body {
 #content {
   flex: 1;
   min-width: 0;
-  overflow-y: auto;
-  scrollbar-gutter: stable;   /* 滚动条出现/消失不再挤压内容（layout-shift） */
-  padding: 28px 34px 46px;
+  min-height: 0;
+  overflow: hidden;            /* 一屏原则：文档级不滚动，滚动内收给各页 */
+  display: flex;
+  flex-direction: column;
+  padding: 22px 30px 30px;
 }
 
 /* .page 的入场动画已全部移交 motion.css（ntl-page-in 编排）。
  * 历史教训：这里曾残留骨架期的 `animation: page-in 220ms ease-out`，
  * 它在 .page-entering 摘除后回落生效、从 opacity 0 重放 → 「入场后闪一下」。
  * 同名/同元素的动画声明只能有一处权威来源。 */
-.page { max-width: 1180px; margin: 0 auto; }
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
 
-.page-head { margin-bottom: 22px; }
+.page--home { overflow-y: auto; }   /* 首页内容少，兜底滚动 */
 
-.page-head h1 { margin: 0 0 6px; font-size: 28px; font-weight: 700; }
+.page-head { margin-bottom: 14px; flex: 0 0 auto; }
 
-.page-head p { margin: 0; color: var(--ui-text-muted, #888); }
+.page-head h1 { margin: 0 0 4px; font-size: 22px; font-weight: 700; }
+
+.page-head p { margin: 0; color: var(--ui-text-muted, #888); font-size: 13px; }
+
+/* PE 解剖器：结果区占满剩余高度，标签体内部滚动 */
+.pe-result { flex: 1; min-height: 0; display: flex; flex-direction: column; margin-top: 14px; }
+.pe-result-wrap { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.pe-tabbody { flex: 1; min-height: 0; overflow: auto; margin-top: 12px; padding-right: 4px; }
+
+/* ObjDir：双栏占满剩余高度，两栏各自内滚 */
+.objdir { flex: 1; min-height: 0; display: grid; grid-template-columns: 340px 1fr; gap: 16px; align-items: stretch; }
+.objdir-left { height: 100%; min-height: 0; overflow: auto; border-radius: 10px; }
+.objdir-right { min-width: 0; height: 100%; min-height: 0; display: flex; flex-direction: column; }
+.objdir-right > .panel { flex: 1; min-height: 0; overflow: auto; }
+
+/* 面包屑路径栏 */
+.crumb {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 2px;
+  padding: 8px 10px; margin-bottom: 12px;
+  border: 1px solid var(--ui-border); border-radius: 8px;
+  background: color-mix(in srgb, var(--ui-accent) 5%, transparent);
+  font-family: "Cascadia Code", Consolas, monospace; font-size: 12px;
+  flex: 0 0 auto;
+}
+.crumb a {
+  color: var(--ui-accent); text-decoration: none; padding: 2px 5px; border-radius: 4px;
+  transition: background 120ms ease-out;
+}
+.crumb a:hover { background: color-mix(in srgb, var(--ui-accent) 14%, transparent); }
+.crumb .sep { color: var(--ui-text-muted, #888); }
+
+/* 表格过滤框 */
+.filter-input {
+  width: 240px; padding: 6px 10px; margin-bottom: 10px;
+  border: 1px solid var(--ui-border); border-radius: 6px;
+  background: var(--ui-surface-raised, #262626); color: var(--ui-text, #eee);
+  font-size: 12.5px; outline: none;
+  transition: border-color 120ms ease-out, width 200ms var(--ease-out-expo);
+}
+.filter-input:focus { border-color: var(--ui-accent); width: 300px; }
+.filter-input::placeholder { color: var(--ui-text-muted, #888); }
+
+/* 表格头信息行 */
+.table-meta { color: var(--ui-text-muted); margin: 0 0 8px; font-size: 12.5px; flex: 0 0 auto; }
 
 .panel {
   background: var(--ui-surface, #1e1e1e);
@@ -129,7 +182,8 @@ html, body {
 
 /* ---------- home ---------- */
 
-.hero { padding: 46px 34px 40px; border-radius: 14px; position: relative; overflow: hidden;
+.hero { padding: 40px 32px 36px; border-radius: 14px; position: relative; overflow: hidden;
+  flex: 0 0 auto;
   background: linear-gradient(140deg, color-mix(in srgb, var(--ui-accent) 14%, var(--ui-surface)), var(--ui-surface) 55%);
   border: 1px solid var(--ui-border);
 }
@@ -218,12 +272,6 @@ html, body {
   font-size: 13px; margin-top: 14px;
 }
 .error-box .code { font-family: "Cascadia Code", Consolas, monospace; opacity: 0.8; }
-
-/* ---------- objdir layout ---------- */
-
-.objdir { display: grid; grid-template-columns: 340px 1fr; gap: 16px; align-items: start; }
-.objdir-left { max-height: calc(100vh - 160px); overflow: auto; border-radius: 10px; }
-.objdir-right { min-width: 0; }
 
 /* spinner row */
 .loading-row { display: flex; align-items: center; gap: 10px; color: var(--ui-text-muted); padding: 8px 0; }
