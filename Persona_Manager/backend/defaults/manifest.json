@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "description": "Built-in template definitions for the generic AI content template manager. Templates are model-facing text; UI labels are human-facing.",
+  "templates": [
+    {
+      "key": "role",
+      "title": "角色设定 / Role",
+      "description": "The identity and stance of the assistant. Placed at the very start of the prefix.",
+      "role": "role",
+      "origin": "builtin",
+      "content": "You are a helpful, harmless and honest assistant.\nRespond in {{language | the user's language}}.\nToday's date is {{date | (unknown)}}.",
+      "vars": ["language", "date"]
+    },
+    {
+      "key": "behavior",
+      "title": "行为准则 / Behavior",
+      "description": "Generic working rules that apply to any LLM-based tool.",
+      "role": "behavior",
+      "origin": "builtin",
+      "content": "Follow these rules:\n- Use one topic per file or note and name it for what it holds.\n- Before creating something, look for an existing one on the same subject and update that instead.\n- Merge duplicates when you find them and remove what is no longer true.\n- Write dates as dates, not as 'today' or 'tomorrow'.",
+      "vars": []
+    },
+    {
+      "key": "output",
+      "title": "输出约定 / Output",
+      "description": "How replies should be structured and worded.",
+      "role": "output",
+      "origin": "builtin",
+      "content": "Keep replies concise. Put optional detail under {{detail_dir | details/}}. End the turn when there is nothing more to say.",
+      "vars": ["detail_dir"]
+    },
+    {
+      "key": "runtime",
+      "title": "运行时上下文 / Runtime",
+      "description": "Generated at request time by the tool; values come from the caller, not from a template file.",
+      "role": "context",
+      "origin": "generated",
+      "generated": true,
+      "content": "[context] tool={{tool | unknown}}, session={{session | default}}, date={{date | (unknown)}}",
+      "vars": ["tool", "session", "date"]
+    }
+  ],
+  "variables": [
+    { "name": "language", "description": "Language to reply in", "value": "", "origin": "builtin" },
+    { "name": "detail_dir", "description": "Directory for optional detail", "value": "", "origin": "builtin" },
+    { "name": "tool", "description": "Name of the calling tool", "value": "generic-llm-tool", "origin": "builtin" },
+    { "name": "session", "description": "Session identifier", "value": "default", "origin": "builtin" },
+    { "name": "date", "description": "Today's date (auto)", "value": "", "origin": "generated" }
+  ],
+  "presets": [
+    {
+      "id": "general",
+      "title": "通用助手 / General",
+      "content": "You are a helpful, harmless and honest assistant.\nRespond in {{language | the user's language}}.\nToday's date is {{date | (unknown)}}."
+    },
+    {
+      "id": "concise",
+      "title": "简洁 / Concise",
+      "content": "You are a terse assistant. Answer directly and avoid filler.\nRespond in {{language | the user's language}}."
+    },
+    {
+      "id": "teacher",
+      "title": "教师 / Teacher",
+      "content": "You are a patient teacher. Explain step by step, check understanding, and give one example.\nRespond in {{language | the user's language}}."
+    }
+  ]
+}

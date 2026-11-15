@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 内容模板管理 · Content Template Manager</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">PM</span>
+      <div>
+        <h1 data-i18n="appTitle">AI 内容模板管理</h1>
+        <p data-i18n="appSubtitle">为任何基于 LLM API 的工具编辑系统提示词模板</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <label class="field inline">
+        <span data-i18n="presetLabel">角色预设</span>
+        <select id="preset-select" aria-label="preset"></select>
+      </label>
+      <button id="reload-btn" class="btn ghost" data-i18n="reload">刷新</button>
+      <button id="save-btn" class="btn primary" data-i18n="saveAll">全部保存</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="editor-pane">
+      <div class="pane-head">
+        <h2 data-i18n="templates">模板段</h2>
+        <span class="hint" data-i18n="editorHint">按顺序拼接为完整系统提示词 · 灰色生成段由工具在运行时填充</span>
+      </div>
+      <div id="template-list" class="template-list" aria-live="polite"></div>
+    </section>
+
+    <aside class="side-pane">
+      <div class="card variables-card">
+        <div class="card-head">
+          <h2 data-i18n="variables">模板变量</h2>
+          <span class="hint" data-i18n="variablesHint">模板中使用 {{name}} 或 {{name|默认值}}</span>
+        </div>
+        <div id="variable-list" class="variable-list"></div>
+      </div>
+
+      <div class="card preview-card">
+        <div class="card-head">
+          <h2 data-i18n="preview">最终提示词预览</h2>
+          <button id="copy-btn" class="btn tiny" data-i18n="copy">复制</button>
+        </div>
+        <pre id="prompt-preview" class="prompt-preview"></pre>
+      </div>
+    </aside>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
