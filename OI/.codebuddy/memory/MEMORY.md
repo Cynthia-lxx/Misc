@@ -5,6 +5,7 @@
 
 ## 索引
 
+- [2026-11-15-cloud-ide.md](2026-11-15-cloud-ide.md) — 云 IDE 改版（**当前主页形态**）：CodeMirror 5 vendor、IDE 三区布局、Overlay 层、`/api/run` stdout/stderr 分流、gdbserver + GDB/MI 断点调试架构、快捷键表与 10 条关键踩坑。
 - [2026-11-15-analysis-tools.md](2026-11-15-analysis-tools.md) — 分析工具扩展（内存 / 复杂度 / 风格冗余 / 性能）：架构决策、ComfyDL_UI profiling 参考契约与行号、AI 预算口径、内置 MinGW64 工具链、验证结论与踩坑。
 - [2026-11-14-web-console.md](2026-11-14-web-console.md) — 首版 Web 控制台：零依赖 `http.server` + 原生前端、osu UIReference MIT 风格层、SSE 生成链路与验证结论。
 

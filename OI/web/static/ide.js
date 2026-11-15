@@ -266,6 +266,17 @@ async function analyzeCurrent() {
     setRunBadge(data.cached ? '分析（缓存）' : '分析完成', 'ok');
     S.log(`IDE 分析完成：${lastReport.verdict}，${lastReport.findings.length} 项发现`, 'ok');
     window.dispatchEvent(new CustomEvent('oi-side-analyzed', { detail: { report: lastReport } }));
+    // one short AI summary per analysis (server-side budget + dedup)
+    if (lastReport.ai_summary && lastReport.ai_summary.status === 'pending') {
+      try {
+        const sdata = await S.api('/api/analyze/summary', {
+          method: 'POST',
+          body: JSON.stringify({ digest: lastReport.digest }),
+        });
+        lastReport.ai_summary = sdata.ai_summary;
+        renderMetrics(lastReport);
+      } catch { /* summary is optional; budget/degradation handled server-side */ }
+    }
   } catch (err) {
     setRunBadge('分析失败', 'err');
     S.warn(`分析失败: ${err.message}`);
@@ -282,7 +293,7 @@ async function generateFromPrompt(prompt, signal) {
   const res = await fetch('/api/generate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt }),
+    body: JSON.stringify({ input: prompt, new_topic: true }),
     signal,
   });
   if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);
@@ -303,9 +314,9 @@ async function generateFromPrompt(prompt, signal) {
       if (payload === '[DONE]') continue;
       let evt;
       try { evt = JSON.parse(payload); } catch { continue; }
-      if (evt.error) throw new Error(evt.error);
-      if (evt.delta) buffer += evt.delta;
-      if (evt.done) {
+      if (evt.type === 'error') throw new Error(evt.message || '生成失败');
+      if (evt.type === 'delta' && evt.text) buffer += evt.text;
+      if (evt.type === 'done') {
         stream = evt;
         break;
       }
@@ -318,7 +329,7 @@ async function generateFromPrompt(prompt, signal) {
     }
   }
   if (!stream) throw new Error('生成流意外中断');
-  return buffer;
+  return stream.code || S.extractCode(stream.content || buffer) || buffer;
 }
 
 async function handleGenerate(prompt) {
