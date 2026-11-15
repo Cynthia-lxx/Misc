@@ -27,7 +27,10 @@ const STYLE = `
   }
   .twisty.leaf { visibility: hidden; }
   .row.open .twisty:not(.leaf) { transform: rotate(90deg); }
-  .label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+  .label {
+    flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-family: "Cascadia Code", Consolas, monospace; font-size: 12.5px;
+  }
   .badge {
     flex: 0 0 auto; font-size: 9.5px; font-weight: 700; letter-spacing: 0.03em;
     padding: 1px 6px; border-radius: 3px;
