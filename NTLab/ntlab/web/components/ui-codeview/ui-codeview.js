@@ -83,7 +83,7 @@ export class UiCodeViewElement extends HTMLElement {
     /** (row, index) => HTML string for one line (default: disasm layout) */
     this.renderItem = (row) => {
       const cur = row.rva === this._currentRva ? " cur" : "";
-      return `<span class="addr${cur}" data-rva="${row.rva.toString(16)}">0x${row.rva.toString(16).toUpperCase()}</span>`
+      return `<span class="addr${cur}" data-jump="${row.rva.toString(16)}">0x${row.rva.toString(16).toUpperCase()}</span>`
         + `<span class="bytes">${esc(row.bytes ?? "")}</span>`
         + `<span class="mnem ${mnemClass(row.mnemonic)}">${esc(row.mnemonic ?? "")}</span>`
         + `<span class="ops">${colorOps(row.op ?? "")}</span>`;
@@ -113,9 +113,9 @@ export class UiCodeViewElement extends HTMLElement {
     });
     this._rowsEl.addEventListener("click", (e) => {
       const addr = e.target.closest(".addr");
-      if (addr && addr.dataset.rva !== undefined) {
+      if (addr && addr.dataset.jump !== undefined) {
         this.dispatchEvent(new CustomEvent("ui-code-jump", {
-          bubbles: true, composed: true, detail: { rva: parseInt(addr.dataset.rva, 16) },
+          bubbles: true, composed: true, detail: { value: addr.dataset.jump },
         }));
       }
     });

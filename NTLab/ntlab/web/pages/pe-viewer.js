@@ -400,31 +400,52 @@ function hexView(path, startRva = 0) {
   const wrap = document.createElement("div");
   wrap.style.cssText = "display:flex;flex-direction:column;height:100%;min-height:0";
 
-  let rva = Math.max(0, startRva);
-  const PAGE = 256;
+  const CHUNK = 2048; // bytes per incremental fetch（≤4096 服务端上限）
+  let nextOff = 0;    // 下一段的 file offset；-1 表示到底
+  const fsize = (v) => `0x${v.toString(16).toUpperCase()}`;
 
-  const rvaInput = toolInput("RVA（hex，如 1A000）", rva.toString(16), { width: "160px" });
-  const searchInput = toolInput("搜索文本…", "", { mono: false, width: "200px" });
-  const hexInput = toolInput("或字节序列（hex，4d 5a）", "", { width: "200px" });
+  const offInput = toolInput("File Offset / RVA（hex）", Math.max(0, startRva | 0).toString(16), { width: "180px" });
+  const searchInput = toolInput("搜索文本…", "", { mono: false, width: "180px" });
+  const hexInput = toolInput("或字节序列（hex）", "", { width: "160px" });
   const meta = document.createElement("p");
   meta.className = "table-meta";
-  const table = document.createElement("ui-table");
-  table.setAttribute("fill", "");
-  table.columns = [
-    { key: "rva", label: "RVA", type: "hex" },
-    { key: "file_offset", label: "File Offset", type: "hex" },
-    { key: "hex", label: "字节", type: "mono" },
-    { key: "ascii", label: "ASCII", type: "mono" },
-  ];
 
-  async function jump(target, { announce = "" } = {}) {
-    rva = Math.max(0, target | 0);
-    const r = await apiGet(`/api/pe/hex?path=${encodeURIComponent(path)}&rva=${rva}&size=${PAGE}`);
-    table.rows = r.rows;
-    rvaInput.value = rva.toString(16);
-    meta.textContent = `RVA 0x${rva.toString(16).toUpperCase()} · File Offset 0x${r.file_offset.toString(16).toUpperCase()}`
-      + ` · 节 ${r.section ?? "—"}${announce ? ` · ${announce}` : ""}`;
+  const view = document.createElement("ui-codeview");
+  view.style.cssText = "flex:1;min-height:0";
+  view.renderItem = (row) => {
+    const cur = row.file_offset === (view._currentRva ?? -1) ? " cur" : "";
+    return `<span class="addr${cur}" data-jump="${row.file_offset.toString(16)}">0x${row.file_offset.toString(16).toUpperCase()}</span>`
+      + `<span class="addr" style="cursor:default;color:var(--ui-text-muted,#666)">0x${(row.rva ?? 0).toString(16).toUpperCase()}</span>`
+      + `<span class="bytes" style="flex:0 0 440px">${esc(row.hex ?? "")}</span>`
+      + `<span class="ops">${esc(row.ascii ?? "")}</span>`;
+  };
+
+  async function jump(off) {
+    off = Math.max(0, off | 0);
+    const r = await apiGet(`/api/pe/hex?path=${encodeURIComponent(path)}&off=${off}&size=${CHUNK}`);
+    nextOff = r.file_offset + r.rows.length * 16;
+    if (nextOff >= r.file_size) nextOff = -1;
+    view._currentRva = r.file_offset;
+    view.resetRows(r.rows, { currentRva: r.file_offset });
+    offInput.value = r.file_offset.toString(16);
+    meta.textContent = `RVA ${fsize(r.rva)} · File Offset ${fsize(r.file_offset)} · 节 ${r.section ?? "—"}`
+      + ` · 滚动到底自动续载 · 点击左侧地址跳转`;
   }
+
+  view.loadMore = async () => {
+    if (nextOff < 0) return null;
+    const r = await apiGet(`/api/pe/hex?path=${encodeURIComponent(path)}&off=${nextOff}&size=${CHUNK}`);
+    const atEnd = r.rows.length * 16 < CHUNK || nextOff + r.rows.length * 16 >= r.file_size;
+    nextOff = atEnd ? -1 : r.file_offset + r.rows.length * 16;
+    return r.rows;
+  };
+
+  view.addEventListener("ui-code-jump", (e) => {
+    jump(parseInt(e.detail.value, 16)).catch((err) => { meta.textContent = err.message; });
+  });
+
+  let searchState = [];
+  let searchIdx = 0;
 
   async function doSearch() {
     const text = searchInput.value.trim();
@@ -432,47 +453,45 @@ function hexView(path, startRva = 0) {
     const q = hexq || text;
     const mode = hexq ? "hex" : "text";
     if (!q) return;
-    const r = await apiGet(`/api/pe/search?path=${encodeURIComponent(path)}&q=${encodeURIComponent(q)}&mode=${mode}&start=${rva}&limit=50`);
-    if (!r.matches.length) { meta.textContent = `从 0x${rva.toString(16).toUpperCase()} 起未找到 “${q}”`; return; }
-    const m = r.matches[0];
-    await jump(m.file_offset === m.rva ? m.rva : m.file_offset, {});
-    // 文件偏移与 RVA 对头区不同：hex() 只接受 rva，header 命中时用 off 视图
-    if (m.rva == null) {
-      const rr = await apiGet(`/api/pe/hex?path=${encodeURIComponent(path)}&off=${m.file_offset}&size=${PAGE}`);
-      table.rows = rr.rows;
-      meta.textContent = `命中 File Offset 0x${m.file_offset.toString(16).toUpperCase()}（头部区域）· 共 ${r.total} 处命中，再点「下一个」继续`;
+    const startAt = Math.max(0, (view._currentRva ?? 0) + 1);
+    const r = await apiGet(`/api/pe/search?path=${encodeURIComponent(path)}&q=${encodeURIComponent(q)}&mode=${mode}&start=${startAt}&limit=100`);
+    if (!r.matches.length) {
+      meta.textContent = `从 ${fsize(startAt)} 起未找到 “${q}”`;
       return;
     }
-    meta.textContent = `命中 RVA 0x${m.rva.toString(16).toUpperCase()} · 共 ${r.total} 处命中，再点「下一个」继续`;
     searchState = r.matches;
     searchIdx = 0;
+    await jump(searchState[0].file_offset);
+    meta.textContent = `命中 ${searchState.length} 处（第 1 处，点「下一个」继续）`;
   }
 
-  let searchState = [];
-  let searchIdx = 0;
-
   const bar = toolbarRow(
-    toolBtn("◀", () => jump(rva - PAGE).catch(() => {})),
-    rvaInput,
-    toolBtn("跳转", async () => { await jump(parseInt(rvaInput.value, 16) || 0).catch((e) => { meta.textContent = e.message; }); }, "accent"),
-    toolBtn("▶", () => jump(rva + PAGE).catch(() => {})),
+    offInput,
+    toolBtn("跳转", () => {
+      const v = parseInt(offInput.value, 16);
+      if (Number.isFinite(v)) jump(v).catch((err) => { meta.textContent = err.message; });
+    }, "accent"),
     searchInput,
     hexInput,
-    toolBtn("搜索", doSearch, "accent"),
-    toolBtn("下一个", async () => {
-      if (!searchState.length) return doSearch();
+    toolBtn("搜索", () => doSearch().catch((err) => { meta.textContent = err.message; }), "accent"),
+    toolBtn("下一个", () => {
+      if (!searchState.length) return doSearch().catch((err) => { meta.textContent = err.message; });
       searchIdx = (searchIdx + 1) % searchState.length;
       const m = searchState[searchIdx];
-      if (m.rva == null) return;
-      await jump(m.rva);
-      meta.textContent = `命中 ${searchIdx + 1}/${searchState.length} · RVA 0x${m.rva.toString(16).toUpperCase()}`;
+      jump(m.file_offset)
+        .then(() => { meta.textContent = `命中 ${searchState.length} 处 · 第 ${searchIdx + 1} 处`; })
+        .catch((err) => { meta.textContent = err.message; });
     }),
   );
+  offInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const v = parseInt(offInput.value, 16);
+      if (Number.isFinite(v)) jump(v).catch((err) => { meta.textContent = err.message; });
+    }
+  });
 
-  rvaInput.addEventListener("keydown", (e) => { if (e.key === "Enter") bar.querySelector("ui-button") && jump(parseInt(rvaInput.value, 16) || 0).catch((x) => { meta.textContent = x.message; }); });
-
-  wrap.append(bar, meta, table);
-  jump(startRva).catch((e) => { meta.textContent = e.message; });
+  wrap.append(bar, meta, view);
+  jump(startRva | 0).catch((err) => { meta.textContent = err.message; });
   return wrap;
 }
 
@@ -563,7 +582,7 @@ async function disasmView(path, startRva = 0) {
     }
   });
   view.addEventListener("ui-code-jump", (e) => {
-    jump(e.detail.rva).catch((err) => { meta.textContent = err.message; });
+    jump(parseInt(e.detail.value, 16)).catch((err) => { meta.textContent = err.message; });
   });
 
   wrap.append(bar, xrefBox, meta, view);
