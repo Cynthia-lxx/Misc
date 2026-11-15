@@ -11,8 +11,8 @@
 
 const STYLE = `
   :host { display: block; font: inherit; }
-  :host([fill]) { height: 100%; min-height: 0; }
-  :host([fill]) .wrap { height: 100%; box-sizing: border-box; }
+  :host([fill]) { height: 100%; min-height: 0; flex: 1 1 auto; }
+  :host([fill]) .wrap { height: 100%; box-sizing: border-box; max-height: none; }
   .wrap { overflow: auto; border: 1px solid var(--ui-border, #2a2a2a); border-radius: 8px; max-height: var(--ui-table-max-height, 520px); }
   table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
   thead th {
@@ -39,7 +39,7 @@ const STYLE = `
   tbody tr { transition: background 90ms ease-out; }
   tbody tr:hover { background: color-mix(in srgb, var(--ui-accent) 7%, transparent); }
   td.num, th.num { text-align: right; }
-  td.mono, td.hex { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; }
+  td.mono, td.hex { font-family: var(--ntlab-font-mono, "Cascadia Code", Consolas, "Microsoft YaHei", monospace); font-size: 12px; }
   td.hex { color: var(--ui-accent-weak, #7fb2cc); }
   td .link { color: var(--ui-accent, #4aa3ff); cursor: pointer; }
   td .link:hover { text-decoration: underline; }

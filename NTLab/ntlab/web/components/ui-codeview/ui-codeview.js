@@ -19,7 +19,7 @@ const STYLE = `
     height: 100%; overflow-y: auto; overflow-x: hidden;
     border: 1px solid var(--ui-border, #2a2a2a); border-radius: 8px;
     background: var(--ui-surface-sunken, #111);
-    font-family: "Cascadia Code", Consolas, monospace;
+    font-family: var(--ntlab-font-mono, "Cascadia Code", Consolas, "Microsoft YaHei", monospace);
     font-size: 12px;
     position: relative;
   }

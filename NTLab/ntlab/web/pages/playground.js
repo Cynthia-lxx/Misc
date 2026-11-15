@@ -343,7 +343,7 @@ export async function mount(el) {
     scriptLabel.style.margin = "14px 0 8px";
     const ta = document.createElement("textarea");
     ta.className = "filter-input";
-    ta.style.cssText = "width:100%;height:110px;font-family:'Cascadia Code',Consolas,monospace;resize:vertical";
+    ta.style.cssText = "width:100%;height:110px;font-family:var(--ntlab-font-mono,'Cascadia Code',Consolas,'Microsoft YaHei',monospace);resize:vertical";
     ta.placeholder = "# 每行一个调用；参数可写 $N.ret 引用第 N 步结果\nCreateFileW(C:\\Windows\\win.ini)\nCloseHandle($1.ret)\nMessageBoxW(0, \"队列执行完成\", \"NTLab\", 0x40)";
     const parseBtn = document.createElement("ui-button");
     parseBtn.setAttribute("label", "解析并加入队列");
@@ -379,7 +379,7 @@ export async function mount(el) {
     panel.appendChild(h);
     const ta = document.createElement("textarea");
     ta.className = "filter-input";
-    ta.style.cssText = "width:100%;height:130px;font-family:'Cascadia Code',Consolas,monospace;resize:vertical";
+    ta.style.cssText = "width:100%;height:130px;font-family:var(--ntlab-font-mono,'Cascadia Code',Consolas,'Microsoft YaHei',monospace);resize:vertical";
     ta.placeholder = "mov rax, rcx\nxor rax, rbx\nret";
     const btn = document.createElement("ui-button");
     btn.setAttribute("label", "汇编");
@@ -418,7 +418,7 @@ export async function mount(el) {
   /* ---- 会话历史入口 ---- */
   const histBtn = document.createElement("ui-button");
   histBtn.setAttribute("label", "历史会话");
-  histBtn.style.marginBottom = "8px";
+  histBtn.style.cssText = "margin-top:10px;margin-bottom:8px";
   histBtn.addEventListener("click", async () => {
     const r = await apiGet("/api/winapi/sessions");
     sessions = r.sessions ?? [];

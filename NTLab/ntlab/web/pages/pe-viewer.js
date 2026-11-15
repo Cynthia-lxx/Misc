@@ -101,11 +101,29 @@ export async function mount(el) {
   pathBox.addEventListener("ui-text-commit", (e) => parse(e.detail?.value ?? pathBox.value));
   pathBox.addEventListener("keydown", (e) => { if (e.key === "Enter") parse(pathBox.value); });
 
-  // 顶部文件选择区折叠：解析成功后自动收起，为结果区让出垂直空间
+  // 顶部文件选择区折叠：解析成功后自动收起（淡出→收起→淡入的动效），为结果区让出垂直空间
   const topArea = el.querySelector("#pe-top");
   const foldBtn = el.querySelector("#pe-fold");
+  let topAnimating = false;
   function setTopCollapsed(collapsed) {
-    topArea.classList.toggle("collapsed", collapsed);
+    if (topAnimating || topArea.classList.contains("collapsed") === collapsed) return;
+    topAnimating = true;
+    const extras = topArea.querySelectorAll(".page-head, .pe-top-extra");
+    if (collapsed) {
+      extras.forEach((n) => n.classList.add("pe-fade-out"));
+      setTimeout(() => {
+        topArea.classList.add("collapsed");
+        extras.forEach((n) => n.classList.remove("pe-fade-out"));
+        topAnimating = false;
+      }, 150);
+    } else {
+      topArea.classList.remove("collapsed");
+      extras.forEach((n) => n.classList.add("pe-fade-in"));
+      setTimeout(() => {
+        extras.forEach((n) => n.classList.remove("pe-fade-in"));
+        topAnimating = false;
+      }, 260);
+    }
     foldBtn.setAttribute("label", collapsed ? "▼" : "▲");
     foldBtn.setAttribute("title", collapsed ? "展开文件选择区" : "收起文件选择区");
   }
@@ -458,7 +476,7 @@ function toolInput(placeholder, value, { mono = true, width = "180px" } = {}) {
   i.style.marginBottom = "0";
   i.placeholder = placeholder;
   i.value = value ?? "";
-  if (mono) i.style.fontFamily = '"Cascadia Code", Consolas, monospace';
+  if (mono) i.style.fontFamily = 'var(--ntlab-font-mono, "Cascadia Code", Consolas, "Microsoft YaHei", monospace)';
   return i;
 }
 
