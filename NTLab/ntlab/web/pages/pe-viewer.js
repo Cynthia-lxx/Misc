@@ -150,14 +150,14 @@ export async function mount(el) {
       if (views[v]) { swapContent(body, views[v]()); return; }
       swapContent(body, spinnerRow("加载中…"));
       try {
-        if (v === "imports") await tableView(`/api/pe/imports?path=${encodeURIComponent(path)}`, 500, importCols()).then((t) => swapContent(body, t));
-        else if (v === "exports") await tableView(`/api/pe/exports?path=${encodeURIComponent(path)}`, 2000, exportCols(), (row) => {
+        if (v === "imports") await tableView(`/api/pe/imports?path=${encodeURIComponent(path)}`, 300, importCols()).then((t) => swapContent(body, t));
+        else if (v === "exports") await tableView(`/api/pe/exports?path=${encodeURIComponent(path)}`, 300, exportCols(), (row) => {
           if (row.rva) {
             tabs.setAttribute("value", "disasm");
             disasmView(path, row.rva).then((t) => swapContent(body, t));
           }
         }).then((t) => swapContent(body, t));
-        else if (v === "resources") await tableView(`/api/pe/resources?path=${encodeURIComponent(path)}`, 1000, resCols()).then((t) => swapContent(body, t));
+        else if (v === "resources") await tableView(`/api/pe/resources?path=${encodeURIComponent(path)}`, 300, resCols()).then((t) => swapContent(body, t));
         else if (v === "signature") await signatureView(path).then((t) => swapContent(body, t));
         else if (v === "strings") await stringsView(path).then((t) => swapContent(body, t));
         else if (v === "hex") swapContent(body, hexView(path));
@@ -263,8 +263,17 @@ async function headersView(path) {
   return wrap;
 }
 
-async function tableView(url, limit, cols, onRowActivate) {
-  const data = await apiGet(`${url}${url.includes("?") ? "&" : "?"}offset=0&limit=${limit}`);
+async function tableView(url, pageLimit, cols, onRowActivate) {
+  const sep = url.includes("?") ? "&" : "?";
+  let items = [];
+  let total = 0;
+  let offset = 0;
+
+  const first = await apiGet(`${url}${sep}offset=0&limit=${pageLimit}`);
+  items = first.items;
+  total = first.total;
+  offset = items.length;
+
   const table = document.createElement("ui-table");
   table.setAttribute("fill", "");
   table.columns = cols;
@@ -274,12 +283,10 @@ async function tableView(url, limit, cols, onRowActivate) {
 
   const applyFilter = () => {
     const q = input.value.trim().toLowerCase();
-    const rows = !q ? data.items : data.items.filter((row) =>
-      Object.values(row).some((v) => v != null && String(v).toLowerCase().includes(q)));
-    table.rows = rows;
-    meta.textContent = q
-      ? `匹配 ${rows.length} / ${data.total} 条（过滤 “${input.value.trim()}”）`
-      : `共 ${data.total} 条${data.total > limit ? `，已载入前 ${Math.min(limit, data.total)} 条` : ""}（排序点表头；表格内滚动）`;
+    table.rows = q
+      ? items.filter((row) => Object.values(row).some((v) => v != null && String(v).toLowerCase().includes(q)))
+      : items;
+    meta.textContent = q ? `匹配 ${table.rows.length} 条` : "";
   };
 
   const input = document.createElement("input");
@@ -287,6 +294,16 @@ async function tableView(url, limit, cols, onRowActivate) {
   input.type = "search";
   input.placeholder = "过滤（名称 / DLL / RVA…）";
   input.addEventListener("input", applyFilter);
+
+  // 增量分页：滚动到底自动取下一页（onLoadMore 契约见 ui-table）
+  table.onLoadMore = async () => {
+    if (offset >= total) return null;
+    const r = await apiGet(`${url}${sep}offset=${offset}&limit=${pageLimit}`);
+    items.push(...r.items);
+    offset += r.items.length;
+    applyFilter();
+    return []; // applyFilter 已整体替换行，避免双份追加
+  };
 
   if (onRowActivate) table.addEventListener("ui-row-activate", (e) => onRowActivate(e.detail.row));
 
@@ -326,7 +343,17 @@ function toolBtn(label, onClick, variant) {
 }
 
 async function stringsView(path) {
-  const data = await apiGet(`/api/pe/strings?path=${encodeURIComponent(path)}&offset=0&limit=1000`);
+  const sep = path.includes("?") ? "&" : "?";
+  const base = `/api/pe/strings?path=${encodeURIComponent(path)}`;
+  let items = [];
+  let total = 0;
+  let offset = 0;
+
+  const first = await apiGet(`${base}&offset=0&limit=300`);
+  items = first.items;
+  total = first.total;
+  offset = items.length;
+
   const table = document.createElement("ui-table");
   table.setAttribute("fill", "");
   table.columns = [
@@ -342,17 +369,25 @@ async function stringsView(path) {
   meta.className = "table-meta";
   const applyFilter = () => {
     const q = input.value.trim().toLowerCase();
-    const rows = !q ? data.items : data.items.filter((r) => r.text.toLowerCase().includes(q));
-    table.rows = rows;
-    meta.textContent = q
-      ? `匹配 ${rows.length} / ${data.total} 条字符串`
-      : `共 ${data.total} 条字符串（ASCII + UTF-16LE，≥5 可打印字符）${data.total > 1000 ? "，已载入前 1000 条" : ""}`;
+    table.rows = q
+      ? items.filter((r) => r.text.toLowerCase().includes(q))
+      : items;
+    meta.textContent = q ? `匹配 ${table.rows.length} 条` : "";
   };
   const input = document.createElement("input");
   input.className = "filter-input";
   input.type = "search";
   input.placeholder = "搜索字符串内容…";
   input.addEventListener("input", applyFilter);
+
+  table.onLoadMore = async () => {
+    if (offset >= total) return null;
+    const r = await apiGet(`${base}&offset=${offset}&limit=300`);
+    items.push(...r.items);
+    offset += r.items.length;
+    applyFilter();
+    return [];
+  };
 
   const wrap = document.createElement("div");
   wrap.style.cssText = "display:flex;flex-direction:column;height:100%;min-height:0";
@@ -445,68 +480,94 @@ async function disasmView(path, startRva = 0) {
   const wrap = document.createElement("div");
   wrap.style.cssText = "display:flex;flex-direction:column;height:100%;min-height:0";
 
-  let rva = Math.max(0, startRva | 0);
   const COUNT = 200;
+  const PAGE = 200;
+  let nextRva = Math.max(0, startRva | 0);
 
-  const rvaInput = toolInput("RVA（hex）", rva.toString(16), { width: "160px" });
+  const rvaInput = toolInput("RVA（hex）", nextRva.toString(16), { width: "160px" });
   const xrefBox = document.createElement("div");
   xrefBox.className = "table-meta";
   xrefBox.style.marginBottom = "6px";
   const meta = document.createElement("p");
   meta.className = "table-meta";
-  const table = document.createElement("ui-table");
-  table.setAttribute("fill", "");
-  table.columns = [
-    { key: "rva", label: "RVA", type: "hex" },
-    { key: "bytes", label: "字节", type: "mono" },
-    { key: "mnemonic", label: "指令", type: "mono" },
-    { key: "op", label: "操作数", type: "mono" },
-    { key: "section", label: "节" },
-  ];
+  meta.style.flex = "0 0 auto";
 
-  async function render() {
-    const r = await apiGet(`/api/pe/disasm?path=${encodeURIComponent(path)}&rva=${rva}&count=${COUNT}`);
-    table.rows = r.items;
-    rvaInput.value = rva.toString(16);
-    meta.textContent = `RVA 0x${rva.toString(16).toUpperCase()} 起 ${r.items.length} 条`
-      + ` · ImageBase 0x${r.image_base.toString(16).toUpperCase()}`
-      + ` · 上一页/下一页翻页`;
+  const view = document.createElement("ui-codeview");
+  view.style.cssText = "flex:1;min-height:0";
+
+  async function fetchPage(rva) {
+    return apiGet(`/api/pe/disasm?path=${encodeURIComponent(path)}&rva=${rva}&count=${COUNT}`);
+  }
+
+  // 增量分页：滚动到底自动续载下一页；nextRva < 0 表示到底
+  view.loadMore = async () => {
+    if (nextRva < 0) return null;
+    const r = await fetchPage(nextRva);
+    const atEnd = r.items.length < PAGE || r.next_rva <= nextRva || r.next_rva >= r.image_size;
+    nextRva = atEnd ? -1 : r.next_rva;
+    return r.items;
+  };
+
+  async function jump(target) {
+    nextRva = target;
+    const r = await fetchPage(target);
+    const atEnd = r.items.length < PAGE || r.next_rva <= target || r.next_rva >= r.image_size;
+    nextRva = atEnd ? -1 : r.next_rva;
+    view.resetRows(r.items, { currentRva: target });
+    rvaInput.value = target.toString(16);
+    meta.textContent = `ImageBase 0x${r.image_base.toString(16).toUpperCase()}`
+      + ` · 滚动到底自动续载 · 点击行内地址跳转`;
+    updateXrefs(target);
+  }
+
+  async function updateXrefs(rva) {
+    xrefBox.replaceChildren();
+    const label = document.createElement("span");
+    label.textContent = "交叉引用：查询中…";
+    xrefBox.appendChild(label);
     try {
       const x = await apiGet(`/api/pe/xrefs?path=${encodeURIComponent(path)}&rva=${rva}`);
       xrefBox.replaceChildren();
-      const label = document.createElement("span");
-      label.textContent = x.total_refs
-        ? `交叉引用：此地址被 ${x.total_refs} 处 call/jmp（点 RVA 跳转）：`
+      const hint = document.createElement("span");
+      hint.textContent = x.total_refs
+        ? `交叉引用：被 ${x.total_refs} 处 call/jmp（点击跳到调用处）：`
         : "交叉引用：此地址没有已知的 call/jmp 落点";
-      label.style.color = "var(--ui-text-muted)";
-      xrefBox.appendChild(label);
+      hint.style.color = "var(--ui-text-muted)";
+      xrefBox.appendChild(hint);
       x.callers.slice(0, 12).forEach((c) => {
         const a = document.createElement("a");
         a.href = "#";
         a.className = "mono";
         a.style.cssText = "color:var(--ui-accent);margin-right:8px;text-decoration:none";
         a.textContent = `0x${c.rva.toString(16).toUpperCase()}`;
-        a.addEventListener("click", (ev) => {
-          ev.preventDefault();
-          rva = c.rva;
-          render();
-        });
+        a.addEventListener("click", (ev) => { ev.preventDefault(); jump(c.rva); });
         xrefBox.appendChild(a);
       });
-    } catch { xrefBox.textContent = ""; }
+    } catch {
+      xrefBox.replaceChildren();
+    }
   }
 
   const bar = toolbarRow(
-    toolBtn("◀", () => { rva = Math.max(0, rva - COUNT * 4); render(); }),
     rvaInput,
-    toolBtn("跳转", () => { const v = parseInt(rvaInput.value, 16); if (Number.isFinite(v)) { rva = v; render(); } }, "accent"),
-    toolBtn("▶", () => { rva = rva + COUNT * 4; render(); }),
-    toolBtn("入口点", () => { rva = startRva; render(); }),
+    toolBtn("跳转", () => {
+      const v = parseInt(rvaInput.value, 16);
+      if (Number.isFinite(v)) jump(v);
+    }, "accent"),
+    toolBtn("入口点", () => jump(startRva)),
   );
-  rvaInput.addEventListener("keydown", (e) => { if (e.key === "Enter") { const v = parseInt(rvaInput.value, 16); if (Number.isFinite(v)) { rva = v; render(); } } });
+  rvaInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const v = parseInt(rvaInput.value, 16);
+      if (Number.isFinite(v)) jump(v);
+    }
+  });
+  view.addEventListener("ui-code-jump", (e) => {
+    jump(e.detail.rva).catch((err) => { meta.textContent = err.message; });
+  });
 
-  wrap.append(bar, xrefBox, meta, table);
-  render();
+  wrap.append(bar, xrefBox, meta, view);
+  jump(startRva);
   return wrap;
 }
 

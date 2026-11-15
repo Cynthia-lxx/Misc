@@ -54,10 +54,15 @@ export class UiTableElement extends HTMLElement {
     this._rows = [];
     this._sortKey = null;
     this._sortDir = 1;
+    /** async () => rowsToAppend[] | null（null = 无更多数据，停止触发） */
+    this.onLoadMore = null;
+    this._loadingMore = false;
+    this._exhausted = false;
     const style = document.createElement("style");
     style.textContent = STYLE;
     this._wrap = document.createElement("div");
     this._wrap.className = "wrap";
+    this._wrap.addEventListener("scroll", () => this._maybeLoadMore());
     this.shadowRoot.append(style, this._wrap);
   }
 
@@ -66,6 +71,32 @@ export class UiTableElement extends HTMLElement {
 
   set rows(rows) { this._rows = rows ?? []; this._render(); }
   get rows() { return this._rows; }
+
+  /** 增量追加（保持当前排序视图）。 */
+  appendRows(rows) {
+    this._rows.push(...(rows ?? []));
+    this._render();
+  }
+
+  _maybeLoadMore() {
+    if (!this.onLoadMore || this._loadingMore || this._exhausted) return;
+    const el = this._wrap;
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 150) {
+      this._loadMore();
+    }
+  }
+
+  async _loadMore() {
+    this._loadingMore = true;
+    try {
+      const more = await this.onLoadMore();
+      if (more == null) { this._exhausted = true; return; }
+      if (more.length) this.appendRows(more);
+    } finally {
+      this._loadingMore = false;
+      this._maybeLoadMore(); // 补页后可能仍未填满视口
+    }
+  }
 
   _sorted() {
     if (!this._sortKey) return this._rows;

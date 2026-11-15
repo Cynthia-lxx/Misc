@@ -10,6 +10,7 @@ import "./vendor/components/ui-scroll/ui-scroll.js";
 // first-party elements
 import "./components/ui-tree/ui-tree.js";
 import "./components/ui-table/ui-table.js";
+import "./components/ui-codeview/ui-codeview.js";
 
 import { apiGet } from "./api.js";
 import { register, start } from "./router.js";
