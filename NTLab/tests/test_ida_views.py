@@ -8,6 +8,7 @@ import pytest
 
 from ntlab.core.pe import demangle, disasm, hexdump
 from ntlab.core.pe.parser import _load
+from ntlab.api.pe import resolve as api_resolve
 from ntlab.core.errors import InvalidPathError
 
 KERNEL32 = os.path.join(os.environ.get("WINDIR", r"C:\Windows"), "System32", "kernel32.dll")
@@ -93,6 +94,35 @@ def test_xrefs_to_entry_has_callers():
     assert isinstance(r["total_refs"], int)
     for c in r["callers"]:
         assert 0 <= c["rva"] < pe.OPTIONAL_HEADER.SizeOfImage
+
+
+@requires_kernel32
+def test_disasm_iat_annotation():
+    """rip-relative 命中 IAT 时应给出 dll!func 注释。"""
+    rva = _load(KERNEL32).sections[0].VirtualAddress
+    found = None
+    for _ in range(40):  # 顺序扫 .text，最多 40 页
+        r = disasm.disasm(KERNEL32, rva=rva, count=200)
+        for it in r["items"]:
+            if "iat" in it:
+                found = it
+                break
+        if found or r["next_rva"] <= rva:
+            break
+        rva = r["next_rva"]
+    assert found, "no rip-relative IAT reference found in first pages of .text"
+    dll_part, func_part = found["iat"].split("!", 1)
+    assert dll_part and func_part
+
+
+def test_resolve_module_name():
+    r = api_resolve("kernel32.dll")
+    assert r["path"] and r["path"].lower().endswith("kernel32.dll")
+    assert api_resolve("definitely-not-exist-1234.dll")["path"] is None
+    with pytest.raises(InvalidPathError):
+        api_resolve("../evil")
+    with pytest.raises(InvalidPathError):
+        api_resolve("")
 
 
 def test_demangle_msvc_names():

@@ -2,7 +2,9 @@
  * ui-table — sortable data table styled after the vendor ui-* kit.
  *
  * Usage:
- *   table.columns = [{ key, label, type: 'text'|'hex'|'num'|'mono', width? }]
+ *   table.columns = [{ key, label, type: 'text'|'hex'|'num'|'mono'|'link', width? }]
+ *     type 'link' 需提供 linkOf(row) => { kind, value, label? }；单元格渲染为可点击链接，
+ *     点击派发 'ui-cell-activate' { detail: { row, key, kind, value } }（不触发行激活）。
  *   table.rows = [{...}, ...]
  *   table.addEventListener('ui-row-activate', e => e.detail.row)
  */
@@ -39,6 +41,8 @@ const STYLE = `
   td.num, th.num { text-align: right; }
   td.mono, td.hex { font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; }
   td.hex { color: var(--ui-accent-weak, #7fb2cc); }
+  td .link { color: var(--ui-accent, #4aa3ff); cursor: pointer; }
+  td .link:hover { text-decoration: underline; }
   td .dim { color: var(--ui-text-muted, #888); }
   .empty { padding: 18px; text-align: center; color: var(--ui-text-muted, #888); font-size: 13px; }
 `;
@@ -160,6 +164,23 @@ export class UiTableElement extends HTMLElement {
           dim.className = "dim";
           dim.textContent = "—";
           td.appendChild(dim);
+        } else if (col.type === "link" && typeof col.linkOf === "function") {
+          const info = col.linkOf(row);
+          if (info && info.value != null) {
+            const link = document.createElement("span");
+            link.className = "link";
+            link.textContent = info.label ?? String(value);
+            link.addEventListener("click", (e) => {
+              e.stopPropagation();
+              this.dispatchEvent(new CustomEvent("ui-cell-activate", {
+                bubbles: true, composed: true,
+                detail: { row, key: col.key, kind: info.kind, value: info.value },
+              }));
+            });
+            td.appendChild(link);
+          } else {
+            td.textContent = String(value);
+          }
         } else {
           td.textContent = String(value);
         }

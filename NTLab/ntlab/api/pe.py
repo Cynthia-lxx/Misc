@@ -125,6 +125,20 @@ def demangle(name: str) -> dict:
     return {"name": name, "demangled": dm_core.demangle(name)}
 
 
+@router.get("/resolve")
+def resolve(name: str) -> dict:
+    """按模块名（如 KERNEL32.dll）在系统目录中解析实际路径。"""
+    n = (name or "").strip().strip("\\/")
+    if not n or "/" in n or "\\" in n or ".." in n:
+        raise InvalidPathError(f"invalid module name: {name!r}")
+    windir = os.environ.get("WINDIR", r"C:\Windows")
+    for d in (os.path.join(windir, "System32"), os.path.join(windir, "SysWOW64")):
+        cand = os.path.join(d, n)
+        if os.path.isfile(cand):
+            return {"name": n, "path": cand}
+    return {"name": n, "path": None}
+
+
 @router.post("/upload")
 async def upload(file: UploadFile) -> dict:
     """Save an uploaded PE file to a temp dir and return its server-side path."""

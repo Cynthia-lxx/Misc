@@ -45,6 +45,10 @@ const STYLE = `
   .mnem-stack { color: #8c66ff; }
   .mnem-db  { color: var(--ui-text-muted, #666); font-style: italic; }
   .num { color: #66ccff; }
+  .num[data-jump] { cursor: pointer; }
+  .num[data-jump]:hover { text-decoration: underline; color: var(--ui-accent, #4aa3ff); }
+  .iat { color: #66cc99; cursor: pointer; margin-left: 10px; }
+  .iat:hover { text-decoration: underline; }
   .reg { color: #8c66ff; }
   .empty { padding: 16px; color: var(--ui-text-muted, #888); }
 `;
@@ -57,10 +61,32 @@ function esc(s) {
   }[c]));
 }
 
-function colorOps(op) {
-  // hex immediates → .num; registers → .reg（其余保持默认色）
-  let html = esc(op);
-  html = html.replace(/0x[0-9a-fA-F]+/g, (m) => `<span class="num">${m}</span>`);
+function colorOps(op, row = null) {
+  // rip-relative 地址 → 先占位并算出绝对目标；裸 hex 立即数 → 可点击（有行上下文时）；
+  // 寄存器 → .reg。占位符先换出，避免内部 0x… 被二次包装。
+  const rips = [];
+  let html = esc(op).replace(/\[rip\s*([+-])\s*(0x[0-9a-fA-F]+)\]/gi, (m, sign, hx) => {
+    const idx = rips.length;
+    let target = null;
+    if (row && Number.isFinite(row.rva) && Number.isFinite(row.size)) {
+      target = row.rva + row.size + (sign === "-" ? -parseInt(hx, 16) : parseInt(hx, 16));
+    }
+    rips.push({ sign, hx, target });
+    return `\u0000${idx}\u0000`;
+  });
+  const canJump = row && Number.isFinite(row.rva);
+  html = html.replace(/0x[0-9a-fA-F]+/g, (m) => {
+    const attr = canJump ? ` data-jump="${parseInt(m.slice(2), 16).toString(16)}"` : "";
+    return `<span class="num"${attr}>${m}</span>`;
+  });
+  html = html.replace(/\u0000(\d+)\u0000/g, (m, idx) => {
+    const r = rips[+idx];
+    if (r.target != null) {
+      return `[rip${r.sign}${r.hx}] `
+        + `<span class="num" data-jump="${r.target.toString(16)}">→0x${r.target.toString(16).toUpperCase()}</span>`;
+    }
+    return `[rip${r.sign}${r.hx}]`;
+  });
   html = html.replace(/\b(r[a-z0-9]{1,3}|e[a-z]{2}[xji]|[a-d][xh]l|sil|dil|sp|bp)\b/gi,
     (m) => `<span class="reg">${m}</span>`);
   return html;
@@ -83,10 +109,13 @@ export class UiCodeViewElement extends HTMLElement {
     /** (row, index) => HTML string for one line (default: disasm layout) */
     this.renderItem = (row) => {
       const cur = row.rva === this._currentRva ? " cur" : "";
+      const iat = row.iat
+        ? `<span class="iat" data-open="${esc(row.iat.split("!")[0])}">; ${esc(row.iat)}</span>`
+        : "";
       return `<span class="addr${cur}" data-jump="${row.rva.toString(16)}">0x${row.rva.toString(16).toUpperCase()}</span>`
         + `<span class="bytes">${esc(row.bytes ?? "")}</span>`
         + `<span class="mnem ${mnemClass(row.mnemonic)}">${esc(row.mnemonic ?? "")}</span>`
-        + `<span class="ops">${colorOps(row.op ?? "")}</span>`;
+        + `<span class="ops">${colorOps(row.op ?? "", row)}${iat}</span>`;
     };
     this._rows = [];
     this._loadingMore = false;
@@ -112,10 +141,17 @@ export class UiCodeViewElement extends HTMLElement {
       this._maybeLoadMore();
     });
     this._rowsEl.addEventListener("click", (e) => {
-      const addr = e.target.closest(".addr");
-      if (addr && addr.dataset.jump !== undefined) {
+      const jumpEl = e.target.closest("[data-jump]");
+      if (jumpEl) {
         this.dispatchEvent(new CustomEvent("ui-code-jump", {
-          bubbles: true, composed: true, detail: { value: addr.dataset.jump },
+          bubbles: true, composed: true, detail: { value: jumpEl.dataset.jump },
+        }));
+        return;
+      }
+      const openEl = e.target.closest("[data-open]");
+      if (openEl) {
+        this.dispatchEvent(new CustomEvent("ui-code-open", {
+          bubbles: true, composed: true, detail: { value: openEl.dataset.open },
         }));
       }
     });

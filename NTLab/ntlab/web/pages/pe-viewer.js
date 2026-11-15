@@ -117,7 +117,76 @@ export async function mount(el) {
     if (on) result.innerHTML = `<div class="loading-row"><ui-spinner></ui-spinner> 正在解析…</div>`;
   }
 
-  async function parse(path) {
+  /* ---------- 导航历史（跨 PE / 跨标签，Alt+← / Alt+→ 返回与前进） ---------- */
+  let parsedPath = null;      // 最近一次 renderResult 的文件路径
+  let showTabFn = null;       // renderResult 注册的标签切换入口
+  const navStack = [];
+  let navPos = -1;
+  let navSwitching = false;   // 返回/前进触发的渲染不重复入栈
+
+  const navBar = document.createElement("div");
+  navBar.style.cssText = "display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex:0 0 auto";
+  const navLabel = document.createElement("span");
+  navLabel.style.cssText = "color:var(--ui-text-muted,#888);font-size:12px";
+  navBar.append(
+    toolBtn("← 返回", () => navGo(-1)),
+    toolBtn("前进 →", () => navGo(1)),
+    navLabel,
+  );
+  function updateNav() {
+    navLabel.textContent = navStack.length ? `${navPos + 1} / ${navStack.length}` : "";
+  }
+  function pushNav(entry) {
+    if (navSwitching) return;
+    const cur = navStack[navPos];
+    if (cur && cur.path === entry.path && cur.tab === entry.tab && cur.addr === entry.addr) return;
+    navStack.length = navPos + 1;
+    navStack.push(entry);
+    navPos = navStack.length - 1;
+    updateNav();
+  }
+  function navGo(dir) {
+    const next = navPos + dir;
+    if (next < 0 || next >= navStack.length) return;
+    navPos = next;
+    updateNav();
+    navSwitching = true;
+    gotoEntry(navStack[navPos]).finally(() => { navSwitching = false; });
+  }
+  async function gotoEntry(entry) {
+    try {
+      if (entry.path !== parsedPath || !showTabFn) {
+        pathBox.value = entry.path;
+        await parse(entry.path, { push: false });
+      }
+      if (showTabFn) showTabFn(entry.tab ?? "summary", entry.addr ?? null);
+    } catch (err) { showErr(err); }
+  }
+  const peKeyHandler = (e) => {
+    if (!e.altKey) return;
+    const t = e.target;
+    if (t && typeof t.closest === "function" && t.closest("input,textarea")) return;
+    if (e.key === "ArrowLeft") { e.preventDefault(); navGo(-1); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); navGo(1); }
+  };
+  if (window.__ntlabPeNavKey) document.removeEventListener("keydown", window.__ntlabPeNavKey);
+  window.__ntlabPeNavKey = peKeyHandler;
+  document.addEventListener("keydown", peKeyHandler);
+
+  async function openDll(name) {
+    clearErr();
+    try {
+      const r = await apiGet(`/api/pe/resolve?name=${encodeURIComponent(name)}`);
+      if (!r.path) {
+        showErr({ code: "not-found", message: `系统目录中未找到模块 ${name}（api-ms-* 转发 DLL 无实体文件，可分析其宿主 DLL）` });
+        return;
+      }
+      pathBox.value = r.path;
+      parse(r.path);
+    } catch (err) { showErr(err); }
+  }
+
+  async function parse(path, { push = true } = {}) {
     if (!path || !path.trim()) return;
     clearErr();
     setLoading(true);
@@ -126,6 +195,7 @@ export async function mount(el) {
       pushRecent(path.trim());
       renderChips();
       await renderResult(summary, path.trim());
+      if (push) pushNav({ path: path.trim(), tab: "summary", addr: null });
     } catch (err) {
       result.innerHTML = "";
       showErr(err);
@@ -135,6 +205,7 @@ export async function mount(el) {
   }
 
   async function renderResult(s, path) {
+    parsedPath = path;
     const tabs = document.createElement("ui-tabs");
     tabs.setAttribute("value", "summary");
     const body = document.createElement("div");
@@ -144,30 +215,51 @@ export async function mount(el) {
       tab("exports", "导出表"), tab("resources", "资源"), tab("signature", "签名/PDB"),
       tab("strings", "Strings"), tab("hex", "Hex"), tab("disasm", "反汇编"));
     const views = { summary: () => summaryView(s), headers: () => headersView(path) };
-    async function selectTab(e) {
-      const v = e.detail.value;
+
+    function onCellActivate(e) {
+      const { kind, value } = e.detail;
+      // linkOf 传来的 value 是数字；字符串则按 hex 解析
+      const v = typeof value === "number" ? value : parseInt(String(value), 16);
+      if (kind === "dll") openDll(value);
+      else if (kind === "hex") navigate("hex", v);
+      else if (kind === "disasm") navigate("disasm", v);
+    }
+
+    function showTab(v, addr = null) {
+      tabs.setAttribute("value", v);
       if (views[v]) { swapContent(body, views[v]()); return; }
       swapContent(body, spinnerRow("加载中…"));
-      try {
-        if (v === "imports") await tableView(`/api/pe/imports?path=${encodeURIComponent(path)}`, 300, importCols()).then((t) => swapContent(body, t));
-        else if (v === "exports") await tableView(`/api/pe/exports?path=${encodeURIComponent(path)}`, 300, exportCols(), (row) => {
-          if (row.rva) {
-            tabs.setAttribute("value", "disasm");
-            disasmView(path, row.rva).then((t) => swapContent(body, t));
-          }
-        }).then((t) => swapContent(body, t));
-        else if (v === "resources") await tableView(`/api/pe/resources?path=${encodeURIComponent(path)}`, 300, resCols()).then((t) => swapContent(body, t));
-        else if (v === "signature") await signatureView(path).then((t) => swapContent(body, t));
-        else if (v === "strings") await stringsView(path).then((t) => swapContent(body, t));
-        else if (v === "hex") swapContent(body, hexView(path));
-        else if (v === "disasm") swapContent(body, await disasmView(path, entryRva(s)));
-      } catch (err) { swapContent(body, errRow(err)); }
+      (async () => {
+        let t = null;
+        const url = (ep) => `/api/pe/${ep}?path=${encodeURIComponent(path)}`;
+        if (v === "imports") t = await tableView(url("imports"), 300, importCols(),
+          (row) => { if (row.iat_rva != null) navigate("hex", row.iat_rva); }, onCellActivate);
+        else if (v === "exports") t = await tableView(url("exports"), 300, exportCols(),
+          (row) => { if (row.rva) navigate("disasm", row.rva); }, onCellActivate);
+        else if (v === "resources") t = await tableView(url("resources"), 300, resCols(), null, onCellActivate);
+        else if (v === "signature") t = await signatureView(path);
+        else if (v === "strings") t = await stringsView(path, navigate);
+        else if (v === "hex") t = hexView(path, addr ?? 0);
+        else if (v === "disasm") t = await disasmView(path, addr ?? entryRva(s), { onOpenDll: openDll });
+        swapContent(body, t);
+      })().catch((err) => swapContent(body, errRow(err)));
     }
-    tabs.addEventListener("ui-select", selectTab);
+
+    function navigate(tab, addr) {
+      pushNav({ path, tab, addr });
+      showTab(tab, addr);
+    }
+    showTabFn = showTab;
+
+    tabs.addEventListener("ui-select", (e) => showTab(e.detail.value));
     body.replaceChildren(views.summary());
     const wrap = document.createElement("div");
     wrap.className = "pe-result-wrap";
-    wrap.append(tabs, body);
+    // 视图内部 jump 派发的 ui-pe-nav 冒泡到此 → 入历史栈
+    wrap.addEventListener("ui-pe-nav", (e) => {
+      pushNav({ path, tab: e.detail.tab, addr: e.detail.addr });
+    });
+    wrap.append(navBar, tabs, body);
     swapContent(result, wrap, { outMs: 80, inMs: 380 });
   }
 }
@@ -262,7 +354,7 @@ async function headersView(path) {
   return wrap;
 }
 
-async function tableView(url, pageLimit, cols, onRowActivate) {
+async function tableView(url, pageLimit, cols, onRowActivate, onCellActivate) {
   const sep = url.includes("?") ? "&" : "?";
   let items = [];
   let total = 0;
@@ -276,6 +368,7 @@ async function tableView(url, pageLimit, cols, onRowActivate) {
   const table = document.createElement("ui-table");
   table.setAttribute("fill", "");
   table.columns = cols;
+  if (onCellActivate) table.addEventListener("ui-cell-activate", onCellActivate);
 
   const meta = document.createElement("p");
   meta.className = "table-meta";
@@ -359,7 +452,7 @@ function caseToggle() {
   return label;
 }
 
-async function stringsView(path) {
+async function stringsView(path, navigate = null) {
   const sep = path.includes("?") ? "&" : "?";
   const base = `/api/pe/strings?path=${encodeURIComponent(path)}`;
   let items = [];
@@ -410,6 +503,13 @@ async function stringsView(path) {
     return [];
   };
 
+  if (navigate) {
+    table.addEventListener("ui-row-activate", (e) => {
+      const off = e.detail.row?.file_offset;
+      if (off != null) navigate("hex", off);
+    });
+  }
+
   const wrap = document.createElement("div");
   wrap.style.cssText = "display:flex;flex-direction:column;height:100%;min-height:0";
   cs.style.marginBottom = "8px";
@@ -442,7 +542,7 @@ function hexView(path, startRva = 0) {
       + `<span class="ops">${esc(row.ascii ?? "")}</span>`;
   };
 
-  async function jump(off) {
+  async function jump(off, push = true) {
     off = Math.max(0, off | 0);
     const r = await apiGet(`/api/pe/hex?path=${encodeURIComponent(path)}&off=${off}&size=${CHUNK}`);
     nextOff = r.file_offset + r.rows.length * 16;
@@ -452,6 +552,7 @@ function hexView(path, startRva = 0) {
     offInput.value = r.file_offset.toString(16);
     meta.textContent = `RVA ${fsize(r.rva)} · File Offset ${fsize(r.file_offset)} · 节 ${r.section ?? "—"}`
       + ` · 滚动到底自动续载 · 点击左侧地址跳转`;
+    if (push) view.dispatchEvent(new CustomEvent("ui-pe-nav", { bubbles: true, detail: { tab: "hex", addr: off } }));
   }
 
   view.loadMore = async () => {
@@ -517,11 +618,11 @@ function hexView(path, startRva = 0) {
   });
 
   wrap.append(bar, meta, view);
-  jump(startRva | 0).catch((err) => { meta.textContent = err.message; });
+  jump(startRva | 0, false).catch((err) => { meta.textContent = err.message; });
   return wrap;
 }
 
-async function disasmView(path, startRva = 0) {
+async function disasmView(path, startRva = 0, { onOpenDll = null } = {}) {
   const wrap = document.createElement("div");
   wrap.style.cssText = "display:flex;flex-direction:column;height:100%;min-height:0";
 
@@ -553,7 +654,7 @@ async function disasmView(path, startRva = 0) {
     return r.items;
   };
 
-  async function jump(target) {
+  async function jump(target, push = true) {
     nextRva = target;
     const r = await fetchPage(target);
     const atEnd = r.items.length < PAGE || r.next_rva <= target || r.next_rva >= r.image_size;
@@ -561,8 +662,9 @@ async function disasmView(path, startRva = 0) {
     view.resetRows(r.items, { currentRva: target });
     rvaInput.value = target.toString(16);
     meta.textContent = `ImageBase 0x${r.image_base.toString(16).toUpperCase()}`
-      + ` · 滚动到底自动续载 · 点击行内地址跳转`;
+      + ` · 滚动到底自动续载 · 点击行内地址跳转 · Alt+← 返回`;
     updateXrefs(target);
+    if (push) view.dispatchEvent(new CustomEvent("ui-pe-nav", { bubbles: true, detail: { tab: "disasm", addr: target } }));
   }
 
   async function updateXrefs(rva) {
@@ -610,20 +712,23 @@ async function disasmView(path, startRva = 0) {
   view.addEventListener("ui-code-jump", (e) => {
     jump(parseInt(e.detail.value, 16)).catch((err) => { meta.textContent = err.message; });
   });
+  view.addEventListener("ui-code-open", (e) => {
+    if (onOpenDll) onOpenDll(e.detail.value);
+  });
 
   wrap.append(bar, xrefBox, meta, view);
-  jump(startRva);
+  jump(startRva, false).catch((err) => { meta.textContent = err.message; });
   return wrap;
 }
 
 function importCols() {
   return [
-    { key: "dll", label: "DLL", type: "mono" },
+    { key: "dll", label: "DLL", type: "link", linkOf: (r) => ({ kind: "dll", value: r.dll }) },
     { key: "function", label: "函数" },
     { key: "demangled", label: "反修饰名", type: "mono" },
     { key: "ordinal", label: "Ordinal", type: "num" },
     { key: "hint", label: "Hint", type: "hex" },
-    { key: "iat_rva", label: "IAT RVA", type: "hex" },
+    { key: "iat_rva", label: "IAT RVA", type: "link", linkOf: (r) => ({ kind: "hex", value: r.iat_rva }) },
   ];
 }
 
@@ -632,7 +737,7 @@ function exportCols() {
     { key: "ordinal", label: "Ordinal", type: "num" },
     { key: "name", label: "导出名", type: "mono" },
     { key: "demangled", label: "反修饰名", type: "mono" },
-    { key: "rva", label: "RVA", type: "hex" },
+    { key: "rva", label: "RVA", type: "link", linkOf: (r) => ({ kind: "disasm", value: r.rva }) },
     { key: "forwarder", label: "转发" },
   ];
 }
@@ -643,7 +748,7 @@ function resCols() {
     { key: "name", label: "名称" },
     { key: "language", label: "语言", type: "num" },
     { key: "size", label: "大小", type: "num" },
-    { key: "rva", label: "RVA", type: "hex" },
+    { key: "rva", label: "RVA", type: "link", linkOf: (r) => ({ kind: "hex", value: r.rva }) },
   ];
 }
 
