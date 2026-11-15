@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="blue">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NTLab — Windows 系统底层实验室</title>
+  <link rel="stylesheet" href="/vendor/tokens.css">
+  <link rel="stylesheet" href="/vendor/themes.css">
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <div class="brand">
+        <span class="brand-mark">NT</span>
+        <span class="brand-name">NTLab</span>
+      </div>
+      <nav id="nav">
+        <a href="#/" data-route="home"><span class="ico">◈</span><span>首页</span></a>
+        <a href="#/pe" data-route="pe"><span class="ico">▤</span><span>PE 解剖器</span></a>
+        <a href="#/objdir" data-route="objdir"><span class="ico">⌘</span><span>ObjDir</span></a>
+      </nav>
+      <div class="sidebar-foot">
+        <span class="tag">read-only</span>
+        <span class="ver" id="ver">…</span>
+      </div>
+    </aside>
+    <main id="content"></main>
+  </div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

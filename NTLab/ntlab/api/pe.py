@@ -1,0 +1,91 @@
+"""PE Viewer endpoints. Read-only; user submits a single file path (typed or uploaded)."""
+
+from __future__ import annotations
+
+import os
+import tempfile
+from typing import Annotated
+
+from fastapi import APIRouter, Query, UploadFile
+
+from ntlab.core import pe as pe_core
+from ntlab.core.errors import InvalidPathError
+
+router = APIRouter()
+
+_UPLOAD_DIR = os.path.join(tempfile.gettempdir(), "ntlab_uploads")
+_ALLOWED_EXT = {".exe", ".dll", ".sys", ".ocx", ".scr", ".cpl", ".efi", ".mui", ".drv"}
+
+
+def _require_path(path: str | None) -> str:
+    if not path or not path.strip():
+        raise InvalidPathError("missing 'path' query/body parameter")
+    return path.strip()
+
+
+class ParseBody:
+    def __init__(self, path: str) -> None:
+        self.path = path
+
+
+@router.post("/parse")
+def parse(body: dict) -> dict:
+    """Parse a PE file by path (summary: headers, sections, directories, checksum)."""
+    return pe_core.parse_summary(_require_path(body.get("path")))
+
+
+@router.post("/headers")
+def headers(body: dict) -> dict:
+    return pe_core.parse_headers(_require_path(body.get("path")))
+
+
+@router.get("/imports")
+def imports(
+    path: str,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=2000)] = 200,
+) -> dict:
+    return pe_core.imports(_require_path(path), offset, limit)
+
+
+@router.get("/exports")
+def exports(
+    path: str,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=2000)] = 200,
+) -> dict:
+    return pe_core.exports(_require_path(path), offset, limit)
+
+
+@router.get("/resources")
+def resources(path: str) -> dict:
+    return pe_core.resources(_require_path(path))
+
+
+@router.get("/signature")
+def signature(path: str) -> dict:
+    return pe_core.signature(_require_path(path))
+
+
+@router.post("/upload")
+async def upload(file: UploadFile) -> dict:
+    """Save an uploaded PE file to a temp dir and return its server-side path."""
+    name = os.path.basename(file.filename or "uploaded.bin")
+    ext = os.path.splitext(name)[1].lower()
+    if ext not in _ALLOWED_EXT:
+        raise InvalidPathError(
+            f"not a PE-looking extension: {ext}",
+            {"allowed": sorted(_ALLOWED_EXT)},
+        )
+    os.makedirs(_UPLOAD_DIR, exist_ok=True)
+    dest = os.path.join(_UPLOAD_DIR, name)
+    size = 0
+    with open(dest, "wb") as out:
+        while chunk := await file.read(1024 * 1024):
+            size += len(chunk)
+            if size > 64 * 1024 * 1024:
+                out.close()
+                os.remove(dest)
+                raise InvalidPathError("upload exceeds 64 MB limit")
+            out.write(chunk)
+    return {"path": dest, "size": size, "name": name}

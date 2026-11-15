@@ -1,0 +1,17 @@
+# NTLab backend dependencies (Python 3.12, venv at .venv/)
+# Web framework
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9   # file upload support
+
+# Windows PE parsing
+pefile>=2023.2.7
+
+# NT API / system access
+pywin32>=306
+
+# Real-time event streaming (Phase 3 ETW, install now to avoid later churn)
+websockets>=12.0
+
+# Tests
+pytest>=8.0
