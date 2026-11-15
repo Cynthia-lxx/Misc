@@ -130,8 +130,8 @@ function currentBody() {
   const kind = byId('an-source').value;
   const body = { run: byId('an-measure').checked, stdin: byId('an-stdin').value };
   if (kind === 'output') {
-    const code = host().state?.code || '';
-    if (!code) throw new Error('输出区还没有代码，先在工作台生成或载入历史');
+    const code = (window.__oiIde && window.__oiIde.getCode()) || '';
+    if (!code) throw new Error('编辑器还没有代码，先写代码或让 AI 生成');
     body.code = code;
   } else if (kind === 'workspace') {
     const file = byId('an-file').value;

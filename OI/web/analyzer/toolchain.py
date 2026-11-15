@@ -7,7 +7,9 @@ report always survives (ComfyDL_UI profiling_routes.py:372-378 courtesy rule).
 from __future__ import annotations
 
 import ctypes
+import hashlib
 import os
+import shutil
 import subprocess
 import tempfile
 import threading
@@ -21,10 +23,15 @@ SIZE = BIN_DIR / "size.exe"
 
 MAX_STDIN = 64 * 1024
 MAX_OUTPUT = 4096
+MAX_RUN_OUTPUT = 64 * 1024          # IDE runs may print more than analysis probes
 MAX_COMPILE_SECONDS = 25.0
 MAX_RUN_SECONDS = 15.0
 DEFAULT_RUN_SECONDS = 5.0
 DEFAULT_MEMORY_BYTES = 256 * 1024 * 1024
+RUN_CACHE_LIMIT = 16                # cached executables per mode
+
+RUN_CACHE = Path(tempfile.gettempdir()) / "oi-run-cache"
+DEBUG_CACHE = Path(tempfile.gettempdir()) / "oi-debug-cache"
 
 
 def _clip(text: str) -> str:
@@ -187,3 +194,152 @@ def measure(code: str, stdin: str = "", timeout: float = DEFAULT_RUN_SECONDS,
             "compiler": "g++ (tdm64-1) 4.9.2 -std=c++14 -O2",
             "stdin_bytes": len(stdin.encode("utf-8", "replace")),
         }
+
+
+# --------------------------------------------------------------------------
+# IDE support: cached-compile run (stdout/stderr split) and debug builds.
+
+def _clip_out(text: str) -> str:
+    text = text or ""
+    return text if len(text) <= MAX_RUN_OUTPUT else text[:MAX_RUN_OUTPUT] + "\n…(truncated)"
+
+
+def _prune_cache(cache_dir: Path) -> None:
+    """Keep only the newest RUN_CACHE_LIMIT digests in a cache directory."""
+    try:
+        entries = [d for d in cache_dir.iterdir() if d.is_dir()] if cache_dir.is_dir() else []
+        entries.sort(key=lambda d: d.stat().st_mtime, reverse=True)
+        for stale in entries[RUN_CACHE_LIMIT:]:
+            shutil.rmtree(stale, ignore_errors=True)
+    except Exception:
+        pass
+
+
+def _compile_to(exe: Path, source: Path, opts: list, env: dict, flags: int) -> tuple:
+    """Return (ok, stderr_text, compile_ms). Never raises."""
+    start = time.perf_counter()
+    try:
+        res = subprocess.run(
+            [str(GXX), "-std=c++14", *opts, str(source), "-o", str(exe)],
+            capture_output=True, text=True, timeout=MAX_COMPILE_SECONDS,
+            cwd=str(source.parent), env=env, creationflags=flags,
+        )
+    except subprocess.TimeoutExpired:
+        return False, "compile timeout", MAX_COMPILE_SECONDS * 1000
+    except Exception as exc:
+        return False, f"compile error: {type(exc).__name__}", 0.0
+    ok = res.returncode == 0 and exe.is_file()
+    return ok, ("" if ok else res.stderr), round((time.perf_counter() - start) * 1000, 1)
+
+
+def _cached_build(code: str, cache_root: Path, opts: list, source_name: str,
+                  exe_name: str, env: dict, flags: int) -> tuple:
+    """Build (or reuse) an executable keyed by the code digest.
+
+    Returns (ok, exe_path, compile_ms, compile_error, cached). On cache
+    write races (e.g. a running exe locked by Windows) falls back to an
+    isolated temp dir so the request still succeeds.
+    """
+    digest = hashlib.sha256(code.encode("utf-8", "replace")).hexdigest()
+    folder = cache_root / digest
+    exe = folder / exe_name
+    if exe.is_file():
+        return True, exe, 0.0, "", True
+
+    ok, err, ms = False, "", 0.0
+    try:
+        folder.mkdir(parents=True, exist_ok=True)
+        source = folder / source_name
+        source.write_text(code, encoding="utf-8")
+        ok, err, ms = _compile_to(exe, source, opts, env, flags)
+        if ok:
+            _prune_cache(cache_root)
+            return True, exe, ms, "", False
+    except Exception:
+        ok, err = False, "cache build failed"
+
+    # fallback: persistent dir inside the cache (exe must outlive this call;
+    # a TemporaryDirectory would delete it before run/debug uses it)
+    try:
+        folder.mkdir(parents=True, exist_ok=True)
+        folder = folder.parent / (folder.name + "-fb")
+        folder.mkdir(parents=True, exist_ok=True)
+        source = folder / source_name
+        source.write_text(code, encoding="utf-8")
+        ok, err, ms = _compile_to(folder / exe_name, source, opts, env, flags)
+        _prune_cache(cache_root)
+        return ok, (folder / exe_name), ms, err, False
+    except Exception:
+        return False, err or "build failed", 0.0, err or "build failed", False
+
+
+def run_program(code: str, stdin: str = "", timeout: float = DEFAULT_RUN_SECONDS,
+                memory_limit: int = DEFAULT_MEMORY_BYTES) -> dict:
+    """IDE run: cached compile (-O2), separate stdout/stderr pipes."""
+    if not GXX.is_file():
+        return {"status": "failed", "reason": "vendored toolchain missing (toolchain/MinGW64/bin/g++.exe)"}
+    timeout = max(0.5, min(float(timeout or DEFAULT_RUN_SECONDS), MAX_RUN_SECONDS))
+    memory_limit = max(16 * 1024 * 1024, min(int(memory_limit or DEFAULT_MEMORY_BYTES), 1024 * 1024 * 1024))
+    stdin = (stdin or "")[:MAX_STDIN]
+
+    env = dict(os.environ)
+    env["PATH"] = str(BIN_DIR) + os.pathsep + env.get("PATH", "")
+    flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+
+    ok, exe, compile_ms, err, cached = _cached_build(
+        code, RUN_CACHE, ["-O2", "-static-libgcc", "-static-libstdc++"],
+        "main.cpp", "main.exe", env, flags,
+    )
+    if not ok:
+        return {
+            "status": "failed", "reason": "compile_error", "phase": "compile",
+            "compile_ms": compile_ms, "stderr": _clip_out(err), "cached": False,
+        }
+
+    peak = [0]
+    done = threading.Event()
+    try:
+        proc = subprocess.Popen(
+            [str(exe)], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE, cwd=str(exe.parent), env=env, creationflags=flags,
+        )
+    except Exception as exc:
+        return {"status": "failed", "reason": f"launch error: {type(exc).__name__}", "phase": "run"}
+
+    sampler = threading.Thread(
+        target=_peak_sampler, args=(int(proc._handle), done, peak, memory_limit, proc),
+        daemon=True,
+    )
+    sampler.start()
+    start = time.perf_counter()
+    timed_out = False
+    try:
+        stdout, stderr = proc.communicate(input=stdin.encode("utf-8", "replace"), timeout=timeout)
+        exit_code = proc.returncode
+    except subprocess.TimeoutExpired:
+        timed_out = True
+        proc.kill()
+        stdout, stderr = proc.communicate()
+        exit_code = None
+    finally:
+        done.set()
+        sampler.join(timeout=0.2)
+    wall_ms = round((time.perf_counter() - start) * 1000, 1)
+
+    return {
+        "status": "ok" if not timed_out and exit_code == 0 else ("timeout" if timed_out else "failed"),
+        "reason": "" if not timed_out and exit_code == 0 else ("wall timeout" if timed_out else f"exit code {exit_code}"),
+        "phase": "run",
+        "compile_ms": compile_ms,
+        "compile_cached": cached,
+        "wall_ms": wall_ms,
+        "peak_bytes": peak[0] or None,
+        "peak_sampled": bool(peak[0]),
+        "memory_limit_bytes": memory_limit,
+        "exit_code": exit_code,
+        "stdout": _clip_out(stdout.decode("utf-8", "replace")),
+        "stderr": _clip_out(stderr.decode("utf-8", "replace")),
+        "compiler": "g++ (tdm64-1) 4.9.2 -std=c++14 -O2",
+        "stdin_bytes": len(stdin.encode("utf-8", "replace")),
+        "digest": hashlib.sha256(code.encode("utf-8", "replace")).hexdigest(),
+    }

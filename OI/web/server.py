@@ -37,7 +37,7 @@ sys.path.insert(1, str(ROOT_DIR))
 import OI as oi  # noqa: E402  (project CLI: config / history / prompt / helpers)
 from openai import OpenAI  # noqa: E402
 
-from analyzer import ai_summary, engine, toolchain  # noqa: E402
+from analyzer import ai_summary, debugger, engine, toolchain  # noqa: E402
 
 STATE_LOCK = threading.Lock()
 MAX_BODY = 8 * 1024 * 1024
@@ -176,6 +176,8 @@ class ConsoleHandler(BaseHTTPRequestHandler):
                 })
             if path == "/api/analyze/enabled":
                 return self._json({"ok": True, **ai_summary.state()})
+            if path == "/api/debug/info":
+                return self._json({"ok": True, **debugger.available()})
             if path == "/favicon.ico":
                 return self._headers(204, length=0)
             if path.startswith("/api/"):
@@ -221,6 +223,14 @@ class ConsoleHandler(BaseHTTPRequestHandler):
                 return self._json({"ok": True, **ai_summary.set_enabled(body.get("enabled"))})
             if path == "/api/analyze/budget":
                 return self._json({"ok": True, **ai_summary.set_cap(body.get("cap"))})
+            if path == "/api/run":
+                return self._run(body)
+            if path == "/api/debug/start":
+                return self._debug_start(body)
+            if path == "/api/debug/command":
+                return self._debug_command(body)
+            if path == "/api/debug/stop":
+                return self._debug_stop(body)
             return self._error("unknown endpoint", 404)
         except Exception as exc:
             traceback.print_exc()
@@ -421,6 +431,55 @@ class ConsoleHandler(BaseHTTPRequestHandler):
         result = ai_summary.summarize(report, cfg)
         report.ai_summary = result
         return self._json({"ok": True, "ai_summary": result})
+
+    # ------------------------------------------------------------------ ide run / debug
+    def _resolve_run_code(self, body: dict) -> tuple:
+        """IDE run/debug accept inline code or a workspace file (analyzer rules)."""
+        code = body.get("code")
+        if isinstance(code, str) and code.strip():
+            return code, None
+        return engine.resolve_code(body)  # raises ValueError on bad path
+
+    def _run(self, body: dict):
+        try:
+            code, source = self._resolve_run_code(body)
+        except ValueError as exc:
+            return self._error(exc)
+        result = toolchain.run_program(
+            code,
+            stdin=str(body.get("stdin") or ""),
+            timeout=float(body.get("timeout") or toolchain.DEFAULT_RUN_SECONDS),
+            memory_limit=int(body.get("memory_limit") or toolchain.DEFAULT_MEMORY_BYTES),
+        )
+        return self._json({"ok": True, "source": source, **result})
+
+    def _debug_start(self, body: dict):
+        try:
+            code, source = self._resolve_run_code(body)
+        except ValueError as exc:
+            return self._error(exc)
+        breakpoints = body.get("breakpoints") if isinstance(body.get("breakpoints"), list) else []
+        watch = body.get("watch") if isinstance(body.get("watch"), list) else []
+        result = debugger.start(
+            code,
+            stdin=str(body.get("stdin") or ""),
+            breakpoints=breakpoints,
+            watch=watch,
+        )
+        if not result.get("ok"):
+            return self._error(result.get("error") or "调试启动失败")
+        return self._json({"ok": True, "source": source, **result})
+
+    def _debug_command(self, body: dict):
+        sid = str(body.get("session") or "")
+        action = str(body.get("action") or "state")
+        result = debugger.command(sid, action, body)
+        if not result.get("ok"):
+            return self._error(result.get("error") or "调试命令失败")
+        return self._json(result)
+
+    def _debug_stop(self, body: dict):
+        return self._json(debugger.stop(str(body.get("session") or "")))
 
 
 def main():

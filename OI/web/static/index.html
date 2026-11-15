@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="vendor/glow.css">
   <link rel="stylesheet" href="vendor/status-pulse.css">
   <link rel="stylesheet" href="console.css">
+  <link rel="stylesheet" href="ide.css">
   <link rel="stylesheet" href="analyze.css">
 </head>
 <body>
@@ -19,13 +20,13 @@
   <aside class="oc-side">
     <div class="oc-brand">
       <span class="oc-brand-mark">&lt;/&gt;</span>
-      <span class="oc-brand-text">OI Code Console<small>DeepSeek · C++14 · local</small></span>
+      <span class="oc-brand-text">OI Code Console<small>DeepSeek · C++14 · cloud IDE</small></span>
     </div>
 
     <nav class="oc-nav" id="nav" aria-label="控制台视图">
-      <a href="#workbench" data-view="workbench" class="is-active"><span class="oc-nav-idx">01</span><span>工作台</span><span class="oc-nav-key">W</span></a>
-      <a href="#history" data-view="history"><span class="oc-nav-idx">02</span><span>会话历史</span><span class="oc-nav-key">H</span></a>
-      <a href="#analysis" data-view="analysis"><span class="oc-nav-idx">03</span><span>分析</span><span class="oc-nav-key">A</span></a>
+      <a href="#ide" data-view="ide" class="is-active"><span class="oc-nav-idx">01</span><span>IDE</span><span class="oc-nav-key">★</span></a>
+      <a href="#analysis" data-view="analysis"><span class="oc-nav-idx">02</span><span>分析报告</span><span class="oc-nav-key">A</span></a>
+      <a href="#history" data-view="history"><span class="oc-nav-idx">03</span><span>会话历史</span><span class="oc-nav-key">H</span></a>
       <a href="#settings" data-view="settings"><span class="oc-nav-idx">04</span><span>设置</span><span class="oc-nav-key">S</span></a>
       <a href="#cheatsheet" data-view="cheatsheet"><span class="oc-nav-idx">05</span><span>命令速查</span><span class="oc-nav-key">?</span></a>
     </nav>
@@ -41,8 +42,8 @@
   <main class="oc-main">
     <header class="oc-top">
       <div class="oc-head-title">
-        <h1 id="view-title">工作台</h1>
-        <p id="view-desc">粘贴题面或输入修改要求，生成符合个人风格的 C++14 代码</p>
+        <h1 id="view-title">IDE</h1>
+        <p id="view-desc">以代码为中心：编辑、运行、调试与关键指标同屏</p>
       </div>
       <div class="oc-controls">
         <label>Theme
@@ -64,132 +65,103 @@
     </header>
 
     <div class="oc-view" id="view">
-      <!-- ============================ 工作台 ============================ -->
-      <section class="oc-view-panel oc-workbench" data-panel="workbench">
-        <div class="oc-grid">
-          <div class="oc-stack">
-            <div class="oc-card">
-              <div class="oc-card-head">
+      <!-- ============================== IDE ============================== -->
+      <section class="oc-view-panel ide" data-panel="ide">
+        <div class="ide-toolbar">
+          <div class="ide-toolbar-group">
+            <input type="text" id="ide-filename" value="solution.cpp" class="ide-filename" spellcheck="false" title="文件名（保存/读取基于工作区解析）">
+            <ui-button id="ide-open" label="打开 ⌂O"></ui-button>
+            <ui-button id="ide-save" label="保存 ⌃S"></ui-button>
+            <ui-button id="ide-copy" label="复制"></ui-button>
+          </div>
+          <span class="ide-toolbar-sep"></span>
+          <div class="ide-toolbar-group">
+            <ui-button id="ide-run" variant="sheared" label="运行 F5"></ui-button>
+            <ui-button id="ide-debug" label="调试 F9"></ui-button>
+            <ui-button id="ide-stop" label="停止 Esc" disabled></ui-button>
+          </div>
+          <span class="ide-toolbar-sep"></span>
+          <div class="ide-toolbar-group">
+            <ui-button id="ide-generate" label="AI 生成 ⌘⏎"></ui-button>
+            <ui-button id="ide-analyze" label="分析 A"></ui-button>
+            <ui-button id="ide-palette" label="命令 ⌘K"></ui-button>
+          </div>
+          <span class="ide-spacer"></span>
+          <span class="oc-badge" id="ide-run-badge">空闲</span>
+        </div>
+
+        <div class="ide-body">
+          <div class="ide-editor-host" id="ide-editor"></div>
+
+          <aside class="ide-side" id="ide-side">
+            <div class="ide-side-tabs" role="tablist">
+              <button type="button" class="is-active" data-stab="metrics">指标</button>
+              <button type="button" data-stab="ai">AI</button>
+            </div>
+            <div class="ide-side-body" id="ide-side-metrics">
+              <div class="ide-verdict" id="ide-verdict">
+                <span class="an-verdict-badge unknown" id="ide-verdict-badge">?</span>
                 <div>
-                  <h2>题面 / 指令</h2>
-                  <p>直接粘贴题面，或用自然语言描述对上一版代码的修改要求。</p>
+                  <strong id="ide-verdict-title">未分析</strong>
+                  <p id="ide-verdict-reason">点击「分析 A」体检当前代码</p>
                 </div>
-                <span class="oc-badge" id="mode-badge">新话题</span>
               </div>
-
-              <textarea id="prompt" spellcheck="false" placeholder="在此粘贴 OI 题面（含输入/输出格式、样例、数据范围）…&#10;&#10;例如：给定 n 个整数，求最大子段和。n ≤ 1e5。"></textarea>
-
-              <div class="oc-row oc-source-row">
-                <ui-button id="clipboard-btn" label="读剪贴板"></ui-button>
-                <ui-button id="file-btn" label="读取路径"></ui-button>
-                <label class="oc-file-btn">
-                  <span>载入文件</span>
-                  <input type="file" id="file-input" accept=".txt,.md,.cpp,.in,text/plain" hidden>
-                </label>
-                <ui-button id="sample-btn" label="示例题面"></ui-button>
-                <ui-button id="clear-prompt-btn" label="清空"></ui-button>
-              </div>
-
-              <div class="oc-inline-path">
-                <input type="text" id="file-path" placeholder="文件路径，如 P1007.txt 或绝对/相对路径（相对工作区解析）">
-              </div>
-
-              <div class="oc-params">
-                <label class="oc-switch">
-                  <input type="checkbox" id="new-topic" checked>
-                  <span class="oc-switch-nub"></span>
-                  <span>新话题（清空上下文重新开始）</span>
-                </label>
-                <label class="oc-range">
-                  <span>Temperature</span>
-                  <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.3">
-                  <output id="temperature-out">0.3</output>
-                </label>
-              </div>
-
-              <div class="oc-row oc-action-row">
-                <ui-button id="generate-btn" variant="sheared" label="生成代码"></ui-button>
-                <ui-button id="stop-btn" label="停止" disabled></ui-button>
-                <span class="oc-hint">Ctrl / ⌘ + Enter 生成</span>
+              <div class="ide-metrics" id="ide-metrics"></div>
+              <div class="ide-side-foot-row">
+                <ui-button id="ide-full-report" label="完整报告 →"></ui-button>
               </div>
             </div>
-
-            <div class="oc-card">
-              <div class="oc-card-head">
-                <div><h2>对话时间线</h2><p>与 CLI 共用 ~/.oicoder_history.json，最近 20 条作为上下文。</p></div>
-                <span class="oc-badge" id="timeline-count">0 条</span>
-              </div>
-              <div class="oc-timeline" id="timeline"></div>
+            <div class="ide-side-body is-hidden" id="ide-side-ai">
+              <ul class="an-ai-list" id="ide-ai-list"></ul>
+              <div class="an-budget-bar"><i id="ide-ai-fill"></i></div>
+              <p class="an-budget-note" id="ide-ai-note">AI 汇总随分析自动生成（单轮、限量 0.1 当量/次）。</p>
             </div>
+          </aside>
+        </div>
+
+        <div class="ide-dock" id="ide-dock">
+          <div class="ide-dock-tabs" role="tablist">
+            <button type="button" data-dtab="stdin">stdin</button>
+            <button type="button" data-dtab="stdout" class="is-active">stdout</button>
+            <button type="button" data-dtab="stderr">stderr</button>
+            <button type="button" data-dtab="debug">调试</button>
+            <span class="ide-dock-meta" id="dock-meta">—</span>
           </div>
-
-          <div class="oc-stack">
-            <div class="oc-card oc-output-card" id="output-card">
-              <div class="oc-card-head">
-                <div><h2>输出</h2><p id="output-sub">等待生成…</p></div>
-                <span class="oc-badge" id="code-badge">无代码</span>
+          <div class="ide-dock-body">
+            <textarea id="dock-stdin" class="ide-dock-pane is-hidden" spellcheck="false" placeholder="程序标准输入；运行与调试都会使用这里的内容…"></textarea>
+            <pre id="dock-stdout" class="ide-dock-pane ide-out" aria-label="stdout">（尚未运行）</pre>
+            <pre id="dock-stderr" class="ide-dock-pane ide-out is-hidden" aria-label="stderr">（尚未运行）</pre>
+            <div id="dock-debug" class="ide-dock-pane is-hidden ide-debug">
+              <div class="ide-debug-bar">
+                <ui-button id="dbg-continue" label="继续 F5"></ui-button>
+                <ui-button id="dbg-next" label="步过 F10"></ui-button>
+                <ui-button id="dbg-step" label="步入 F11"></ui-button>
+                <ui-button id="dbg-finish" label="步出"></ui-button>
+                <ui-button id="dbg-stop" variant="danger" label="结束调试"></ui-button>
+                <span class="oc-badge" id="dbg-status">未调试</span>
+                <span class="oc-muted" id="dbg-reason"></span>
               </div>
-
-              <div class="oc-tabs" role="tablist">
-                <button type="button" class="is-active" data-tab="code" role="tab">代码</button>
-                <button type="button" data-tab="raw" role="tab">原始响应</button>
-                <button type="button" data-tab="rules" role="tab">风格规则</button>
-              </div>
-
-              <div class="oc-code-wrap">
-                <div class="oc-code-empty" id="code-empty">
-                  <span class="oc-empty-mark">{ }</span>
-                  <strong>还没有输出</strong>
-                  <span>填写题面后点击「生成代码」，结果会实时出现在这里。</span>
+              <div class="ide-debug-grid">
+                <div class="ide-debug-col">
+                  <h3>变量</h3>
+                  <dl class="oc-kv ide-vars" id="dbg-vars"></dl>
                 </div>
-                <pre class="oc-code is-hidden" id="code-view" aria-label="生成的代码"></pre>
-                <pre class="oc-code oc-raw is-hidden" id="raw-view" aria-label="原始响应"></pre>
-                <div class="oc-code oc-rules is-hidden" id="rules-view" aria-label="系统提示词"></div>
+                <div class="ide-debug-col">
+                  <h3>监视</h3>
+                  <div class="ide-watch-row">
+                    <input type="text" id="watch-input" placeholder="表达式，如 ans_max 或 (1<<n)" spellcheck="false">
+                    <ui-button id="watch-add" label="添加"></ui-button>
+                  </div>
+                  <dl class="oc-kv ide-vars" id="dbg-watch"></dl>
+                </div>
               </div>
-
-              <div class="oc-progress" id="progress"><i></i></div>
-              <div class="oc-status-line" id="status-line">空闲</div>
-
-              <div class="oc-row oc-output-actions">
-                <ui-button id="copy-btn" label="复制代码"></ui-button>
-                <ui-button id="save-btn" label="保存 .cpp"></ui-button>
-                <ui-button id="download-btn" label="下载"></ui-button>
-                <ui-button id="analyze-btn" label="分析此代码"></ui-button>
-              </div>
-              <div class="oc-inline-path">
-                <input type="text" id="save-name" value="solution.cpp" placeholder="solution.cpp（相对工作区，或绝对路径）">
-              </div>
-            </div>
-
-            <div class="oc-card oc-meta-card">
-              <div class="oc-card-head"><div><h2>本次运行</h2><p>来自 /api/status 与流式响应。</p></div></div>
-              <dl class="oc-kv" id="run-meta">
-                <dt>模型</dt><dd id="meta-model">—</dd>
-                <dt>耗时</dt><dd id="meta-time">—</dd>
-                <dt>字符数</dt><dd id="meta-chars">—</dd>
-                <dt>代码行数</dt><dd id="meta-lines">—</dd>
-                <dt>工作区</dt><dd id="meta-workspace">—</dd>
-              </dl>
+              <p class="oc-muted ide-debug-hint">在编辑器行号左侧点击 ● 可切换断点（Ctrl+B 于当前行）。stderr 与 stdout 在上方标签实时分流。</p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ============================ 会话历史 ============================ -->
-      <section class="oc-view-panel is-hidden" data-panel="history">
-        <div class="oc-card">
-          <div class="oc-card-head">
-            <div><h2>会话历史</h2><p>服务端持久化，CLI 的 /show 与此处看到的是同一份记录。</p></div>
-            <div class="oc-row">
-              <ui-button id="history-refresh" label="刷新"></ui-button>
-              <ui-button id="history-clear" variant="danger" label="清空历史"></ui-button>
-            </div>
-          </div>
-          <div class="oc-history-list" id="history-list"></div>
-        </div>
-      </section>
-
-      <!-- ============================ 分析 ============================ -->
+      <!-- ============================ 分析报告 ============================ -->
       <section class="oc-view-panel is-hidden" data-panel="analysis">
         <div class="oc-stack">
           <div class="oc-card">
@@ -273,6 +245,20 @@
         </div>
       </section>
 
+      <!-- ============================ 会话历史 ============================ -->
+      <section class="oc-view-panel is-hidden" data-panel="history">
+        <div class="oc-card">
+          <div class="oc-card-head">
+            <div><h2>会话历史</h2><p>服务端持久化，CLI 的 /show 与此处看到的是同一份记录。</p></div>
+            <div class="oc-row">
+              <ui-button id="history-refresh" label="刷新"></ui-button>
+              <ui-button id="history-clear" variant="danger" label="清空历史"></ui-button>
+            </div>
+          </div>
+          <div class="oc-history-list" id="history-list"></div>
+        </div>
+      </section>
+
       <!-- ============================ 设置 ============================ -->
       <section class="oc-view-panel is-hidden" data-panel="settings">
         <div class="oc-grid">
@@ -321,13 +307,13 @@
                 <tr><td><code>/config</code></td><td>设置 → 当前配置</td><td>API Key 脱敏展示</td></tr>
                 <tr><td><code>/model</code></td><td>设置 → 模型</td><td>deepseek-chat / deepseek-reasoner 等</td></tr>
                 <tr><td><code>/clear</code></td><td>历史 → 清空历史</td><td>同时清空服务端上下文</td></tr>
-                <tr><td><code>/show</code></td><td>会话历史 / 时间线</td><td>完整消息，含代码预览</td></tr>
-                <tr><td><code>/copy /cp</code></td><td>输出 → 复制代码</td><td>浏览器剪贴板 + 系统剪贴板兜底</td></tr>
-                <tr><td><code>/clipboard /cb</code></td><td>读剪贴板</td><td>读取系统剪贴板填入题面</td></tr>
-                <tr><td><code>/file [路径]</code></td><td>读取路径 / 载入文件</td><td>相对路径基于工作区</td></tr>
-                <tr><td><code>/save [路径]</code></td><td>保存 .cpp</td><td>自动补 .cpp 后缀与创建目录</td></tr>
-                <tr><td><code>/exit /q</code></td><td>关闭标签页</td><td>服务由 Ctrl+C 停止</td></tr>
-                <tr><td>（新增）</td><td>分析 → 分析</td><td>内存 / 复杂度 / 风格冗余 / 性能体检；可选实测（内置 MinGW64）；每次分析自动一次短 AI 汇总</td></tr>
+                <tr><td><code>/show</code></td><td>会话历史</td><td>完整消息，可一键载入编辑器</td></tr>
+                <tr><td><code>/copy /cp</code></td><td>IDE → 复制</td><td>浏览器剪贴板 + 系统剪贴板兜底</td></tr>
+                <tr><td><code>/clipboard /cb</code></td><td>AI 生成弹层 → 读剪贴板</td><td>读取系统剪贴板填入题面</td></tr>
+                <tr><td><code>/file [路径]</code></td><td>IDE → 打开（弹层）</td><td>相对路径基于工作区</td></tr>
+                <tr><td><code>/save [路径]</code></td><td>IDE → 保存 ⌃S</td><td>自动补 .cpp 后缀与创建目录</td></tr>
+                <tr><td>（新增）</td><td>IDE → 运行 F5 / 调试 F9</td><td>stdout/stderr 分流；gdb 断点、步进、变量与监视（内置 MinGW64）</td></tr>
+                <tr><td>（新增）</td><td>IDE → 分析 A</td><td>内存 / 复杂度 / 风格冗余 / 性能体检 + 一次限量短 AI 汇总</td></tr>
               </tbody>
             </table>
           </div>
@@ -335,16 +321,23 @@
             <div class="oc-card">
               <div class="oc-card-head"><div><h2>快捷键</h2></div></div>
               <dl class="oc-kv">
-                <dt>Ctrl / ⌘ + Enter</dt><dd>生成代码</dd>
-                <dt>Esc</dt><dd>停止生成 / 关闭日志</dd>
-                <dt>W / H / A / S / ?</dt><dd>切换视图（输入框外）</dd>
+                <dt>F5</dt><dd>运行（stdout / stderr 分流）</dd>
+                <dt>F9</dt><dd>启动调试（编译 -g -O0，跑向首个断点）</dd>
+                <dt>F10 / F11</dt><dd>调试步过 / 步入</dd>
+                <dt>Ctrl / ⌘ + Enter</dt><dd>AI 生成（弹层，流式写入编辑器）</dd>
+                <dt>Ctrl + S</dt><dd>保存当前编辑器内容</dd>
+                <dt>Ctrl + B</dt><dd>在当前行切换断点</dd>
+                <dt>Ctrl + G</dt><dd>跳转到指定行</dd>
+                <dt>Ctrl + K</dt><dd>命令面板</dd>
                 <dt>Ctrl + L</dt><dd>打开 / 关闭事件日志</dd>
+                <dt>H / A / S / ?</dt><dd>切换次要视图（输入框外）</dd>
+                <dt>Esc</dt><dd>关闭弹层 / 日志 / 结束运行</dd>
               </dl>
             </div>
             <div class="oc-card">
               <div class="oc-card-head"><div><h2>关于</h2></div></div>
-              <p class="oc-about">纯本地服务：Python 标准库 <code>http.server</code> + <code>openai</code> SDK，零新增依赖、零构建步骤。服务仅监听 <code>127.0.0.1</code>，配置与历史存于用户主目录。</p>
-              <p class="oc-about">分析能力全部本地执行：内存/复杂度/风格/性能四类静态估算 + 可选的内置 MinGW64 编译实测；AI 仅在分析后做一次限量短汇总。分析指标不外发。</p>
+              <p class="oc-about">纯本地服务：Python 标准库 <code>http.server</code> + <code>openai</code> SDK。服务仅监听 <code>127.0.0.1</code>，配置与历史存于用户主目录。前端唯一第三方依赖是离线内置于 <code>static/vendor/codemirror/</code> 的 CodeMirror 5。</p>
+              <p class="oc-about">运行与调试由内置 MinGW64（GCC 4.9.2 + gdb/gdbserver）完成：编译产物按内容哈希缓存，stdout/stderr 分流实时显示；调试为 gdbserver 托管 + GDB/MI 驱动，支持断点、步进、变量与监视。所有指标不外发。</p>
               <p class="oc-about">界面样式参考 UI Reference Kit（MIT 派生，见 <code>vendor/LICENSE-MIT.txt</code>）：配色/排版/动效 token、9 套主题与 <code>ui-button</code> 组件。分析视图信息架构参考 ComfyDL_UI profiling（三色判定、unknown 诚实标注、手动触发 + 缓存、master switch）。</p>
             </div>
           </div>
@@ -353,7 +346,7 @@
     </div>
 
     <footer class="oc-foot">
-      <span id="foot-left">ready</span>
+      <div class="oc-status-line" id="status-line">ready</div>
       <span id="foot-right">hash-route · no build step</span>
     </footer>
   </main>
@@ -370,10 +363,19 @@
   <ul id="log-list"></ul>
 </aside>
 
+<!-- ============================ Overlay 层 ============================ -->
+<div class="ov-layer is-hidden" id="ov-layer" role="dialog" aria-modal="true">
+  <div class="ov-mask" id="ov-mask"></div>
+  <div class="ov-box" id="ov-box"></div>
+</div>
+
 <div class="ui-status-pulse-layer" aria-hidden="true"><div class="ui-status-pulse-host" id="pulse-host"><span class="ui-status-pulse" id="pulse-text">OK</span></div></div>
 
 <script type="module" src="vendor/components/ui-button/ui-button.js"></script>
 <script type="module" src="console.js"></script>
+<script type="module" src="ide.js"></script>
+<script type="module" src="overlays.js"></script>
+<script type="module" src="debug.js"></script>
 <script type="module" src="analyze.js"></script>
 </body>
 </html>
