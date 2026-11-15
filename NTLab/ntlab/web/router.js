@@ -10,7 +10,15 @@ export function register(name, page) {
 
 export function current() {
   const hash = location.hash.replace(/^#\/?/, "");
-  return (hash.split("/")[0] || "home").toLowerCase();
+  const path = hash.split("?")[0] || "home";
+  return (path.split("/")[0] || "home").toLowerCase();
+}
+
+/** Query part of the current hash, e.g. "#/playground?api=X" → ?api=X. */
+export function query() {
+  const hash = location.hash.replace(/^#\/?/, "");
+  const q = hash.split("?")[1] || "";
+  return new URLSearchParams(q);
 }
 
 let navigating = false;

@@ -156,6 +156,49 @@ html, body {
 #pe-top.collapsed .pe-top-extra { display: none; }
 #pe-top.collapsed .panel { margin-bottom: 10px; }
 
+/* WinAPI 试验台：左目录 / 右工作区，内部滚动，一屏原则 */
+.playground { flex: 1; min-height: 0; display: flex; gap: 14px; }
+.pg-left {
+  flex: 0 0 300px; display: flex; flex-direction: column; min-height: 0;
+}
+.pg-catalog { flex: 1; min-height: 0; overflow-y: auto; margin-top: 10px; }
+.pg-item {
+  padding: 7px 10px; border-radius: 6px; cursor: pointer; font-size: 12.5px;
+  display: flex; align-items: center; gap: 8px;
+}
+.pg-item:hover { background: color-mix(in srgb, var(--ui-accent) 10%, transparent); }
+.pg-item.sel { background: color-mix(in srgb, var(--ui-accent) 18%, transparent); }
+.pg-item .nm { font-family: "Cascadia Code", Consolas, monospace; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pg-item .mod { font-size: 10px; color: var(--ui-text-muted, #888); flex: 0 0 auto; }
+.pg-badge {
+  flex: 0 0 auto; font-size: 9px; font-weight: 700; letter-spacing: 0.04em;
+  padding: 2px 6px; border-radius: 8px;
+  background: color-mix(in srgb, var(--ui-accent) 22%, transparent); color: var(--ui-accent);
+}
+.pg-badge.warn { background: color-mix(in srgb, #ffcc22 20%, transparent); color: #ffcc22; }
+.pg-right { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
+.pg-body { flex: 1; min-height: 0; overflow-y: auto; margin-top: 12px; padding-right: 4px; }
+.pg-card .row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+.pg-card .row label { font-size: 12px; color: var(--ui-text-muted, #888); flex: 0 0 110px; text-align: right; }
+.pg-steps .step {
+  display: flex; gap: 8px; align-items: center; padding: 5px 8px;
+  border: 1px solid color-mix(in srgb, var(--ui-border) 60%, transparent);
+  border-radius: 6px; margin-bottom: 6px; font-size: 12px;
+}
+.pg-steps .step .no { color: var(--ui-text-muted, #888); flex: 0 0 22px; }
+.pg-steps .step .sig { font-family: "Cascadia Code", Consolas, monospace; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pg-step-card {
+  border: 1px solid color-mix(in srgb, var(--ui-border) 60%, transparent);
+  border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; font-size: 12.5px;
+}
+.pg-step-card h4 { margin: 0 0 6px; font-size: 13px; }
+.pg-step-card h4 .dur { color: var(--ui-text-muted, #888); font-weight: 400; font-size: 11px; margin-left: 8px; }
+.pg-step-card .err { color: #ff8899; }
+.pg-step-card table { border-collapse: collapse; font-size: 12px; }
+.pg-step-card td { padding: 1px 10px 1px 0; vertical-align: top; }
+.pg-step-card td.k { color: var(--ui-text-muted, #888); white-space: nowrap; }
+.pg-step-card td.v { font-family: "Cascadia Code", Consolas, monospace; word-break: break-all; }
+
 /* PE 分析器：结果区占满剩余高度，标签体内部滚动 */
 .pe-result { flex: 1; min-height: 0; display: flex; flex-direction: column; margin-top: 14px; }
 .pe-result-wrap { display: flex; flex-direction: column; flex: 1; min-height: 0; }

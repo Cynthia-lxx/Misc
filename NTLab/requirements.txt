@@ -10,6 +10,9 @@ pefile>=2023.2.7
 # Disassembly (IDA-flavored views; BSD licensed)
 capstone>=5.0
 
+# Assembler for the WinAPI playground (assemble-only, never executed)
+keystone-engine>=0.9.2
+
 # NT API / system access
 pywin32>=306
 

@@ -14,6 +14,7 @@ from ntlab.core.errors import NotFoundError
 from . import ntobj
 from . import pe
 from . import system
+from . import winapi
 
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
 
@@ -28,6 +29,7 @@ def create_app() -> FastAPI:
     app.include_router(system.router, prefix="/api/system", tags=["system"])
     app.include_router(pe.router, prefix="/api/pe", tags=["pe"])
     app.include_router(ntobj.router, prefix="/api/ntobj", tags=["ntobj"])
+    app.include_router(winapi.router, prefix="/api/winapi", tags=["winapi"])
 
     @app.exception_handler(NtlabError)
     async def ntlab_error_handler(_: Request, exc: NtlabError) -> JSONResponse:

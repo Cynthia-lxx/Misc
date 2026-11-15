@@ -17,10 +17,12 @@ import { register, start } from "./router.js";
 import * as home from "./pages/home.js";
 import * as peViewer from "./pages/pe-viewer.js";
 import * as objdir from "./pages/objdir.js";
+import * as playground from "./pages/playground.js";
 
 register("home", home);
 register("pe", peViewer);
 register("objdir", objdir);
+register("playground", playground);
 
 const content = document.getElementById("content");
 start(content);

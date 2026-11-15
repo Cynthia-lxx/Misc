@@ -24,12 +24,13 @@ export async function mount(el) {
         PDB 路径。</p>
         <div class="go">进入 →</div>
       </a>
-      <div class="tool-card" style="opacity:0.55; cursor:default">
-        <div class="ico">◆</div>
-        <h2>WinAPI Playground</h2>
-        <p>白名单内交互式调用 Win32/NT API，实时渲染返回值、GetLastError 与 NTSTATUS。（Phase 2）</p>
-        <div class="go" style="color:var(--ui-text-muted)">敬请期待</div>
-      </div>
+      <a class="tool-card" href="#/playground">
+        <div class="ico">⚡</div>
+        <h2>WinAPI 试验台</h2>
+        <p>白名单内执行 Win32/NT API 调用：队列编排、结果引用、NTSTATUS 与
+        GetLastError 渲染，以及 x86-64 汇编组装。</p>
+        <div class="go">进入 →</div>
+      </a>
     </div>`;
   // stagger the tool cards (grid rhythm: 60ms/card)
   const grid = frag.querySelector(".tool-grid");

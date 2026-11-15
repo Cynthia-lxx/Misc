@@ -179,7 +179,10 @@ export class UiTableElement extends HTMLElement {
             });
             td.appendChild(link);
           } else {
-            td.textContent = String(value);
+            const dim = document.createElement("span");
+            dim.className = "dim";
+            dim.textContent = "—";
+            td.appendChild(dim);
           }
         } else {
           td.textContent = String(value);

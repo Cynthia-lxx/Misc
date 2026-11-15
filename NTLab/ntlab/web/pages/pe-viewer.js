@@ -3,6 +3,17 @@
 import { apiGet, apiPost, apiUpload } from "../api.js";
 import { swapContent } from "../motion.js";
 
+/** WinAPI 试验台白名单（模块级缓存）；导出/导入表据此提供「试验台」跳转。 */
+let _callableNames = null;
+function callableNames() {
+  if (!_callableNames) {
+    _callableNames = apiGet("/api/winapi/catalog")
+      .then((c) => new Set(c.apis.map((a) => a.name)))
+      .catch(() => new Set());
+  }
+  return _callableNames;
+}
+
 const QUICK_FILES = [
   "C:\\Windows\\System32\\ntdll.dll",
   "C:\\Windows\\System32\\kernel32.dll",
@@ -234,6 +245,10 @@ export async function mount(el) {
 
     function onCellActivate(e) {
       const { kind, value } = e.detail;
+      if (kind === "playground") {
+        location.hash = `#/playground?api=${encodeURIComponent(value)}`;
+        return;
+      }
       // linkOf 传来的 value 是数字；字符串则按 hex 解析
       const v = typeof value === "number" ? value : parseInt(String(value), 16);
       if (kind === "dll") openDll(value);
@@ -248,9 +263,9 @@ export async function mount(el) {
       (async () => {
         let t = null;
         const url = (ep) => `/api/pe/${ep}?path=${encodeURIComponent(path)}`;
-        if (v === "imports") t = await tableView(url("imports"), 300, importCols(),
+        if (v === "imports") t = await tableView(url("imports"), 300, importCols(await callableNames()),
           (row) => { if (row.iat_rva != null) navigate("hex", row.iat_rva); }, onCellActivate);
-        else if (v === "exports") t = await tableView(url("exports"), 300, exportCols(),
+        else if (v === "exports") t = await tableView(url("exports"), 300, exportCols(await callableNames()),
           (row) => { if (row.rva) navigate("disasm", row.rva); }, onCellActivate);
         else if (v === "resources") t = await tableView(url("resources"), 300, resCols(), null, onCellActivate);
         else if (v === "signature") t = await signatureView(path);
@@ -737,7 +752,7 @@ async function disasmView(path, startRva = 0, { onOpenDll = null } = {}) {
   return wrap;
 }
 
-function importCols() {
+function importCols(names) {
   return [
     { key: "dll", label: "DLL", type: "link", linkOf: (r) => ({ kind: "dll", value: r.dll }) },
     { key: "function", label: "函数" },
@@ -745,16 +760,18 @@ function importCols() {
     { key: "ordinal", label: "Ordinal", type: "num" },
     { key: "hint", label: "Hint", type: "hex" },
     { key: "iat_rva", label: "IAT RVA", type: "link", linkOf: (r) => ({ kind: "hex", value: r.iat_rva }) },
+    { key: "function", label: "试验台", type: "link", linkOf: (r) => names.has(r.function) ? { kind: "playground", value: r.function } : null },
   ];
 }
 
-function exportCols() {
+function exportCols(names) {
   return [
     { key: "ordinal", label: "Ordinal", type: "num" },
     { key: "name", label: "导出名", type: "mono" },
     { key: "demangled", label: "反修饰名", type: "mono" },
     { key: "rva", label: "RVA", type: "link", linkOf: (r) => ({ kind: "disasm", value: r.rva }) },
     { key: "forwarder", label: "转发" },
+    { key: "name", label: "试验台", type: "link", linkOf: (r) => names.has(r.name) ? { kind: "playground", value: r.name } : null },
   ];
 }
 
