@@ -51,6 +51,9 @@
   animation-timing-function: var(--ease-out-expo);
   animation-fill-mode: both;
 }
+/* mount 期间的暂停态：动画停在第 0 帧（opacity 0），内容就绪后由
+ * enterPage 摘除 .page-waiting 起播 —— 内容绝不先亮后灭 */
+.page-waiting { animation-play-state: paused !important; }
 
 @keyframes ntl-fade-in-up {
   from { opacity: 0; transform: translateY(14px); }

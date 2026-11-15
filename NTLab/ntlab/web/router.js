@@ -24,7 +24,10 @@ export async function render(content) {
   await exitPage(content);
   content.replaceChildren();
   const el = document.createElement("div");
-  el.className = `page page--${name}`;
+  // page-entering 在 mount 之前就挂上并处于 paused（opacity 锁定 0），
+  // 避免 mount 中的中间态（如 loading spinner）以全亮先被绘制、随后又
+  // 被入场动画熄灭重放 —— 那就是用户看到的「入场后闪一下」。
+  el.className = `page page--${name} page-entering page-waiting`;
   content.appendChild(el);
   await page.mount(el);
   enterPage(el);

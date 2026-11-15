@@ -37,11 +37,10 @@ def create_app() -> FastAPI:
     @app.middleware("http")
     async def cache_headers(request: Request, call_next):
         response = await call_next(request)
-        if request.url.path.startswith("/api"):
-            response.headers["Cache-Control"] = "no-store"
-        else:
-            # 静态资源允许缓存但必须先 revalidate（ETag/Last-Modified），避免改版后浏览器吃旧文件
-            response.headers["Cache-Control"] = "no-cache"
+        # 本地单用户工具：一律 no-store。曾因无缓存头的旧条目被 Chrome
+        # 启发式缓存长期复用（不回源 revalidate），导致改版后浏览器吃旧
+        # CSS/JS 排查动效时出现「明明改了却没生效」的假象。
+        response.headers["Cache-Control"] = "no-store"
         return response
 
     # SPA: index at root, everything else static
