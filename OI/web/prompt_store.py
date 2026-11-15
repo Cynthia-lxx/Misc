@@ -2,17 +2,25 @@
 
 Persisted to web/data/prompt_templates.json (UTF-8, no BOM). The active
 template is used by /api/generate as the system prompt; "original" always
-resolves to OI.SYSTEM_PROMPT so it tracks the CLI. Thread-safe via a lock.
+resolves to OI.SYSTEM_PROMPT so it tracks the CLI. Thread-safe via a re-entrant
+lock. Borrowed from Persona_Manager: {{name | fallback}} variable interpolation
+with missing-token visibility, content-hash revisions for optimistic
+concurrency, and server-side variable values.
 """
 from __future__ import annotations
 
+import hashlib
 import json
+import re
 import threading
 import time
 from pathlib import Path
 
 STORE_PATH = Path(__file__).resolve().parent / "data" / "prompt_templates.json"
 _LOCK = threading.RLock()  # re-entrant: create/update/activate/delete call load() while held
+
+_TOKEN_RE = re.compile(r"\{\{\s*([A-Za-z_][A-Za-z0-9_]*)\s*(?:\|\s*(.*?)\s*)?\}\}")
+_TOKEN_RE_NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
 
 # 标准 OI 风格：面向「能 AC、可读、不 UB」的正式题解，而非个人手癖。
 STANDARD_TEMPLATE = """你是一名资深 OI（信息学竞赛）选手。根据题目描述输出一份可以直接编译并通过评测的 C++14 题解。
@@ -21,6 +29,7 @@ STANDARD_TEMPLATE = """你是一名资深 OI（信息学竞赛）选手。根据
 - 输出完整、可直接提交的代码；除用户明确要求外不要解释。
 - 行为以题面为准；读题时先确认数据范围、时空限制与特殊边界，再选算法。
 - 算法必须满足复杂度约束：n ≥ 1e5 时禁止 O(n^2) 及以上；不确定时优先选渐进复杂度更低且实现不易错的方案。
+- 目标语言标准：{{std | C++14}}；若题面要求其他标准（如 C++17/20），以题面为准并保持语法安全子集。
 
 ## 结构与头文件
 - 第一行 #include <bits/stdc++.h>，随后 using namespace std;（竞赛惯例）。
@@ -44,7 +53,7 @@ STANDARD_TEMPLATE = """你是一名资深 OI（信息学竞赛）选手。根据
 - 换行统一 '\\n'，不用 endl；严格按题面格式输出（空格、换行、精度、大小写）。
 
 ## 风格
-- 4 空格缩进，一行一条语句；大括号 K&R（{ 跟随行尾）。
+- {{indent | 4}} 空格缩进，一行一条语句；大括号 K&R（{ 跟随行尾）。
 - 注释只解释「为什么」与算法分块（如 // 离散化、// 建反图），不复述代码；行数越少越贵，可读性优先。
 - 优先朴素正确的实现；确需卡常（快读、手写栈、位运算）时必须注释理由。
 - 禁止保留调试输出（cerr/cout 调试行）、危险宏（#define int long long、#define N 1000005 遮蔽）与死代码。
@@ -58,9 +67,17 @@ STANDARD_TEMPLATE = """你是一名资深 OI（信息学竞赛）选手。根据
 def _defaults() -> dict:
     return {
         "active": "standard",
+        "var_values": {},
         "templates": [
-            {"id": "standard", "name": "标准 OI 风格（推荐）", "builtin": True, "text": STANDARD_TEMPLATE},
-            {"id": "original", "name": "用户原版（OI.py）", "builtin": True, "text": ""},
+            {
+                "id": "standard", "name": "标准 OI 风格（推荐）", "builtin": True,
+                "text": STANDARD_TEMPLATE,
+                "vars": [
+                    {"name": "std", "desc": "语言标准（如 C++14 / C++17）"},
+                    {"name": "indent", "desc": "缩进空格数"},
+                ],
+            },
+            {"id": "original", "name": "用户原版（OI.py）", "builtin": True, "text": "", "vars": []},
         ],
     }
 
@@ -95,6 +112,7 @@ def load() -> dict:
                             "name": str(t.get("name") or t["id"])[:60],
                             "builtin": False,
                             "text": str(t.get("text") or ""),
+                            "vars": _norm_vars(t.get("vars")),
                         }
                     elif t.get("id") in templates and t.get("text"):
                         # keep builtin texts persisted only when non-empty
@@ -102,9 +120,61 @@ def load() -> dict:
                 data["templates"] = list(templates.values())
                 if stored.get("active") in {t["id"] for t in data["templates"]}:
                     data["active"] = stored["active"]
+                if isinstance(stored.get("var_values"), dict):
+                    data["var_values"] = {
+                        str(k): str(v) for k, v in stored["var_values"].items()
+                    }
             except Exception:
                 pass  # corrupt store falls back to defaults, never crashes the API
         return data
+
+
+def _norm_vars(raw) -> list[dict]:
+    """Normalize a vars declaration: accept ['a','b'] or [{'name','desc'}]."""
+    out = []
+    for item in raw or []:
+        if isinstance(item, str):
+            out.append({"name": item, "desc": ""})
+        elif isinstance(item, dict) and item.get("name"):
+            out.append({"name": str(item["name"]), "desc": str(item.get("desc") or "")})
+    return out
+
+
+def revision(text: str) -> str:
+    """Content hash (LF-normalized) for optimistic concurrency, as Persona_Manager."""
+    normalized = (text or "").replace("\r\n", "\n")
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:16]
+
+
+def render_text(text: str, values: dict | None = None) -> tuple[str, list[str]]:
+    """Interpolate {{name | fallback}} tokens.
+
+    Resolution order: provided value → inline fallback → token kept VISIBLE
+    (never silently emptied), and the kept tokens are reported as missing."""
+    values = values or {}
+    missing: list[str] = []
+
+    def _sub(match: re.Match) -> str:
+        name, fallback = match.group(1), match.group(2)
+        value = values.get(name)
+        if value is None or value == "":
+            if fallback:
+                return fallback
+            missing.append(name)
+            return match.group(0)  # keep the raw token visible
+        return str(value)
+
+    rendered = _TOKEN_RE.sub(_sub, text or "")
+    return rendered, missing
+
+
+def tokens_of(text: str) -> list[str]:
+    """All variable names referenced by a template body (order of appearance)."""
+    seen: list[str] = []
+    for match in _TOKEN_RE.finditer(text or ""):
+        if match.group(1) not in seen:
+            seen.append(match.group(1))
+    return seen
 
 
 def _save_locked(data: dict) -> None:
@@ -120,35 +190,72 @@ def resolve_text(template: dict) -> str:
 
 
 def active_text() -> str:
+    rendered, _ = active_rendered()
+    return rendered or _original_text()  # last resort: the CLI prompt
+
+
+def active_rendered() -> tuple[str, list[str]]:
+    """(rendered system prompt, missing tokens) for the active template."""
     data = load()
     for t in data["templates"]:
         if t["id"] == data["active"]:
             text = resolve_text(t)
             if text:
-                return text
-    return _original_text()  # last resort: the CLI prompt
+                return render_text(text, data.get("var_values"))
+    return _original_text(), []
+
+
+def get_var_values() -> dict:
+    return load().get("var_values", {})
+
+
+def set_var_values(values: dict) -> dict:
+    with _LOCK:
+        data = load()
+        merged = dict(data.get("var_values") or {})
+        for key, value in (values or {}).items():
+            name = str(key)
+            if not _TOKEN_RE_NAME.fullmatch(name):
+                continue
+            if value is None or value == "":
+                merged.pop(name, None)  # empty → fall back to inline fallback
+            else:
+                merged[name] = str(value)[:500]
+        data["var_values"] = merged
+        _save_locked(data)
+        return merged
 
 
 def create(name: str, text: str) -> dict:
     with _LOCK:
         data = load()
         tid = "p%d" % int(time.time() * 1000)
-        entry = {"id": tid, "name": (name or "未命名模板")[:60], "builtin": False, "text": text}
+        entry = {
+            "id": tid, "name": (name or "未命名模板")[:60], "builtin": False,
+            "text": text, "vars": [], "revision": revision(text),
+        }
         data["templates"].append(entry)
         data["active"] = tid
         _save_locked(data)
         return entry
 
 
-def update(tid: str, name: str | None, text: str | None) -> dict | None:
+def update(tid: str, name: str | None, text: str | None,
+           base_revision: str | None = None) -> dict | None | str:
+    """Edit a user template. Returns the entry, None if missing/builtin, or
+    'conflict' when base_revision doesn't match the stored content."""
     with _LOCK:
         data = load()
         for t in data["templates"]:
             if t["id"] == tid and not t.get("builtin"):
+                if base_revision is not None and base_revision != t.get("revision"):
+                    return "conflict"
                 if name is not None:
                     t["name"] = (name or t["name"])[:60]
                 if text is not None:
                     t["text"] = text
+                    t["vars"] = _norm_vars(t.get("vars"))
+                    t["revision"] = revision(text)
                 _save_locked(data)
                 return t
         return None

@@ -42,6 +42,39 @@
 .prompt-text:focus { outline: none; border-color: var(--oc-accent); }
 .prompt-text[readonly] { opacity: .75; }
 .ide-ai-ctrl { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+
+/* prompt variables + live preview (borrowed from Persona_Manager) */
+.prompt-vars { flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+.prompt-var {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--oc-panel-2); border: 1px solid var(--oc-line); border-radius: 6px;
+  padding: 4px 8px;
+}
+.prompt-var code { font: 600 11px var(--font-family-mono, monospace); color: var(--oc-accent); cursor: help; }
+.prompt-var input {
+  width: 140px; background: transparent; border: none; border-bottom: 1px dashed var(--oc-line);
+  font-size: 12px; color: var(--oc-text);
+}
+.prompt-var input:focus { outline: none; border-bottom-color: var(--oc-accent); }
+.prompt-preview-wrap {
+  border: 1px solid var(--oc-line); border-radius: var(--corner-radius, 5px);
+  background: color-mix(in srgb, var(--oc-panel-2) 60%, transparent);
+  margin-bottom: 8px; overflow: hidden;
+}
+.prompt-preview-head {
+  padding: 6px 10px; border-bottom: 1px solid var(--oc-line);
+  align-items: center; justify-content: space-between; gap: 8px;
+  font-size: var(--font-size-caption2, 12px); color: var(--oc-text);
+}
+.prompt-preview {
+  margin: 0; padding: 10px 12px; max-height: 220px; overflow: auto;
+  font: 12px/1.6 var(--font-family-mono, monospace); color: var(--oc-text);
+  white-space: pre-wrap; word-break: break-word;
+}
+.prompt-preview mark {
+  background: color-mix(in srgb, var(--state-warning, #ffcc22) 35%, transparent);
+  color: var(--state-warning, #ffcc22); border-radius: 3px; padding: 0 3px;
+}
 .an-limit-hint { font-size: 11px; color: var(--oc-muted); opacity: .8; cursor: help; }
 .an-stdin-row { margin-top: 10px; }
 .an-stdin-row textarea {

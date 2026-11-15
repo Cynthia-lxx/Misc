@@ -184,8 +184,15 @@ class ConsoleHandler(BaseHTTPRequestHandler):
                 return self._json({
                     "ok": True,
                     "active": data["active"],
+                    "var_values": data.get("var_values", {}),
                     "templates": [
-                        {**t, "text": t["text"] if t.get("text") else prompt_store.resolve_text(t)}
+                        {
+                            **t,
+                            "text": t["text"] if t.get("text") else prompt_store.resolve_text(t),
+                            "revision": t.get("revision") or prompt_store.revision(
+                                t["text"] if t.get("text") else prompt_store.resolve_text(t)
+                            ),
+                        }
                         for t in data["templates"]
                     ],
                 })
@@ -280,9 +287,9 @@ class ConsoleHandler(BaseHTTPRequestHandler):
         new_topic = bool(body.get("new_topic"))
 
         with STATE_LOCK:
-            # System prompt = the active style template (prompt_store), with
-            # the CLI prompt as fallback; every request carries it so style
-            # rules also apply to follow-ups.
+            # System prompt = the active style template, variable-interpolated
+            # with stored values (prompt_store), CLI prompt as fallback; every
+            # request carries it so style rules also apply to follow-ups.
             messages = [{"role": "system", "content": prompt_store.active_text()}]
             if new_topic:
                 oi.history.clear()
@@ -457,10 +464,31 @@ class ConsoleHandler(BaseHTTPRequestHandler):
                 str(body.get("id") or ""),
                 body.get("name") if body.get("name") is not None else None,
                 body.get("text") if body.get("text") is not None else None,
+                base_revision=body.get("base_revision"),
             )
+            if updated == "conflict":
+                return self._error("模板已被其他窗口修改（revision 冲突），请重新载入后再保存", 409)
             if updated is None:
                 return self._error("模板不存在或为内置模板", 400)
-            return self._json({"ok": True})
+            return self._json({"ok": True, "revision": updated.get("revision")})
+        if action == "render":
+            # authority-side rendering: preview must match what /api/generate sends
+            data = prompt_store.load()
+            values = data.get("var_values", {})
+            if isinstance(body.get("values"), dict):
+                values = {**values, **{str(k): str(v) for k, v in body["values"].items()}}
+            text = body.get("text")
+            if text is None:
+                tid = str(body.get("id") or data["active"])
+                template = next((t for t in data["templates"] if t["id"] == tid), None)
+                if template is None:
+                    return self._error("模板不存在", 404)
+                text = prompt_store.resolve_text(template)
+            rendered, missing = prompt_store.render_text(text, values)
+            return self._json({"ok": True, "rendered": rendered, "missing": missing})
+        if action == "save_vars":
+            merged = prompt_store.set_var_values(body.get("values") if isinstance(body.get("values"), dict) else {})
+            return self._json({"ok": True, "var_values": merged})
         if action == "activate":
             if not prompt_store.activate(str(body.get("id") or "")):
                 return self._error("模板不存在", 404)

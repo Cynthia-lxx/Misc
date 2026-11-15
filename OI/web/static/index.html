@@ -298,13 +298,22 @@
               </div>
             </div>
             <div class="oc-card">
-              <div class="oc-card-head"><div><h2>提示词模板</h2><p>AI 生成代码使用的风格系统提示词。内置「标准 OI 风格」与你的原版；可编辑副本并另存为自定义模板，随时切换。</p></div></div>
+              <div class="oc-card-head"><div><h2>提示词模板</h2><p>AI 生成代码使用的风格系统提示词。支持 <code>{{变量 | 默认值}}</code> 插值：留空的变量使用内联默认值，缺失变量在预览中高亮可见。</p></div></div>
               <div class="oc-row prompt-ctrl">
                 <select id="prompt-select"></select>
                 <span class="an-limit-hint" id="prompt-active-hint"></span>
               </div>
+              <div class="prompt-vars oc-row" id="prompt-vars"></div>
               <input type="text" id="prompt-name" class="prompt-name" placeholder="模板名称（另存时使用）">
               <textarea id="prompt-text" class="prompt-text" spellcheck="false" placeholder="系统提示词内容…"></textarea>
+              <div class="prompt-preview-wrap">
+                <div class="oc-row prompt-preview-head">
+                  <strong>渲染预览 <span class="an-limit-hint">实时 · 未保存内容也参与</span></strong>
+                  <span class="an-limit-hint" id="prompt-preview-note"></span>
+                  <ui-button id="prompt-copy" label="复制"></ui-button>
+                </div>
+                <pre class="prompt-preview" id="prompt-preview"></pre>
+              </div>
               <div class="oc-row">
                 <ui-button id="prompt-activate" variant="sheared" label="激活此模板"></ui-button>
                 <ui-button id="prompt-save" label="保存修改"></ui-button>
