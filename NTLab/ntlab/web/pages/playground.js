@@ -1,9 +1,3 @@
-/* WinAPI 试验台：白名单调用卡 + 调用队列 + 会话时间线 + x86-64 汇编（仅组装）。
- *
- * 后端白名单见 ntlab/core/winapi.py；参数引用 $N / $N.ret / $N.out.<field>
- * 由运行器在服务端解析。调用在本服务器进程内执行（127.0.0.1 单用户工具）。
- */
-
 import { apiGet, apiPost } from "../api.js";
 import { query } from "../router.js";
 
@@ -18,8 +12,7 @@ const AUTO_PARAM = (p) => p.hidden
   || p.type.startsWith("out:")
   || ["buf", "bin", "outint", "ptr"].includes(p.type);
 
-const hexOf = (v) => `0x${Number(v).toString(16).toUpperCase()}`;
-
+const hexOf = (v) => `0x${Number(v).toString(16).toUpperCase()}`; // eslint-disable-line
 /* ---------------- 脚本解析：每行 Func(arg, …) ---------------- */
 
 function tokenizeArgs(s) {
@@ -65,7 +58,7 @@ function parseScript(text, apis) {
       else if (t === "null") t = null;
       args[p.name] = t;
     });
-    steps.push({ api: spec.name, args, sig: `${spec.name}(${toks.join(", ")})` });
+    steps.push({ kind: "call", api: spec.name, args, sig: `${spec.name}(${toks.join(", ")})` });
   }
   return { steps, errs };
 }
@@ -75,8 +68,8 @@ function parseScript(text, apis) {
 export async function mount(el) {
   el.innerHTML = `
     <div class="page-head">
-      <h1>WinAPI 试验台<span class="page-hint" title="白名单内的 API 在本服务器进程中执行；参数可写 $N / $N.ret / $N.out.字段 引用第 N 步的结果；汇编视图只组装不执行">?</span></h1>
-      <p>白名单调用 · 队列编排 · NTSTATUS / GetLastError 渲染 · x86-64 汇编组装</p>
+      <h1>WinAPI 试验台<span class="page-hint" title="白名单内的 API 在本服务器进程中执行；编排区支持循环/条件/跳出块；参数可写 $N / $N.ret / $N.out.字段 引用第 N 个调用块；汇编视图只组装不执行">?</span></h1>
+      <p>白名单调用 · 积木编排（循环 / 条件 / 跳出） · NTSTATUS / GetLastError 渲染 · x86-64 汇编组装</p>
     </div>
     <div class="playground">
       <div class="pg-left panel">
@@ -86,7 +79,7 @@ export async function mount(el) {
       <div class="pg-right">
         <ui-tabs id="pg-tabs">
           <span data-value="call" label="调用卡"></span>
-          <span data-value="queue" label="队列"></span>
+          <span data-value="queue" label="编排"></span>
           <span data-value="asm" label="汇编"></span>
         </ui-tabs>
         <div class="pg-body" id="pg-body"></div>
@@ -102,34 +95,34 @@ export async function mount(el) {
   const catalogEl = el.querySelector("#pg-catalog");
   const pgLeft = el.querySelector(".pg-left");
 
-  // 左栏 = 队列步骤的「家门口」：拖步骤到这里松手即移除
+  // 左栏 = 编排块的「家门口」：拖块到这里松手即移除
   pgLeft.addEventListener("dragover", (e) => {
     if (![...e.dataTransfer.types].includes("text/pg-move")) return;
     e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
     pgLeft.classList.add("pg-danger");
   });
   pgLeft.addEventListener("dragleave", () => pgLeft.classList.remove("pg-danger"));
   pgLeft.addEventListener("drop", (e) => {
     pgLeft.classList.remove("pg-danger");
-    const from = Number(e.dataTransfer.getData("text/pg-move"));
-    if (!Number.isFinite(from) || !queue[from]) return;
+    let fromPath = null;
+    try { fromPath = JSON.parse(e.dataTransfer.getData("text/pg-move") || "null"); } catch { /* ignore */ }
+    if (!Array.isArray(fromPath)) return;
     e.preventDefault();
-    queue.splice(from, 1);
-    if (editingIdx === from) editingIdx = -1;
-    else if (editingIdx > from) editingIdx--;
+    takeAt(fromPath);
+    if (editingPath === JSON.stringify(fromPath)) editingPath = null;
     showTab("queue");
   });
 
   let selected = null;                       // 当前选中的 spec
-  let queue = [];                            // [{api, args, sig}]
+  let program = [];                          // 编排程序树（块：call/repeat/if/break/continue）
   let session = null;                        // 最近一次执行结果
   let sessions = [];                         // 历史会话（服务端内存）
-  let editingIdx = -1;                       // 队列中正在编辑参数的步骤
+  let editingPath = null;                    // 正在编辑参数的 call 块路径（JSON 字符串）
+  let dragState = null;                      // {arr, idx, mark, markEl}
 
   const specByName = new Map(apis.map((a) => [a.name, a]));
 
-  /** 队列步骤的默认参数：取白名单默认值（出参/自动参数除外）。 */
+  /** 调用块的默认参数：取白名单默认值（出参/自动参数除外）。 */
   function defaultArgs(spec) {
     const args = {};
     for (const p of spec.params) {
@@ -150,15 +143,41 @@ export async function mount(el) {
 
   function paramTooltip(p) {
     const def = p.default != null ? `默认 ${p.default}` : "无默认值";
-    return `${p.name} (${p.type}) — ${p.desc || "无说明"}；${def}；可写 $N / $N.ret / $N.out.字段 引用第 N 步`;
+    return `${p.name} (${p.type}) — ${p.desc || "无说明"}；${def}；可写 $N / $N.ret / $N.out.字段 引用第 N 个调用块`;
   }
 
-  const tab = (value, label) => {
-    const t = document.createElement("span");
-    t.setAttribute("data-value", value);
-    t.setAttribute("label", label);
-    return t;
-  };
+  /* ---- 编排树操作：path = [idx, "body", idx, "then", idx, ...] ---- */
+  function getArr(path) { // path 长度为偶数（不含末端索引）
+    let arr = program;
+    for (let k = 0; k < path.length; k += 2) arr = arr[path[k]][path[k + 1]];
+    return arr;
+  }
+  function takeAt(path) {
+    const parent = path.length === 1 ? program : getArr(path.slice(0, -1));
+    return parent.splice(path[path.length - 1], 1)[0];
+  }
+  /** 程序中第 N 个 call 块（静态编号，DFS 序）。 */
+  function countSlots() {
+    let n = 0;
+    const walk = (nodes) => {
+      if (!Array.isArray(nodes)) return;
+      for (const nd of nodes) {
+        if (nd.kind === "call" || !nd.kind) nd._no = ++n;
+        walk(nd.body); walk(nd.then); walk(nd.else);
+      }
+    };
+    walk(program);
+  }
+  function makeCall(name) {
+    const spec = specByName.get(name);
+    const args = defaultArgs(spec);
+    return { kind: "call", api: name, args, sig: sigOf(name, args) };
+  }
+  function makeBlock(kind) {
+    if (kind === "repeat") return { kind, times: 3, body: [] };
+    if (kind === "if") return { kind, cond: "$1.ret.value == 1", then: [], else: [] };
+    return { kind };  // break / continue
+  }
 
   /* ---- 目录 ---- */
   function renderCatalog(filter = "") {
@@ -178,7 +197,7 @@ export async function mount(el) {
         renderCatalog(filter);
         if (currentTab === "call") swap(renderCallCard());
       });
-      // 拖拽：把 API 拎进右侧队列（拖动开始时自动切到队列标签，让用户看到投放区）
+      // 拖拽：把 API 拎进右侧编排区（拖动开始时自动切到编排标签）
       d.draggable = true;
       d.addEventListener("dragstart", (e) => {
         e.dataTransfer.setData("text/pg-api", a.name);
@@ -242,7 +261,8 @@ export async function mount(el) {
     const d = document.createElement("div");
     d.className = "pg-step-card";
     const head = `<h4>#${idx + 1} ${esc(step.module ?? "")}!${esc(step.api ?? "?")}`
-      + `<span class="dur">${step.duration_ms != null ? `${step.duration_ms} ms` : ""}</span></h4>`;
+      + `<span class="dur">${[step.where, step.duration_ms != null ? `${step.duration_ms} ms` : ""]
+        .filter(Boolean).join(" · ")}</span></h4>`;
     if (step.error) {
       d.innerHTML = head + `<div class="err">${esc(step.error)}</div>`;
       return d;
@@ -264,7 +284,7 @@ export async function mount(el) {
   function renderSession(session) {
     const wrap = document.createElement("div");
     if (!session) {
-      wrap.innerHTML = '<p class="table-meta">尚无执行结果。选择左侧 API，或在队列标签中编排后执行。</p>';
+      wrap.innerHTML = '<p class="table-meta">尚无执行结果。选择左侧 API，或在编排区搭好后执行。</p>';
       return wrap;
     }
     const h = document.createElement("h3");
@@ -307,13 +327,13 @@ export async function mount(el) {
     runBtn.setAttribute("label", "立即执行");
     runBtn.setAttribute("variant", "accent");
     const addBtn = document.createElement("ui-button");
-    addBtn.setAttribute("label", "加入队列");
+    addBtn.setAttribute("label", "加入编排");
     btns.append(runBtn, addBtn);
     panel.appendChild(btns);
 
     const hint = document.createElement("p");
     hint.className = "table-meta";
-    hint.textContent = "参数可写 $N / $N.ret / $N.out.字段 引用队列中第 N 步的结果";
+    hint.textContent = "参数可写 $N / $N.ret / $N.out.字段 引用第 N 个调用块";
     panel.appendChild(hint);
 
     const out = document.createElement("div");
@@ -330,24 +350,23 @@ export async function mount(el) {
     });
     addBtn.addEventListener("click", () => {
       const args = collectArgs(a, panel);
-      const sig = `${a.name}(${Object.entries(args).map(([k, v]) => `${k}=${v}`).join(", ")})`;
-      queue.push({ api: a.name, args, sig });
+      program.push({ kind: "call", api: a.name, args, sig: sigOf(a.name, args) });
       tabsEl.setAttribute("value", "queue");
-      swap(queueView());
+      swap(composeView());
     });
 
     wrap.append(panel, out);
     return wrap;
   }
 
-  /* ---- 队列步骤的紧凑参数编辑器（点击步骤行展开） ---- */
-  function buildEditor(st, i) {
-    const spec = specByName.get(st.api);
+  /* ---- 调用块的紧凑参数编辑器（点击块头展开） ---- */
+  function buildEditor(node, slotNo) {
+    const spec = specByName.get(node.api);
     const ed = document.createElement("div");
     ed.className = "pg-edit";
     const h = document.createElement("span");
     h.className = "pg-edit-h";
-    h.textContent = `编辑 #${i + 1} ${st.api}`;
+    h.textContent = `编辑调用 #${slotNo} ${node.api}`;
     ed.appendChild(h);
     for (const p of spec.params.filter((p) => !AUTO_PARAM(p))) {
       const fld = document.createElement("span");
@@ -356,17 +375,17 @@ export async function mount(el) {
       label.textContent = p.name;
       label.title = paramTooltip(p);
       const input = document.createElement("input");
-      input.value = st.args[p.name] != null ? String(st.args[p.name]) : "";
+      input.value = node.args[p.name] != null ? String(node.args[p.name]) : "";
       input.title = paramTooltip(p);
       input.placeholder = p.desc || p.type;
       input.addEventListener("input", () => {
         const v = input.value.trim();
-        if (v === "") delete st.args[p.name];
-        else st.args[p.name] = v;
-        st.sig = sigOf(st.api, st.args);
-        const row = ed.previousElementSibling;
-        const sigEl = row && row.querySelector(".sig");
-        if (sigEl) sigEl.textContent = st.sig;
+        if (v === "") delete node.args[p.name];
+        else node.args[p.name] = v;
+        node.sig = sigOf(node.api, node.args);
+        const blk = ed.closest(".pg-blk");
+        const sigEl = blk && blk.querySelector(".sig");
+        if (sigEl) sigEl.textContent = node.sig;
       });
       fld.append(label, input);
       ed.appendChild(fld);
@@ -374,148 +393,257 @@ export async function mount(el) {
     return ed;
   }
 
-  /* ---- 队列 ---- */
-  function queueView() {
+  /* ---- 编排（积木式程序树） ---- */
+  function clearDropMarks() {
+    document.querySelectorAll(".pg-drop-before,.pg-drop-after,.pg-into")
+      .forEach((n) => n.classList.remove("pg-drop-before", "pg-drop-after", "pg-into"));
+  }
+  function isProgDrag(e) {
+    return [...e.dataTransfer.types].some((t) => t === "text/pg-api" || t === "text/pg-move");
+  }
+
+  function doDrop(e) {
+    const t = dragState;
+    dragState = null;
+    clearDropMarks();
+    if (!t) return;
+    let node;
+    const apiName = e.dataTransfer.getData("text/pg-api");
+    if (apiName) {
+      node = makeCall(apiName);
+    } else {
+      const fromPath = JSON.parse(e.dataTransfer.getData("text/pg-move"));
+      node = takeAt(fromPath);
+      const fromArr = fromPath.length === 1 ? program : getArr(fromPath.slice(0, -1));
+      const fromIdx = fromPath[fromPath.length - 1];
+      if (fromArr === t.arr && fromIdx < t.idx) t.idx--;
+    }
+    if (node) t.arr.splice(t.idx, 0, node);
+    swap(composeView());
+  }
+
+  /** 通用投放区：getTarget(e) → {arr, idx, mark, markEl}。 */
+  function attachDropZone(el, getTarget) {
+    el.addEventListener("dragover", (e) => {
+      if (!isProgDrag(e)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.dataTransfer.dropEffect = e.dataTransfer.types.includes("text/pg-api") ? "copy" : "move";
+      const t = getTarget(e);
+      if (!t) return;
+      dragState = t;
+      clearDropMarks();
+      t.markEl.classList.add(t.mark);
+    });
+    el.addEventListener("drop", (e) => {
+      if (!isProgDrag(e)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      doDrop(e);
+    });
+  }
+
+  function renderBlock(node, path) {
+    const kind = node.kind || "call";
+    const blk = document.createElement("div");
+    blk.className = "pg-blk pg-" + (kind === "call" ? "call" : kind);
+    blk.dataset.path = JSON.stringify(path);
+    const hd = document.createElement("div");
+    hd.className = "hd";
+    blk.appendChild(hd);
+    const isEditing = editingPath === JSON.stringify(path);
+
+    // 拖拽（块头为手柄）+ 投放判定：上/中/下三分
+    hd.draggable = !isEditing;
+    hd.addEventListener("dragstart", (e) => {
+      e.dataTransfer.setData("text/pg-move", JSON.stringify(path));
+      e.dataTransfer.effectAllowed = "move";
+      blk.classList.add("dragging");
+    });
+    hd.addEventListener("dragend", () => { blk.classList.remove("dragging"); clearDropMarks(); });
+    attachDropZone(blk, (e) => {
+      const rc = blk.getBoundingClientRect();
+      const rel = (e.clientY - rc.top) / rc.height;
+      const last = path[path.length - 1];
+      if (containerKeyFor(node)) {
+        if (rel < 0.3) return { arr: getArr(path.slice(0, -1)), idx: last, mark: "pg-drop-before", markEl: blk };
+        if (rel > 0.7) return { arr: getArr(path.slice(0, -1)), idx: last + 1, mark: "pg-drop-after", markEl: blk };
+        const carr = node[containerKeyFor(node)];
+        return { arr: carr, idx: carr.length, mark: "pg-into", markEl: blk };
+      }
+      const idx = rel < 0.5 ? last : last + 1;
+      const mark = rel < 0.5 ? "pg-drop-before" : "pg-drop-after";
+      return { arr: getArr(path.slice(0, -1)), idx, mark, markEl: blk };
+    });
+
+    if (kind === "call") {
+      hd.innerHTML = `<span class="no">#${node._no}</span><span class="sig">${esc(node.sig)}</span>`;
+      hd.title = "点击编辑参数 · 拖动调整位置 · 拖回左侧列表移除";
+      const del = document.createElement("ui-button");
+      del.setAttribute("label", "移除");
+      del.addEventListener("click", (e) => {
+        e.stopPropagation();
+        takeAt(path);
+        if (editingPath === JSON.stringify(path)) editingPath = null;
+        swap(composeView());
+      });
+      hd.appendChild(del);
+      hd.addEventListener("click", () => {
+        editingPath = isEditing ? null : JSON.stringify(path);
+        swap(composeView());
+      });
+      if (isEditing) blk.appendChild(buildEditor(node, node._no));
+      return blk;
+    }
+
+    if (kind === "repeat") {
+      hd.innerHTML = `<span class="kw">重复</span>`;
+      const inp = document.createElement("input");
+      inp.className = "pg-cond";
+      inp.value = String(node.times ?? 3);
+      inp.title = "循环次数：整数或表达式，可用 $N 引用（如 $2.ret.value）";
+      inp.addEventListener("input", () => { node.times = inp.value.trim(); });
+      hd.append(inp, mkText("次"));
+      blk.appendChild(mkContainer(node, path, "body"));
+      return blk;
+    }
+
+    if (kind === "if") {
+      hd.innerHTML = `<span class="kw">如果</span>`;
+      const inp = document.createElement("input");
+      inp.className = "pg-cond";
+      inp.value = String(node.cond ?? "");
+      inp.title = "条件表达式：比较/逻辑运算（支持 && ||），$N.path 引用，如 $1.ret.value == 1";
+      inp.addEventListener("input", () => { node.cond = inp.value; });
+      hd.appendChild(inp);
+      const thenWrap = document.createElement("div");
+      thenWrap.className = "pg-branch";
+      thenWrap.append(mkText("那么"));
+      thenWrap.appendChild(mkContainer(node, path, "then"));
+      blk.appendChild(thenWrap);
+      if (Array.isArray(node.else)) {
+        const elseWrap = document.createElement("div");
+        elseWrap.className = "pg-branch";
+        elseWrap.append(mkText("否则"));
+        elseWrap.appendChild(mkContainer(node, path, "else"));
+        blk.appendChild(elseWrap);
+      } else {
+        const addElse = document.createElement("ui-button");
+        addElse.setAttribute("label", "+ 否则");
+        addElse.addEventListener("click", () => { node.else = []; swap(composeView()); });
+        blk.appendChild(addElse);
+      }
+      return blk;
+    }
+
+    // break / continue
+    hd.innerHTML = `<span class="kw">${kind === "break" ? "跳出循环" : "下一轮"}</span>`;
+    hd.title = "只能出现在循环块内部";
+    return blk;
+  }
+
+  function containerKeyFor(node) {
+    if (node.kind === "repeat") return "body";
+    if (node.kind === "if") return "then";
+    return null;
+  }
+
+  function mkText(s) {
+    const span = document.createElement("span");
+    span.className = "kw";
+    span.textContent = s;
+    return span;
+  }
+
+  function mkContainer(node, path, key) {
+    const arr = node[key] || [];
+    const body = document.createElement("div");
+    body.className = "pg-blk-body";
+    renderBlocks(arr, body, [...path, key]);
+    if (!arr.length) {
+      const empty = document.createElement("p");
+      empty.className = "table-meta";
+      empty.textContent = "（把块拖到这里）";
+      body.appendChild(empty);
+    }
+    attachDropZone(body, () => ({ arr, idx: arr.length, mark: "pg-into", markEl: body }));
+    return body;
+  }
+
+  function renderBlocks(arr, host, pathPrefix) {
+    arr.forEach((node, i) => host.appendChild(renderBlock(node, [...pathPrefix, i])));
+  }
+
+  function composeView() {
+    countSlots();
     const wrap = document.createElement("div");
     const panel = document.createElement("div");
     panel.className = "panel pg-steps";
     panel.style.marginBottom = "12px";
     const h = document.createElement("h3");
-    h.textContent = `调用队列（${queue.length} 步）`;
+    h.textContent = `编排（${program.length} 个顶层块）`;
     panel.appendChild(h);
 
     const list = document.createElement("div");
-    const clearIndicators = () => list.querySelectorAll(".pg-drop-before, .pg-drop-after")
-      .forEach((n) => n.classList.remove("pg-drop-before", "pg-drop-after"));
-
-    queue.forEach((st, i) => {
-      const row = document.createElement("div");
-      row.className = "step";
-      row.dataset.idx = String(i);
-      row.innerHTML = `<span class="no">#${i + 1}</span><span class="sig">${esc(st.sig)}</span>`;
-      row.title = "点击编辑参数 · 拖动调整顺序 · 拖回左侧列表移除";
-      const del = document.createElement("ui-button");
-      del.setAttribute("label", "移除");
-      del.addEventListener("click", (e) => {
-        e.stopPropagation();
-        queue.splice(i, 1);
-        if (editingIdx === i) editingIdx = -1;
-        else if (editingIdx > i) editingIdx--;
-        swap(queueView());
-      });
-      row.appendChild(del);
-
-      // 拖拽排序（编辑态下不拖）
-      row.draggable = editingIdx !== i;
-      row.addEventListener("dragstart", (e) => {
-        e.dataTransfer.setData("text/pg-move", String(i));
-        e.dataTransfer.effectAllowed = "move";
-        row.classList.add("dragging");
-      });
-      row.addEventListener("dragend", clearIndicators);
-      // 点击行 → 展开/收起紧凑参数编辑器
-      row.addEventListener("click", () => {
-        editingIdx = editingIdx === i ? -1 : i;
-        swap(queueView());
-      });
-      list.appendChild(row);
-
-      if (editingIdx === i) {
-        list.appendChild(buildEditor(st, i));
-      }
-    });
-    if (!queue.length) {
+    renderBlocks(program, list, []);
+    if (!program.length) {
       const empty = document.createElement("p");
       empty.className = "table-meta";
-      empty.textContent = "队列为空：把左侧 API 拖进来、点击步骤编辑参数，或在下方写脚本。";
+      empty.textContent = "编排为空：把左侧 API 拖进来，或用下方工具条加循环/条件块。";
       list.appendChild(empty);
     }
     panel.appendChild(list);
 
-    // ---- 队列列表作为投放区：新增（API）与排序（步骤移动） ----
-    function dropIndex(e) {
-      const rows = [...list.querySelectorAll(".step")];
-      for (const r of rows) {
-        const rc = r.getBoundingClientRect();
-        if (e.clientY < rc.top + rc.height / 2) return Number(r.dataset.idx);
-      }
-      return rows.length;
-    }
-    list.addEventListener("dragover", (e) => {
-      if (![...e.dataTransfer.types].some((t) => t === "text/pg-api" || t === "text/pg-move")) return;
-      e.preventDefault();
-      e.dataTransfer.dropEffect = e.dataTransfer.types.includes("text/pg-api") ? "copy" : "move";
-      clearIndicators();
-      const idx = dropIndex(e);
-      const rows = [...list.querySelectorAll(".step")];
-      const anchor = rows[idx === queue.length ? idx - 1 : idx];
-      if (anchor) anchor.classList.add(idx === queue.length ? "pg-drop-after" : "pg-drop-before");
-    });
-    list.addEventListener("drop", (e) => {
-      e.preventDefault();
-      clearIndicators();
-      const to = dropIndex(e);
-      const apiName = e.dataTransfer.getData("text/pg-api");
-      if (apiName) {
-        const spec = specByName.get(apiName);
-        if (!spec) return;
-        queue.splice(to, 0, { api: apiName, args: defaultArgs(spec), sig: sigOf(apiName, defaultArgs(spec)) });
-        if (editingIdx >= to) editingIdx++;
-        swap(queueView());
-        return;
-      }
-      const from = Number(e.dataTransfer.getData("text/pg-move"));
-      if (Number.isFinite(from) && from !== to) {
-        const [step] = queue.splice(from, 1);
-        const target = from < to ? to - 1 : to;
-        queue.splice(target, 0, step);
-        if (editingIdx === from) editingIdx = target;
-        else if (from < editingIdx && target < editingIdx) editingIdx--;
-        else if (from > editingIdx && target >= editingIdx) editingIdx++;
-        swap(queueView());
-      }
-    });
+    // 根列表 = 投放区（追加到末尾）
+    attachDropZone(list, () => ({ arr: program, idx: program.length, mark: "pg-into", markEl: list }));
 
     const btns = document.createElement("div");
-    btns.style.cssText = "display:flex;gap:8px;margin:10px 0";
+    btns.style.cssText = "display:flex;gap:8px;margin:10px 0;flex-wrap:wrap";
+    const add = (label, kind) => {
+      const b = document.createElement("ui-button");
+      b.setAttribute("label", label);
+      b.addEventListener("click", () => { program.push(makeBlock(kind)); swap(composeView()); });
+      return b;
+    };
     const runBtn = document.createElement("ui-button");
-    runBtn.setAttribute("label", "执行队列");
+    runBtn.setAttribute("label", "执行");
     runBtn.setAttribute("variant", "accent");
     runBtn.addEventListener("click", async () => {
-      if (!queue.length) return;
+      if (!program.length) return;
       try {
-        const s = await apiPost("/api/winapi/run", {
-          calls: queue.map((q) => ({ api: q.api, args: q.args })),
-        });
-        session = s;
+        session = await apiPost("/api/winapi/run", { program });
       } catch (err) {
-        session = { id: "error", steps: [{ api: "queue", error: err.message }], ok: 0, failed: 1 };
+        session = { id: "error", steps: [{ api: "program", error: err.message }], ok: 0, failed: 1 };
       }
-      swap(queueView());
+      swap(composeView());
     });
     const clrBtn = document.createElement("ui-button");
     clrBtn.setAttribute("label", "清空");
-    clrBtn.addEventListener("click", () => { queue = []; session = null; swap(queueView()); });
-    btns.append(runBtn, clrBtn);
+    clrBtn.addEventListener("click", () => { program = []; session = null; editingPath = null; swap(composeView()); });
+    btns.append(
+      runBtn, clrBtn,
+      add("+ 循环", "repeat"), add("+ 条件", "if"),
+      add("+ 跳出", "break"), add("+ 下一轮", "continue"),
+    );
     panel.appendChild(btns);
 
     const scriptLabel = document.createElement("h3");
-    scriptLabel.textContent = "脚本 → 队列（每行一个调用）";
+    scriptLabel.textContent = "脚本 → 编排（每行一个调用，追加到末尾）";
     scriptLabel.style.margin = "14px 0 8px";
     const ta = document.createElement("textarea");
     ta.className = "filter-input";
     ta.style.cssText = "width:100%;height:110px;font-family:var(--ntlab-font-mono,'Cascadia Code',Consolas,'Microsoft YaHei',monospace);resize:vertical";
-    ta.placeholder = "# 每行一个调用；参数可写 $N.ret 引用第 N 步结果\nCreateFileW(C:\\Windows\\win.ini)\nCloseHandle($1.ret)\nMessageBoxW(0, \"队列执行完成\", \"NTLab\", 0x40)";
+    ta.placeholder = "# 每行一个调用；参数可写 $N.ret 引用第 N 个调用块\nCreateFileW(C:\\Windows\\win.ini)\nCloseHandle($1.ret)\nMessageBoxW(0, \"编排执行完成\", \"NTLab\", 0x40)";
     const parseBtn = document.createElement("ui-button");
-    parseBtn.setAttribute("label", "解析并加入队列");
+    parseBtn.setAttribute("label", "解析并加入编排");
     parseBtn.style.marginTop = "8px";
     parseBtn.addEventListener("click", () => {
       const { steps, errs } = parseScript(ta.value, apis);
-      queue.push(...steps);
+      program.push(...steps);
       if (errs.length) {
         session = { id: "脚本解析", steps: errs.map((e) => ({ api: "script", error: e })), ok: 0, failed: errs.length };
       }
-      swap(queueView());
+      swap(composeView());
     });
     panel.append(scriptLabel, ta, parseBtn);
     wrap.appendChild(panel);
@@ -570,10 +698,16 @@ export async function mount(el) {
     currentTab = v;
     tabsEl.setAttribute("value", v);
     if (v === "call") swap(renderCallCard());
-    else if (v === "queue") swap(queueView());
+    else if (v === "queue") swap(composeView());
     else if (v === "asm") swap(asmView());
   }
-  tabsEl.append(tab("call", "调用卡"), tab("queue", "队列"), tab("asm", "汇编"));
+  const tab = (value, label) => {
+    const t = document.createElement("span");
+    t.setAttribute("data-value", value);
+    t.setAttribute("label", label);
+    return t;
+  };
+  tabsEl.append(tab("call", "调用卡"), tab("queue", "编排"), tab("asm", "汇编"));
   tabsEl.addEventListener("ui-select", (e) => showTab(e.detail.value));
 
   /* ---- 会话历史入口 ---- */

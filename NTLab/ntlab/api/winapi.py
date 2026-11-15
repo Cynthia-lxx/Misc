@@ -21,12 +21,20 @@ def catalog() -> dict:
 
 @router.post("/run")
 def run(body: dict) -> dict:
-    """Execute a call queue: body {"calls": [{"api": ..., "args": {...}}, ...]}."""
+    """Execute a program: body {"program": [call/repeat/if/break/continue blocks]}.
+
+    Legacy flat queues {"calls": [{"api", "args"}, ...]} still accepted.
+    """
+    prog = body.get("program")
+    if prog is not None:
+        if not isinstance(prog, list):
+            raise NtlabError("bad_queue", '"program" must be a list of blocks')
+        return winapi.run_program(prog)
     calls = body.get("calls")
     if calls is None and body.get("api"):
         calls = [{"api": body["api"], "args": body.get("args") or {}}]
     if not isinstance(calls, list):
-        raise NtlabError("bad_queue", 'body must contain "calls": [{"api", "args"}, ...]')
+        raise NtlabError("bad_queue", 'body must contain "program" or "calls"')
     return winapi.run_queue(calls)
 
 

@@ -195,25 +195,56 @@ html, body {
 .pg-body { flex: 1; min-height: 0; overflow-y: auto; margin-top: 12px; padding-right: 4px; }
 .pg-card .row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
 .pg-card .row label { font-size: 12px; color: var(--ui-text-muted, #888); flex: 0 0 110px; text-align: right; }
-.pg-steps .step {
-  display: flex; gap: 8px; align-items: center; padding: 5px 8px;
-  border: 1px solid color-mix(in srgb, var(--ui-border) 60%, transparent);
-  border-radius: 6px; margin-bottom: 6px; font-size: 12px;
-  cursor: grab;
+/* 积木块：call 蓝 / repeat 绿 / if 橙 / break·continue 红 */
+.pg-blk { border-radius: 8px; padding: 6px 10px; margin-bottom: 8px; font-size: 12.5px; }
+.pg-blk.call {
+  background: color-mix(in srgb, #4aa3ff 10%, transparent);
+  border: 1px solid color-mix(in srgb, #4aa3ff 35%, transparent);
+  border-left: 3px solid #4aa3ff;
 }
-.pg-steps .step:active { cursor: grabbing; }
-.pg-steps .step.dragging { opacity: 0.35; }
-.pg-steps .step.pg-drop-before { box-shadow: 0 -2px 0 0 var(--ui-accent, #4aa3ff); }
-.pg-steps .step.pg-drop-after { box-shadow: 0 2px 0 0 var(--ui-accent, #4aa3ff); }
+.pg-blk.repeat {
+  background: color-mix(in srgb, #66cc99 10%, transparent);
+  border: 1px solid color-mix(in srgb, #66cc99 35%, transparent);
+  border-left: 3px solid #66cc99;
+}
+.pg-blk.if {
+  background: color-mix(in srgb, #ffcc66 10%, transparent);
+  border: 1px solid color-mix(in srgb, #ffcc66 35%, transparent);
+  border-left: 3px solid #ffcc66;
+}
+.pg-blk.break, .pg-blk.continue {
+  background: color-mix(in srgb, #ff8899 10%, transparent);
+  border: 1px solid color-mix(in srgb, #ff8899 35%, transparent);
+  border-left: 3px solid #ff8899;
+}
+.pg-blk .hd { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; cursor: grab; }
+.pg-blk .hd:active { cursor: grabbing; }
+.pg-blk .hd .no { color: var(--ui-accent, #4aa3ff); font-weight: 700; }
+.pg-blk .kw { color: var(--ui-text-muted, #888); font-weight: 700; }
+.pg-blk .sig { font-family: var(--ntlab-font-mono); min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.pg-blk .pg-cond {
+  width: 170px; font-family: var(--ntlab-font-mono); font-size: 12px;
+  background: var(--ui-surface, #1c1c1c); color: var(--ui-text, #ddd);
+  border: 1px solid var(--ui-border, #333); border-radius: 4px; padding: 3px 6px;
+}
+.pg-blk .pg-cond:focus { border-color: var(--ui-accent); outline: none; }
+.pg-blk.dragging { opacity: 0.35; }
+.pg-blk.pg-into, .pg-blk-body.pg-into { outline: 2px dashed var(--ui-accent, #4aa3ff); outline-offset: 2px; }
+.pg-drop-before { box-shadow: 0 -2px 0 0 var(--ui-accent, #4aa3ff); }
+.pg-drop-after { box-shadow: 0 2px 0 0 var(--ui-accent, #4aa3ff); }
+.pg-blk-body { margin: 8px 0 4px 16px; padding-left: 10px; border-left: 2px solid color-mix(in srgb, var(--ui-border) 70%, transparent); }
+.pg-branch { display: flex; align-items: flex-start; gap: 8px; margin-top: 6px; }
+.pg-branch .kw { font-size: 11px; padding-top: 8px; flex: 0 0 auto; }
+.pg-branch .pg-blk-body { flex: 1; min-width: 0; }
 .pg-left.pg-danger { outline: 2px dashed #ff8899; outline-offset: -4px; }
 .pg-left.pg-danger::after {
-  content: "松手移除该步骤";
+  content: "松手移除该块";
   position: sticky; display: block; text-align: center;
   color: #ff8899; font-size: 12px; padding: 8px 0;
 }
 .pg-edit {
   display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center;
-  padding: 8px 10px; margin: -2px 0 6px;
+  padding: 8px 10px; margin: 6px 0 0;
   border: 1px dashed color-mix(in srgb, var(--ui-accent) 50%, transparent);
   border-radius: 6px;
   background: color-mix(in srgb, var(--ui-accent) 6%, transparent);

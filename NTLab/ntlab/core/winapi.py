@@ -13,7 +13,9 @@ may reference an earlier step's result: "$N" (whole result), "$N.ret" or
 
 from __future__ import annotations
 
+import ast
 import ctypes
+import re
 import time
 import uuid
 from dataclasses import dataclass
@@ -234,6 +236,11 @@ def _resolve_ref(v: Any, refs: list[dict]) -> Any:
             node = node[key]
         else:
             raise NtlabError("bad_ref", f"reference {v!r}: no such key {key!r}")
+    # 终点解包：__raw__ 包装 → 原始值；ctypes 简单类型 → .value
+    if isinstance(node, dict) and "__raw__" in node:
+        node = node["__raw__"]
+    elif hasattr(node, "value") and not isinstance(node, (int, str, bytes, bool)):
+        node = node.value
     return node
 
 
@@ -332,6 +339,20 @@ def _render_ret(spec: ApiSpec, ret: Any) -> Any:
     return ret
 
 
+def _ref_out_view(val: Any) -> Any:
+    """出参 → 可引用树（结构体字段 / 缓冲区文本 / DWORD 原始值）。"""
+    if isinstance(val, ctypes.Structure):
+        return _struct_to_dict(val)
+    if isinstance(val, ctypes.Array) and val._type_ is ctypes.c_wchar:
+        return {"text": val.value, "len_chars": len(val.value)}
+    if isinstance(val, ctypes.Array):
+        raw = bytes(val)[:256]
+        return {"hex": raw.hex(" "), "size": len(raw)}
+    if hasattr(val, "value"):
+        return {"__raw__": int(val.value)}
+    return {"__raw__": val}
+
+
 def run_call(api: str, args: dict[str, Any], refs: list[dict]) -> dict:
     spec = _CATALOG_BY_NAME.get(api)
     if spec is None:
@@ -370,7 +391,7 @@ def run_call(api: str, args: dict[str, Any], refs: list[dict]) -> dict:
     try:
         ret = fn(*cargs)
     except OSError as exc:
-        refs.append({"ret": 0, "out": {}})  # 保持步号对齐
+        refs.append({"ret": {"__raw__": 0}, "out": {}})  # 保持步号对齐
         return {"api": api, "module": spec.module, "args": sent,
                 "error": f"OSError: {exc}", "duration_ms": round((time.perf_counter() - t0) * 1000, 2)}
     step: dict[str, Any] = {
@@ -394,10 +415,13 @@ def run_call(api: str, args: dict[str, Any], refs: list[dict]) -> dict:
             out[name] = {"value": int(val.value)}
     if out:
         step["out"] = out
-    # 运行期引用视图：$N.ret = 原始返回值；$N.out.x = 结构体实例 / 缓冲区
+    # 运行期引用视图：ret = 渲染值 + __raw__（$N.ret 解包原始值，$N.ret.value 取渲染字段）
+    rendered = _render_ret(spec, ret)
+    entry_ret = rendered if isinstance(rendered, dict) else {"text": str(rendered)}
+    entry_ret["__raw__"] = int(ret) if ret is not None else 0
     refs.append({
-        "ret": int(ret) if ret is not None else 0,
-        "out": {name: vals[name] for name in out_names},
+        "ret": entry_ret,
+        "out": {name: _ref_out_view(vals[name]) for name in out_names},
     })
     return step
 
@@ -433,6 +457,194 @@ def run_queue(calls: list[dict]) -> dict:
 
 def sessions() -> list[dict]:
     return list(reversed(_SESSIONS))
+
+
+# ---------------------------------------------------------------- program runner（编排：顺序/选择/循环/跳转）
+
+class _BreakSignal(Exception):
+    pass
+
+
+class _ContinueSignal(Exception):
+    pass
+
+
+# 表达式求值：ast 白名单，杜绝函数调用/属性访问/导入等任意代码
+_EXPR_ALLOWED = (
+    ast.Expression, ast.BoolOp, ast.And, ast.Or,
+    ast.UnaryOp, ast.Not, ast.USub, ast.UAdd,
+    ast.Compare, ast.Eq, ast.NotEq, ast.Lt, ast.LtE, ast.Gt, ast.GtE,
+    ast.BinOp, ast.Add, ast.Sub, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod,
+    ast.Name, ast.Load, ast.Constant,
+)
+
+_REF_EXPR_RE = re.compile(r"\$([0-9]+)((?:\.[A-Za-z_][A-Za-z0-9_]*)*)")
+
+_MAX_PROGRAM_STEPS = 2000
+_MAX_REPEAT = 10000
+
+
+def _eval_expr(code: str, names: dict, what: str) -> Any:
+    try:
+        tree = ast.parse(code, mode="eval")
+    except SyntaxError as exc:
+        raise NtlabError("bad_expr", f"{what}语法错误: {exc}") from exc
+    for node in ast.walk(tree):
+        if not isinstance(node, _EXPR_ALLOWED):
+            raise NtlabError("bad_expr", f"{what}包含不允许的语法 {type(node).__name__}")
+    try:
+        return eval(compile(tree, "<expr>", "eval"), {"__builtins__": {}}, dict(names))
+    except NtlabError:
+        raise
+    except Exception as exc:
+        raise NtlabError("bad_expr", f"{what}求值失败: {exc}") from exc
+
+
+def _bind_expr_refs(expr: str, refs: list[dict]) -> tuple[str, dict]:
+    """把 $N.path 引用预先求值并绑定到合法标识符，返回 (改写后的表达式, 变量表)。"""
+    names: dict[str, Any] = {}
+
+    def repl(m: re.Match) -> str:
+        val = _resolve_ref(m.group(0), refs)
+        var = "ref_" + m.group(1) + (m.group(2).replace(".", "_") if m.group(2) else "")
+        names[var] = val
+        return var
+
+    e = _REF_EXPR_RE.sub(repl, expr)
+    # C 风格逻辑运算符 → Python 关键字（不支持 C 的 ! 取反，请用 not）
+    e = re.sub(r"&&", " and ", e)
+    e = re.sub(r"\|\|", " or ", e)
+    return e, names
+
+
+def _spend(budget: list[int]) -> None:
+    budget[0] -= 1
+    if budget[0] < 0:
+        raise NtlabError(
+            "budget_exceeded",
+            f"程序执行步数超过 {_MAX_PROGRAM_STEPS} 上限（循环失控？）",
+        )
+
+
+def _exec_call_node(node: dict, refs: list[dict], trace: list, where: str) -> None:
+    api = node.get("api")
+    slot = int(node.get("_slot", 0))
+    try:
+        step = run_call(api, node.get("args") or {}, refs)
+        step["where"] = where
+        trace.append(step)
+    except NtlabError as exc:
+        refs.append({"ret": {"__raw__": 0}, "out": {}})
+        trace.append({"api": api, "error": exc.message, "code": exc.code, "where": where})
+    # refs 对齐到该 call 块的静态槽位（循环多轮时覆盖旧结果）
+    entry = refs.pop() if refs else {"ret": {"__raw__": 0}, "out": {}}
+    while len(refs) < slot:
+        refs.append({"ret": {"__raw__": 0}, "out": {}})
+    if slot == len(refs):
+        refs.append(entry)
+    else:
+        refs[slot] = entry
+
+
+def _run_nodes(nodes: Any, refs: list[dict], trace: list, budget: list[int], where: str) -> None:
+    if not isinstance(nodes, list):
+        return
+    for i, node in enumerate(nodes):
+        _spend(budget)
+        if not isinstance(node, dict):
+            raise NtlabError("bad_program", "program 块必须是对象")
+        kind = node.get("kind", "call")
+        here = f"{where}/{i + 1}"
+        if kind == "call":
+            _exec_call_node(node, refs, trace, here)
+        elif kind == "repeat":
+            _run_repeat(node, refs, trace, budget, here)
+        elif kind == "if":
+            _run_if(node, refs, trace, budget, here)
+        elif kind == "break":
+            raise _BreakSignal()
+        elif kind == "continue":
+            raise _ContinueSignal()
+        else:
+            trace.append({"api": kind, "error": f"未知块类型 {kind!r}", "code": "bad_program", "where": here})
+
+
+def _run_repeat(node: dict, refs: list[dict], trace: list, budget: list[int], where: str) -> None:
+    expr = str(node.get("times", 0))
+    code, names = _bind_expr_refs(expr, refs)
+    n = int(_eval_expr(code, names, "repeat 次数"))
+    n = max(0, min(n, _MAX_REPEAT))
+    body = node.get("body")
+    for it in range(1, n + 1):
+        _spend(budget)
+        try:
+            _run_nodes(body, refs, trace, budget, f"{where}×{n}[{it}]")
+        except _ContinueSignal:
+            continue
+        except _BreakSignal:
+            break
+
+
+def _run_if(node: dict, refs: list[dict], trace: list, budget: list[int], where: str) -> None:
+    cond = str(node.get("cond", "")).strip()
+    if not cond:
+        raise NtlabError("bad_expr", "if 块缺少条件表达式")
+    code, names = _bind_expr_refs(cond, refs)
+    truth = bool(_eval_expr(code, names, "if 条件"))
+    branch = node.get("then") if truth else node.get("else")
+    _run_nodes(branch, refs, trace, budget, f"{where}({'then' if truth else 'else'})")
+
+
+def run_program(program: list[dict]) -> dict:
+    """执行编排程序：kind = call / repeat(times, body) / if(cond, then, else) / break / continue。
+
+    $N 引用第 N 个调用块（按程序静态顺序编号；循环多轮时引用该块最近一次的结果）。
+    总执行步数受 _MAX_PROGRAM_STEPS 预算约束，防止死循环拖垮服务器。
+    """
+    if not isinstance(program, list) or not program:
+        raise NtlabError("empty_queue", "program must be a non-empty list of blocks")
+    if len(program) > 256:
+        raise NtlabError("queue_too_long", "program is limited to 256 top-level blocks")
+
+    counter = [0]
+
+    def annotate(nodes: Any) -> None:
+        if not isinstance(nodes, list):
+            return
+        for node in nodes:
+            if not isinstance(node, dict):
+                continue
+            if node.get("kind", "call") == "call":
+                node["_slot"] = counter[0]
+                counter[0] += 1
+            for key in ("body", "then", "else"):
+                annotate(node.get(key))
+
+    annotate(program)
+
+    refs: list[dict] = []
+    trace: list[dict] = []
+    budget = [_MAX_PROGRAM_STEPS]
+    try:
+        _run_nodes(program, refs, trace, budget, "main")
+    except _BreakSignal:
+        trace.append({"api": "break", "error": "break 出现在循环外", "code": "bad_program"})
+    except _ContinueSignal:
+        trace.append({"api": "continue", "error": "continue 出现在循环外", "code": "bad_program"})
+    except NtlabError as exc:
+        trace.append({"api": "program", "error": exc.message, "code": exc.code})
+
+    session = {
+        "id": uuid.uuid4().hex[:12],
+        "ts": time.time(),
+        "steps": trace,
+        "ok": sum(1 for r in trace if "error" not in r),
+        "failed": sum(1 for r in trace if "error" in r),
+    }
+    _SESSIONS.append(session)
+    while len(_SESSIONS) > _SESSIONS_MAX:
+        _SESSIONS.pop(0)
+    return session
 
 
 # ---------------------------------------------------------------- asm (assemble only, never execute)
