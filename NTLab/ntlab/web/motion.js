@@ -44,6 +44,24 @@ if (MOTION_DEBUG) {
       }
     }).observe(content, { subtree: true, attributes: true, attributeFilter: ["class"], attributeOldValue: true });
   }
+  // 透明度_DIP_探针：逐帧采样 .page 与 #content 的 computed opacity，
+  // 若出现「升后降」（亮了又暗）或帧间骤降 >5%，即为闪帧实锤并输出数值
+  let lastPageOp = -1;
+  const sample = () => {
+    const page = document.querySelector("#content .page");
+    if (page) {
+      const op = parseFloat(getComputedStyle(page).opacity);
+      if (Number.isFinite(op)) {
+        if (lastPageOp >= 0 && lastPageOp - op > 0.05) {
+          log(`*** OPACITY-DIP *** ${lastPageOp.toFixed(3)} → ${op.toFixed(3)} on ${tagOf(page)} classes="${page.getAttribute("class")}" style.opacity="${page.style.opacity}" animName=${getComputedStyle(page).animationName} ${ts()}`);
+        }
+        lastPageOp = op;
+      }
+    }
+    if (performance.now() - T0 < 2000) requestAnimationFrame(sample);
+  };
+  requestAnimationFrame(sample);
+
   // 布局位移探针：「闪一下」最常见元凶是 layout shift（如滚动条出现挤压内容）
   if (typeof PerformanceObserver !== "undefined") {
     try {

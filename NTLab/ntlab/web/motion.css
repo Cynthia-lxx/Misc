@@ -194,8 +194,10 @@
  * ================================================================ */
 
 @keyframes ntl-hero-in {
-  from { opacity: 0; transform: translateY(24px); filter: blur(6px); }
-  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+  /* 不用 filter:blur —— filter/opacity 动画会触发合成层提升/降级，
+     动画结束层销毁时文字重新光栅化（AA 切换），视觉上就是一次「闪」 */
+  from { opacity: 0; transform: translateY(24px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 .hero {
   animation-name: ntl-hero-in;

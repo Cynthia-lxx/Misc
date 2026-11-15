@@ -108,12 +108,11 @@ html, body {
   padding: 28px 34px 46px;
 }
 
-.page { max-width: 1180px; margin: 0 auto; animation: page-in 220ms ease-out; }
-
-@keyframes page-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: none; }
-}
+/* .page 的入场动画已全部移交 motion.css（ntl-page-in 编排）。
+ * 历史教训：这里曾残留骨架期的 `animation: page-in 220ms ease-out`，
+ * 它在 .page-entering 摘除后回落生效、从 opacity 0 重放 → 「入场后闪一下」。
+ * 同名/同元素的动画声明只能有一处权威来源。 */
+.page { max-width: 1180px; margin: 0 auto; }
 
 .page-head { margin-bottom: 22px; }
 
