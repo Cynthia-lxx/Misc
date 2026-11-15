@@ -24,9 +24,8 @@ register("objdir", objdir);
 const content = document.getElementById("content");
 start(content);
 
-// sidebar nav stagger + version info
-document.querySelectorAll("#nav a").forEach((a, i) => a.style.setProperty("--ui-index", i));
-
+// version info (nav stagger indices are inlined in index.html —
+// post-hoc JS assignment changes animation-delay and restarts finished nav animations)
 apiGet("/api/system/info").then((info) => {
   const ver = document.getElementById("ver");
   if (ver) ver.textContent = `NTLab v${info.ntlab} · Win build ${info.build}`;

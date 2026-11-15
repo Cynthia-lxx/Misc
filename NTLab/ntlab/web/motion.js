@@ -146,6 +146,13 @@ export function enterPage(el) {
   // .ready 解除 CSS 层的 #content 预隐藏；此刻 page-hidden 仍锁 opacity 0，
   // 动画起播前不会漏亮（含首帧早于模块执行的场景）
   el.closest("#content")?.classList.add("ready");
+  // CSS 符合性探针：page-hidden/visibility 规则若因旧缓存缺失，
+  // 此处 computed opacity 会是 1 —— 直接暴露「JS 新 / CSS 旧」错位
+  if (MOTION_DEBUG) {
+    const cs = getComputedStyle(el);
+    const content = el.closest("#content");
+    dbg(`post-ready computed: page.opacity=${cs.opacity}, content.visibility=${content ? getComputedStyle(content).visibility : "?"} (both must be 0/hidden if css current)`);
+  }
   dbg(".ready added (content still locked by page-hidden)");
   onceOwnAnimation(el, "ntl-page-in", () => {
     el.classList.remove("page-entering", "page-hidden");

@@ -18,9 +18,11 @@
         <span class="brand-name">NTLab</span>
       </div>
       <nav id="nav">
-        <a href="#/" data-route="home"><span class="ico">◈</span><span>首页</span></a>
-        <a href="#/pe" data-route="pe"><span class="ico">▤</span><span>PE 解剖器</span></a>
-        <a href="#/objdir" data-route="objdir"><span class="ico">⌘</span><span>ObjDir</span></a>
+        <!-- --ui-index 内联静态化：JS 事后补写会改 animation-delay，
+             导致已结束的 nav-in 动画重置重放（导航条闪现） -->
+        <a href="#/" data-route="home" style="--ui-index:0"><span class="ico">◈</span><span>首页</span></a>
+        <a href="#/pe" data-route="pe" style="--ui-index:1"><span class="ico">▤</span><span>PE 解剖器</span></a>
+        <a href="#/objdir" data-route="objdir" style="--ui-index:2"><span class="ico">⌘</span><span>ObjDir</span></a>
       </nav>
       <div class="sidebar-foot">
         <span class="tag">read-only</span>
