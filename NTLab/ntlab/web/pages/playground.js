@@ -1039,10 +1039,28 @@ export async function mount(el) {
       + (barPct != null
         ? `<span class="pg-scan-bar"><i style="width:${barPct}%"></i></span>` : "");
     h.addEventListener("click", () => {
-      if (expanded.has(key)) expanded.delete(key); else expanded.add(key);
-      renderCatalog(searchEl.value);
+      // 原地开合（grid 0fr→1fr 过渡），不整树重绘
+      const g = h.closest(".pg-group");
+      if (expanded.has(key)) { expanded.delete(key); g.dataset.open = "false"; h.dataset.open = "false"; }
+      else { expanded.add(key); g.dataset.open = "true"; h.dataset.open = "true"; }
     });
     return h;
+  }
+  /** 可折叠分组容器：header + grid 0fr/1fr body（展开收起带动画）。 */
+  function groupEl(key, label, meta, barPct, build) {
+    const g = document.createElement("div");
+    g.className = "pg-group";
+    g.dataset.key = key;
+    g.dataset.open = String(expanded.has(key));
+    g.appendChild(groupHead(key, label, meta, barPct));
+    const body = document.createElement("div");
+    body.className = "pg-group-body";
+    const inner = document.createElement("div");
+    inner.className = "pg-group-inner";
+    body.appendChild(inner);
+    build(inner);
+    g.appendChild(body);
+    return g;
   }
   /** 分页拉取某 DLL 的导出（每页 100 条，缓存累积到 entry.rows）。 */
   function loadModulePage(name, offset) {
@@ -1063,8 +1081,13 @@ export async function mount(el) {
       .catch(() => { entry.done = true; return entry; })
       .finally(() => { entry.loading = false; });
   }
-  function moduleHead(m) {
+  /** DLL 行：头 + 折叠体；首次展开时按需填充导出（分页）。 */
+  function moduleEl(m) {
     const key = `dll:${m.name}`;
+    const wrap = document.createElement("div");
+    wrap.className = "pg-mod";
+    wrap.dataset.key = key;
+    wrap.dataset.open = String(expanded.has(key));
     const h = document.createElement("button");
     h.type = "button";
     h.className = "pg-mod-h";
@@ -1072,22 +1095,29 @@ export async function mount(el) {
     h.innerHTML = `<span class="chev">▸</span><span class="nm">${esc(m.name)}.dll</span>`
       + `<span class="pg-group-meta">${m.count}</span>`;
     h.addEventListener("click", () => {
-      if (expanded.has(key)) expanded.delete(key); else expanded.add(key);
-      renderCatalog(searchEl.value);
+      if (expanded.has(key)) { expanded.delete(key); wrap.dataset.open = "false"; h.dataset.open = "false"; }
+      else { expanded.add(key); wrap.dataset.open = "true"; h.dataset.open = "true"; fillModule(wrap, m); }
     });
-    return h;
+    const body = document.createElement("div");
+    body.className = "pg-group-body";
+    body.appendChild(Object.assign(document.createElement("div"), { className: "pg-group-inner" }));
+    wrap.append(h, body);
+    if (expanded.has(key)) fillModule(wrap, m);
+    return wrap;
   }
-  /** 已展开 DLL 的导出列表体（分页 + 加载更多按钮）。 */
-  function moduleBody(m, key, q) {
+  /** 就地填充某 DLL 的导出列表（含分页加载更多）。 */
+  function fillModule(wrap, m) {
+    const inner = wrap.querySelector(".pg-group-inner");
+    const key = wrap.dataset.key;
+    const q = searchEl.value.trim().toLowerCase();
     let entry = moduleCache.get(m.name);
     if (!entry) {
+      inner.replaceChildren(Object.assign(document.createElement("div"),
+        { className: "table-meta", textContent: "读取导出表…" }));
       loadModulePage(m.name, 0).then(() => {
-        if (expanded.has(key)) renderCatalog(searchEl.value);
+        if (expanded.has(key)) fillModule(wrap, m);
       });
-      const wait = document.createElement("div");
-      wait.className = "table-meta";
-      wait.textContent = "读取导出表…";
-      return [wait];
+      return;
     }
     const items = [];
     for (const ex of entry.rows) {
@@ -1104,12 +1134,12 @@ export async function mount(el) {
       btn.disabled = entry.loading;
       btn.addEventListener("click", () => {
         loadModulePage(m.name, entry.rows.length).then(() => {
-          if (expanded.has(key)) renderCatalog(searchEl.value);
+          if (expanded.has(key)) fillModule(wrap, m);
         });
       });
       items.push(btn);
     }
-    return items;
+    inner.replaceChildren(...items);
   }
   function exportItem(ex, module, filter) {
     const d = document.createElement("div");
@@ -1137,33 +1167,32 @@ export async function mount(el) {
   }
   function renderCatalog(filter = "") {
     const q = filter.trim().toLowerCase();
-    const out = [];
 
     // 1) 控制流积木
-    out.push(groupHead("control", "控制流", `${CF_BLOCKS.length} 块`));
-    if (expanded.has("control")) {
-      for (const [kind, label, desc] of CF_BLOCKS) {
-        if (q && !label.includes(q) && !kind.includes(q)) continue;
-        const d = document.createElement("div");
-        d.className = `pg-item pg-cf pg-cf-${kind}`;
-        d.innerHTML = `<span class="nm">${label}</span><span class="mod">${desc}</span>`
-          + '<span class="pg-badge">积木</span>';
-        d.title = "拖到右侧编排画布；也可在画布内拖动排序、拖回左栏删除";
-        d.draggable = true;
-        d.addEventListener("dragstart", (e) => {
-          e.dataTransfer.setData("text/pg-block", kind);
-          e.dataTransfer.effectAllowed = "copy";
-          showTab("queue");
-        });
-        out.push(d);
-      }
-    }
+    catalogEl.replaceChildren(
+      groupEl("control", "控制流", `${CF_BLOCKS.length} 块`, null, (inner) => {
+        for (const [kind, label, desc] of CF_BLOCKS) {
+          if (q && !label.includes(q) && !kind.includes(q)) continue;
+          const d = document.createElement("div");
+          d.className = `pg-item pg-cf pg-cf-${kind}`;
+          d.innerHTML = `<span class="nm">${label}</span><span class="mod">${desc}</span>`
+            + '<span class="pg-badge">积木</span>';
+          d.title = "拖到右侧编排画布；也可在画布内拖动排序、拖回左栏删除";
+          d.draggable = true;
+          d.addEventListener("dragstart", (e) => {
+            e.dataTransfer.setData("text/pg-block", kind);
+            e.dataTransfer.effectAllowed = "copy";
+            showTab("queue");
+          });
+          inner.appendChild(d);
+        }
+      }),
+    );
 
     // 2) 已声明签名的 Windows API
     const curated = q ? apis.filter((a) =>
       a.name.toLowerCase().includes(q) || a.module.toLowerCase().includes(q)) : apis;
-    out.push(groupHead("curated", "Windows API", `${curated.length} 个可执行`));
-    if (expanded.has("curated")) {
+    catalogEl.appendChild(groupEl("curated", "Windows API", `${curated.length} 个可执行`, null, (inner) => {
       for (const a of curated) {
         const d = document.createElement("div");
         d.className = "pg-item" + (selected && selected.name === a.name ? " sel" : "");
@@ -1181,9 +1210,9 @@ export async function mount(el) {
           e.dataTransfer.effectAllowed = "copy";
           showTab("queue");
         });
-        out.push(d);
+        inner.appendChild(d);
       }
-    }
+    }));
 
     // 3) 自动发现的 DLL 导出（扫描中增量显示；导出按页懒加载）
     const mods = libModules.filter((m) => !q || m.name.includes(q));
@@ -1192,27 +1221,19 @@ export async function mount(el) {
     const meta = libStatus === "scanning"
       ? `扫描中 ${libProgress.done}/${libProgress.total}`
       : `${libModules.length} DLL · ${libTotalExports} 导出`;
-    out.push(groupHead("dlls", "DLLs", meta, libStatus === "scanning" ? pct : null));
-    if (expanded.has("dlls")) {
+    catalogEl.appendChild(groupEl("dlls", "DLLs", meta, libStatus === "scanning" ? pct : null, (inner) => {
       if (!libModules.length && libStatus === "scanning") {
-        const d = document.createElement("div");
-        d.className = "table-meta";
-        d.textContent = "正在扫描 System32 的 PE 导出表…";
-        out.push(d);
+        inner.appendChild(Object.assign(document.createElement("div"),
+          { className: "table-meta", textContent: "正在扫描 System32 的 PE 导出表…" }));
+        return;
       }
-      for (const m of mods.slice(0, cap)) {
-        out.push(moduleHead(m));
-        const key = `dll:${m.name}`;
-        if (expanded.has(key)) out.push(...moduleBody(m, key, q));
-      }
+      for (const m of mods.slice(0, cap)) inner.appendChild(moduleEl(m));
       if (mods.length > cap) {
-        const more = document.createElement("div");
-        more.className = "table-meta pg-more-hint";
-        more.textContent = `还有 ${mods.length - cap} 个 DLL，输入名称搜索可定位。`;
-        out.push(more);
+        inner.appendChild(Object.assign(document.createElement("div"),
+          { className: "table-meta pg-more-hint",
+            textContent: `还有 ${mods.length - cap} 个 DLL，输入名称搜索可定位。` }));
       }
-    }
-    catalogEl.replaceChildren(...out);
+    }));
   }
   searchEl.addEventListener("input", () => renderCatalog(searchEl.value));
   /** 扫描中的 DLLs 分组头原地刷新（计数 + 进度条），不整树重绘。 */
@@ -1227,31 +1248,34 @@ export async function mount(el) {
   }
   /** 把新到的模块行追加到现有树尾（cap 内），超出只更新提示。 */
   function appendModuleRows(fresh) {
-    const shown = catalogEl.querySelectorAll(".pg-mod-h").length;
+    const dllsInner = catalogEl.querySelector('.pg-group[data-key="dlls"] .pg-group-inner');
+    if (!dllsInner) return;
+    const shown = dllsInner.querySelectorAll(".pg-mod-h").length;
     const room = Math.max(0, MODULE_CAP - shown);
     if (room > 0) {
       const frag = document.createDocumentFragment();
       fresh.slice(0, room).forEach((m, i) => {
-        const h = moduleHead(m);
-        h.classList.add("pg-pop");   // 新行错峰浮入
-        h.style.animationDelay = `${Math.min(i, 12) * 24}ms`;
-        frag.appendChild(h);
+        const w = moduleEl(m);
+        w.classList.add("pg-pop");   // 新行错峰浮入
+        w.style.animationDelay = `${Math.min(i, 12) * 24}ms`;
+        frag.appendChild(w);
       });
-      const hint = catalogEl.querySelector(".pg-more-hint");
-      if (hint) catalogEl.insertBefore(frag, hint); else catalogEl.appendChild(frag);
+      const hint = dllsInner.querySelector(".pg-more-hint");
+      if (hint) dllsInner.insertBefore(frag, hint); else dllsInner.appendChild(frag);
     }
-    syncMoreHint();
+    syncMoreHint(dllsInner);
     updateDllsHead();
   }
-  function syncMoreHint() {
-    const shown = catalogEl.querySelectorAll(".pg-mod-h").length;
-    let hint = catalogEl.querySelector(".pg-more-hint");
+  function syncMoreHint(dllsInner) {
+    if (!dllsInner) return;
+    const shown = dllsInner.querySelectorAll(".pg-mod-h").length;
+    let hint = dllsInner.querySelector(".pg-more-hint");
     const overflow = libModules.length - shown;
     if (overflow > 0 && expanded.has("dlls") && !searchEl.value.trim()) {
       if (!hint) {
         hint = document.createElement("div");
         hint.className = "table-meta pg-more-hint";
-        catalogEl.appendChild(hint);
+        dllsInner.appendChild(hint);
       }
       hint.textContent = `还有 ${overflow} 个 DLL，输入名称搜索可定位。`;
     } else if (hint) hint.remove();
@@ -1517,7 +1541,10 @@ export async function mount(el) {
       if (!isProgDrag(e)) return;
       e.preventDefault();
       e.stopPropagation();
-      e.dataTransfer.dropEffect = e.dataTransfer.types.includes("text/pg-api") ? "copy" : "move";
+      // dropEffect 必须落在 effectAllowed 内，否则 Chrome 判定不可放置：
+      // pg-move 拖动是 move，其余（pg-api/pg-dyn/pg-block）都是 copy
+      e.dataTransfer.dropEffect =
+        e.dataTransfer.types.includes("text/pg-move") ? "move" : "copy";
       const t = getTarget(e);
       if (!t) return;
       dragState = t;

@@ -239,6 +239,15 @@ html, body {
 }
 .pg-group-h[data-open="true"] .chev, .pg-mod-h[data-open="true"] .chev { transform: rotate(90deg); }
 .pg-group-meta { margin-left: auto; font-size: 10px; font-weight: 400; color: var(--ui-text-muted, #888); }
+/* 展开/收起：osu ExpandingContainer 的 grid 0fr→1fr 平滑过渡（不整树重绘） */
+.pg-group-body {
+  display: grid; grid-template-rows: 0fr; opacity: 0;
+  transition: grid-template-rows 320ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+              opacity 220ms var(--ease-out, ease-out);
+}
+.pg-group[data-open="true"] > .pg-group-body,
+.pg-mod[data-open="true"] > .pg-group-body { grid-template-rows: 1fr; opacity: 1; }
+.pg-group-inner { min-height: 0; overflow: hidden; }
 .pg-mod-h .nm { font-family: var(--ntlab-font-mono); }
 .pg-item.pg-export { padding-left: 18px; }
 .pg-item.pg-export.restricted { opacity: .55; }
