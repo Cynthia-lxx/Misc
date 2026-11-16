@@ -38,6 +38,20 @@ function bytesFromB64(b64) {
   return out;
 }
 
+function concatBytes(a, b) {
+  const out = new Uint8Array(a.length + b.length);
+  out.set(a, 0);
+  out.set(b, a.length);
+  return out;
+}
+
+function errBoxEl(message) {
+  const d = document.createElement("div");
+  d.className = "error-box";
+  d.textContent = message;
+  return d;
+}
+
 function utf16leEncode(text) {
   const out = new Uint8Array(text.length * 2);
   const dv = new DataView(out.buffer);
@@ -137,17 +151,83 @@ function dibToIcoBlob(b) {
 
 const IMAGE_TYPES = new Set(["ICON", "BITMAP", "GROUP_ICON", "CURSOR", "GROUP_CURSOR"]);
 
-/** 内容形态：image / text(xml|ini|plain) / hex。 */
+/** 字节 → hex 文本（16 字节/行，空格分隔）。 */
+function hexLines(bytes, limit = 4096) {
+  const n = Math.min(bytes.length, limit);
+  const rows = [];
+  for (let off = 0; off < n; off += 16) {
+    const slice = bytes.subarray(off, Math.min(off + 16, n));
+    rows.push([...slice].map((x) => x.toString(16).padStart(2, "0")).join(" "));
+  }
+  return rows.join("\n");
+}
+
+/** 宽松解析 hex 文本（容忍空白/冒号/逗号）；字节数为奇数时返回 null。 */
+function parseHexText(text) {
+  const h = String(text).toLowerCase().replace(/[^0-9a-f]/g, "");
+  if (!h.length || h.length % 2) return null;
+  const out = new Uint8Array(h.length / 2);
+  for (let i = 0; i < out.length; i++) out[i] = parseInt(h.substr(i * 2, 2), 16);
+  return out;
+}
+
+/** 加载 Blob 为 HTMLImageElement。 */
+function loadImageEl(blob) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("图像解码失败"));
+    img.src = URL.createObjectURL(blob);
+  });
+}
+
+/** ImageData(RGBA) → 32bpp 自底向上 DIB；withMask 时附 AND mask（ICON/CURSOR）。 */
+function encodeDib(imageData, withMask) {
+  const W = imageData.width, H = imageData.height, d = imageData.data;
+  const stride = ((W + 31) >> 5) << 2;             // AND mask 行宽（4B 对齐）
+  const maskBytes = withMask ? stride * H : 0;
+  const buf = new ArrayBuffer(40 + W * 4 * H + maskBytes);
+  const dv = new DataView(buf);
+  dv.setUint32(0, 40, true);                        // biSize
+  dv.setInt32(4, W, true);
+  dv.setInt32(8, withMask ? H * 2 : H, true);       // ICON/CURSOR 的 DIB 高 = 像素 + mask
+  dv.setUint16(12, 1, true);                        // planes
+  dv.setUint16(14, 32, true);                       // bitcount（统一 32bpp BGRA）
+  dv.setUint32(16, 0, true);                        // BI_RGB
+  dv.setUint32(20, W * 4 * H + maskBytes, true);    // sizeImage
+  const u8 = new Uint8Array(buf);
+  let p = 40;
+  for (let y = H - 1; y >= 0; y--) {                // 自底向上
+    for (let x = 0; x < W; x++) {
+      const i = (y * W + x) * 4;
+      u8[p++] = d[i + 2]; u8[p++] = d[i + 1]; u8[p++] = d[i]; u8[p++] = d[i + 3];
+    }
+  }
+  if (withMask) {                                   // AND mask：alpha<128 → 位 1
+    for (let y = H - 1; y >= 0; y--) {
+      for (let x = 0; x < W; x++) {
+        if (d[(y * W + x) * 4 + 3] < 128) u8[p + (x >> 3)] |= (0x80 >> (x & 7));
+      }
+      p += stride;
+    }
+  }
+  return new Uint8Array(buf);
+}
+
+/** 内容形态：image / text(xml|ini|plain) / hex。outFormat = 内联编辑的重编码目标。 */
 function detectView(bytes, typeLabel) {
   if (bytes.length >= 8 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47)
-    return { kind: "image", mime: "image/png" };
+    return { kind: "image", mime: "image/png", outFormat: "png" };
   if (typeLabel === "BITMAP") {
     const dib = parseDib(bytes);
-    if (dib) return { kind: "image", blob: dibToBmpBlob(bytes) };
+    if (dib) return { kind: "image", blob: dibToBmpBlob(bytes), outFormat: "dib-bmp" };
   }
   if (typeLabel === "ICON" || typeLabel === "CURSOR") {
     const dib = parseDib(bytes);
-    if (dib) return { kind: "image", blob: dibToIcoBlob(bytes) };
+    if (dib) return {
+      kind: "image", blob: dibToIcoBlob(bytes),
+      outFormat: typeLabel === "CURSOR" ? "dib-cursor" : "dib-icon",
+    };
   }
   const t = tryText(bytes);
   if (t) {
@@ -441,47 +521,73 @@ export async function mount(el) {
       showLeaf(currentLeafId);
     });
 
+    const body = document.createElement("div");
+    const enterEdit = (builder) => {
+      const orig = [...body.children];
+      const cancel = () => body.replaceChildren(...orig);
+      body.replaceChildren(builder(cancel));
+    };
     ops.append(dl, rep, undo);
     head.append(title, info, ops);
     previewEl.appendChild(head);
+    previewEl.appendChild(body);
 
     if (view.kind === "image") {
       if (view.blob || view.mime) {
-        const url = view.blob ? URL.createObjectURL(view.blob)
-          : URL.createObjectURL(new Blob([bytes], { type: view.mime }));
+        const blob = view.blob || new Blob([bytes], { type: view.mime });
+        const url = URL.createObjectURL(blob);
         const img = document.createElement("img");
         img.className = "resed-img";
         img.src = url;
         img.onload = () => {
           info.textContent += ` · ${img.naturalWidth}×${img.naturalHeight}`;
         };
-        previewEl.appendChild(img);
+        body.appendChild(img);
         const note = document.createElement("p");
         note.className = "table-meta";
         note.textContent = meta.type === "BITMAP" ? "（裸 DIB 已包上 BMP 文件头渲染）"
           : "（资源数据按图标/位图渲染）";
-        previewEl.appendChild(note);
+        body.appendChild(note);
+        if (view.outFormat) {
+          const ed = document.createElement("a");
+          ed.href = "#"; ed.textContent = "编辑图像";
+          ed.addEventListener("click", (e) => {
+            e.preventDefault();
+            enterEdit((cancel) => makeImageEditor(meta, blob, view.outFormat, bytes, cancel));
+          });
+          ops.appendChild(ed);
+        }
       } else {
-        appendHex(previewEl, bytes, "（无法解析为图像）");
+        appendHex(body, bytes, "（无法解析为图像）");
       }
     } else if (view.kind === "text") {
       const pre = document.createElement("pre");
       pre.className = "resed-hl";
       pre.innerHTML = highlightMarkup(view.text, view.hl);
-      previewEl.appendChild(pre);
-      const editBar = document.createElement("div");
-      editBar.className = "resed-editbar";
-      const editBtn = document.createElement("button");
-      editBtn.type = "button";
-      editBtn.className = "ntl-action-btn";
-      editBtn.textContent = "编辑文本";
-      editBtn.addEventListener("click", () => {
-        editBar.replaceChildren(makeEditor(meta, view.text, view.utf16));
+      body.appendChild(pre);
+      const ed = document.createElement("a");
+      ed.href = "#"; ed.textContent = "编辑文本";
+      ed.addEventListener("click", (e) => {
+        e.preventDefault();
+        enterEdit((cancel) => makeTextEditor(meta, view.text, view.utf16, view.hl, cancel));
       });
-      editBar.appendChild(editBtn);
-      previewEl.appendChild(editBar);
+      ops.appendChild(ed);
     } else {
-      appendHex(previewEl, bytes);
+      appendHex(body, bytes);
+      if (bytes.length <= 4096) {
+        const ed = document.createElement("a");
+        ed.href = "#"; ed.textContent = "Hex 编辑";
+        ed.addEventListener("click", (e) => {
+          e.preventDefault();
+          enterEdit((cancel) => makeHexEditor(meta, bytes, cancel));
+        });
+        ops.appendChild(ed);
+      } else {
+        const hint = document.createElement("span");
+        hint.className = "resed-trunc";
+        hint.textContent = "（二进制过大，Hex 编辑仅限 ≤ 4 KB；可导出后用外部工具改，或从文件替换）";
+        ops.appendChild(hint);
+      }
     }
   }
 
@@ -498,30 +604,232 @@ export async function mount(el) {
     container.appendChild(box);
   }
 
-  function makeEditor(meta, text, utf16) {
-    const wrap = document.createElement("div");
-    wrap.className = "resed-editor";
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    ta.spellcheck = false;
+  function editBarEl(applyLabel, onApply, cancel) {
     const bar = document.createElement("div");
     bar.className = "resed-editbar";
     const apply = document.createElement("button");
     apply.type = "button";
     apply.className = "ntl-action-btn";
-    apply.textContent = "应用为资源内容";
-    const cancel = document.createElement("button");
-    cancel.type = "button";
-    cancel.className = "ntl-action-btn";
-    cancel.textContent = "取消";
-    cancel.addEventListener("click", () => showLeaf(currentLeafId));
-    apply.addEventListener("click", () => {
+    apply.textContent = applyLabel;
+    apply.addEventListener("click", onApply);
+    const cancelBtn = document.createElement("button");
+    cancelBtn.type = "button";
+    cancelBtn.className = "ntl-action-btn";
+    cancelBtn.textContent = "取消";
+    cancelBtn.addEventListener("click", cancel);
+    bar.append(apply, cancelBtn);
+    return bar;
+  }
+
+  function makeTextEditor(meta, text, utf16, hl, cancel) {
+    const wrap = document.createElement("div");
+    const hlWrap = document.createElement("div");
+    hlWrap.className = "resed-hlwrap";
+    const pre = document.createElement("pre");
+    pre.innerHTML = highlightMarkup(text, hl);
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.spellcheck = false;
+    const sync = () => {
+      pre.scrollTop = ta.scrollTop;
+      pre.scrollLeft = ta.scrollLeft;
+    };
+    ta.addEventListener("input", () => {
+      pre.innerHTML = highlightMarkup(ta.value, hl);
+      sync();
+    });
+    ta.addEventListener("scroll", sync);
+    hlWrap.append(pre, ta);
+    const note = document.createElement("p");
+    note.className = "table-meta";
+    note.textContent = "应用后进入暂存区，仍需「保存」或「另存为」才写盘。";
+    wrap.append(hlWrap, editBarEl("应用为资源内容", () => {
       const bytes = utf16 ? utf16leEncode(ta.value)
         : new TextEncoder().encode(ta.value);
       stageReplace(meta, bytes, utf16 ? "UTF-16LE 文本" : "UTF-8 文本");
+    }, cancel), note);
+    return wrap;
+  }
+
+  function makeHexEditor(meta, bytes, cancel) {
+    const wrap = document.createElement("div");
+    const ta = document.createElement("textarea");
+    ta.className = "resed-editor";
+    ta.style.display = "block";
+    ta.value = hexLines(bytes);
+    ta.spellcheck = false;
+    const mirror = document.createElement("div");
+    mirror.className = "resed-hl";
+    const stat = document.createElement("p");
+    stat.className = "table-meta";
+    const refresh = () => {
+      const parsed = parseHexText(ta.value);
+      if (parsed) {
+        stat.textContent = `解析：${parsed.length} 字节（原 ${bytes.length}；字节数允许变化）`;
+        const LIMIT = 512;
+        const n = Math.min(parsed.length, LIMIT);
+        let s = "";
+        for (let i = 0; i < n; i++) {
+          const c = parsed[i];
+          s += (c >= 32 && c < 127) ? String.fromCharCode(c) : ".";
+          if ((i & 63) === 63) s += "\n";
+        }
+        mirror.textContent = s + (parsed.length > LIMIT ? `\n…（共 ${parsed.length} 字节）` : "");
+        mirror.style.display = "";
+      } else {
+        stat.textContent = "解析失败：hex 字符数为奇数或不含有效 hex";
+        mirror.style.display = "none";
+      }
+    };
+    ta.addEventListener("input", refresh);
+    refresh();
+    wrap.append(ta, stat, mirror, editBarEl("应用为资源内容", () => {
+      const parsed = parseHexText(ta.value);
+      if (!parsed) return alert("hex 解析失败：请检查格式（每字节两位十六进制）");
+      stageReplace(meta, parsed, "Hex 编辑");
+    }, cancel));
+    return wrap;
+  }
+
+  /** 图像编辑器（Mask Editor 式）：画布叠加涂抹层，左键画 / 右键擦。 */
+  function makeImageEditor(meta, blob, outFormat, origBytes, cancel) {
+    const wrap = document.createElement("div");
+    const base = document.createElement("canvas");
+    const ovl = document.createElement("canvas");
+    ovl.className = "ovl";
+    const wrapBox = document.createElement("div");
+    wrapBox.className = "resed-canvas-wrap";
+    wrapBox.append(base, ovl);
+    let brush = 6;
+    let color = "#ff4455";
+    const undoStack = [];
+    const tools = document.createElement("div");
+    tools.className = "resed-imgtools";
+    const swatches = ["#ff4455", "#ffffff", "#000000", "#44ff88"];
+    const swEls = swatches.map((c, i) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "swatch" + (i === 0 ? " sel" : "");
+      b.style.background = c;
+      b.title = c;
+      b.addEventListener("click", () => {
+        color = c;
+        swEls.forEach((x) => x.classList.remove("sel"));
+        b.classList.add("sel");
+      });
+      return b;
     });
-    bar.append(apply, cancel);
-    wrap.append(ta, bar);
+    const sizeLabel = document.createElement("span");
+    sizeLabel.textContent = `笔刷 ${brush}px`;
+    const size = document.createElement("input");
+    size.type = "range";
+    size.min = 2; size.max = 48; size.value = brush;
+    size.addEventListener("input", () => {
+      brush = Number(size.value);
+      sizeLabel.textContent = `笔刷 ${brush}px`;
+    });
+    const undoBtn = document.createElement("button");
+    undoBtn.type = "button";
+    undoBtn.className = "ntl-action-btn";
+    undoBtn.textContent = "撤销";
+    const clearBtn = document.createElement("button");
+    clearBtn.type = "button";
+    clearBtn.className = "ntl-action-btn";
+    clearBtn.textContent = "清空涂抹";
+    tools.append(...swEls, sizeLabel, size, undoBtn, clearBtn);
+
+    (async () => {
+      const img = await loadImageEl(blob);
+      base.width = ovl.width = img.naturalWidth;
+      base.height = ovl.height = img.naturalHeight;
+      base.getContext("2d").drawImage(img, 0, 0);
+    })().catch((err) => {
+      wrap.replaceChildren(errBoxEl(err.message));
+    });
+
+    const pos = (e) => {
+      const r = ovl.getBoundingClientRect();
+      return {
+        x: (e.clientX - r.left) * (ovl.width / r.width),
+        y: (e.clientY - r.top) * (ovl.height / r.height),
+      };
+    };
+    const snapshot = () => {
+      undoStack.push(ovl.getContext("2d").getImageData(0, 0, ovl.width, ovl.height));
+      if (undoStack.length > 25) undoStack.shift();
+    };
+    const stroke = (from, to, erase) => {
+      const ctx = ovl.getContext("2d");
+      ctx.save();
+      ctx.globalCompositeOperation = erase ? "destination-out" : "source-over";
+      const paint = erase ? "rgba(0,0,0,1)" : color + "8c";
+      ctx.strokeStyle = paint;
+      ctx.lineWidth = brush;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      ctx.moveTo(from.x, from.y);
+      ctx.lineTo(to.x, to.y);
+      ctx.stroke();
+      ctx.restore();
+    };
+    let drawing = false;
+    let eraseMode = false;
+    let last = null;
+    ovl.addEventListener("pointerdown", (e) => {
+      if (!ovl.width) return;
+      drawing = true;
+      eraseMode = e.button === 2;
+      ovl.setPointerCapture(e.pointerId);
+      snapshot();
+      last = pos(e);
+      stroke(last, last, eraseMode);
+    });
+    ovl.addEventListener("pointermove", (e) => {
+      if (!drawing) return;
+      const p = pos(e);
+      stroke(last, p, eraseMode);
+      last = p;
+    });
+    ovl.addEventListener("pointerup", () => { drawing = false; });
+    ovl.addEventListener("contextmenu", (e) => e.preventDefault());
+    undoBtn.addEventListener("click", () => {
+      const s = undoStack.pop();
+      if (s) ovl.getContext("2d").putImageData(s, 0, 0);
+    });
+    clearBtn.addEventListener("click", () => {
+      snapshot();
+      ovl.getContext("2d").clearRect(0, 0, ovl.width, ovl.height);
+    });
+
+    const note = document.createElement("p");
+    note.className = "table-meta";
+    note.textContent = "左键涂抹 / 右键擦除；应用时合并进原图。"
+      + (outFormat.startsWith("dib") ? "保存时重编码为 32bpp BGRA DIB（原位深不保留）。" : "");
+
+    const onApply = async () => {
+      if (!ovl.width) return alert("图像尚未加载完成");
+      const merged = document.createElement("canvas");
+      merged.width = ovl.width;
+      merged.height = ovl.height;
+      const ctx = merged.getContext("2d");
+      ctx.drawImage(base, 0, 0);
+      ctx.drawImage(ovl, 0, 0);
+      let bytes2;
+      if (outFormat === "png") {
+        const blob2 = await new Promise((res) => merged.toBlob(res, "image/png"));
+        bytes2 = new Uint8Array(await blob2.arrayBuffer());
+      } else {
+        const data = ctx.getImageData(0, 0, merged.width, merged.height);
+        const dib = encodeDib(data, outFormat !== "dib-bmp");
+        bytes2 = outFormat === "dib-cursor"
+          ? concatBytes(origBytes.subarray(0, 4), dib)   // 保留 hotspot 2 word
+          : dib;
+      }
+      stageReplace(meta, bytes2,
+        outFormat === "png" ? "画布编辑 → PNG" : "画布编辑 → 32bpp DIB");
+    };
+    wrap.append(tools, wrapBox, note, editBarEl("应用为资源内容", onApply, cancel));
     return wrap;
   }
 
