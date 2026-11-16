@@ -133,35 +133,83 @@ def _scan() -> None:
         _STATE["status"] = "ready"
         _STATE["built_at"] = time.time()
         _STATE["done"] = len(files)
+        modules_snapshot = dict(_STATE["modules"])
+        built_at = _STATE["built_at"]
+    try:
+        from ntlab.core import userdb
+        userdb.save_library(modules_snapshot, built_at)   # 缓存整库，重启免扫描
+    except Exception:
+        pass  # 缓存失败不影响库可用性
 
 
 def start_scan(force: bool = False) -> dict:
-    """启动后台扫描；已在扫描中则直接返回进度。"""
+    """idle 时优先从用户数据库载入缓存；无缓存或 force 才启动后台扫描。
+
+    注意：_LOCK 不可重入——锁内一律调用 _status_locked()，不得调用 status()。
+    """
     global _WORKER
     with _LOCK:
         if _STATE["status"] == "scanning":
-            return status()
+            return _status_locked()
         if _STATE["status"] == "ready" and not force:
-            return status()
+            return _status_locked()
+        if _STATE["status"] == "idle" and not force and _load_cached_library():
+            return _status_locked()
         _STATE.update(status="scanning", done=0, total=0, error=None)
         _WORKER = threading.Thread(target=_scan, name="ntlab-pe-library-scan", daemon=True)
         _WORKER.start()
-    return status()
+    return _status_locked()
+
+
+def _load_cached_library() -> bool:
+    """从 user.db 载入导出库缓存到 _STATE；成功返回 True。"""
+    try:
+        from ntlab.core import userdb
+        modules = userdb.load_library()
+    except Exception:
+        return False
+    if not modules:
+        return False
+    by_name: dict[str, list] = {}
+    module_list = []
+    total = 0
+    for name, m in modules.items():
+        module_list.append({"name": name, "path": m["path"], "count": m["count"],
+                            "dll_name": m.get("dll_name")})
+        total += m["count"]
+        for item in m["exports"]:
+            by_name.setdefault(item["name"].lower(), []).append((name, item))
+    module_list.sort(key=lambda x: x["name"])
+    built = 0.0
+    try:
+        from ntlab.core import userdb
+        built = userdb.library_built_at() or 0.0
+    except Exception:
+        pass
+    _STATE.update(modules=modules, module_list=module_list, by_name=by_name,
+                  total_exports=total, status="ready", built_at=built,
+                  done=len(module_list), total=len(module_list))
+    return True
 
 
 def status(since: int = 0) -> dict:
     """库状态。`since` 为客户端已收到的模块数，返回其后的增量清单（分页拉取）。"""
     with _LOCK:
-        ml = _STATE["module_list"]
-        return {
-            "status": _STATE["status"],
-            "progress": {"done": _STATE["done"], "total": _STATE["total"]},
-            "total_modules": len(ml),
-            "modules": ml[max(0, since):],
-            "total_exports": _STATE["total_exports"],
-            "built_at": _STATE["built_at"],
-            "error": _STATE["error"],
-        }
+        return _status_locked(since)
+
+
+def _status_locked(since: int = 0) -> dict:
+    """status() 的持锁版本（调用方必须已持有 _LOCK）。"""
+    ml = _STATE["module_list"]
+    return {
+        "status": _STATE["status"],
+        "progress": {"done": _STATE["done"], "total": _STATE["total"]},
+        "total_modules": len(ml),
+        "modules": ml[max(0, since):],
+        "total_exports": _STATE["total_exports"],
+        "built_at": _STATE["built_at"],
+        "error": _STATE["error"],
+    }
 
 
 def module_exports(name: str, offset: int = 0, limit: int = 0) -> dict:

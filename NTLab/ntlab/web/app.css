@@ -248,6 +248,36 @@ html, body {
 .pg-group[data-open="true"] > .pg-group-body,
 .pg-mod[data-open="true"] > .pg-group-body { grid-template-rows: 1fr; opacity: 1; }
 .pg-group-inner { min-height: 0; overflow: hidden; }
+/* 汇编高亮：透明 textarea 叠在高亮 pre 上（同一字体/行高保证光标对齐） */
+.asm-editor { position: relative; }
+.asm-editor pre, .asm-editor textarea {
+  margin: 0; padding: 8px 10px;
+  font: 12.5px/1.55 var(--ntlab-font-mono, "Cascadia Code", Consolas, "Microsoft YaHei", monospace);
+  white-space: pre; word-wrap: normal; tab-size: 4; box-sizing: border-box;
+}
+.asm-editor pre {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+  color: var(--ui-text, #eee);
+}
+.asm-editor textarea {
+  position: relative; display: block; width: 100%;
+  background: transparent; color: transparent; caret-color: var(--ui-text, #eee);
+  border: 1px solid var(--ui-border); border-radius: 8px;
+  overflow: auto;
+}
+.asm-editor textarea:focus { border-color: var(--ui-accent); outline: none; }
+.asm-editor textarea::selection {
+  background: color-mix(in srgb, var(--ui-accent) 35%, transparent);
+}
+.a-cmt { color: #6b7a8d; font-style: italic; }
+.a-lbl { color: #ffcc66; font-weight: 600; }
+.a-dir { color: #c792ea; }
+.a-mn  { color: #4aa3ff; font-weight: 600; }
+.a-api { color: #7fd0ff; }
+.a-reg { color: #56d4bc; }
+.a-num { color: #ff9e64; }
+.a-str { color: #a5e075; }
+.a-ref { color: #f07178; }
 .pg-mod-h .nm { font-family: var(--ntlab-font-mono); }
 .pg-item.pg-export { padding-left: 18px; }
 .pg-item.pg-export.restricted { opacity: .55; }

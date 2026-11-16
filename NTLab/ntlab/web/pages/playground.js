@@ -1,6 +1,37 @@
-import { apiGet, apiPost } from "../api.js";
+import { apiGet, apiPost, apiSend } from "../api.js";
 import { query } from "../router.js";
 import { swapContent, motionScale, assignIndices } from "../motion.js";
+
+/** 汇编语法高亮：逐行 token 化为 HTML（注释/标签/伪指令/助记符/寄存器/立即数/引用）。 */
+function highlightAsm(src) {
+  const MN = "mov|lea|call|xor|cmp|test|jmp|j[a-z]{1,3}|push|pop|sub|add|imul|neg|cqo|idiv|dec|ret|nop";
+  const TOKEN = new RegExp(
+    '("(?:[^"\\\\]|\\\\.)*")'                       // 1 字符串
+    + "|\\b(BITS|default|section|global|align|db|dw|du|times)\\b"  // 2 伪指令
+    + "|\\b(" + MN + ")\\b"                          // 3 助记符
+    + "|\\b(0x[0-9A-Fa-f]+|\\d+)\\b"                 // 4 立即数
+    + "|\\b((?:slot|buf|str|mod|modp)_\\d+[\\w]*)\\b" // 5 引用标签
+    + "|\\b(r[a-z0-9]{1,3}|e[a-z]{2})\\b"            // 6 寄存器
+    + "|(\\.[\\w$]+:|[\\w$]+:)"                      // 7 标签定义
+    + "|(\\.[\\w$]+)"                                // 8 跳转目标
+    , "gi");
+  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return src.split("\n").map((line) => {
+    let code = line;
+    let cmt = "";
+    const ci = line.indexOf(";");
+    if (ci >= 0) { code = line.slice(0, ci); cmt = line.slice(ci); }
+    let html = esc(code).replace(TOKEN, (m, str, dir, mn, num, ref, reg, lbl, tgt) => {
+      const cls = str ? "a-str" : dir ? "a-dir" : mn ? "a-mn" : num ? "a-num"
+        : ref ? "a-ref" : reg ? "a-reg" : lbl ? "a-lbl" : tgt ? "a-ref" : "";
+      return cls ? `<span class="${cls}">${m}</span>` : m;
+    });
+    html = html.replace(/(<span class="a-mn">call<\/span>)(\s+)([\w.?@]+)/,
+      '$1$2<span class="a-api">$3</span>');
+    if (cmt) html += `<span class="a-cmt">${esc(cmt)}</span>`;
+    return html;
+  }).join("\n");
+}
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({
@@ -260,6 +291,7 @@ function programToAsm(prog, specOf) {
     const spec = specOf(node.api, node.module);
     const params = spec ? spec.params : [];
     if (node.module) dataLines.push(`mod_${m.n}: du "${node.module}", 0`);
+    if (node.path) dataLines.push(`modp_${m.n}: du "${node.path}", 0`);
     emit(`; [${m.n}] ${node.sig || `${node.api}()`}`);
     for (let i = 0; i < Math.min(params.length, 4); i++) {
       const p = params[i];
@@ -434,11 +466,14 @@ function asmToProgram(text, specOf) {
   const strByLabel = new Map();
   let inData = false;
   const modBySlot = new Map();
+  const pathBySlot = new Map();
   for (const { t } of lines) {
     if (/^section\b/.test(t)) { inData = /\bdata\b/.test(t); continue; }
     if (!inData || !t) continue;
     let m = t.match(/^(mod_\d+):\s*du\s+"(.*)",\s*0$/);
     if (m) { modBySlot.set(m[1], m[2]); continue; }
+    m = t.match(/^(modp_\d+):\s*du\s+"(.*)",\s*0$/);
+    if (m) { pathBySlot.set(m[1], m[2]); continue; }
     m = t.match(/^(str_\d+):\s*du\s+"(.*)",\s*0$/);
     if (m) { strByLabel.set(m[1], m[2]); continue; }
     m = t.match(/^(str_\d+):\s*dw\s+(.+)$/);
@@ -644,6 +679,8 @@ function asmToProgram(text, specOf) {
     }
     const node = { kind: "call", api, args };
     if (module) node.module = module;
+    const pth = pathBySlot.get(`modp_${n}`);
+    if (pth) node.path = pth;
     return { node, idx: j + 1 };
   }
 
@@ -922,7 +959,11 @@ export async function mount(el) {
     asmErr = null;
     if (currentTab === "asm") {
       const ta = document.getElementById("pg-asm-ta");
-      if (ta) ta.value = asmText;
+      if (ta) {
+        ta.value = asmText;
+        const pre = document.getElementById("pg-asm-hl");
+        if (pre) pre.innerHTML = highlightAsm(asmText) + "\n";
+      }
     }
     updateAsmStatus();
   }
@@ -1405,8 +1446,10 @@ export async function mount(el) {
     panel.className = "panel pg-card";
     panel.style.marginBottom = "12px";
     const head = document.createElement("h3");
-    head.innerHTML = `${esc(a.module)}!<b>${esc(a.name)}</b> `
-      + `<span class="pg-badge${a.side === "observable" ? " warn" : ""}">${a.side === "observable" ? "有副作用" : "safe"}</span>`;
+    const badge = a._dynamic
+      ? '<span class="pg-badge warn">动态 · 子进程隔离</span>'
+      : `<span class="pg-badge${a.side === "observable" ? " warn" : ""}">${a.side === "observable" ? "有副作用" : "safe"}</span>`;
+    head.innerHTML = `${esc(a.module)}!<b>${esc(a.name)}</b> ${badge}`;
     const desc = document.createElement("p");
     desc.className = "table-meta";
     desc.textContent = a.desc + (a.note ? ` · ${a.note}` : "");
@@ -1441,8 +1484,11 @@ export async function mount(el) {
 
     runBtn.addEventListener("click", async () => {
       const args = collectArgs(a, panel);
+      const call = { api: a.name, args };
+      if (a._dynamic && a.module) call.module = a.module;
+      if (a._path) call.path = a._path;
       try {
-        const s = await apiPost("/api/winapi/run", { calls: [{ api: a.name, args }] });
+        const s = await apiPost("/api/winapi/run", { calls: [call] });
         out.replaceChildren(renderSession(s));
       } catch (err) {
         out.innerHTML = `<div class="error-box"><span class="code">${esc(err.code)}</span> — ${esc(err.message)}</div>`;
@@ -1450,7 +1496,9 @@ export async function mount(el) {
     });
     addBtn.addEventListener("click", () => {
       const args = collectArgs(a, panel);
-      program.push({ kind: "call", api: a.name, args, sig: sigOf(a.name, args) });
+      const node = makeCall(a.name, a._dynamic ? a.module : undefined);
+      if (a._path) node.path = a._path;
+      program.push(node);
       programChanged();
       showTab("queue");
     });
@@ -1735,7 +1783,27 @@ export async function mount(el) {
       program = []; session = null; editingPath = null;
       programChanged(); refreshCompose();
     });
-    btns.append(runBtn, clrBtn);
+    const nameInput = document.createElement("input");
+    nameInput.className = "filter-input";
+    nameInput.type = "text";
+    nameInput.placeholder = "编排名称（保存到 SQLite）";
+    nameInput.style.cssText = "width:180px;margin:0";
+    const saveBtn = document.createElement("ui-button");
+    saveBtn.setAttribute("label", "保存");
+    saveBtn.addEventListener("click", async () => {
+      const name = (nameInput.value || "").trim()
+        || `编排 ${new Date().toLocaleString("zh-CN", { hour12: false })}`;
+      try {
+        await apiPost("/api/winapi/programs", { name, program, asm_text: asmText });
+        nameInput.value = name;
+        saveBtn.setAttribute("label", "已保存");
+        setTimeout(() => saveBtn.setAttribute("label", "保存"), 1600);
+      } catch (err) {
+        saveBtn.setAttribute("label", "保存失败");
+        setTimeout(() => saveBtn.setAttribute("label", "保存"), 1600);
+      }
+    });
+    btns.append(runBtn, clrBtn, nameInput, saveBtn);
     panel.appendChild(btns);
 
     wrap.appendChild(panel);
@@ -1783,15 +1851,31 @@ export async function mount(el) {
     panel.appendChild(hint);
     const ta = document.createElement("textarea");
     ta.id = "pg-asm-ta";
-    ta.className = "filter-input";
     ta.spellcheck = false;
-    ta.style.cssText = "width:100%;height:420px;font-family:var(--ntlab-font-mono,'Cascadia Code',Consolas,'Microsoft YaHei',monospace);resize:vertical";
+    ta.setAttribute("wrap", "off");
+    ta.style.cssText = "height:420px;resize:vertical";
+    const pre = document.createElement("pre");
+    pre.id = "pg-asm-hl";
+    const editor = document.createElement("div");
+    editor.className = "asm-editor";
+    editor.append(pre, ta);
+    const syncHl = () => {
+      pre.innerHTML = highlightAsm(ta.value) + "\n";
+      pre.scrollTop = ta.scrollTop;
+      pre.scrollLeft = ta.scrollLeft;
+    };
     ta.value = asmText;
     ta.addEventListener("input", () => {
       asmText = ta.value;
+      syncHl();
       if (asmTimer) clearTimeout(asmTimer);
       asmTimer = setTimeout(tryAsm, 500);
     });
+    ta.addEventListener("scroll", () => {
+      pre.scrollTop = ta.scrollTop;
+      pre.scrollLeft = ta.scrollLeft;
+    });
+    syncHl();
     const btnRow = document.createElement("div");
     btnRow.style.cssText = "display:flex;gap:8px;margin:10px 0;flex-wrap:wrap";
     const checkBtn = document.createElement("ui-button");
@@ -1817,7 +1901,7 @@ export async function mount(el) {
       }
     });
     btnRow.appendChild(checkBtn);
-    panel.append(ta, btnRow, out);
+    panel.append(editor, btnRow, out);
     wrap.appendChild(panel);
     return wrap;
   }
@@ -1908,6 +1992,71 @@ export async function mount(el) {
   });
   el.querySelector(".page-head").append(histToggle, histPanel);
 
+  /* ---- 我的编排：SQLite 持久化保存/载入/删除 ---- */
+  const myToggle = document.createElement("button");
+  myToggle.type = "button";
+  myToggle.className = "ntl-action-btn ntl-toggle-btn";
+  myToggle.setAttribute("aria-expanded", "false");
+  myToggle.innerHTML = '我的编排 <svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg>';
+  const myPanel = document.createElement("div");
+  myPanel.className = "ntl-collapse";
+  const myInner = document.createElement("div");
+  myInner.className = "ntl-collapse-inner";
+  myPanel.appendChild(myInner);
+  myToggle.addEventListener("click", async () => {
+    const open = myToggle.getAttribute("aria-expanded") !== "true";
+    myToggle.setAttribute("aria-expanded", String(open));
+    myPanel.classList.toggle("open", open);
+    if (!open) return;
+    myInner.innerHTML = '<div class="loading-row"><ui-spinner></ui-spinner> 读取保存的编排…</div>';
+    try {
+      const r = await apiGet("/api/winapi/programs");
+      const list = r.programs ?? [];
+      if (!list.length) {
+        myInner.innerHTML = '<p class="table-meta">还没有保存的编排。在「编排」页输入名称并点「保存」。</p>';
+        return;
+      }
+      const h = document.createElement("h3");
+      h.textContent = `我的编排（${list.length} 份，SQLite 持久化）`;
+      h.style.margin = "0 0 10px";
+      const rows = list.map((p) => {
+        const row = document.createElement("div");
+        row.className = "pg-item my-program-row";
+        const t = new Date(p.updated_at * 1000).toLocaleString();
+        row.innerHTML = `<span class="nm">${esc(p.name)}</span>`
+          + `<span class="mod">${p.program.length} 块 · ${esc(t)}</span>`;
+        row.title = `asm 同步文本 ${p.asm_text ? "已存" : "未存"} · id ${p.id}`;
+        const btns = document.createElement("span");
+        btns.style.cssText = "display:flex;gap:6px";
+        const loadBtn = document.createElement("ui-button");
+        loadBtn.setAttribute("label", "载入");
+        loadBtn.addEventListener("click", () => {
+          program = p.program.map((n) => JSON.parse(JSON.stringify(n)));
+          if (p.asm_text) { asmText = p.asm_text; asmDirty = false; }
+          editingPath = null; session = null;
+          programChanged();
+          showTab("queue");
+        });
+        const delBtn = document.createElement("ui-button");
+        delBtn.setAttribute("label", "删除");
+        delBtn.setAttribute("variant", "danger");
+        delBtn.addEventListener("click", async () => {
+          try {
+            await apiSend("DELETE", `/api/winapi/programs/${p.id}`);
+            myToggle.click(); myToggle.click();   // 收起再展开刷新列表
+          } catch (err) { /* keep list */ }
+        });
+        btns.append(loadBtn, delBtn);
+        row.appendChild(btns);
+        return row;
+      });
+      myInner.replaceChildren(h, ...rows);
+    } catch (err) {
+      myInner.innerHTML = `<div class="error-box"><span class="code">${esc(err.code ?? "error")}</span> — ${esc(err.message ?? String(err))}</div>`;
+    }
+  });
+  el.querySelector(".page-head").append(myToggle, myPanel);
+
   /* ---- 启动 ---- */
   renderCatalog();
   showTab("call");
@@ -1917,11 +2066,21 @@ export async function mount(el) {
   });
 
   // PE 分析器跳转：#/playground?api=CreateFileW
+  // 或 #/playground?api=X&module=dll[&path=C:\...]（任意导出，含非系统 DLL）
   const pre = query().get("api");
   if (pre) {
     const spec = apis.find((a) => a.name.toLowerCase() === pre.toLowerCase());
+    const mod = query().get("module");
+    const pth = query().get("path");
     if (spec) {
       selected = spec;
+    } else if (mod) {
+      selected = dynSpec(pre, mod);
+      selected.desc = "来自 PE 分析器的动态导出"
+        + (pth ? `（按路径加载：${pth}）` : `（${mod}!${pre}，需在导出库中）`);
+      if (pth) selected._path = pth;
+    }
+    if (selected) {
       renderCatalog(searchEl.value);
       tabsEl.setAttribute("value", "call");
       showTab("call");

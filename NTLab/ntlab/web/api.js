@@ -25,6 +25,15 @@ export async function apiUpload(path, file) {
   return unwrap(res);
 }
 
+export async function apiSend(method, path, body) {
+  const res = await fetch(path, {
+    method,
+    headers: body !== undefined ? { "content-type": "application/json" } : undefined,
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+  return unwrap(res);
+}
+
 async function unwrap(res) {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {

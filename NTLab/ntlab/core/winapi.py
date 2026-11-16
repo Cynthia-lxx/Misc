@@ -358,12 +358,22 @@ def _ref_out_view(val: Any) -> Any:
     return {"__raw__": val}
 
 
-def _run_dynamic_call(api: str, args: dict[str, Any], refs: list[dict], module: str | None) -> dict:
-    """自动发现的导出：通用指针签名，子进程隔离执行；硬拦截名单后端强制执行。"""
+def _run_dynamic_call(api: str, args: dict[str, Any], refs: list[dict],
+                      module: str | None, path: str | None = None) -> dict:
+    """自动发现的导出：通用指针签名，子进程隔离执行；硬拦截名单后端强制执行。
+
+    `path` 为显式 DLL 文件路径（来自 PE 分析器跳转），优先于库内解析。
+    """
     hit = winapi_library.find_export(api, module or None)
-    if hit is None:
+    if hit is not None:
+        dll_path = hit["path"]
+        trust = hit.get("trust")
+    elif path:
+        dll_path = path            # 任意 PE 文件的导出也可调用（worker 按路径加载）
+        trust = winapi_library.classify(api)
+    else:
         raise NtlabError("not_callable", f"{api!r} was not found in the PE export library")
-    if hit.get("trust") == "blocked" or winapi_library.is_blocked(api):
+    if trust == "blocked" or winapi_library.is_blocked(api):
         raise NtlabError("blocked_api",
                          f"{api!r} matches the destructive/unsafe API deny-list and cannot be executed")
     supplied = dict(args or {})
@@ -373,7 +383,7 @@ def _run_dynamic_call(api: str, args: dict[str, Any], refs: list[dict], module: 
         raise NtlabError("too_many_args", "dynamic calls accept at most arg1..arg4")
     sent = {k: supplied[k] for k in keys}
     values = [_resolve_ref(supplied[k], refs) for k in keys]
-    payload = {"path": hit["path"], "name": hit["name"], "args": values}
+    payload = {"path": dll_path, "name": hit["name"] if hit else api, "args": values}
     t0 = time.perf_counter()
     try:
         proc = subprocess.run(
@@ -409,10 +419,11 @@ def _run_dynamic_call(api: str, args: dict[str, Any], refs: list[dict], module: 
     return step
 
 
-def run_call(api: str, args: dict[str, Any], refs: list[dict], module: str | None = None) -> dict:
+def run_call(api: str, args: dict[str, Any], refs: list[dict],
+             module: str | None = None, path: str | None = None) -> dict:
     spec = _CATALOG_BY_NAME.get(api)
     if spec is None:
-        return _run_dynamic_call(api, args, refs, module)
+        return _run_dynamic_call(api, args, refs, module, path)
     fn = getattr(_lib(spec.module), spec.name)
     fn.restype = _restype_of(spec)
 
@@ -494,7 +505,8 @@ def run_queue(calls: list[dict]) -> dict:
         if not isinstance(call, dict) or "api" not in call:
             raise NtlabError("bad_queue", f"step {i + 1} must be an object with an 'api' field")
         try:
-            results.append(run_call(call["api"], call.get("args") or {}, refs, call.get("module")))
+            results.append(run_call(call["api"], call.get("args") or {}, refs,
+                                    call.get("module"), call.get("path")))
         except NtlabError as exc:
             results.append({"api": call.get("api"), "error": exc.message, "code": exc.code})
             refs.append({})  # 保持步号对齐
@@ -586,7 +598,7 @@ def _exec_call_node(node: dict, refs: list[dict], trace: list, where: str) -> No
     api = node.get("api")
     slot = int(node.get("_slot", 0))
     try:
-        step = run_call(api, node.get("args") or {}, refs, node.get("module"))
+        step = run_call(api, node.get("args") or {}, refs, node.get("module"), node.get("path"))
         step["where"] = where
         trace.append(step)
     except NtlabError as exc:

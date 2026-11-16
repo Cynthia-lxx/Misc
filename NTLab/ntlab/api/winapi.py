@@ -7,7 +7,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Query, Request
 
-from ntlab.core import winapi, winapi_library
+from ntlab.core import winapi, winapi_library, userdb
 from ntlab.core.errors import NtlabError
 
 router = APIRouter()
@@ -73,6 +73,37 @@ def run(body: dict) -> dict:
     if not isinstance(calls, list):
         raise NtlabError("bad_queue", 'body must contain "program" or "calls"')
     return winapi.run_queue(calls)
+
+
+@router.get("/programs")
+def programs() -> dict:
+    """用户数据库中保存的编排程序（按更新时间倒序）。"""
+    return {"programs": userdb.list_programs()}
+
+
+@router.post("/programs")
+def programs_save(body: dict) -> dict:
+    """保存/更新编排：{name, program, asm_text?}，按名称 upsert。"""
+    name = (body.get("name") or "").strip()
+    if not name:
+        raise NtlabError("bad_program", '"name" is required')
+    if len(name) > 80:
+        raise NtlabError("bad_program", "name is limited to 80 chars")
+    prog = body.get("program")
+    if not isinstance(prog, list):
+        raise NtlabError("bad_program", '"program" must be a list of blocks')
+    return userdb.save_program(name, prog, str(body.get("asm_text") or ""))
+
+
+@router.get("/programs/{pid}")
+def programs_get(pid: int) -> dict:
+    return userdb.get_program(pid)
+
+
+@router.delete("/programs/{pid}")
+def programs_delete(pid: int) -> dict:
+    userdb.delete_program(pid)
+    return {"ok": True}
 
 
 @router.get("/sessions")

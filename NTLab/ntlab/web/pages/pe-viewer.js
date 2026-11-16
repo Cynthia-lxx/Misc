@@ -252,6 +252,8 @@ export async function mount(el) {
 
   async function renderResult(s, path) {
     parsedPath = path;
+    const parsedStem = String(path).replace(/\\/g, "/").split("/").pop()
+      .replace(/\.(dll|exe)$/i, "").toLowerCase();
     const tabs = document.createElement("ui-tabs");
     tabs.setAttribute("value", "summary");
     tabs.setAttribute("strip", "");   // osu OsuTabControl：整行底线 500ms 跟随激活项
@@ -264,9 +266,20 @@ export async function mount(el) {
     const views = { summary: () => summaryView(s), headers: () => headersView(path) };
 
     function onCellActivate(e) {
-      const { kind, value } = e.detail;
+      const { kind, value, row } = e.detail;
       if (kind === "playground") {
         location.hash = `#/playground?api=${encodeURIComponent(value)}`;
+        return;
+      }
+      if (kind === "playground-dyn") {
+        // 任意导出/导入函数：module 来自导入表 DLL 或被解析文件本身；
+        // 导出表附带被解析文件路径，试验台可按路径加载非系统 DLL
+        const stem = (s) => String(s || "").replace(/\.dll$/i, "").toLowerCase();
+        const isImport = row && row.dll;
+        const module = isImport ? stem(row.dll) : parsedStem;
+        let hash = `#/playground?api=${encodeURIComponent(value)}&module=${encodeURIComponent(module)}`;
+        if (!isImport && parsedPath) hash += `&path=${encodeURIComponent(parsedPath)}`;
+        location.hash = hash;
         return;
       }
       // linkOf 传来的 value 是数字；字符串则按 hex 解析
@@ -786,25 +799,33 @@ async function disasmView(path, startRva = 0, { onOpenDll = null } = {}) {
 }
 
 function importCols(names) {
+  // 每个导入函数都可跳试验台：白名单走类型化调用，其余按 module!name 动态调用
+  const goto = (r) => names.has(r.function)
+    ? { kind: "playground", value: r.function }
+    : { kind: "playground-dyn", value: r.function };
   return [
     { key: "dll", label: "DLL", type: "link", linkOf: (r) => ({ kind: "dll", value: r.dll }) },
-    { key: "function", label: "函数" },
+    { key: "function", label: "函数", type: "link", linkOf: goto },
     { key: "demangled", label: "反修饰名", type: "mono" },
     { key: "ordinal", label: "Ordinal", type: "num" },
     { key: "hint", label: "Hint", type: "hex" },
     { key: "iat_rva", label: "IAT RVA", type: "link", linkOf: (r) => ({ kind: "hex", value: r.iat_rva }) },
-    { key: "function", label: "试验台", type: "link", linkOf: (r) => names.has(r.function) ? { kind: "playground", value: r.function } : null },
+    { key: "function", label: "试验台", type: "link", linkOf: goto },
   ];
 }
 
 function exportCols(names) {
+  // 导出函数：白名单直接调用；其余以被解析文件路径加载（不限系统 DLL）
+  const goto = (r) => names.has(r.name)
+    ? { kind: "playground", value: r.name }
+    : { kind: "playground-dyn", value: r.name };
   return [
     { key: "ordinal", label: "Ordinal", type: "num" },
-    { key: "name", label: "导出名", type: "mono" },
+    { key: "name", label: "导出名", type: "link", linkOf: goto },
     { key: "demangled", label: "反修饰名", type: "mono" },
     { key: "rva", label: "RVA", type: "link", linkOf: (r) => ({ kind: "disasm", value: r.rva }) },
     { key: "forwarder", label: "转发" },
-    { key: "name", label: "试验台", type: "link", linkOf: (r) => names.has(r.name) ? { kind: "playground", value: r.name } : null },
+    { key: "name", label: "试验台", type: "link", linkOf: goto },
   ];
 }
 
