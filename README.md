@@ -1,6 +1,10 @@
+![Banner](banner.png)
+
 # Hello! What about seeing my...
 
 A curated index of the tools, games, experiments, and archives collected in this monorepo.
+
+Highlighted entries mark the most substantial projects.
 
 * [Developer Tools](#developer-tools)
 * [CANN](#cann)
@@ -15,8 +19,8 @@ A curated index of the tools, games, experiments, and archives collected in this
 
 | Project | Description |
 | --- | --- |
-| [**NTLab**](NTLab/) | Windows internals research toolkit |
-| [**OI**](OI/) | Competitive programming IDE and solver CLI |
+| [**<mark>NTLab</mark>**](NTLab/) | Windows internals research toolkit |
+| [**<mark>OI</mark>**](OI/) | Competitive programming IDE and solver CLI |
 | [**Persona_Manager**](Persona_Manager/) | AI persona template manager |
 | [**QtWebEng**](QtWebEng/) | QtWebEngine browser wrapper |
 | [**TbCS**](TbCS/) | Terminal-based computer simulator |
@@ -27,18 +31,18 @@ A curated index of the tools, games, experiments, and archives collected in this
 
 | Project | Description |
 | --- | --- |
-| [**CANN_OpHelper**](CANN_OpHelper/) | Ascend C operator generator |
-| [**CANN_Projects**](CANN_Projects/) | Custom Ascend C kernels |
-| [**CANN_Learning_Hub**](CANN_Learning_Hub/) | Official tutorials and notebooks |
-| [**CANN_Learning_Workspace**](CANN_Learning_Workspace/) | Experiments and project workspace |
-| [**CANN_Learning_Refs**](CANN_Learning_Refs/) | Documentation, headers, and tools |
+| [**<mark>CANN_OpHelper</mark>**](CANN_OpHelper/) | Ascend C operator generator |
+| [**<mark>CANN_Projects</mark>**](CANN_Projects/) | Custom Ascend C kernels |
+| [**<mark>CANN_Learning_Hub</mark>**](CANN_Learning_Hub/) | Official tutorials and notebooks |
+| [**<mark>CANN_Learning_Workspace</mark>**](CANN_Learning_Workspace/) | Experiments and project workspace |
+| [**<mark>CANN_Learning_Refs</mark>**](CANN_Learning_Refs/) | Documentation, headers, and tools |
 
 ## Games
 
 | Project | Description |
 | --- | --- |
-| [**osu**](osu/) | osu! lazer source, translated and split |
-| [**ADOfAI-TOOLS**](ADOfAI-TOOLS/) | ADOFAI tab analyzer and virtual autoplayer |
+| [**<mark>osu</mark>**](osu/) | osu! lazer source, translated and split |
+| [**<mark>ADOfAI-TOOLS</mark>**](ADOfAI-TOOLS/) | ADOFAI tab analyzer and virtual autoplayer |
 | [**ADOFxxk**](ADOFxxk/) | ADOFAI chart parser and level modifier |
 | [**kaizimu**](kaizimu/) | Letter-guessing game solver and song fetcher |
 
