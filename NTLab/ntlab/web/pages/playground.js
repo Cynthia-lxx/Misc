@@ -1,5 +1,6 @@
 import { apiGet, apiPost } from "../api.js";
 import { query } from "../router.js";
+import { swapContent, motionScale, assignIndices } from "../motion.js";
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({
@@ -822,7 +823,7 @@ export async function mount(el) {
         <div class="pg-catalog" id="pg-catalog"></div>
       </div>
       <div class="pg-right">
-        <ui-tabs id="pg-tabs">
+        <ui-tabs id="pg-tabs" strip>
           <span data-value="call" label="调用卡"></span>
           <span data-value="queue" label="编排"></span>
           <span data-value="asm" label="汇编"></span>
@@ -1097,6 +1098,8 @@ export async function mount(el) {
     h.textContent = `会话 ${session.id} · 成功 ${session.ok} / 失败 ${session.failed}`;
     h.style.margin = "0 0 10px";
     wrap.append(h, ...session.steps.map((s, i) => renderStepCard(s, i)));
+    wrap.classList.add("motion-stagger");   // 步骤卡按 --ui-index 依次浮入
+    assignIndices(wrap);
     return wrap;
   }
 
@@ -1157,9 +1160,8 @@ export async function mount(el) {
     addBtn.addEventListener("click", () => {
       const args = collectArgs(a, panel);
       program.push({ kind: "call", api: a.name, args, sig: sigOf(a.name, args) });
-      tabsEl.setAttribute("value", "queue");
       programChanged();
-      swap(composeView());
+      showTab("queue");
     });
 
     wrap.append(panel, out);
@@ -1521,44 +1523,65 @@ export async function mount(el) {
     return wrap;
   }
 
-  /* ---- tabs ---- */
+  /* ---- tabs：横行多选一（切换走 motion.js 交叉出入场） ---- */
   let currentTab = "call";
-  function swap(node) { bodyEl.replaceChildren(node); }
+  function swap(node) {
+    bodyEl.replaceChildren(node);
+    if (motionScale() > 0) {
+      node.classList.add("swap-in");
+      node.addEventListener("animationend", (e) => {
+        if (e.target === node && e.animationName === "ntl-swap-in") node.classList.remove("swap-in");
+      }, { once: true });
+    }
+    return node;
+  }
+  function viewFor(v) {
+    if (v === "call") return renderCallCard();
+    if (v === "queue") return composeView();
+    const node = asmView();
+    queueMicrotask(updateAsmStatus);   // swapContent 挂载后再刷新徽标
+    return node;
+  }
   function showTab(v) {
     currentTab = v;
     tabsEl.setAttribute("value", v);
-    if (v === "call") swap(renderCallCard());
-    else if (v === "queue") swap(composeView());
-    else if (v === "asm") { swap(asmView()); updateAsmStatus(); }
+    swapContent(bodyEl, () => viewFor(v), { outMs: 90, inMs: 320 });
   }
-  const tab = (value, label) => {
-    const t = document.createElement("span");
-    t.setAttribute("data-value", value);
-    t.setAttribute("label", label);
-    return t;
-  };
-  tabsEl.append(tab("call", "调用卡"), tab("queue", "编排"), tab("asm", "汇编"));
   tabsEl.addEventListener("ui-select", (e) => showTab(e.detail.value));
 
-  /* ---- 会话历史入口 ---- */
-  const histBtn = document.createElement("ui-button");
-  histBtn.setAttribute("label", "历史会话");
-  histBtn.style.cssText = "margin-top:10px;margin-bottom:8px";
-  histBtn.addEventListener("click", async () => {
-    const r = await apiGet("/api/winapi/sessions");
-    sessions = r.sessions ?? [];
-    if (!sessions.length) {
-      swap(Object.assign(document.createElement("div"),
-        { innerHTML: '<p class="table-meta">服务器内存中还没有历史会话。</p>' }));
-      return;
+  /* ---- 会话历史：osu ExpandingContainer 式展开/收起 ---- */
+  const histToggle = document.createElement("button");
+  histToggle.type = "button";
+  histToggle.className = "ntl-action-btn ntl-toggle-btn";
+  histToggle.setAttribute("aria-expanded", "false");
+  histToggle.innerHTML = '历史会话 <svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg>';
+  const histPanel = document.createElement("div");
+  histPanel.className = "ntl-collapse";
+  const histInner = document.createElement("div");
+  histInner.className = "ntl-collapse-inner";
+  histPanel.appendChild(histInner);
+  histToggle.addEventListener("click", async () => {
+    const open = histToggle.getAttribute("aria-expanded") !== "true";
+    histToggle.setAttribute("aria-expanded", String(open));
+    histPanel.classList.toggle("open", open);
+    if (!open) return;
+    histInner.innerHTML = '<div class="loading-row"><ui-spinner></ui-spinner> 读取会话…</div>';
+    try {
+      const r = await apiGet("/api/winapi/sessions");
+      sessions = r.sessions ?? [];
+      if (!sessions.length) {
+        histInner.innerHTML = '<p class="table-meta">服务器内存中还没有历史会话。</p>';
+      } else {
+        const h = document.createElement("h3");
+        h.textContent = `历史会话（最近 ${sessions.length} 次，仅存内存）`;
+        h.style.margin = "0 0 10px";
+        histInner.replaceChildren(h, ...sessions.map((s) => renderSession(s)));
+      }
+    } catch (err) {
+      histInner.innerHTML = `<div class="error-box"><span class="code">${esc(err.code ?? "error")}</span> — ${esc(err.message ?? String(err))}</div>`;
     }
-    const wrap = document.createElement("div");
-    const h = document.createElement("h3");
-    h.textContent = `历史会话（最近 ${sessions.length} 次，仅存内存）`;
-    wrap.append(h, ...sessions.map((s) => renderSession(s)));
-    swap(wrap);
   });
-  el.querySelector(".page-head").appendChild(histBtn);
+  el.querySelector(".page-head").append(histToggle, histPanel);
 
   /* ---- 启动 ---- */
   renderCatalog();

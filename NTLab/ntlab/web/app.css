@@ -5,6 +5,9 @@
 :root {
   /* 等宽字体栈：中文回退到雅黑，避免浏览器默认把 CJK 落到宋体 */
   --ntlab-font-mono: "Cascadia Code", Consolas, "Microsoft YaHei", monospace;
+  /* UI 字体沿用 osu! UIReference 的 Torus-first 栈：本机装有 osu! 时自动命中
+     Torus，否则落到 Segoe UI / 雅黑。不携带字体二进制（许可审计见
+     P:/Dev/osu/UIReference/00-overview/licence-audit.json:96）。 */
 }
 
 html, body {
@@ -273,9 +276,111 @@ html, body {
 .pg-step-card td.v { font-family: var(--ntlab-font-mono); word-break: break-all; }
 
 /* PE 分析器：结果区占满剩余高度，标签体内部滚动 */
+/* pe-result / tabs 卡片化：osu OsuTabControl 的整行选择语义 + 滑动底线（strip 属性） */
 .pe-result { flex: 1; min-height: 0; display: flex; flex-direction: column; margin-top: 14px; }
 .pe-result-wrap { display: flex; flex-direction: column; flex: 1; min-height: 0; }
 .pe-tabbody { flex: 1; min-height: 0; overflow: auto; margin-top: 12px; padding-right: 4px; }
+
+/* ---------- 动作按钮：osu ScreenBackButton / ShowMoreButton 风格 ---------- */
+.ntl-action-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  height: 30px; padding: 0 12px;
+  border: 1px solid color-mix(in srgb, var(--ui-accent) 34%, var(--ui-border));
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ui-accent) 9%, var(--ui-surface, #1e1e1e));
+  color: var(--ui-text, #eee);
+  /* Torus 优先；中文由系统字体回退。细体 + 字距，不用粗体中文 */
+  font-family: var(--font-family, "Segoe UI"), "Microsoft YaHei", sans-serif;
+  font-size: 12.5px; font-weight: var(--font-weight-regular, 400);
+  letter-spacing: .03em; line-height: 1;
+  cursor: pointer;
+  animation-name: ntl-fade-in-up;
+  animation-duration: calc(260ms * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+  animation-fill-mode: both;
+  transition: transform 200ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+              background 200ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+              border-color 200ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+              box-shadow 200ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+}
+.ntl-action-btn svg {
+  width: 13px; height: 13px; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+  transition: transform 300ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+}
+.ntl-action-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ui-accent) 20%, var(--ui-surface, #1e1e1e));
+  border-color: var(--ui-accent); color: #fff; transform: translateY(-1px);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--ui-accent) 18%, transparent);
+}
+.ntl-action-btn:active:not(:disabled) { transform: translateY(0) scale(.96); }
+.ntl-action-btn:disabled { opacity: .32; cursor: default; }
+.ntl-action-btn:focus-visible { outline: 2px solid var(--ui-accent); outline-offset: 2px; }
+
+.pe-navbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 0 0 auto; }
+.pe-nav-btn[data-dir="back"]:hover:not(:disabled) svg { transform: translateX(-3px); }
+.pe-nav-btn[data-dir="forward"]:hover:not(:disabled) svg { transform: translateX(3px); }
+.pe-nav-count {
+  font-family: var(--font-family-numeric, var(--ntlab-font-mono));
+  font-size: 11px; font-variant-numeric: tabular-nums; color: var(--ui-text-muted, #888);
+  margin-left: 2px;
+}
+
+/* ---------- 横行多选一：PE 结果与 Playground 同一张 tab 卡 ---------- */
+#pg-tabs, .pe-result-wrap ui-tabs {
+  flex: 0 0 auto;
+  padding: 8px 14px 2px;
+  border: 1px solid var(--ui-border);
+  border-bottom: 1px solid color-mix(in srgb, var(--ui-accent) 24%, var(--ui-border));
+  border-radius: 10px 10px 0 0;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--ui-accent) 8%, var(--ui-surface, #1e1e1e)),
+    var(--ui-surface, #1e1e1e));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .03);
+  animation-name: ntl-fade-in-up;
+  animation-duration: calc(300ms * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+  animation-fill-mode: both;
+}
+#pg-tabs + .pg-body, .pe-result-wrap ui-tabs + .pe-tabbody {
+  margin-top: 0;
+  padding: 14px;
+  border: 1px solid var(--ui-border); border-top: 0;
+  border-radius: 0 0 10px 10px;
+  background: var(--ui-surface, #1e1e1e);
+}
+
+/* ---------- 展开/收起：osu ExpandingContainer 的 grid 0fr→1fr ---------- */
+.ntl-toggle-btn { margin-top: 10px; margin-bottom: 4px; }
+.ntl-toggle-btn .chev { transition: transform 300ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)); }
+.ntl-toggle-btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.ntl-collapse {
+  display: grid; grid-template-rows: 0fr; opacity: 0;
+  transition: grid-template-rows 320ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+              opacity 200ms var(--ease-out, ease-out);
+}
+.ntl-collapse.open { grid-template-rows: 1fr; opacity: 1; }
+.ntl-collapse-inner {
+  min-height: 0; overflow: hidden auto; max-height: 320px;
+  padding: 0 4px; transition: padding 320ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+}
+.ntl-collapse.open .ntl-collapse-inner { padding: 10px 4px 4px; }
+
+/* ---------- 其余微动效 ---------- */
+.pg-item { transition: background 140ms var(--ease-out, ease-out), transform 180ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)); }
+.pg-item:hover { transform: translateX(2px); }
+.pg-sync-chip { transition: color 240ms var(--ease-out, ease-out), border-color 240ms var(--ease-out, ease-out), background 240ms var(--ease-out, ease-out); }
+.pg-desync-banner {
+  animation-name: ntl-banner-in;
+  animation-duration: calc(240ms * var(--motion-scale, 1));
+  animation-timing-function: var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+  animation-fill-mode: both;
+}
+@keyframes ntl-banner-in {
+  from { opacity: 0; transform: translateY(-8px) scale(.985); }
+  to { opacity: 1; transform: none; }
+}
 
 /* ObjDir：双栏占满剩余高度，两栏各自内滚 */
 .objdir { flex: 1; min-height: 0; display: grid; grid-template-columns: 340px 1fr; gap: 16px; align-items: stretch; }

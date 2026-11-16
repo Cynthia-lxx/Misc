@@ -169,17 +169,18 @@ export async function mount(el) {
   let navSwitching = false;   // 返回/前进触发的渲染不重复入栈
 
   const navBar = document.createElement("div");
-  navBar.style.cssText = "display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex:0 0 auto";
+  navBar.className = "pe-navbar";
   const navLabel = document.createElement("span");
-  navLabel.style.cssText = "color:var(--ui-text-muted,#888);font-size:12px";
-  navBar.append(
-    toolBtn("← 返回", () => navGo(-1)),
-    toolBtn("前进 →", () => navGo(1)),
-    navLabel,
-  );
+  navLabel.className = "pe-nav-count";
+  const backBtn = peNavBtn(-1, "返回", () => navGo(-1));
+  const forwardBtn = peNavBtn(1, "前进", () => navGo(1));
+  navBar.append(backBtn, forwardBtn, navLabel);
   function updateNav() {
+    backBtn.disabled = navPos <= 0;
+    forwardBtn.disabled = navPos >= navStack.length - 1;
     navLabel.textContent = navStack.length ? `${navPos + 1} / ${navStack.length}` : "";
   }
+  updateNav();
   function pushNav(entry) {
     if (navSwitching) return;
     const cur = navStack[navPos];
@@ -253,6 +254,7 @@ export async function mount(el) {
     parsedPath = path;
     const tabs = document.createElement("ui-tabs");
     tabs.setAttribute("value", "summary");
+    tabs.setAttribute("strip", "");   // osu OsuTabControl：整行底线 500ms 跟随激活项
     const body = document.createElement("div");
     body.className = "pe-tabbody";
     tabs.append(
@@ -484,6 +486,19 @@ function toolBtn(label, onClick, variant) {
   const b = document.createElement("ui-button");
   b.setAttribute("label", label);
   if (variant) b.setAttribute("variant", variant);
+  b.addEventListener("click", onClick);
+  return b;
+}
+
+/** osu! ScreenBackButton / PageSelectorPrevNextButton 风格：细体文字 + SVG chevron。 */
+function peNavBtn(dir, label, onClick) {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "ntl-action-btn pe-nav-btn";
+  b.dataset.dir = dir < 0 ? "back" : "forward";
+  b.title = dir < 0 ? "返回历史 (Alt+←)" : "前进历史 (Alt+→)";
+  const chevron = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="${dir < 0 ? "M10 3L5 8l5 5" : "M6 3l5 5-5 5"}"/></svg>`;
+  b.innerHTML = dir < 0 ? `${chevron}<span>${label}</span>` : `<span>${label}</span>${chevron}`;
   b.addEventListener("click", onClick);
   return b;
 }
