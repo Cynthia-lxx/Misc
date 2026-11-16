@@ -1,4 +1,4 @@
-# Hello! What about seeing my... projects?
+# Hello! What about seeing my...
 
 A curated index of the tools, games, experiments, and archives collected in this monorepo.
 
