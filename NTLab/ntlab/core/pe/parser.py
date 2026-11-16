@@ -306,6 +306,24 @@ def exports(path: str, offset: int = 0, limit: int = 200) -> dict[str, Any]:
 
 # ---------------------------------------------------------------- resources
 
+def _entry_label(entry: Any, is_type: bool) -> tuple[str, int | None]:
+    """资源目录条目的规范标签。
+
+    pefile 对命名条目设置 entry.name（PE_STRING：带 2 字节长度前缀的
+    bytes 子类，必须 str() 取内容）且 entry.id 为 None；数字条目则相反。
+    返回 (label, numeric_id)；命名条目 numeric_id 为 None。
+    """
+    name = getattr(entry, "name", None)
+    if name is not None:
+        return str(name), None
+    eid = getattr(entry, "id", None)
+    if eid is None:
+        eid = getattr(entry.struct, "Id", 0) or 0
+    if is_type:
+        return RESOURCE_TYPE_NAMES.get(eid) or f"type_{eid}", eid
+    return str(eid), eid
+
+
 def resources(path: str) -> dict[str, Any]:
     pe = _load(path)
     _ensure_dirs(pe, "resources")
@@ -314,16 +332,15 @@ def resources(path: str) -> dict[str, Any]:
         return {"total": 0, "items": []}
     items = []
     for rtype in root.entries:
-        type_id = rtype.struct.Id if hasattr(rtype.struct, "Id") and rtype.struct.Id is not None else None
-        type_name = RESOURCE_TYPE_NAMES.get(type_id) if type_id else (
-            rtype.name.decode("utf-8", "replace") if rtype.name else f"type_{type_id}")
+        type_name, _tid = _entry_label(rtype, is_type=True)
         for rname in rtype.directory.entries:
-            name = rname.name.decode("utf-8", "replace") if rname.name else rname.struct.Id
+            name, _nid = _entry_label(rname, is_type=False)
             for rlang in rname.directory.entries:
                 lang_id = getattr(rlang.struct, "Id", 0) or 0
                 items.append({
                     "type": type_name,
-                    "name": str(name),
+                    "name": name,
+                    "lang_id": lang_id,
                     "language": lang_id & 0x3FF,          # primary language id
                     "sublanguage": (lang_id >> 10) & 0x3F,  # sublanguage id
                     "rva": rlang.data.struct.OffsetToData,

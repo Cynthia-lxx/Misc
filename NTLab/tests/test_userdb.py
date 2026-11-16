@@ -64,3 +64,25 @@ def test_library_cache_roundtrip(tmp_db):
 
 def test_load_library_empty(tmp_db):
     assert userdb.load_library() is None
+
+
+def test_archive_roundtrip(tmp_db):
+    manifest = [{"file": "RT_VERSION/1_lang1033.bin", "type": "RT_VERSION",
+                 "name": "1", "lang": 1033, "size": 952}]
+    aid = userdb.save_archive("notepad.resources.zip", b"PK\x03\x04demo",
+                              1, manifest)
+    assert aid >= 1
+
+    rows = userdb.list_archives()
+    assert len(rows) == 1 and rows[0]["id"] == aid
+    assert rows[0]["file_name"] == "notepad.resources.zip"
+    assert "content" not in rows[0]          # 列表不携带 BLOB
+
+    got = userdb.get_archive(aid)
+    assert got["content"] == b"PK\x03\x04demo"
+    assert got["count"] == 1 and got["manifest"] == manifest
+
+    userdb.delete_archive(aid)
+    assert userdb.list_archives() == []
+    with pytest.raises(Exception):
+        userdb.get_archive(aid)

@@ -136,6 +136,52 @@ html, body {
 
 .page-head { margin-bottom: 14px; flex: 0 0 auto; }
 
+/* 页头折叠按钮横排 */
+.page-head-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+/* PE 资源页签：工具条 + 数据库存档列表 */
+.res-toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.res-arch-list { margin-bottom: 12px; }
+
+.res-arch-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 10px;
+  border: 1px solid var(--ui-border, #333);
+  border-radius: 6px;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.res-arch-row .res-arch-ops {
+  display: flex;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.res-arch-row .res-arch-ops a {
+  color: var(--ui-accent, #66ccff);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.res-arch-row .res-arch-ops a:hover { text-decoration: underline; }
+
 .page-head h1 { margin: 0 0 4px; font-size: 22px; font-weight: 700; }
 
 .page-head p { margin: 0; color: var(--ui-text-muted, #888); font-size: 13px; }

@@ -54,6 +54,15 @@ def _conn() -> sqlite3.Connection:
                 trust TEXT NOT NULL,
                 PRIMARY KEY (module, name)
             );
+            CREATE TABLE IF NOT EXISTS resource_archives (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                file_name TEXT NOT NULL,
+                created_at REAL NOT NULL,
+                size INTEGER NOT NULL,
+                count INTEGER NOT NULL DEFAULT 0,
+                manifest_json TEXT NOT NULL DEFAULT '[]',
+                content BLOB NOT NULL
+            );
             """
         )
         _CONN.commit()
@@ -182,3 +191,56 @@ def library_built_at() -> float | None:
         row = _conn().execute(
             "SELECT value FROM library_meta WHERE key='built_at'").fetchone()
     return float(row["value"]) if row else None
+
+
+# ---------------- PE 资源拆包归档 ----------------
+
+def save_archive(file_name: str, content: bytes, count: int,
+                 manifest: list[dict]) -> int:
+    """存一份资源打包 zip（BLOB），返回归档 id。"""
+    with _LOCK:
+        c = _conn()
+        cur = c.execute(
+            "INSERT INTO resource_archives(file_name, created_at, size, count, "
+            "manifest_json, content) VALUES(?, ?, ?, ?, ?, ?)",
+            (file_name, time.time(), len(content), count,
+             json.dumps(manifest, ensure_ascii=False), content),
+        )
+        c.commit()
+        return int(cur.lastrowid)
+
+
+def list_archives() -> list[dict]:
+    """归档列表（不含 BLOB 本体）。"""
+    with _LOCK:
+        rows = _conn().execute(
+            "SELECT id, file_name, created_at, size, count FROM resource_archives "
+            "ORDER BY id DESC").fetchall()
+    return [dict(r) for r in rows]
+
+
+def get_archive(aid: int) -> dict:
+    """取一份归档（含 content BLOB 与 manifest）。"""
+    with _LOCK:
+        row = _conn().execute(
+            "SELECT * FROM resource_archives WHERE id=?", (aid,)).fetchone()
+    if row is None:
+        raise NtlabError("not_found", f"archive {aid} does not exist")
+    return {
+        "id": row["id"],
+        "file_name": row["file_name"],
+        "created_at": row["created_at"],
+        "size": row["size"],
+        "count": row["count"],
+        "manifest": json.loads(row["manifest_json"]),
+        "content": bytes(row["content"]),
+    }
+
+
+def delete_archive(aid: int) -> None:
+    with _LOCK:
+        c = _conn()
+        cur = c.execute("DELETE FROM resource_archives WHERE id=?", (aid,))
+        c.commit()
+        if cur.rowcount == 0:
+            raise NtlabError("not_found", f"archive {aid} does not exist")

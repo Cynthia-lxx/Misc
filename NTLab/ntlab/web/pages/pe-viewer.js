@@ -1,6 +1,6 @@
 /* PE Viewer page: path input + drag-drop upload + tabbed detail. */
 
-import { apiGet, apiPost, apiUpload } from "../api.js";
+import { apiGet, apiPost, apiUpload, apiSend } from "../api.js";
 import { swapContent } from "../motion.js";
 
 /** WinAPI 试验台白名单（模块级缓存）；导出/导入表据此提供「试验台」跳转。 */
@@ -282,6 +282,17 @@ export async function mount(el) {
         location.hash = hash;
         return;
       }
+      if (kind === "res-dl") {
+        // 单个资源提取下载
+        triggerDownload(`/api/pe/resources/extract?path=${encodeURIComponent(path)}`
+          + `&type=${encodeURIComponent(String(row.type))}`
+          + `&name=${encodeURIComponent(String(row.name))}&lang=${row.lang_id}`);
+        return;
+      }
+      if (kind === "res-rep") {
+        replaceResourceFlow(path, row, () => showTab("resources"));
+        return;
+      }
       // linkOf 传来的 value 是数字；字符串则按 hex 解析
       const v = typeof value === "number" ? value : parseInt(String(value), 16);
       if (kind === "dll") openDll(value);
@@ -300,7 +311,8 @@ export async function mount(el) {
           (row) => { if (row.iat_rva != null) navigate("hex", row.iat_rva); }, onCellActivate);
         else if (v === "exports") t = await tableView(url("exports"), 300, exportCols(await callableNames()),
           (row) => { if (row.rva) navigate("disasm", row.rva); }, onCellActivate);
-        else if (v === "resources") t = await tableView(url("resources"), 300, resCols(), null, onCellActivate);
+        else if (v === "resources") t = await resourcesView(path, onCellActivate,
+          () => tableView(url("resources"), 300, resCols(), null, onCellActivate));
         else if (v === "signature") t = await signatureView(path);
         else if (v === "strings") t = await stringsView(path, navigate);
         else if (v === "hex") t = hexView(path, addr ?? 0);
@@ -836,7 +848,148 @@ function resCols() {
     { key: "language", label: "语言", type: "num" },
     { key: "size", label: "大小", type: "num" },
     { key: "rva", label: "RVA", type: "link", linkOf: (r) => ({ kind: "hex", value: r.rva }) },
+    { key: "dl", label: "下载", type: "link", linkOf: (r) => ({ kind: "res-dl", value: r.rva }) },
+    { key: "rep", label: "替换", type: "link", linkOf: (r) => ({ kind: "res-rep", value: r.rva }) },
   ];
+}
+
+/* ---- 资源修改（Resource Hacker 式） ---- */
+
+function triggerDownload(url) {
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+function fileToBase64(file) {
+  return file.arrayBuffer().then((buf) => {
+    const bytes = new Uint8Array(buf);
+    let bin = "";
+    const CHUNK = 0x8000;
+    for (let i = 0; i < bytes.length; i += CHUNK)
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+    return btoa(bin);
+  });
+}
+
+async function replaceResourceFlow(path, row, onDone) {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.style.display = "none";
+  input.addEventListener("change", async () => {
+    const file = input.files && input.files[0];
+    input.remove();
+    if (!file) return;
+    try {
+      const data_b64 = await fileToBase64(file);
+      const label = `${row.type}/${row.name}/lang${row.lang_id}（原 ${row.size} 字节）`;
+      const inPlace = confirm(
+        `用 ${file.name}（${file.size} 字节）替换资源 ${label}？\n\n`
+        + "确定 = 原地保存（自动生成 .bak 备份）\n取消 = 另存为新文件");
+      let out_path = null;
+      if (!inPlace) {
+        out_path = prompt("另存为路径：",
+          path.replace(/\.(exe|dll|sys|ocx|scr|cpl|efi|mui|drv)$/i, ".patched$1"));
+        if (!out_path) return;
+      }
+      const r = await apiSend("POST", "/api/pe/resources/replace", {
+        path,
+        entries: [{ type: row.type, name: String(row.name),
+                    lang: row.lang_id, data_b64 }],
+        in_place: inPlace,
+        out_path,
+      });
+      alert(`替换完成：${r.replaced.length} 项\n输出：${r.path}\n`
+        + `.rsrc ${r.old_rsrc_size} → ${r.rsrc_size} 字节\n`
+        + `PE CheckSum: ${r.checksum}`
+        + (r.backup ? `\n备份：${r.backup}` : "")
+        + (r.grew ? "\n（文件已扩展，后续节已平移）" : ""));
+      onDone && onDone();
+    } catch (err) {
+      alert(`替换失败：${err.message ?? err}`);
+    }
+  });
+  document.body.appendChild(input);
+  input.click();
+}
+
+async function refreshArchives(listEl) {
+  try {
+    const r = await apiGet("/api/pe/resources/archives");
+    const list = r.archives ?? [];
+    if (!list.length) {
+      listEl.innerHTML = '<p class="table-meta">数据库中还没有资源存档。</p>';
+      return;
+    }
+    listEl.replaceChildren(...list.map((a) => {
+      const rowEl = document.createElement("div");
+      rowEl.className = "res-arch-row";
+      const info = document.createElement("span");
+      info.textContent = `#${a.id} ${a.file_name}（${a.count} 项 / ${(a.size / 1024).toFixed(1)} KB / `
+        + `${new Date(a.created_at * 1000).toLocaleString()}）`;
+      const ops = document.createElement("span");
+      ops.className = "res-arch-ops";
+      const dl = document.createElement("a");
+      dl.href = `/api/pe/resources/archives/${a.id}/download`;
+      dl.download = "";
+      dl.textContent = "下载";
+      const del = document.createElement("a");
+      del.href = "#";
+      del.textContent = "删除";
+      del.addEventListener("click", async (e) => {
+        e.preventDefault();
+        if (!confirm(`删除存档 #${a.id}（${a.file_name}）？`)) return;
+        try { await apiSend("DELETE", `/api/pe/resources/archives/${a.id}`); }
+        catch (err) { /* keep */ }
+        refreshArchives(listEl);
+      });
+      ops.append(dl, del);
+      rowEl.append(info, ops);
+      return rowEl;
+    }));
+  } catch (err) {
+    listEl.replaceChildren(errRow(err));
+  }
+}
+
+async function resourcesView(path, onCellActivate, buildTable) {
+  const wrap = document.createElement("div");
+  const bar = document.createElement("div");
+  bar.className = "res-toolbar";
+
+  const packBtn = document.createElement("button");
+  packBtn.type = "button";
+  packBtn.className = "ntl-action-btn";
+  packBtn.textContent = "打包下载 (.zip)";
+  packBtn.addEventListener("click", () =>
+    triggerDownload(`/api/pe/resources/pack?path=${encodeURIComponent(path)}`));
+
+  const saveBtn = document.createElement("button");
+  saveBtn.type = "button";
+  saveBtn.className = "ntl-action-btn";
+  saveBtn.textContent = "存档到数据库";
+  saveBtn.addEventListener("click", async () => {
+    saveBtn.disabled = true;
+    try {
+      await apiPost("/api/pe/resources/pack-save", { path });
+      await refreshArchives(archList);
+    } catch (err) {
+      archList.replaceChildren(errRow(err));
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
+
+  bar.append(packBtn, saveBtn);
+  const archList = document.createElement("div");
+  archList.className = "res-arch-list";
+  wrap.append(bar, archList);
+  refreshArchives(archList);
+  wrap.append(await buildTable());
+  return wrap;
 }
 
 async function signatureView(path) {

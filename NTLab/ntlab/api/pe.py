@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
+import base64
+import binascii
 import os
 import tempfile
+import urllib.parse
 from typing import Annotated
 
-from fastapi import APIRouter, Query, UploadFile
+from fastapi import APIRouter, Query, Response, UploadFile
 
 from ntlab.core import pe as pe_core
+from ntlab.core import userdb
 from ntlab.core.pe import demangle as dm_core
 from ntlab.core.pe import disasm
 from ntlab.core.pe import hexdump
@@ -63,6 +67,95 @@ def exports(
 @router.get("/resources")
 def resources(path: str) -> dict:
     return pe_core.resources(_require_path(path))
+
+
+def _download_response(data: bytes, filename: str, media_type: str) -> Response:
+    quoted = urllib.parse.quote(filename)
+    return Response(
+        content=data,
+        media_type=media_type,
+        headers={"Content-Disposition":
+                 f"attachment; filename*=UTF-8''{quoted}"},
+    )
+
+
+@router.get("/resources/extract")
+def resource_extract(
+    path: str,
+    type: str,
+    name: str,
+    lang: int = 0,
+) -> Response:
+    """提取单个资源数据，直接作为附件下载。"""
+    data = pe_core.extract(_require_path(path), type, name, lang)
+    stem = os.path.splitext(os.path.basename(path))[0]
+    safe = f"{type}_{name}_lang{lang}.bin".replace("/", "_").replace("\\", "_")
+    return _download_response(data, f"{stem}.{safe}", "application/octet-stream")
+
+
+@router.get("/resources/pack")
+def resource_pack_download(path: str) -> Response:
+    """全部资源打包为 zip，直接流式下载（不入库）。"""
+    blob, count, _manifest = pe_core.pack_zip(_require_path(path))
+    stem = os.path.splitext(os.path.basename(path))[0]
+    return _download_response(blob, f"{stem}.resources.zip", "application/zip")
+
+
+@router.post("/resources/pack-save")
+def resource_pack_save(body: dict) -> dict:
+    """全部资源打包为 zip 并存入用户数据库，返回归档 id。"""
+    path = _require_path(body.get("path"))
+    blob, count, manifest = pe_core.pack_zip(path)
+    stem = os.path.splitext(os.path.basename(path))[0]
+    aid = userdb.save_archive(f"{stem}.resources.zip", blob, count, manifest)
+    return {"id": aid, "count": count, "size": len(blob),
+            "file_name": f"{stem}.resources.zip"}
+
+
+@router.get("/resources/archives")
+def resource_archives() -> dict:
+    return {"archives": userdb.list_archives()}
+
+
+@router.get("/resources/archives/{aid}/download")
+def resource_archive_download(aid: int) -> Response:
+    arch = userdb.get_archive(aid)
+    return _download_response(arch["content"], arch["file_name"], "application/zip")
+
+
+@router.delete("/resources/archives/{aid}")
+def resource_archive_delete(aid: int) -> dict:
+    userdb.delete_archive(aid)
+    return {"deleted": aid}
+
+
+@router.post("/resources/replace")
+def resource_replace(body: dict) -> dict:
+    """替换若干资源并重建 .rsrc 节（原地保存自动留 .bak；默认另存为）。"""
+    path = _require_path(body.get("path"))
+    entries = body.get("entries") or []
+    if not isinstance(entries, list) or not entries:
+        raise InvalidPathError("body must contain a non-empty 'entries' array")
+    reps = []
+    for e in entries:
+        try:
+            data = base64.b64decode(e.get("data_b64") or "")
+        except (binascii.Error, ValueError):
+            raise InvalidPathError(
+                f"invalid base64 in data_b64 for "
+                f"({e.get('type')}, {e.get('name')}, lang={e.get('lang')})")
+        reps.append({
+            "type": e.get("type"), "name": e.get("name"),
+            "lang": int(e.get("lang") or 0), "data": data,
+            "codepage": e.get("codepage"),
+        })
+    in_place = bool(body.get("in_place"))
+    out_path = body.get("out_path")
+    if not in_place and not out_path:
+        raise InvalidPathError(
+            "either in_place=true or out_path is required")
+    return pe_core.replace_resources(
+        path, reps, out_path=out_path, in_place=in_place)
 
 
 @router.get("/signature")

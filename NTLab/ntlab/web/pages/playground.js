@@ -1990,7 +1990,10 @@ export async function mount(el) {
       histInner.innerHTML = `<div class="error-box"><span class="code">${esc(err.code ?? "error")}</span> — ${esc(err.message ?? String(err))}</div>`;
     }
   });
-  el.querySelector(".page-head").append(histToggle, histPanel);
+  /* 页头操作区：折叠按钮横排（面板仍全宽展开在其下） */
+  const headActions = document.createElement("div");
+  headActions.className = "page-head-actions";
+  el.querySelector(".page-head").append(headActions, histPanel);
 
   /* ---- 我的编排：SQLite 持久化保存/载入/删除 ---- */
   const myToggle = document.createElement("button");
@@ -2055,7 +2058,9 @@ export async function mount(el) {
       myInner.innerHTML = `<div class="error-box"><span class="code">${esc(err.code ?? "error")}</span> — ${esc(err.message ?? String(err))}</div>`;
     }
   });
-  el.querySelector(".page-head").append(myToggle, myPanel);
+  headActions.append(histToggle);
+  headActions.append(myToggle);
+  el.querySelector(".page-head").append(myPanel);
 
   /* ---- 启动 ---- */
   renderCatalog();

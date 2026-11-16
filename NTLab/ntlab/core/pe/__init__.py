@@ -8,6 +8,7 @@ from .parser import (
     resources,
     signature,
 )
+from .resedit import extract, pack_zip, replace_resources
 
 __all__ = [
     "exports",
@@ -16,4 +17,7 @@ __all__ = [
     "parse_headers",
     "resources",
     "signature",
+    "extract",
+    "pack_zip",
+    "replace_resources",
 ]
