@@ -6,8 +6,6 @@
 
 </div>
 
-![NTLab cover](assets/cover.png)
-
 ## What's This?
 
 `NTLab` serves a browser-based environment for examining Windows binaries, the NT object-manager namespace and Win32/NT API behavior. A Python server runs on the loopback interface and delivers a single-page application built from native Custom Elements.
@@ -19,10 +17,6 @@ This build includes three tools: a PE analyzer, an NT object directory browser (
 Architecture decisions live in [`docs/architecture.md`](docs/architecture.md), and the staged feature plan in [`docs/roadmap.md`](docs/roadmap.md).
 
 ## What it looks like
-
-The home view presents the three tools as navigation cards:
-
-![NTLab home view with tool cards](assets/home.png)
 
 PE analysis opens in a tabbed inspector. Summary, header, section, import, export, resource and signature views share a single file context:
 
@@ -136,10 +130,6 @@ Three first-party elements extend that kit:
 
 The animation layer (`motion.js` / `motion.css`) uses the Web Animations API for page swaps and staggered entrances, with a `prefers-reduced-motion` path and an optional `localStorage` probe for frame-level inspection.
 
-<p align="center">
-  <img src="assets/theme-switcher.png" alt="Theme switcher showing the available color schemes on the PE Viewer" width="760" />
-</p>
-
 ### Architecture — layered core with a thin API
 
 ```
@@ -248,8 +238,6 @@ The image references above are placeholders. The table below lists the intended 
 
 | File | Content |
 |---|---|
-| `assets/cover.png` | Wide cover image with the NTLab mark and a composite of the three tools |
-| `assets/home.png` | Home view with the three tool cards and sidebar |
 | `assets/pe-viewer-summary.png` | PE Viewer summary tab with machine, subsystem and section overview |
 | `assets/pe-viewer-imports.png` | PE Viewer imports table showing pagination and typed columns |
 | `assets/pe-viewer-disasm.png` | PE Viewer disassembly with IAT comments and cross-reference panel |
@@ -259,7 +247,6 @@ The image references above are placeholders. The table below lists the intended 
 | `assets/playground-blocks.png` | Playground block program with ordered call cards |
 | `assets/playground-asm.png` | Playground assembly text view alongside the block program |
 | `assets/playground-result.png` | Playground result panel with return value, GetLastError and NTSTATUS |
-| `assets/theme-switcher.png` | Theme control with the color schemes applied to the PE Viewer |
 
 ## Version and credits
 
