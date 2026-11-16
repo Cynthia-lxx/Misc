@@ -318,7 +318,7 @@ html, body {
 .ntl-action-btn:disabled { opacity: .32; cursor: default; }
 .ntl-action-btn:focus-visible { outline: 2px solid var(--ui-accent); outline-offset: 2px; }
 
-.pe-navbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 0 0 auto; }
+.pe-navbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 0 0 auto; margin-bottom: 10px; }
 .pe-nav-btn[data-dir="back"]:hover:not(:disabled) svg { transform: translateX(-3px); }
 .pe-nav-btn[data-dir="forward"]:hover:not(:disabled) svg { transform: translateX(3px); }
 .pe-nav-count {
