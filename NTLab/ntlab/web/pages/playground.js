@@ -857,7 +857,7 @@ export async function mount(el) {
     takeAt(fromPath);
     if (editingPath === JSON.stringify(fromPath)) editingPath = null;
     programChanged();
-    swap(composeView());
+    refreshCompose();
   });
 
   let selected = null;                       // 当前选中的 spec
@@ -903,7 +903,7 @@ export async function mount(el) {
       editingPath = null;
       asmDirty = false;
       asmErr = null;
-      if (currentTab === "queue") { countSlots(); swap(composeView()); }
+      if (currentTab === "queue") { countSlots(); refreshCompose(); }
     } else {
       asmDirty = true;
       asmErr = r.err;
@@ -1230,7 +1230,7 @@ export async function mount(el) {
     }
     if (node) t.arr.splice(t.idx, 0, node);
     programChanged();
-    swap(composeView());
+    refreshCompose();
   }
 
   /** 通用投放区：getTarget(e) → {arr, idx, mark, markEl}。 */
@@ -1254,11 +1254,21 @@ export async function mount(el) {
     });
   }
 
+  // 积木稳定身份：重渲染后同一节点对象仍可对应到旧 DOM 位置（FLIP 动画用）
+  const uidMap = new WeakMap();
+  let uidSeq = 0;
+  function uidOf(node) {
+    let u = uidMap.get(node);
+    if (!u) { u = `u${++uidSeq}`; uidMap.set(node, u); }
+    return u;
+  }
+
   function renderBlock(node, path) {
     const kind = node.kind || "call";
     const blk = document.createElement("div");
     blk.className = "pg-blk pg-" + (kind === "call" ? "call" : kind);
     blk.dataset.path = JSON.stringify(path);
+    blk.dataset.uid = uidOf(node);
     const hd = document.createElement("div");
     hd.className = "hd";
     blk.appendChild(hd);
@@ -1290,19 +1300,9 @@ export async function mount(el) {
     if (kind === "call") {
       hd.innerHTML = `<span class="no">#${node._no}</span><span class="sig">${esc(node.sig)}</span>`;
       hd.title = "点击编辑参数 · 拖动调整位置 · 拖回左侧列表移除";
-      const del = document.createElement("ui-button");
-      del.setAttribute("label", "移除");
-      del.addEventListener("click", (e) => {
-        e.stopPropagation();
-        takeAt(path);
-        if (editingPath === JSON.stringify(path)) editingPath = null;
-        programChanged();
-        swap(composeView());
-      });
-      hd.appendChild(del);
       hd.addEventListener("click", () => {
         editingPath = isEditing ? null : JSON.stringify(path);
-        swap(composeView());
+        refreshCompose();
       });
       if (isEditing) blk.appendChild(buildEditor(node, node._no));
       return blk;
@@ -1342,7 +1342,7 @@ export async function mount(el) {
       } else {
         const addElse = document.createElement("ui-button");
         addElse.setAttribute("label", "+ 否则");
-        addElse.addEventListener("click", () => { node.else = []; programChanged(); swap(composeView()); });
+        addElse.addEventListener("click", () => { node.else = []; programChanged(); refreshCompose(); });
         blk.appendChild(addElse);
       }
       return blk;
@@ -1415,7 +1415,7 @@ export async function mount(el) {
     const add = (label, kind) => {
       const b = document.createElement("ui-button");
       b.setAttribute("label", label);
-      b.addEventListener("click", () => { program.push(makeBlock(kind)); programChanged(); swap(composeView()); });
+      b.addEventListener("click", () => { program.push(makeBlock(kind)); programChanged(); refreshCompose(); });
       return b;
     };
     const runBtn = document.createElement("ui-button");
@@ -1428,10 +1428,16 @@ export async function mount(el) {
       } catch (err) {
         session = { id: "error", steps: [{ api: "program", error: err.message }], ok: 0, failed: 1 };
       }
-      swap(composeView());
+      refreshCompose();
+    });
+    const clrBtn = document.createElement("ui-button");
+    clrBtn.setAttribute("label", "清空");
+    clrBtn.addEventListener("click", () => {
+      program = []; session = null; editingPath = null;
+      programChanged(); refreshCompose();
     });
     btns.append(
-      runBtn,
+      runBtn, clrBtn,
       add("+ 循环", "repeat"), add("+ 条件", "if"),
       add("+ 跳出", "break"), add("+ 下一轮", "continue"),
     );
@@ -1523,15 +1529,41 @@ export async function mount(el) {
 
   /* ---- tabs：横行多选一（切换走 motion.js 交叉出入场） ---- */
   let currentTab = "call";
-  function swap(node) {
+  function swap(node, animate = true) {
     bodyEl.replaceChildren(node);
-    if (motionScale() > 0) {
+    if (animate && motionScale() > 0) {
       node.classList.add("swap-in");
       node.addEventListener("animationend", (e) => {
         if (e.target === node && e.animationName === "ntl-swap-in") node.classList.remove("swap-in");
       }, { once: true });
     }
     return node;
+  }
+
+  /** 编排内容变化：整画布不做入场，只对因插入/移除而移位的积木做 FLIP 位移。 */
+  function refreshCompose() {
+    const scale = motionScale();
+    const oldRects = new Map();
+    if (scale > 0) {
+      bodyEl.querySelectorAll(".pg-blk").forEach((el) => {
+        oldRects.set(el.dataset.uid, el.getBoundingClientRect());
+      });
+    }
+    swap(composeView(), false);
+    if (scale === 0) return;
+    const easing = "cubic-bezier(0.16, 1, 0.3, 1)";
+    bodyEl.querySelectorAll(".pg-blk").forEach((el) => {
+      const prev = oldRects.get(el.dataset.uid);
+      if (!prev) return;                       // 新插入的块：不做入场
+      const now = el.getBoundingClientRect();
+      const dx = prev.left - now.left;
+      const dy = prev.top - now.top;
+      if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+      el.animate(
+        [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }],
+        { duration: 260 * scale, easing },
+      );
+    });
   }
   function viewFor(v) {
     if (v === "call") return renderCallCard();
