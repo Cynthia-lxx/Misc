@@ -178,7 +178,7 @@ function programToAsm(prog, specOf) {
     for (const nd of nodes || []) {
       if (nd.kind === "call" || !nd.kind) {
         const n = callByN.size + 1;
-        const spec = specOf(nd.api);
+        const spec = specOf(nd.api, nd.module);
         callByN.set(n, { node: nd, n, params: spec ? spec.params : [] });
       }
       prescan(nd.body); prescan(nd.then); prescan(nd.else);
@@ -257,8 +257,9 @@ function programToAsm(prog, specOf) {
   function emitCall(node) {
     const m = callQueue.shift();
     if (!m) return;
-    const spec = specOf(node.api);
+    const spec = specOf(node.api, node.module);
     const params = spec ? spec.params : [];
+    if (node.module) dataLines.push(`mod_${m.n}: du "${node.module}", 0`);
     emit(`; [${m.n}] ${node.sig || `${node.api}()`}`);
     for (let i = 0; i < Math.min(params.length, 4); i++) {
       const p = params[i];
@@ -432,10 +433,13 @@ function asmToProgram(text, specOf) {
   // 数据段：字符串标签
   const strByLabel = new Map();
   let inData = false;
+  const modBySlot = new Map();
   for (const { t } of lines) {
     if (/^section\b/.test(t)) { inData = /\bdata\b/.test(t); continue; }
     if (!inData || !t) continue;
-    let m = t.match(/^(str_\d+):\s*du\s+"(.*)",\s*0$/);
+    let m = t.match(/^(mod_\d+):\s*du\s+"(.*)",\s*0$/);
+    if (m) { modBySlot.set(m[1], m[2]); continue; }
+    m = t.match(/^(str_\d+):\s*du\s+"(.*)",\s*0$/);
     if (m) { strByLabel.set(m[1], m[2]); continue; }
     m = t.match(/^(str_\d+):\s*dw\s+(.+)$/);
     if (m) {
@@ -624,8 +628,9 @@ function asmToProgram(text, specOf) {
     const n = +m[1];
     if (n !== callCount + 1) return err(lines[j].ln, lines[j].t, `slot 编号应为 ${callCount + 1}，却是 ${n}`);
     callCount++;
-    const spec = specOf(api);
-    if (!spec) return err(lines[j].ln, lines[j].t, `${api} 不在白名单`);
+    const module = modBySlot.get(`mod_${n}`) || null;
+    const spec = specOf(api, module);
+    if (!spec) return err(lines[j].ln, lines[j].t, `${api} 不在白名单或动态库中`);
     const syms = [st.rcx, st.rdx, st.r8, st.r9];
     const args = {};
     const params = spec.params;
@@ -637,7 +642,9 @@ function asmToProgram(text, specOf) {
       const txt = valStr(v);
       if (!defaultEqual(txt, p.default)) args[p.name] = txt;
     }
-    return { node: { kind: "call", api, args }, idx: j + 1 };
+    const node = { kind: "call", api, args };
+    if (module) node.module = module;
+    return { node, idx: j + 1 };
   }
 
   function condStrOf(atoms) {
@@ -834,6 +841,10 @@ export async function mount(el) {
 
   const cat = await apiGet("/api/winapi/catalog");
   const apis = cat.apis;
+  let libState = await apiGet("/api/winapi/library").catch(() =>
+    ({ status: "idle", modules: [], progress: { done: 0, total: 0 } }));
+  const moduleCache = new Map();
+  const expanded = new Set(["control", "curated", "dlls"]);
 
   const bodyEl = el.querySelector("#pg-body");
   const tabsEl = el.querySelector("#pg-tabs");
@@ -869,22 +880,40 @@ export async function mount(el) {
 
   const specByName = new Map(apis.map((a) => [a.name, a]));
 
+  /** 自动发现导出的通用签名：4 个指针宽度参数，子进程隔离执行。 */
+  function dynSpec(name, module) {
+    return {
+      name, module: module || "?", desc: `通用调用 ${module}!${name}`,
+      side: "dynamic", ret: "int", _dynamic: true,
+      params: [1, 2, 3, 4].map((i) => ({
+        name: `arg${i}`, type: "int", default: "0",
+        desc: `第 ${i} 个参数（整数地址 / 文本 / null）`,
+      })),
+    };
+  }
+  function specFor(node) {
+    const name = typeof node === "string" ? node : node?.api;
+    const module = typeof node === "string" ? null : node?.module;
+    return specByName.get(name) || (module ? dynSpec(name, module) : null);
+  }
+  const asmSpecOf = (name, module) => specFor({ api: name, module });
+
   /* ---- 编排 ⇄ 汇编 同步管理（同一程序的两种形态） ---- */
-  let asmText = programToAsm([], specByName.get.bind(specByName)).text;
+  let asmText = programToAsm([], asmSpecOf).text;
   let asmDirty = false;                      // true = 汇编侧有无法还原的编辑（脱钩）
   let asmErr = null;                         // {ln, line, msg}
   let asmTimer = null;
 
   function syncSig(nodes) {
     for (const nd of nodes || []) {
-      if ((nd.kind === "call" || !nd.kind) && !nd.sig) nd.sig = sigOf(nd.api, nd.args);
+      if ((nd.kind === "call" || !nd.kind) && !nd.sig) nd.sig = sigOf(nd.api, nd.args, nd.module);
       syncSig(nd.body); syncSig(nd.then); syncSig(nd.else);
     }
   }
 
   /** 积木侧发生改动：以积木为准重新生成汇编（并解除脱钩）。 */
   function programChanged() {
-    asmText = programToAsm(program, (n) => specByName.get(n)).text;
+    asmText = programToAsm(program, asmSpecOf).text;
     asmDirty = false;
     asmErr = null;
     if (currentTab === "asm") {
@@ -896,7 +925,7 @@ export async function mount(el) {
 
   /** 汇编侧编辑：尝试还原为积木；成功则整体替换并复联，失败则脱钩。 */
   function tryAsm() {
-    const r = asmToProgram(asmText, (n) => specByName.get(n));
+    const r = asmToProgram(asmText, asmSpecOf);
     if (r.ok) {
       syncSig(r.program);
       program = r.program;
@@ -938,8 +967,8 @@ export async function mount(el) {
     return args;
   }
 
-  function sigOf(name, args) {
-    const spec = specByName.get(name);
+  function sigOf(name, args, module) {
+    const spec = specFor({ api: name, module });
     // 按白名单参数顺序展示；未在 schema 中的键（不应出现）排在其后
     const keys = spec
       ? [...spec.params.filter((p) => !AUTO_PARAM(p)).map((p) => p.name),
@@ -975,10 +1004,12 @@ export async function mount(el) {
     };
     walk(program);
   }
-  function makeCall(name) {
-    const spec = specByName.get(name);
+  function makeCall(name, module) {
+    const spec = specFor({ api: name, module });
     const args = defaultArgs(spec);
-    return { kind: "call", api: name, args, sig: sigOf(name, args) };
+    const node = { kind: "call", api: name, args, sig: sigOf(name, args, module) };
+    if (module) node.module = module;
+    return node;
   }
   function makeBlock(kind) {
     if (kind === "repeat") return { kind, times: 3, body: [] };
@@ -986,41 +1017,174 @@ export async function mount(el) {
     return { kind };  // break / continue
   }
 
-  /* ---- 目录 ---- */
-  function renderCatalog(filter = "") {
-    const q = filter.trim().toLowerCase();
-    const list = q
-      ? apis.filter((a) => a.name.toLowerCase().includes(q) || a.module.toLowerCase().includes(q))
-      : apis;
-    catalogEl.replaceChildren(...list.map((a) => {
-      const d = document.createElement("div");
-      d.className = "pg-item" + (selected && selected.name === a.name ? " sel" : "");
-      d.innerHTML = `<span class="nm">${esc(a.name)}</span>`
-        + `<span class="mod">${esc(a.module)}</span>`
-        + `<span class="pg-badge${a.side === "observable" ? " warn" : ""}">`
-        + `${a.side === "observable" ? "有副作用" : "safe"}</span>`;
-      d.addEventListener("click", () => {
-        selected = a;
-        renderCatalog(filter);
-        if (currentTab === "call") swap(renderCallCard());
-      });
-      // 拖拽：把 API 拎进右侧编排区（拖动开始时自动切到编排标签）
+  /* ---- 左侧积木库：控制流 / Windows API / DLLs{DLL{导出函数}} ---- */
+  const CF_BLOCKS = [
+    ["repeat", "循环", "重复 N 次"],
+    ["if", "条件", "如果 / 否则"],
+    ["break", "跳出", "跳出最近循环"],
+    ["continue", "下一轮", "进入下一轮循环"],
+  ];
+  function groupHead(key, label, meta) {
+    const h = document.createElement("button");
+    h.type = "button";
+    h.className = "pg-group-h";
+    h.dataset.open = String(expanded.has(key));
+    h.innerHTML = '<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>'
+      + `<span class="t">${esc(label)}</span><span class="pg-group-meta">${esc(meta)}</span>`;
+    h.addEventListener("click", () => {
+      if (expanded.has(key)) expanded.delete(key); else expanded.add(key);
+      renderCatalog(searchEl.value);
+    });
+    return h;
+  }
+  function loadModule(name) {
+    if (!moduleCache.has(name)) {
+      moduleCache.set(name,
+        apiGet(`/api/winapi/library/module?name=${encodeURIComponent(name)}`)
+          .then((r) => { moduleCache.set(name, r.exports || []); return r.exports || []; })
+          .catch(() => { moduleCache.set(name, []); return []; }));
+    }
+    return moduleCache.get(name);
+  }
+  function exportItem(ex, module, filter) {
+    const d = document.createElement("div");
+    d.className = "pg-item pg-export" + (ex.trust === "restricted" ? " restricted" : "")
+      + (ex.trust === "blocked" ? " blocked" : "");
+    d.innerHTML = `<span class="nm">${esc(ex.name)}</span>`
+      + `<span class="mod">#${ex.ordinal}</span>`
+      + `<span class="pg-badge${ex.trust === "restricted" ? " warn" : ""}">`
+      + (ex.trust === "blocked" ? "拦截" : ex.trust === "restricted" ? "谨慎" : "通用")
+      + "</span>";
+    d.title = ex.trust === "blocked"
+      ? `${module}!${ex.name}：命中高危名称黑名单，后端拒绝执行`
+      : `${module}!${ex.name}：通用指针签名（最多 4 个参数），在独立子进程执行`
+        + (ex.trust === "restricted" ? "；名称无法确认只读，请谨慎" : "");
+    if (ex.trust !== "blocked") {
       d.draggable = true;
       d.addEventListener("dragstart", (e) => {
-        e.dataTransfer.setData("text/pg-api", a.name);
+        e.dataTransfer.setData("text/pg-dyn",
+          JSON.stringify({ name: ex.name, module, trust: ex.trust }));
         e.dataTransfer.effectAllowed = "copy";
         showTab("queue");
       });
-      return d;
-    }));
-    if (!list.length) {
-      const d = document.createElement("div");
-      d.className = "empty";
-      d.textContent = "（无匹配 API）";
-      catalogEl.replaceChildren(d);
     }
+    return d;
+  }
+  function renderCatalog(filter = "") {
+    const q = filter.trim().toLowerCase();
+    const out = [];
+
+    // 1) 控制流积木
+    out.push(groupHead("control", "控制流", `${CF_BLOCKS.length} 块`));
+    if (expanded.has("control")) {
+      for (const [kind, label, desc] of CF_BLOCKS) {
+        if (q && !label.includes(q) && !kind.includes(q)) continue;
+        const d = document.createElement("div");
+        d.className = `pg-item pg-cf pg-cf-${kind}`;
+        d.innerHTML = `<span class="nm">${label}</span><span class="mod">${desc}</span>`
+          + '<span class="pg-badge">积木</span>';
+        d.title = "拖到右侧编排画布；也可在画布内拖动排序、拖回左栏删除";
+        d.draggable = true;
+        d.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("text/pg-block", kind);
+          e.dataTransfer.effectAllowed = "copy";
+          showTab("queue");
+        });
+        out.push(d);
+      }
+    }
+
+    // 2) 已声明签名的 Windows API
+    const curated = q ? apis.filter((a) =>
+      a.name.toLowerCase().includes(q) || a.module.toLowerCase().includes(q)) : apis;
+    out.push(groupHead("curated", "Windows API", `${curated.length} 个可执行`));
+    if (expanded.has("curated")) {
+      for (const a of curated) {
+        const d = document.createElement("div");
+        d.className = "pg-item" + (selected && selected.name === a.name ? " sel" : "");
+        d.innerHTML = `<span class="nm">${esc(a.name)}</span><span class="mod">${esc(a.module)}</span>`
+          + `<span class="pg-badge${a.side === "observable" ? " warn" : ""}">`
+          + `${a.side === "observable" ? "有副作用" : "safe"}</span>`;
+        d.addEventListener("click", () => {
+          selected = a;
+          renderCatalog(searchEl.value);
+          if (currentTab === "call") swap(renderCallCard());
+        });
+        d.draggable = true;
+        d.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("text/pg-api", a.name);
+          e.dataTransfer.effectAllowed = "copy";
+          showTab("queue");
+        });
+        out.push(d);
+      }
+    }
+
+    // 3) 自动发现的 DLL 导出（按需展开）
+    const mods = libState.modules.filter((m) => !q || m.name.includes(q));
+    const meta = libState.status === "scanning"
+      ? `扫描中 ${libState.progress.done}/${libState.progress.total}`
+      : `${libState.modules.length} DLL · ${libState.total_exports} 导出`;
+    out.push(groupHead("dlls", "DLLs", meta));
+    if (expanded.has("dlls")) {
+      if (libState.status === "scanning" && !libState.modules.length) {
+        const d = document.createElement("div");
+        d.className = "table-meta";
+        d.textContent = "正在扫描 System32 的 PE 导出表…";
+        out.push(d);
+      }
+      for (const m of mods.slice(0, q ? 40 : 250)) {
+        const key = `dll:${m.name}`;
+        const h = document.createElement("button");
+        h.type = "button";
+        h.className = "pg-mod-h";
+        h.dataset.open = String(expanded.has(key));
+        h.innerHTML = `<span class="chev">▸</span><span class="nm">${esc(m.name)}.dll</span>`
+          + `<span class="pg-group-meta">${m.count}</span>`;
+        h.addEventListener("click", () => {
+          if (expanded.has(key)) expanded.delete(key); else expanded.add(key);
+          renderCatalog(searchEl.value);
+        });
+        out.push(h);
+        if (expanded.has(key)) {
+          const cached = moduleCache.get(m.name);
+          if (!cached || typeof cached.then === "function") {
+            loadModule(m.name).then(() => {
+              if (expanded.has(key)) renderCatalog(searchEl.value);
+            });
+            const wait = document.createElement("div");
+            wait.className = "table-meta";
+            wait.textContent = "读取导出表…";
+            out.push(wait);
+          } else {
+            for (const ex of cached) {
+              if (q && !ex.name.toLowerCase().includes(q) && !m.name.includes(q)) continue;
+              out.push(exportItem(ex, m.name, q));
+            }
+          }
+        }
+      }
+      if (mods.length > (q ? 40 : 250)) {
+        const more = document.createElement("div");
+        more.className = "table-meta";
+        more.textContent = `还有 ${mods.length - (q ? 40 : 250)} 个 DLL，输入名称搜索可定位。`;
+        out.push(more);
+      }
+    }
+    catalogEl.replaceChildren(...out);
   }
   searchEl.addEventListener("input", () => renderCatalog(searchEl.value));
+  let libTimer = null;
+  function pollLibrary() {
+    if (libTimer) return;
+    libTimer = setTimeout(async () => {
+      libTimer = null;
+      try { libState = await apiGet("/api/winapi/library"); } catch { /* keep last */ }
+      renderCatalog(searchEl.value);
+      if (libState.status === "scanning") pollLibrary();
+    }, 800);
+  }
+  if (libState.status === "scanning") pollLibrary();
 
   /* ---- 调用卡 ---- */
   function argInputs(spec) {
@@ -1170,7 +1334,7 @@ export async function mount(el) {
 
   /* ---- 调用块的紧凑参数编辑器（点击块头展开） ---- */
   function buildEditor(node, slotNo) {
-    const spec = specByName.get(node.api);
+    const spec = specFor(node);
     const ed = document.createElement("div");
     ed.className = "pg-edit";
     const h = document.createElement("span");
@@ -1191,7 +1355,7 @@ export async function mount(el) {
         const v = input.value.trim();
         if (v === "") delete node.args[p.name];
         else node.args[p.name] = v;
-        node.sig = sigOf(node.api, node.args);
+        node.sig = sigOf(node.api, node.args, node.module);
         const blk = ed.closest(".pg-blk");
         const sigEl = blk && blk.querySelector(".sig");
         if (sigEl) sigEl.textContent = node.sig;
@@ -1209,7 +1373,8 @@ export async function mount(el) {
       .forEach((n) => n.classList.remove("pg-drop-before", "pg-drop-after", "pg-into"));
   }
   function isProgDrag(e) {
-    return [...e.dataTransfer.types].some((t) => t === "text/pg-api" || t === "text/pg-move");
+    return [...e.dataTransfer.types].some((t) =>
+      t === "text/pg-api" || t === "text/pg-move" || t === "text/pg-dyn" || t === "text/pg-block");
   }
 
   function doDrop(e) {
@@ -1219,8 +1384,18 @@ export async function mount(el) {
     if (!t) return;
     let node;
     const apiName = e.dataTransfer.getData("text/pg-api");
+    const dyn = e.dataTransfer.getData("text/pg-dyn");
+    const blockKind = e.dataTransfer.getData("text/pg-block");
     if (apiName) {
       node = makeCall(apiName);
+    } else if (dyn) {
+      try {
+        const info = JSON.parse(dyn);
+        node = makeCall(info.name, info.module);
+        node.trust = info.trust;
+      } catch { /* ignore malformed drag payload */ }
+    } else if (blockKind) {
+      node = makeBlock(blockKind);
     } else {
       const fromPath = JSON.parse(e.dataTransfer.getData("text/pg-move"));
       node = takeAt(fromPath);
@@ -1402,7 +1577,7 @@ export async function mount(el) {
     if (!program.length) {
       const empty = document.createElement("p");
       empty.className = "table-meta";
-      empty.textContent = "编排为空：把左侧 API 拖进来，或用下方工具条加循环/条件块。";
+      empty.textContent = "编排为空：从左侧积木库拖入 API 或控制流块。";
       list.appendChild(empty);
     }
     panel.appendChild(list);
@@ -1412,12 +1587,6 @@ export async function mount(el) {
 
     const btns = document.createElement("div");
     btns.style.cssText = "display:flex;gap:8px;margin:10px 0;flex-wrap:wrap";
-    const add = (label, kind) => {
-      const b = document.createElement("ui-button");
-      b.setAttribute("label", label);
-      b.addEventListener("click", () => { program.push(makeBlock(kind)); programChanged(); refreshCompose(); });
-      return b;
-    };
     const runBtn = document.createElement("ui-button");
     runBtn.setAttribute("label", "执行");
     runBtn.setAttribute("variant", "accent");
@@ -1436,11 +1605,7 @@ export async function mount(el) {
       program = []; session = null; editingPath = null;
       programChanged(); refreshCompose();
     });
-    btns.append(
-      runBtn, clrBtn,
-      add("+ 循环", "repeat"), add("+ 条件", "if"),
-      add("+ 跳出", "break"), add("+ 下一轮", "continue"),
-    );
+    btns.append(runBtn, clrBtn);
     panel.appendChild(btns);
 
     wrap.appendChild(panel);

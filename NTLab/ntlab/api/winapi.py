@@ -7,7 +7,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Query
 
-from ntlab.core import winapi
+from ntlab.core import winapi, winapi_library
 from ntlab.core.errors import NtlabError
 
 router = APIRouter()
@@ -17,6 +17,27 @@ router = APIRouter()
 def catalog() -> dict:
     """Whitelisted callable APIs with parameter schemas (for UI call cards)."""
     return winapi.catalog()
+
+
+@router.get("/library")
+def library() -> dict:
+    """PE 导出库状态与模块清单（首次请求自动启动后台扫描）。"""
+    st = winapi_library.status(include_modules=False)
+    if st["status"] == "idle":
+        return winapi_library.start_scan()
+    return st if st["status"] == "scanning" else winapi_library.status()
+
+
+@router.post("/library/scan")
+def library_scan(body: dict | None = None) -> dict:
+    """手动触发（可选 force）重新扫描系统 DLL/EXE 导出表。"""
+    return winapi_library.start_scan(force=bool((body or {}).get("force")))
+
+
+@router.get("/library/module")
+def library_module(name: Annotated[str, Query(min_length=1)]) -> dict:
+    """单个 DLL 的导出函数列表（前端展开分组时按需加载）。"""
+    return winapi_library.module_exports(name)
 
 
 @router.post("/run")

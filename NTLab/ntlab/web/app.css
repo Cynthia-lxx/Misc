@@ -186,6 +186,28 @@ html, body {
 }
 .pg-item:hover { background: color-mix(in srgb, var(--ui-accent) 10%, transparent); }
 .pg-item.sel { background: color-mix(in srgb, var(--ui-accent) 18%, transparent); }
+/* 左侧积木库分组（控制流 / Windows API / DLLs） */
+.pg-group-h, .pg-mod-h {
+  display: flex; align-items: center; gap: 6px; width: 100%;
+  padding: 7px 8px; margin: 4px 0 2px;
+  border: 0; border-bottom: 1px solid color-mix(in srgb, var(--ui-border) 70%, transparent);
+  background: transparent; color: var(--ui-text); font: inherit; font-size: 12px;
+  cursor: pointer; text-align: left;
+}
+.pg-group-h { font-weight: 600; color: var(--ui-accent); }
+.pg-group-h .chev, .pg-mod-h .chev {
+  display: inline-block; width: 12px; flex: none; transition: transform 240ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+}
+.pg-group-h[data-open="true"] .chev, .pg-mod-h[data-open="true"] .chev { transform: rotate(90deg); }
+.pg-group-meta { margin-left: auto; font-size: 10px; font-weight: 400; color: var(--ui-text-muted, #888); }
+.pg-mod-h .nm { font-family: var(--ntlab-font-mono); }
+.pg-item.pg-export { padding-left: 18px; }
+.pg-item.pg-export.restricted { opacity: .55; }
+.pg-item.pg-export.blocked { opacity: .32; text-decoration: line-through; cursor: not-allowed; }
+.pg-item.pg-cf .nm { font-weight: 600; }
+.pg-cf-repeat .nm { color: #66cc99; }
+.pg-cf-if .nm { color: #ffcc66; }
+.pg-cf-break .nm, .pg-cf-continue .nm { color: #ff8899; }
 .pg-item .nm { font-family: var(--ntlab-font-mono); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pg-item .mod { font-size: 10px; color: var(--ui-text-muted, #888); flex: 0 0 auto; }
 .pg-badge {

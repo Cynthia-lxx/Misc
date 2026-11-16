@@ -15,13 +15,18 @@ from __future__ import annotations
 
 import ast
 import ctypes
+import json
 import re
+import subprocess
+import sys
 import time
 import uuid
 from dataclasses import dataclass
 from ctypes import wintypes
+from pathlib import Path
 from typing import Any
 
+from ntlab.core import winapi_library
 from ntlab.core.errors import NtlabError
 
 # ---------------------------------------------------------------- structures
@@ -353,10 +358,61 @@ def _ref_out_view(val: Any) -> Any:
     return {"__raw__": val}
 
 
-def run_call(api: str, args: dict[str, Any], refs: list[dict]) -> dict:
+def _run_dynamic_call(api: str, args: dict[str, Any], refs: list[dict], module: str | None) -> dict:
+    """自动发现的导出：通用指针签名，子进程隔离执行；硬拦截名单后端强制执行。"""
+    hit = winapi_library.find_export(api, module or None)
+    if hit is None:
+        raise NtlabError("not_callable", f"{api!r} was not found in the PE export library")
+    if hit.get("trust") == "blocked" or winapi_library.is_blocked(api):
+        raise NtlabError("blocked_api",
+                         f"{api!r} matches the destructive/unsafe API deny-list and cannot be executed")
+    supplied = dict(args or {})
+    keys = sorted((k for k in supplied if re.fullmatch(r"arg[1-4]", str(k))),
+                  key=lambda k: int(str(k)[3:]))
+    if len(keys) > 4:
+        raise NtlabError("too_many_args", "dynamic calls accept at most arg1..arg4")
+    sent = {k: supplied[k] for k in keys}
+    values = [_resolve_ref(supplied[k], refs) for k in keys]
+    payload = {"path": hit["path"], "name": hit["name"], "args": values}
+    t0 = time.perf_counter()
+    try:
+        proc = subprocess.run(
+            [sys.executable, str(Path(__file__).with_name("winapi_worker.py"))],
+            input=json.dumps(payload), text=True, encoding="utf-8",
+            capture_output=True, timeout=2.0,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+        )
+    except subprocess.TimeoutExpired:
+        raise NtlabError("worker_timeout", f"{api!r} did not return within 2s (worker killed)")
+    except OSError as exc:
+        raise NtlabError("worker_failed", f"cannot start call worker: {exc}")
+    if proc.returncode != 0 or not proc.stdout.strip():
+        raise NtlabError("worker_failed",
+                         f"call worker exited with {proc.returncode}: {proc.stderr.strip()[:200]}")
+    try:
+        result = json.loads(proc.stdout.strip().splitlines()[-1])
+    except (ValueError, IndexError) as exc:
+        raise NtlabError("worker_failed", f"invalid worker response: {exc}")
+    if not result.get("ok"):
+        raise NtlabError("call_failed", str(result.get("error") or "worker reported failure"))
+    ret = int(result["ret"])
+    if ret >= (1 << 63):          # 转成有符号 64 位，避免 JS JSON 数字精度丢失
+        ret -= 1 << 64
+    duration = round((time.perf_counter() - t0) * 1000, 2)
+    rendered = {"value": ret, "hex": f"0x{ret & ((1 << 64) - 1):X}", "valid": ret != 0}
+    step = {
+        "api": hit["name"], "module": hit["module"],
+        "side": "dynamic", "trust": hit.get("trust"), "args": sent,
+        "ret": rendered, "duration_ms": duration,
+    }
+    refs.append({"ret": {**rendered, "__raw__": ret}, "out": {}})
+    return step
+
+
+def run_call(api: str, args: dict[str, Any], refs: list[dict], module: str | None = None) -> dict:
     spec = _CATALOG_BY_NAME.get(api)
     if spec is None:
-        raise NtlabError("not_callable", f"{api!r} is not in the whitelist; see /api/winapi/catalog")
+        return _run_dynamic_call(api, args, refs, module)
     fn = getattr(_lib(spec.module), spec.name)
     fn.restype = _restype_of(spec)
 
@@ -438,7 +494,7 @@ def run_queue(calls: list[dict]) -> dict:
         if not isinstance(call, dict) or "api" not in call:
             raise NtlabError("bad_queue", f"step {i + 1} must be an object with an 'api' field")
         try:
-            results.append(run_call(call["api"], call.get("args") or {}, refs))
+            results.append(run_call(call["api"], call.get("args") or {}, refs, call.get("module")))
         except NtlabError as exc:
             results.append({"api": call.get("api"), "error": exc.message, "code": exc.code})
             refs.append({})  # 保持步号对齐
@@ -530,7 +586,7 @@ def _exec_call_node(node: dict, refs: list[dict], trace: list, where: str) -> No
     api = node.get("api")
     slot = int(node.get("_slot", 0))
     try:
-        step = run_call(api, node.get("args") or {}, refs)
+        step = run_call(api, node.get("args") or {}, refs, node.get("module"))
         step["where"] = where
         trace.append(step)
     except NtlabError as exc:
