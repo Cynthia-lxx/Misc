@@ -841,9 +841,13 @@ export async function mount(el) {
 
   const cat = await apiGet("/api/winapi/catalog");
   const apis = cat.apis;
-  let libState = await apiGet("/api/winapi/library").catch(() =>
-    ({ status: "idle", modules: [], progress: { done: 0, total: 0 } }));
-  const moduleCache = new Map();
+  // 导出库：增量累积（扫描中随到随收），模块导出按页缓存
+  let libModules = [];
+  let libStatus = "idle";
+  let libProgress = { done: 0, total: 0 };
+  let libTotalExports = 0;
+  const MODULE_CAP = 250;
+  const moduleCache = new Map();   // name -> {rows, total, done, loading}
   const expanded = new Set(["control", "curated", "dlls"]);
 
   const bodyEl = el.querySelector("#pg-body");
@@ -1024,27 +1028,88 @@ export async function mount(el) {
     ["break", "跳出", "跳出最近循环"],
     ["continue", "下一轮", "进入下一轮循环"],
   ];
-  function groupHead(key, label, meta) {
+  function groupHead(key, label, meta, barPct = null) {
     const h = document.createElement("button");
     h.type = "button";
     h.className = "pg-group-h";
     h.dataset.open = String(expanded.has(key));
+    h.dataset.key = key;
     h.innerHTML = '<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>'
-      + `<span class="t">${esc(label)}</span><span class="pg-group-meta">${esc(meta)}</span>`;
+      + `<span class="t">${esc(label)}</span><span class="pg-group-meta">${esc(meta)}</span>`
+      + (barPct != null
+        ? `<span class="pg-scan-bar"><i style="width:${barPct}%"></i></span>` : "");
     h.addEventListener("click", () => {
       if (expanded.has(key)) expanded.delete(key); else expanded.add(key);
       renderCatalog(searchEl.value);
     });
     return h;
   }
-  function loadModule(name) {
-    if (!moduleCache.has(name)) {
-      moduleCache.set(name,
-        apiGet(`/api/winapi/library/module?name=${encodeURIComponent(name)}`)
-          .then((r) => { moduleCache.set(name, r.exports || []); return r.exports || []; })
-          .catch(() => { moduleCache.set(name, []); return []; }));
+  /** 分页拉取某 DLL 的导出（每页 100 条，缓存累积到 entry.rows）。 */
+  function loadModulePage(name, offset) {
+    let entry = moduleCache.get(name);
+    if (!entry) {
+      entry = { rows: [], total: 0, done: false, loading: false };
+      moduleCache.set(name, entry);
     }
-    return moduleCache.get(name);
+    if (entry.loading || (offset > 0 && entry.done)) return Promise.resolve(entry);
+    entry.loading = true;
+    return apiGet(`/api/winapi/library/module?name=${encodeURIComponent(name)}&offset=${offset}&limit=100`)
+      .then((r) => {
+        entry.rows = entry.rows.concat(r.exports || []);
+        entry.total = r.total ?? entry.rows.length;
+        entry.done = entry.rows.length >= entry.total;
+        return entry;
+      })
+      .catch(() => { entry.done = true; return entry; })
+      .finally(() => { entry.loading = false; });
+  }
+  function moduleHead(m) {
+    const key = `dll:${m.name}`;
+    const h = document.createElement("button");
+    h.type = "button";
+    h.className = "pg-mod-h";
+    h.dataset.open = String(expanded.has(key));
+    h.innerHTML = `<span class="chev">▸</span><span class="nm">${esc(m.name)}.dll</span>`
+      + `<span class="pg-group-meta">${m.count}</span>`;
+    h.addEventListener("click", () => {
+      if (expanded.has(key)) expanded.delete(key); else expanded.add(key);
+      renderCatalog(searchEl.value);
+    });
+    return h;
+  }
+  /** 已展开 DLL 的导出列表体（分页 + 加载更多按钮）。 */
+  function moduleBody(m, key, q) {
+    let entry = moduleCache.get(m.name);
+    if (!entry) {
+      loadModulePage(m.name, 0).then(() => {
+        if (expanded.has(key)) renderCatalog(searchEl.value);
+      });
+      const wait = document.createElement("div");
+      wait.className = "table-meta";
+      wait.textContent = "读取导出表…";
+      return [wait];
+    }
+    const items = [];
+    for (const ex of entry.rows) {
+      if (q && !ex.name.toLowerCase().includes(q) && !m.name.includes(q)) continue;
+      items.push(exportItem(ex, m.name, q));
+    }
+    if (!entry.done) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "pg-more-btn";
+      btn.textContent = entry.loading
+        ? "加载中…"
+        : `加载更多（${entry.rows.length}/${entry.total}）`;
+      btn.disabled = entry.loading;
+      btn.addEventListener("click", () => {
+        loadModulePage(m.name, entry.rows.length).then(() => {
+          if (expanded.has(key)) renderCatalog(searchEl.value);
+        });
+      });
+      items.push(btn);
+    }
+    return items;
   }
   function exportItem(ex, module, filter) {
     const d = document.createElement("div");
@@ -1120,71 +1185,109 @@ export async function mount(el) {
       }
     }
 
-    // 3) 自动发现的 DLL 导出（按需展开）
-    const mods = libState.modules.filter((m) => !q || m.name.includes(q));
-    const meta = libState.status === "scanning"
-      ? `扫描中 ${libState.progress.done}/${libState.progress.total}`
-      : `${libState.modules.length} DLL · ${libState.total_exports} 导出`;
-    out.push(groupHead("dlls", "DLLs", meta));
+    // 3) 自动发现的 DLL 导出（扫描中增量显示；导出按页懒加载）
+    const mods = libModules.filter((m) => !q || m.name.includes(q));
+    const cap = q ? 40 : MODULE_CAP;
+    const pct = libProgress.total ? Math.round((libProgress.done / libProgress.total) * 100) : 0;
+    const meta = libStatus === "scanning"
+      ? `扫描中 ${libProgress.done}/${libProgress.total}`
+      : `${libModules.length} DLL · ${libTotalExports} 导出`;
+    out.push(groupHead("dlls", "DLLs", meta, libStatus === "scanning" ? pct : null));
     if (expanded.has("dlls")) {
-      if (libState.status === "scanning" && !libState.modules.length) {
+      if (!libModules.length && libStatus === "scanning") {
         const d = document.createElement("div");
         d.className = "table-meta";
         d.textContent = "正在扫描 System32 的 PE 导出表…";
         out.push(d);
       }
-      for (const m of mods.slice(0, q ? 40 : 250)) {
+      for (const m of mods.slice(0, cap)) {
+        out.push(moduleHead(m));
         const key = `dll:${m.name}`;
-        const h = document.createElement("button");
-        h.type = "button";
-        h.className = "pg-mod-h";
-        h.dataset.open = String(expanded.has(key));
-        h.innerHTML = `<span class="chev">▸</span><span class="nm">${esc(m.name)}.dll</span>`
-          + `<span class="pg-group-meta">${m.count}</span>`;
-        h.addEventListener("click", () => {
-          if (expanded.has(key)) expanded.delete(key); else expanded.add(key);
-          renderCatalog(searchEl.value);
-        });
-        out.push(h);
-        if (expanded.has(key)) {
-          const cached = moduleCache.get(m.name);
-          if (!cached || typeof cached.then === "function") {
-            loadModule(m.name).then(() => {
-              if (expanded.has(key)) renderCatalog(searchEl.value);
-            });
-            const wait = document.createElement("div");
-            wait.className = "table-meta";
-            wait.textContent = "读取导出表…";
-            out.push(wait);
-          } else {
-            for (const ex of cached) {
-              if (q && !ex.name.toLowerCase().includes(q) && !m.name.includes(q)) continue;
-              out.push(exportItem(ex, m.name, q));
-            }
-          }
-        }
+        if (expanded.has(key)) out.push(...moduleBody(m, key, q));
       }
-      if (mods.length > (q ? 40 : 250)) {
+      if (mods.length > cap) {
         const more = document.createElement("div");
-        more.className = "table-meta";
-        more.textContent = `还有 ${mods.length - (q ? 40 : 250)} 个 DLL，输入名称搜索可定位。`;
+        more.className = "table-meta pg-more-hint";
+        more.textContent = `还有 ${mods.length - cap} 个 DLL，输入名称搜索可定位。`;
         out.push(more);
       }
     }
     catalogEl.replaceChildren(...out);
   }
   searchEl.addEventListener("input", () => renderCatalog(searchEl.value));
+  /** 扫描中的 DLLs 分组头原地刷新（计数 + 进度条），不整树重绘。 */
+  function updateDllsHead() {
+    const h = catalogEl.querySelector('.pg-group-h[data-key="dlls"]');
+    if (!h) return;
+    const pct = libProgress.total ? Math.round((libProgress.done / libProgress.total) * 100) : 0;
+    h.querySelector(".pg-group-meta").textContent =
+      `扫描中 ${libProgress.done}/${libProgress.total}`;
+    const bar = h.querySelector(".pg-scan-bar > i");
+    if (bar) bar.style.width = `${pct}%`;
+  }
+  /** 把新到的模块行追加到现有树尾（cap 内），超出只更新提示。 */
+  function appendModuleRows(fresh) {
+    const shown = catalogEl.querySelectorAll(".pg-mod-h").length;
+    const room = Math.max(0, MODULE_CAP - shown);
+    if (room > 0) {
+      const frag = document.createDocumentFragment();
+      fresh.slice(0, room).forEach((m, i) => {
+        const h = moduleHead(m);
+        h.classList.add("pg-pop");   // 新行错峰浮入
+        h.style.animationDelay = `${Math.min(i, 12) * 24}ms`;
+        frag.appendChild(h);
+      });
+      const hint = catalogEl.querySelector(".pg-more-hint");
+      if (hint) catalogEl.insertBefore(frag, hint); else catalogEl.appendChild(frag);
+    }
+    syncMoreHint();
+    updateDllsHead();
+  }
+  function syncMoreHint() {
+    const shown = catalogEl.querySelectorAll(".pg-mod-h").length;
+    let hint = catalogEl.querySelector(".pg-more-hint");
+    const overflow = libModules.length - shown;
+    if (overflow > 0 && expanded.has("dlls") && !searchEl.value.trim()) {
+      if (!hint) {
+        hint = document.createElement("div");
+        hint.className = "table-meta pg-more-hint";
+        catalogEl.appendChild(hint);
+      }
+      hint.textContent = `还有 ${overflow} 个 DLL，输入名称搜索可定位。`;
+    } else if (hint) hint.remove();
+  }
+  /** 拉取库状态；since 增量，扫描中随到随显示。 */
+  async function refreshLibrary(deltaOnly = false) {
+    const prev = libStatus;
+    try {
+      const r = await apiGet(`/api/winapi/library?since=${libModules.length}`);
+      libStatus = r.status;
+      libProgress = r.progress || libProgress;
+      libTotalExports = r.total_exports ?? libTotalExports;
+      const fresh = r.modules || [];
+      if (fresh.length) {
+        libModules = libModules.concat(fresh);
+        if (deltaOnly && libStatus === "scanning" && expanded.has("dlls")
+            && !searchEl.value.trim() && catalogEl.querySelectorAll(".pg-mod-h").length) {
+          appendModuleRows(fresh);
+        } else {
+          renderCatalog(searchEl.value);
+        }
+      } else if (prev !== libStatus) {
+        renderCatalog(searchEl.value);   // 状态翻转（如扫描完成）时整树刷新一次
+      }
+    } catch { /* keep last */ }
+    return libStatus;
+  }
   let libTimer = null;
   function pollLibrary() {
     if (libTimer) return;
     libTimer = setTimeout(async () => {
       libTimer = null;
-      try { libState = await apiGet("/api/winapi/library"); } catch { /* keep last */ }
-      renderCatalog(searchEl.value);
-      if (libState.status === "scanning") pollLibrary();
+      const st = await refreshLibrary(true);
+      if (st === "scanning") pollLibrary();
     }, 800);
   }
-  if (libState.status === "scanning") pollLibrary();
 
   /* ---- 调用卡 ---- */
   function argInputs(spec) {
@@ -1781,6 +1884,10 @@ export async function mount(el) {
   /* ---- 启动 ---- */
   renderCatalog();
   showTab("call");
+  refreshLibrary().then(() => {
+    renderCatalog(searchEl.value);
+    if (libStatus === "scanning") pollLibrary();
+  });
 
   // PE 分析器跳转：#/playground?api=CreateFileW
   const pre = query().get("api");

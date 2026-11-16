@@ -39,8 +39,9 @@ _STATE: dict[str, Any] = {
     "done": 0,
     "total": 0,
     "modules": {},          # name(lower) -> {name,path,exports,count}
-    "module_list": [],      # 供 /library 直接复用的轻量模块清单
+    "module_list": [],      # 轻量模块清单（扫描中增量追加）
     "by_name": {},          # name(lower) -> [(module, export), ...]
+    "total_exports": 0,     # 运行总量（增量维护，避免每次响应全量求和）
     "built_at": 0.0,
     "error": None,
 }
@@ -77,10 +78,10 @@ def _scan() -> None:
         files.extend(root.glob("*.exe"))
     files = sorted({str(p).lower(): Path(p) for p in files}.values())
     with _LOCK:
-        _STATE.update(status="scanning", done=0, total=len(files), error=None)
+        _STATE.update(status="scanning", done=0, total=len(files), error=None,
+                      modules={}, module_list=[], by_name={}, total_exports=0)
 
-    modules: dict[str, dict] = {}
-    by_name: dict[str, list] = {}
+    # 增量提交：每解析出一个 DLL 立即进入 _STATE，前端随到随显示
     for i, path in enumerate(files):
         try:
             pe = pefile.PE(str(path), fast_load=True)
@@ -88,49 +89,50 @@ def _scan() -> None:
                 # fast_load 下 DATA_DIRECTORY 已可读：无导出目录的文件直接跳过，避免昂贵解析
                 dd = pe.OPTIONAL_HEADER.DATA_DIRECTORY
                 exp_idx = pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_EXPORT"]
-                if not dd or len(dd) <= exp_idx or not dd[exp_idx].VirtualAddress:
-                    with _LOCK:
-                        _STATE["done"] = i + 1
-                    continue
-                pe.parse_data_directories(
-                    directories=[pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_EXPORT"]])
-                exp = getattr(pe, "DIRECTORY_ENTRY_EXPORT", None)
-                items: list[dict] = []
-                if exp is not None:
-                    for sym in exp.symbols:
-                        if not sym.name:
-                            continue  # 纯序号导出没有可调用的名字
-                        name = sym.name.decode("utf-8", "replace")
-                        items.append({
-                            "name": name,
-                            "ordinal": sym.ordinal,
-                            "rva": sym.address,
-                            "trust": classify(name),
-                        })
-                if items:
-                    stem = path.stem.lower()
-                    modules[stem] = {
-                        "name": stem, "path": str(path),
-                        "exports": sorted(items, key=lambda x: x["name"].lower()),
-                        "count": len(items),
-                        "dll_name": exp.name.decode("utf-8", "replace") if exp and exp.name else None,
-                    }
-                    for item in items:
-                        by_name.setdefault(item["name"].lower(), []).append((stem, item))
+                if dd and len(dd) > exp_idx and dd[exp_idx].VirtualAddress:
+                    pe.parse_data_directories(
+                        directories=[pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_EXPORT"]])
+                    exp = getattr(pe, "DIRECTORY_ENTRY_EXPORT", None)
+                    items: list[dict] = []
+                    if exp is not None:
+                        for sym in exp.symbols:
+                            if not sym.name:
+                                continue  # 纯序号导出没有可调用的名字
+                            name = sym.name.decode("utf-8", "replace")
+                            items.append({
+                                "name": name,
+                                "ordinal": sym.ordinal,
+                                "rva": sym.address,
+                                "trust": classify(name),
+                            })
+                    if items:
+                        stem = path.stem.lower()
+                        module = {
+                            "name": stem, "path": str(path),
+                            "exports": sorted(items, key=lambda x: x["name"].lower()),
+                            "count": len(items),
+                            "dll_name": exp.name.decode("utf-8", "replace") if exp and exp.name else None,
+                        }
+                        with _LOCK:
+                            _STATE["modules"][stem] = module
+                            _STATE["module_list"].append(
+                                {"name": stem, "path": str(path), "count": len(items),
+                                 "dll_name": module["dll_name"]})
+                            _STATE["total_exports"] += len(items)
+                            for item in items:
+                                _STATE["by_name"].setdefault(
+                                    item["name"].lower(), []).append((stem, item))
             finally:
                 pe.close()
         except Exception:
-            continue  # 单个不可读 PE 不影响整库
+            pass  # 单个不可读 PE 不影响整库
         with _LOCK:
             _STATE["done"] = i + 1
     with _LOCK:
-        module_list = [
-            {"name": m["name"], "path": m["path"], "count": m["count"],
-             "dll_name": m["dll_name"]}
-            for m in sorted(modules.values(), key=lambda x: x["name"])
-        ]
-        _STATE.update(modules=modules, module_list=module_list, by_name=by_name,
-                      status="ready", built_at=time.time(), done=len(files))
+        _STATE["module_list"].sort(key=lambda x: x["name"])
+        _STATE["status"] = "ready"
+        _STATE["built_at"] = time.time()
+        _STATE["done"] = len(files)
 
 
 def start_scan(force: bool = False) -> dict:
@@ -147,24 +149,34 @@ def start_scan(force: bool = False) -> dict:
     return status()
 
 
-def status(include_modules: bool = True) -> dict:
+def status(since: int = 0) -> dict:
+    """库状态。`since` 为客户端已收到的模块数，返回其后的增量清单（分页拉取）。"""
     with _LOCK:
+        ml = _STATE["module_list"]
         return {
             "status": _STATE["status"],
             "progress": {"done": _STATE["done"], "total": _STATE["total"]},
-            "modules": _STATE["module_list"] if include_modules else [],
-            "total_exports": sum(m["count"] for m in _STATE["modules"].values()),
+            "total_modules": len(ml),
+            "modules": ml[max(0, since):],
+            "total_exports": _STATE["total_exports"],
             "built_at": _STATE["built_at"],
             "error": _STATE["error"],
         }
 
 
-def module_exports(name: str) -> dict:
+def module_exports(name: str, offset: int = 0, limit: int = 0) -> dict:
+    """模块导出分页：offset 起、limit 条（0 = 全部）。"""
     with _LOCK:
         m = _STATE["modules"].get((name or "").lower())
         if m is None:
             raise NtlabError("unknown_module", f"module {name!r} not found in PE library")
-        return {"name": m["name"], "path": m["path"], "exports": m["exports"]}
+        exps = m["exports"]
+        off = max(0, int(offset))
+        chunk = exps[off:off + int(limit)] if int(limit) > 0 else exps[off:]
+        return {
+            "name": m["name"], "path": m["path"], "exports": chunk,
+            "total": len(exps), "offset": off,
+        }
 
 
 def find_export(name: str, module: str | None = None) -> dict | None:
