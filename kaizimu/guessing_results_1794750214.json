@@ -1,0 +1,376 @@
+{
+  "guessedLetters": "0123456789aefgikopstu",
+  "patterns": [
+    "***** ** *****",
+    "******",
+    "***"
+  ],
+  "totalMatches": 73,
+  "matches": [
+    {
+      "pattern": "***** ** *****",
+      "song": "𝐍𝐢𝐠𝐡𝐭 𝐎𝐟 𝐂𝐮𝐫𝐬𝐞",
+      "artist": "YUNARINA"
+    },
+    {
+      "pattern": "******",
+      "song": "______",
+      "artist": "x0o0x_"
+    },
+    {
+      "pattern": "***",
+      "song": "[@__@]",
+      "artist": "黒魔 (Chroma)"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "アクマバライ",
+      "artist": "Something's off with my Vocaloid"
+    },
+    {
+      "pattern": "******",
+      "song": "アダチ・レイ",
+      "artist": "佐藤ちなみに"
+    },
+    {
+      "pattern": "***",
+      "song": "いますぐ輪廻",
+      "artist": "なきそ"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "おてんきあめ",
+      "artist": "apca*"
+    },
+    {
+      "pattern": "******",
+      "song": "カガリビバナ",
+      "artist": "cosMo@暴走P"
+    },
+    {
+      "pattern": "***",
+      "song": "ギザバ怪文書",
+      "artist": "cosMo@暴走P"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "ころころラフ",
+      "artist": "Palette"
+    },
+    {
+      "pattern": "******",
+      "song": "スズカゼの森",
+      "artist": "tkqn14"
+    },
+    {
+      "pattern": "***",
+      "song": "せかいの箱庭",
+      "artist": "seatrus"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "ダダダイズム",
+      "artist": "打打だいず"
+    },
+    {
+      "pattern": "******",
+      "song": "バケモノの唄",
+      "artist": "初音ミク, shino"
+    },
+    {
+      "pattern": "***",
+      "song": "ボイドダンス",
+      "artist": "祈哀"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "㋰責任集合体",
+      "artist": "マサラダ"
+    },
+    {
+      "pattern": "******",
+      "song": "ユメの喫茶店",
+      "artist": "ミツキヨ"
+    },
+    {
+      "pattern": "***",
+      "song": "ヱゾエンシス",
+      "artist": "黄泉路テヂーモ"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "七星の審神者",
+      "artist": "hugepulse"
+    },
+    {
+      "pattern": "******",
+      "song": "今天不是明天",
+      "artist": "PIKASONIC"
+    },
+    {
+      "pattern": "***",
+      "song": "列車に乗って",
+      "artist": "ああああ"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "太陽と月の宴",
+      "artist": "ああああ"
+    },
+    {
+      "pattern": "******",
+      "song": "孤独の竜少女",
+      "artist": "Black Box"
+    },
+    {
+      "pattern": "***",
+      "song": "意味ない好き",
+      "artist": "Hexacube"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "星空の観覧車",
+      "artist": "ああああ"
+    },
+    {
+      "pattern": "******",
+      "song": "次に会った時",
+      "artist": "HJLL"
+    },
+    {
+      "pattern": "***",
+      "song": "無辺際の翦断",
+      "artist": "蛇塚透花"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "白線を渡って",
+      "artist": "seatrus"
+    },
+    {
+      "pattern": "******",
+      "song": "真・時間戦争",
+      "artist": "seatrus"
+    },
+    {
+      "pattern": "***",
+      "song": "祂说我超可爱",
+      "artist": "苍小轩"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "繰り返します",
+      "artist": "blackcypress"
+    },
+    {
+      "pattern": "******",
+      "song": "蟠屈した思惑",
+      "artist": "蛇塚透花"
+    },
+    {
+      "pattern": "***",
+      "song": "音速宇宙旅行",
+      "artist": "uynet"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "구름의 계단",
+      "artist": "Plum"
+    },
+    {
+      "pattern": "******",
+      "song": "밤, 그 밤",
+      "artist": "이진 (eazyn.)"
+    },
+    {
+      "pattern": "***",
+      "song": "버려진 신전",
+      "artist": "Plum"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "비밀 인형극",
+      "artist": "Plum"
+    },
+    {
+      "pattern": "******",
+      "song": "웃어버렸다!",
+      "artist": "Plum"
+    },
+    {
+      "pattern": "***",
+      "song": "초심자의 숲",
+      "artist": "Plum"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "𱁬𱁬𱁬𱁬𱁬𱁬",
+      "artist": "9ones"
+    },
+    {
+      "pattern": "******",
+      "song": ":α:",
+      "artist": "JinoBeats"
+    },
+    {
+      "pattern": "***",
+      "song": "《Ж》",
+      "artist": "TRiNiTUM"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "Cry",
+      "artist": "Xtrullor"
+    },
+    {
+      "pattern": "******",
+      "song": "DDD",
+      "artist": "はがね"
+    },
+    {
+      "pattern": "***",
+      "song": "zzz",
+      "artist": "bombvbros"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "イガク",
+      "artist": "原口沙輔"
+    },
+    {
+      "pattern": "******",
+      "song": "スナレ",
+      "artist": "Zris"
+    },
+    {
+      "pattern": "***",
+      "song": "ミニ偏",
+      "artist": "原口沙輔"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "もっと",
+      "artist": "Cinamoro"
+    },
+    {
+      "pattern": "******",
+      "song": "五月猫",
+      "artist": "Nanatsukaze"
+    },
+    {
+      "pattern": "***",
+      "song": "人是猫",
+      "artist": "张卡斯"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "俳徹句",
+      "artist": "ネコーン"
+    },
+    {
+      "pattern": "******",
+      "song": "儚い声",
+      "artist": "Shanom"
+    },
+    {
+      "pattern": "***",
+      "song": "十戒。",
+      "artist": "MGG"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "命冥加",
+      "artist": "蛇塚透花"
+    },
+    {
+      "pattern": "******",
+      "song": "巽為風",
+      "artist": "hugepulse"
+    },
+    {
+      "pattern": "***",
+      "song": "幻廻廊",
+      "artist": "Link\"0"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "彁正彁",
+      "artist": "蛇塚透花"
+    },
+    {
+      "pattern": "******",
+      "song": "月夜見",
+      "artist": "Halv"
+    },
+    {
+      "pattern": "***",
+      "song": "梦の宴",
+      "artist": "HJLL"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "求&影",
+      "artist": "ぴーなた"
+    },
+    {
+      "pattern": "******",
+      "song": "沙冰鱼",
+      "artist": "2in"
+    },
+    {
+      "pattern": "***",
+      "song": "海冷た",
+      "artist": "7_7"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "狐憑き",
+      "artist": "Kou!, 竹林"
+    },
+    {
+      "pattern": "******",
+      "song": "花冷え",
+      "artist": "Lai。"
+    },
+    {
+      "pattern": "***",
+      "song": "花绽放",
+      "artist": "smile丶轩"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "무채화",
+      "artist": "Plum"
+    },
+    {
+      "pattern": "******",
+      "song": "삐질게",
+      "artist": "아야츠노 유니"
+    },
+    {
+      "pattern": "***",
+      "song": "아니메",
+      "artist": "Gazizi♪"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "야르송",
+      "artist": "알라미"
+    },
+    {
+      "pattern": "******",
+      "song": "연리지",
+      "artist": "Plum"
+    },
+    {
+      "pattern": "***",
+      "song": "월영가",
+      "artist": "Plum"
+    },
+    {
+      "pattern": "***** ** *****",
+      "song": "🔴🟢🔵",
+      "artist": "Green wisteria"
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "guessed_chars": [
+    "8",
+    "n",
+    "A",
+    "2",
+    "E",
+    "9",
+    "U",
+    "0",
+    "O",
+    "a",
+    "6",
+    "o",
+    "I",
+    "N",
+    "4",
+    "e",
+    "7",
+    "i",
+    "u",
+    "5",
+    "3",
+    "!",
+    "1"
+  ],
+  "revealed_songs": [
+    9,
+    2,
+    4
+  ],
+  "answers": [
+    {
+      "name": "Cherry Pop (Feat. Gl!tch)",
+      "artist": "S3RL",
+      "aliases": []
+    },
+    {
+      "name": "Quantum Realm",
+      "artist": "Quree",
+      "aliases": []
+    },
+    {
+      "name": "The Five",
+      "artist": "Cranky",
+      "aliases": []
+    },
+    {
+      "name": "Going On",
+      "artist": "Plum",
+      "aliases": []
+    },
+    {
+      "name": "beyond the future",
+      "artist": "DJ Raisei",
+      "aliases": []
+    },
+    {
+      "name": "Treading an Effervescent Surface",
+      "artist": "BilliumMoto",
+      "aliases": []
+    },
+    {
+      "name": "绝望反击 望尘莫及",
+      "artist": "なぞなぞ_Voidstain",
+      "aliases": []
+    },
+    {
+      "name": "Knight of Cxaxukluth",
+      "artist": "Raimukun",
+      "aliases": []
+    },
+    {
+      "name": "More One Night (Assertive Hardcore Bootleg)",
+      "artist": "Assertive",
+      "aliases": []
+    },
+    {
+      "name": "T.R.A.P.",
+      "artist": "DJ Raisei",
+      "aliases": [
+        "TRAP"
+      ]
+    }
+  ]
+}

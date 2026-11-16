@@ -90,18 +90,13 @@ def suggest_letters(matches, patterns, guessed_letters):
 def main():
     # 配置
     INPUT_FILE = "tuf_songs.json"
-    GUESSED_LETTERS = "esao"
+    GUESSED_LETTERS = "0123456789aefgikopstu"
     
     # 你的8个谜题模式
     PATTERNS = [
-        "***** o* ******s",
-        "*s**a***e",
-        "*e*so* *o Sa*e****e",
-        "**a*****",
-        "***s*** *o ***a*o",
-        "*a*s**e **** *o S*o*s***s*",
-        "***os******",
-        "*e**o**e ***E**E**"
+        "***** ** *****",
+        "******",
+        "***",
     ]
     
     print("🎮 TUF Letter Guessing Solver")
@@ -130,13 +125,13 @@ def main():
         
         if matches:
             # 显示前10个匹配
-            for song in matches[:10]:
+            for song in matches:
                 name = song.get("name")
                 artist = song.get("artist", "Unknown")
                 print(f"   - {name} [by {artist}]")
             
-            if len(matches) > 10:
-                print(f"   ... and {len(matches) - 10} more")
+            #if len(matches) > 10:
+            #    print(f"   ... and {len(matches) - 10} more")
         
         all_matches.extend(matches)
         print()
