@@ -59,11 +59,15 @@ def test_replace_shrink_roundtrip(tmp_path):
     assert not r["grew"]
     assert r["rsrc_size"] <= r["old_rsrc_size"]
 
-    out_items = _items(str(tmp_path / "out.exe"))
+    out_path = str(tmp_path / "out.exe")
+    out_items = _items(out_path)
     assert len(out_items) == len(items)
-    got = resedit.extract(str(tmp_path / "out.exe"),
-                          it0["type"], it0["name"], it0["lang"])
-    assert got == small
+    # 全部资源逐项字节一致（曾因 bytearray 切片钳制导致整体错位）
+    by_key = {(x["type"], x["name"], x["lang"]): x for x in out_items}
+    for it in items:
+        key = (it["type"], it["name"], it["lang"])
+        expect = small if key == (it0["type"], it0["name"], it0["lang"]) else it["data"]
+        assert by_key[key]["data"] == expect, f"roundtrip mismatch {key}"
 
 
 @requires_windows_binaries

@@ -182,6 +182,124 @@ html, body {
 
 .res-arch-row .res-arch-ops a:hover { text-decoration: underline; }
 
+/* ============ 资源修改器（独立页） ============ */
+
+.resed-split {
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.resed-left {
+  border: 1px solid var(--ui-border, #2a2a2a);
+  border-radius: 8px;
+  padding: 8px 4px;
+  background: var(--ui-surface-sunken, #141414);
+  max-height: 62vh;
+  overflow-y: auto;
+}
+
+.resed-right {
+  border: 1px solid var(--ui-border, #2a2a2a);
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: var(--ui-surface-sunken, #141414);
+  min-height: 240px;
+  max-height: 62vh;
+  overflow-y: auto;
+}
+
+.resed-head { margin-bottom: 10px; }
+
+.resed-title { font-size: 15px; }
+
+.resed-dirty {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 1px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffcc44;
+  background: rgba(255, 204, 68, 0.12);
+}
+
+.resed-ops {
+  display: flex;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.resed-ops a {
+  color: var(--ui-accent, #66ccff);
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 12.5px;
+}
+
+.resed-ops a:hover { text-decoration: underline; }
+
+.resed-img {
+  display: block;
+  max-width: 256px;
+  max-height: 256px;
+  margin: 12px 0 6px;
+  image-rendering: pixelated;
+  border: 1px solid var(--ui-border, #2a2a2a);
+  border-radius: 6px;
+  background: repeating-conic-gradient(#1c1c1c 0% 25%, #232323 0% 50%) 0 0 / 16px 16px;
+}
+
+.resed-hl, .resed-hex {
+  font-family: var(--ntlab-font-mono, "Cascadia Code", Consolas, "Microsoft YaHei", monospace);
+  font-size: 12.5px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-all;
+  background: var(--ui-surface-sunken, #101010);
+  border: 1px solid var(--ui-border, #2a2a2a);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-top: 10px;
+  max-height: 42vh;
+  overflow: auto;
+}
+
+.hl-tag   { color: #66ccff; font-weight: 600; }
+.hl-attr  { color: #ffcc66; }
+.hl-str   { color: #99e08a; }
+.hl-com   { color: #777; font-style: italic; }
+
+.resed-hexrow {
+  display: flex;
+  gap: 12px;
+  white-space: pre;
+}
+
+.hx-off   { color: var(--ui-text-muted, #888); flex: 0 0 auto; }
+.hx-bytes { color: #66ccff; flex: 0 0 auto; }
+.hx-ascii { color: var(--ui-text, #ccc); }
+
+.resed-trunc { color: var(--ui-text-muted, #888); font-style: italic; }
+
+.resed-editbar { display: flex; gap: 10px; margin-top: 10px; }
+
+.resed-editor textarea {
+  width: 100%;
+  min-height: 180px;
+  margin-top: 10px;
+  font-family: var(--ntlab-font-mono, "Cascadia Code", Consolas, "Microsoft YaHei", monospace);
+  font-size: 12.5px;
+  line-height: 1.55;
+  background: var(--ui-surface-sunken, #101010);
+  color: var(--ui-text, #ddd);
+  border: 1px solid var(--ui-border, #2a2a2a);
+  border-radius: 6px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
 .page-head h1 { margin: 0 0 4px; font-size: 22px; font-weight: 700; }
 
 .page-head p { margin: 0; color: var(--ui-text-muted, #888); font-size: 13px; }

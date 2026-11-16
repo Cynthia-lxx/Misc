@@ -983,7 +983,16 @@ async function resourcesView(path, onCellActivate, buildTable) {
     }
   });
 
-  bar.append(packBtn, saveBtn);
+  const jumpBtn = document.createElement("button");
+  jumpBtn.type = "button";
+  jumpBtn.className = "ntl-action-btn";
+  jumpBtn.textContent = "在资源修改器中打开 ↗";
+  jumpBtn.title = "跳转到独立的资源修改器页（树形浏览 / 预览 / 编辑 / 保存）";
+  jumpBtn.addEventListener("click", () => {
+    location.hash = `#/resedit?path=${encodeURIComponent(path)}`;
+  });
+
+  bar.append(packBtn, saveBtn, jumpBtn);
   const archList = document.createElement("div");
   archList.className = "res-arch-list";
   wrap.append(bar, archList);

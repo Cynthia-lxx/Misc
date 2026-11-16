@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import io
+import os
 import struct
 import zipfile
 from pathlib import Path
@@ -130,8 +131,10 @@ def _build_section_blob(items: list[dict], section_rva: int) -> bytes:
                 is_name, tid = False, int(t)
             elif t.startswith("type_"):          # 未知数字 id 的兜底标签
                 is_name, tid = False, int(t[5:])
-            else:                                # 目录字符串名
-                is_name, tid = True, RESOURCE_TYPE_NAMES_INV.get(t)
+            elif t in RESOURCE_TYPE_NAMES_INV:   # 标准类型的友好标签（数值类型！）
+                is_name, tid = False, RESOURCE_TYPE_NAMES_INV[t]
+            else:                                # 真正的目录字符串名
+                is_name, tid = True, None
             types.append((t, is_name, tid))
         names_of.setdefault(t, [])
         if not any(x[0] == n for x in names_of[t]):
@@ -237,9 +240,17 @@ def _build_section_blob(items: list[dict], section_rva: int) -> bytes:
                 desc_off, _ = slots[(t, n, l)]
                 blob[o:o + 8] = entry(l & 0x7FFFFFFF, desc_off, False)
                 o += 8
+    # 数据块写入前必须把 blob 预扩到最终大小——bytearray 切片赋值对
+    # 越界起点会钳制到当前末尾（append），绝不会按 it_off 落位。
+    if len(blob) < data_off:
+        blob.extend(b"\x00" * (data_off - len(blob)))
     for (t, n, l), (_, it_off) in slots.items():
         it = leaf[(t, n, l)]
         blob[it_off:it_off + len(it["data"])] = it["data"]
+    if os.environ.get("NTLAB_RESDEBUG"):
+        bad = sum(1 for k, (_, off) in slots.items()
+                  if blob[off:off + len(leaf[k]["data"])] != leaf[k]["data"])
+        print("RESDEBUG:", "OK" if not bad else f"{bad} mismatches")
     return bytes(blob)
 
 
