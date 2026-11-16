@@ -196,6 +196,14 @@ html, body {
 .pg-badge.warn { background: color-mix(in srgb, #ffcc22 20%, transparent); color: #ffcc22; }
 .pg-right { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
 .pg-body { flex: 1; min-height: 0; overflow-y: auto; margin-top: 12px; padding-right: 4px; }
+/* 编排画布：固定最小高度（空编排时也是完整投放区），内容超出由 .pg-body 滚动 */
+.pg-canvas {
+  min-height: 560px; padding: 10px;
+  border: 1px dashed color-mix(in srgb, var(--ui-border) 85%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--ui-accent) 3%, transparent);
+}
+.pg-canvas.pg-into { border-color: var(--ui-accent); background: color-mix(in srgb, var(--ui-accent) 8%, transparent); }
 .pg-card .row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
 .pg-card .row label { font-size: 12px; color: var(--ui-text-muted, #888); flex: 0 0 110px; text-align: right; }
 /* 积木块：call 蓝 / repeat 绿 / if 橙 / break·continue 红 */

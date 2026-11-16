@@ -1397,6 +1397,7 @@ export async function mount(el) {
     panel.appendChild(h);
 
     const list = document.createElement("div");
+    list.className = "pg-canvas";
     renderBlocks(program, list, []);
     if (!program.length) {
       const empty = document.createElement("p");
@@ -1429,11 +1430,8 @@ export async function mount(el) {
       }
       swap(composeView());
     });
-    const clrBtn = document.createElement("ui-button");
-    clrBtn.setAttribute("label", "清空");
-    clrBtn.addEventListener("click", () => { program = []; session = null; editingPath = null; programChanged(); swap(composeView()); });
     btns.append(
-      runBtn, clrBtn,
+      runBtn,
       add("+ 循环", "repeat"), add("+ 条件", "if"),
       add("+ 跳出", "break"), add("+ 下一轮", "continue"),
     );
