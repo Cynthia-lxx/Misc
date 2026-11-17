@@ -1693,6 +1693,8 @@ html, body {
   margin: 6px 0 4px;
   border-radius: 2px;
   background: rgba(255, 255, 255, 0.07);
+  /* 裁掉巡游 fill 越出轨道的部分（margin-left 100% + 自身 30% 宽） */
+  overflow: hidden;
 }
 
 .loadbar > i {
