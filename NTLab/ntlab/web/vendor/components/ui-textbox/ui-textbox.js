@@ -4,8 +4,11 @@
  *   osu.Game/Graphics/UserInterface/OsuTextBox.cs:73-93 (height/corner/padding/caret width,
  *     BackgroundUnfocused=Background5 / BackgroundFocused=Background4 / BackgroundCommit=Highlight1)
  *   osu.Game/Graphics/UserInterface/OsuTextBox.cs:258-276 (focus border 3px, blur removes)
- *   osu.Game/Graphics/UserInterface/OsuTextBox.cs:278-282 (GetDrawableCharacter -> FallingDownContainer:
- *     each typed character drops into place — replicated here as a transient overlay span)
+ *   osu.Game/Graphics/UserInterface/OsuTextBox.cs (GetDrawableCharacter -> FallingDownContainer:
+ *     typed characters fade in IN PLACE (Show: colour fade 120ms Out — no Y drop; the "falling"
+ *     belongs to deletion: Hide = MoveToY(own height) + FadeOut 200ms InQuad), replicated here as
+ *     transient overlay spans positioned against the real input text; see also
+ *     osu.Framework/Graphics/UserInterface/BasicTextBox.cs FallingDownContainer (nested class))
  *   osu.Game/Graphics/UserInterface/OsuTextBox.cs:321-397 (caret beat-synced pulse; approximated
  *     by a 500ms InOutSine focus-line pulse, min beat interval 300ms ≈ 60s/200BPM)
  *   osu.Game/Graphics/UserInterface/SearchTextBox.cs:15-19 (search variant height 35)
@@ -174,39 +177,76 @@ export class UiTextboxElement extends HTMLElement {
       return;
     }
 
-    // Locate the insertion point via common prefix/suffix, then drop the new characters in.
+    // Locate the insertion point via common prefix/suffix.
     let prefix = 0;
     while (prefix < before.length && prefix < after.length && before[prefix] === after[prefix]) prefix += 1;
     let suffix = 0;
     while (suffix < before.length - prefix && suffix < after.length - prefix
       && before[before.length - 1 - suffix] === after[after.length - 1 - suffix]) suffix += 1;
     const inserted = after.slice(prefix, after.length - suffix);
-    if (inserted.length >= 1 && inserted.length <= 3) this._spawnFalling(after, prefix, inserted);
+    const removed = before.slice(prefix, before.length - suffix);
+    if (inserted.length >= 1 && inserted.length <= 3) this._spawnDrop(after, prefix, inserted);
+    if (removed.length >= 1 && removed.length <= 3) this._spawnFall(before, prefix, removed);
 
     this._prevValue = after;
     this._emit('ui-text-change', { value: after, committed: false });
   }
 
-  /** FallingDownContainer equivalent: transient spans that drop into place above the text. */
-  _spawnFalling(value, startIndex, inserted) {
-    [...inserted].forEach((char, index) => {
-      if (this._charLayer.children.length > 6) this._charLayer.firstElementChild?.remove();
-      const span = document.createElement('span');
-      span.textContent = char;
-      // Advance per character by measuring the mirror with one more char.
-      this._mirror.textContent = value.slice(0, startIndex + index + 1);
-      span.style.left = `${Math.round(this._mirror.getBoundingClientRect().width - this._measureChar(char))}px`;
-      this._charLayer.appendChild(span);
-      window.setTimeout(() => span.remove(), 260);
-    });
-    this._mirror.textContent = '';
+  /**
+   * 输入文本起点相对 .box 左缘的 X（osu: TextContainer.X = LeftRightPadding）。
+   * 聚焦态 border 3px + padding 7px、sheared 变体 padding-left 20px 都由此动态推导。
+   */
+  _textOriginX() {
+    const cs = getComputedStyle(this._input);
+    return parseFloat(cs.borderLeftWidth) + parseFloat(cs.paddingLeft);
   }
 
-  _measureChar(char) {
-    this._mirror.textContent = char;
+  /** value 前 len 个字符的连续渲染宽度（与 input 的 kerning 行为一致）。 */
+  _textWidth(value, len) {
+    this._mirror.textContent = value.slice(0, len);
     const width = this._mirror.getBoundingClientRect().width;
     this._mirror.textContent = '';
     return width;
+  }
+
+  /** password 变体下 overlay 不得泄漏明文（osu: AddCharacterToFlow 里 MaskCharacter）。 */
+  _charMask(char) {
+    return this._input.type === 'password' ? '\u2022' : char;
+  }
+
+  /**
+   * 打字入场（FallingDownContainer.Show 的替身）：字符在文本流中就位后原地淡入
+   * （120ms Easing.Out，无位移——osu 无"从空中落下"的打字动画，坠落属于删除）。
+   */
+  _spawnDrop(value, startIndex, inserted) {
+    const originX = this._textOriginX();
+    [...inserted].forEach((char, index) => {
+      if (this._charLayer.children.length > 6) this._charLayer.firstElementChild?.remove();
+      const span = document.createElement('span');
+      span.textContent = this._charMask(char);
+      // 字符起点 = 文本原点 + 前缀连续宽度 − 输入框横向滚动
+      span.style.left = `${Math.round(originX + this._textWidth(value, startIndex + index) - this._input.scrollLeft)}px`;
+      this._charLayer.appendChild(span);
+      window.setTimeout(() => span.remove(), 260);
+    });
+  }
+
+  /**
+   * 退格/删除（FallingDownContainer.Hide 的替身）：被删字符定格在原位置
+   * 向下坠落一个字高并淡出（200ms InQuad，2024-10 上游改为贴近重力的缓动）。
+   */
+  _spawnFall(before, startIndex, removed) {
+    const originX = this._textOriginX();
+    [...removed].forEach((char, index) => {
+      if (this._charLayer.children.length > 6) this._charLayer.firstElementChild?.remove();
+      const span = document.createElement('span');
+      span.className = 'drop';
+      span.textContent = this._charMask(char);
+      // ghost 停留在被删字符的原 X（osu: d.Y = TextFlow.BoundingBox.Y，文本回流不带动 ghost）
+      span.style.left = `${Math.round(originX + this._textWidth(before, startIndex + index) - this._input.scrollLeft)}px`;
+      this._charLayer.appendChild(span);
+      window.setTimeout(() => span.remove(), 240);
+    });
   }
 
   _commit() {

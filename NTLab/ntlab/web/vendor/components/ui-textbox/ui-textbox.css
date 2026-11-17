@@ -76,7 +76,8 @@ input:focus { outline: none; }
   pointer-events: none;
 }
 
-/* 逐字坠落（FallingDownContainer 替身）：-10px 落入 + 淡入 */
+/* 逐字动效（FallingDownContainer 替身，对齐 osu-framework BasicTextBox.cs 嵌套类）：
+   打字 Show = 原地淡入 120ms Out（无位移）；退格 Hide = 定格原位向下坠一个字高 + 淡出 200ms InQuad */
 .char-layer {
   position: absolute;
   inset: 0;
@@ -87,14 +88,26 @@ input:focus { outline: none; }
 .char-layer span {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-50%) var(--char-skew, scale(1));
   color: var(--ui-text, #fff);
   pointer-events: none;
-  animation: ui-char-drop calc(var(--duration-fast, 120ms) * var(--motion-scale, 1)) var(--easing-out, ease-out) both;
+  animation: ui-char-in calc(var(--duration-fast, 120ms) * var(--motion-scale, 1)) var(--easing-out, ease-out) both;
 }
-@keyframes ui-char-drop {
-  from { opacity: 0; transform: translateY(calc(-50% - 10px)); }
-  to { opacity: 1; transform: translateY(-50%); }
+.char-layer span.drop {
+  animation: ui-char-fall 200ms cubic-bezier(0.55, 0.055, 0.675, 0.19) both; /* Easing.InQuad */
+}
+@keyframes ui-char-in {
+  from { opacity: 0; transform: translateY(-50%) var(--char-skew, scale(1)); }
+  to   { opacity: 1; transform: translateY(-50%) var(--char-skew, scale(1)); }
+}
+@keyframes ui-char-fall {
+  from { opacity: 1; transform: translateY(-50%) var(--char-skew, scale(1)); }
+  to   { opacity: 0; transform: translateY(calc(-50% + 1.4em)) var(--char-skew, scale(1)); }
+}
+/* 斜切变体：overlay 需与 input 一样反向斜切，避免字形歪斜与错位 */
+.box[data-variant='sheared-search'] .char-layer span,
+.box[data-variant='sheared-filter'] .char-layer span {
+  --char-skew: skewX(11.5deg);
 }
 
 /* 光标节拍脉冲：光标随节拍呼吸的替身（最低节拍间隔 300ms ≈ 500ms 周期近似） */
