@@ -637,22 +637,33 @@ export async function mount(el) {
     return wrap;
   }
 
-  /* ---------- Hex 编辑器（预览即编辑）：虚拟滚动表格，hex/ascii 双列就地编辑 ---------- */
-
+  /* ---------- Hex 编辑器（预览即编辑）：虚拟滚动 + 光标/选区模型 ----------
+     键位（状态栏同步提示）：
+     - 点击/方向键定位光标；hex 列双 nibble 编辑（首键改高 4 位、次键改低 4 位后跳下一字节）
+     - Tab 在 hex/ascii 列间切换；ascii 列直接输入字符
+     - Shift+方向键 / 鼠标拖选 = 选区；Home/End 行首行尾
+     - Ins 切换 覆写/插入 模式（插入模式下输入把新字节插进序列，字节数可变）
+     - Backspace / Delete：选区=删选区，否则删前/当前字节
+     - Ctrl+C/X/V 复制/剪切/粘贴（hex 文本按字节解析、否则按 latin1 字符；选区=替换，无选区=插入）
+     - Ctrl+Enter 立即暂存 */
   function makeHexEditor(meta, bytes, markStaged) {
     const ROWH = 20;
-    const buf = bytes.slice();                 // 可写副本
-    const mod = new Uint8Array(buf.length);    // 1 = 该字节已修改（高亮）
-    let modCount = 0;
-    const rows = Math.ceil(buf.length / 16);
+    let buf = bytes.slice();                 // 可写副本（插入/删除后整体重建）
+    let changed = new Set();                 // 改动字节下标（随结构编辑重映射）
+    let rows = Math.ceil(buf.length / 16);
+    let cursor = buf.length ? { i: 0, nib: 0, col: "hex" } : null;
+    let anchor = null;                       // 选区锚点字节下标（null = 无选区）
+    let insMode = false;
+    let dragging = false;
 
     const wrap = document.createElement("div");
     wrap.className = "hexed-wrap";
     const vp = document.createElement("div");
     vp.className = "hexed";
+    vp.tabIndex = 0;
     const spacer = document.createElement("div");
     spacer.className = "hexed-spacer";
-    spacer.style.height = `${rows * ROWH}px`;
+    spacer.style.height = `${Math.max(rows, 1) * ROWH}px`;
     vp.appendChild(spacer);
     const status = document.createElement("div");
     status.className = "hexed-status";
@@ -664,31 +675,45 @@ export async function mount(el) {
       return c >= 32 && c < 127 ? String.fromCharCode(c) : ".";
     };
 
+    const selRange = () => {
+      if (anchor === null || !cursor || anchor === cursor.i) return null;
+      return [Math.min(anchor, cursor.i), Math.max(anchor, cursor.i)];
+    };
+
     // 只渲染可视 ±3 行，绝对定位行容器由 spacer 撑出真实滚动高度；
     // clientHeight 为 0（尚未布局）时按默认 420px 兜底，避免首屏下方空白
     const renderRows = () => {
       const vis = Math.ceil((vp.clientHeight || 420) / ROWH) + 1;
       const first = Math.max(0, Math.floor(vp.scrollTop / ROWH) - 3);
       const last = Math.min(rows, first + vis + 6);
+      const sel = selRange();
+      const inSel = (i) => sel !== null && i >= sel[0] && i <= sel[1];
       let html = "";
+      if (!rows) {
+        html = `<div class="hexed-row" style="top:0"><span class="hexed-empty">（缓冲区为空：直接输入或粘贴以插入字节）</span></div>`;
+      }
       for (let r = first; r < last; r++) {
         const off = r * 16;
         html += `<div class="hexed-row" style="top:${r * ROWH}px">`
           + `<span class="hexed-off">${off.toString(16).padStart(8, "0")}</span>`;
         for (let c = 0; c < 16; c++) {
           const i = off + c;
-          html += i < buf.length
-            ? `<span class="hexed-c${mod[i] ? " mod" : ""}" contenteditable="plaintext-only"`
-              + ` spellcheck="false" data-i="${i}">${hexByte(i)}</span>`
-            : `<span class="hexed-pad"></span>`;
+          if (i >= buf.length) { html += `<span class="hexed-pad"></span>`; continue; }
+          const cls = `hexed-c${changed.has(i) ? " mod" : ""}${inSel(i) ? " sel" : ""}${cursor && cursor.i === i ? " cur" : ""}`;
+          let inner = hexByte(i);
+          if (cursor && cursor.i === i && cursor.col === "hex") {
+            const s = hexByte(i);
+            inner = `<span class="nib${cursor.nib === 0 ? " caret" : ""}">${s[0]}</span>`
+                  + `<span class="nib${cursor.nib === 1 ? " caret" : ""}">${s[1]}</span>`;
+          }
+          html += `<span class="${cls}" data-i="${i}">${inner}</span>`;
         }
         html += `<span class="hexed-gap"></span>`;
         for (let c = 0; c < 16; c++) {
           const i = off + c;
-          html += i < buf.length
-            ? `<span class="hexed-a${mod[i] ? " mod" : ""}" contenteditable="plaintext-only"`
-              + ` spellcheck="false" data-i="${i}">${esc(ascText(i))}</span>`
-            : `<span class="hexed-pad"></span>`;
+          if (i >= buf.length) { html += `<span class="hexed-pad"></span>`; continue; }
+          const cls = `hexed-a${changed.has(i) ? " mod" : ""}${inSel(i) ? " sel" : ""}${cursor && cursor.i === i ? " cur" : ""}`;
+          html += `<span class="${cls}" data-i="${i}">${esc(ascText(i))}</span>`;
         }
         html += `</div>`;
       }
@@ -700,37 +725,107 @@ export async function mount(el) {
       if (!raf) raf = requestAnimationFrame(() => { raf = 0; renderRows(); });
     });
 
-    const findCell = (i, hexCls) =>
-      spacer.querySelector(`${hexCls ? ".hexed-c" : ".hexed-a"}[data-i="${i}"]`);
-
-    const focusCell = (el) => {
-      if (!el) return;
-      el.focus();
-      const r = document.createRange();
-      r.selectNodeContents(el);
-      r.collapse(false);
-      const sel = getSelection();
-      sel.removeAllRanges();
-      sel.addRange(r);
+    const ensureCursorVisible = () => {
+      if (!cursor) return;
+      const top = Math.floor(cursor.i / 16) * ROWH;
+      if (vp.scrollTop > top) vp.scrollTop = top;
+      else if (vp.scrollTop + vp.clientHeight < top + ROWH)
+        vp.scrollTop = top + ROWH - vp.clientHeight;
     };
 
-    const markMod = (i) => {
-      if (!mod[i]) { mod[i] = 1; modCount++; }
+    const moveCursor = (i, col = cursor?.col ?? "hex", extend = false, nib = 0) => {
+      if (!buf.length) { cursor = null; anchor = null; renderRows(); return; }
+      i = Math.max(0, Math.min(buf.length - 1, i));
+      if (extend) anchor = anchor ?? cursor?.i ?? i;
+      else anchor = null;
+      cursor = { i, nib, col };
+      renderRows();
+      ensureCursorVisible();
+    };
+
+    /* 结构编辑：从 start 删 del 个字节、插 ins 个字节；changed 按偏移重映射 */
+    const splice = (start, del, ins) => {
+      const out = new Uint8Array(buf.length - del + ins.length);
+      out.set(buf.subarray(0, start), 0);
+      out.set(ins, start);
+      out.set(buf.subarray(start + del), start + ins.length);
+      buf = out;
+      const remapped = new Set();
+      for (const x of changed) {
+        if (x < start) remapped.add(x);
+        else if (x >= start + del) remapped.add(x - del + ins.length);
+      }
+      for (let k = 0; k < ins.length; k++) remapped.add(start + k);
+      changed = remapped;
+      rows = Math.ceil(buf.length / 16);
+      spacer.style.height = `${Math.max(rows, 1) * ROWH}px`;
+    };
+
+    const deleteSel = () => {
+      const sel = selRange();
+      if (!sel) return false;
+      splice(sel[0], sel[1] - sel[0] + 1, []);
+      anchor = null;
+      cursor = buf.length
+        ? { i: Math.min(sel[0], buf.length - 1), nib: 0, col: cursor.col }
+        : null;
+      return true;
+    };
+
+    const afterEdit = () => {
+      renderRows();
+      ensureCursorVisible();
+      updStatus();
+      stage(false);
+    };
+
+    /* hex 输入：首键=高 4 位、次键=低 4 位并跳下一字节；插入模式先造空字节 */
+    const applyHexDigit = (d) => {
+      if (selRange()) deleteSel();
+      if (!cursor || !buf.length) {
+        splice(0, 0, [0x00]);
+        cursor = { i: 0, nib: 0, col: "hex" };
+      } else if (insMode && cursor.nib === 0) {
+        splice(cursor.i, 0, [0x00]);
+      }
+      const b = buf[cursor.i];
+      buf[cursor.i] = cursor.nib === 0 ? ((d << 4) | (b & 0x0f)) : ((b & 0xf0) | d);
+      changed.add(cursor.i);
+      if (cursor.nib === 0) cursor.nib = 1;
+      else { cursor.i = Math.min(cursor.i + 1, buf.length - 1); cursor.nib = 0; }
+      afterEdit();
+    };
+
+    const applyAsciiChar = (code) => {
+      if (selRange()) deleteSel();
+      if (!cursor || !buf.length) {
+        splice(0, 0, [0x00]);
+        cursor = { i: 0, nib: 0, col: "ascii" };
+      } else if (insMode) {
+        splice(cursor.i, 0, [0x00]);
+      }
+      buf[cursor.i] = code;
+      changed.add(cursor.i);
+      cursor.i = Math.min(cursor.i + 1, buf.length - 1);
+      cursor.nib = 0;
+      afterEdit();
     };
 
     const updStatus = () => {
-      status.textContent = modCount
-        ? `${modCount} / ${buf.length} 字节已修改 · 已自动暂存`
-        + " · Ctrl+Enter 立即暂存（「保存/另存为」后写盘）"
-        : `点击任意 Hex 或 ASCII 单元格直接修改（字节数不变，0 / ${buf.length} 已修改）`;
+      const sel = selRange();
+      const selTxt = sel ? ` · 选区 ${sel[1] - sel[0] + 1} 字节` : "";
+      const mode = insMode ? "插入" : "覆写";
+      status.textContent = changed.size
+        ? `${changed.size} 字节已修改（总长 ${buf.length}）${selTxt} · ${mode}模式 · 已自动暂存 · Ctrl+Enter 立即暂存`
+        : `点击/方向键定位 · 直接输入覆盖 · Ins 切换${mode}模式 · Shift+方向或拖选选区 · Ctrl+V 粘贴（无选区=插入）· Backspace/Delete 删除 · 0 / ${buf.length} 已修改`;
     };
 
     let timer = null;
     const stage = (immediate) => {
-      if (!modCount) return;
+      if (!changed.size) return;
       clearTimeout(timer);
       const doStage = () => {
-        const note = `Hex 编辑，${modCount} 字节改动`;
+        const note = `Hex 编辑，${changed.size} 字节改动`;
         stageReplace(meta, buf.slice(), note, true);
         markStaged(note);
       };
@@ -738,60 +833,138 @@ export async function mount(el) {
       else timer = setTimeout(doStage, 400);
     };
 
-    // 事件委托：单元格 input → 清洗/写回 buf → 同步镜像列 → 焦点右移
-    spacer.addEventListener("input", (e) => {
-      const cell = e.target.closest?.("[contenteditable]");
-      if (!cell) return;
-      const i = Number(cell.dataset.i);
-      if (Number.isNaN(i)) return;
-      if (cell.classList.contains("hexed-c")) {
-        const t = cell.textContent.toLowerCase().replace(/[^0-9a-f]/g, "").slice(-2);
-        cell.textContent = t;
-        if (t.length === 2) {
-          buf[i] = parseInt(t, 16);
-          markMod(i);
-          cell.classList.add("mod");
-          const a = findCell(i, false);
-          if (a) { a.textContent = ascText(i); a.classList.add("mod"); }
-          updStatus();
-          stage(false);
-          focusCell(findCell(i + 1, true));
-        }
+    vp.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); stage(true); return; }
+      if (e.ctrlKey || e.metaKey) return;            // Ctrl+C/X/V 交给 copy/cut/paste 事件
+      if (e.key === "Insert") {
+        e.preventDefault();
+        insMode = !insMode;
+        updStatus();
+        return;
+      }
+      const col = cursor?.col ?? "hex";
+      if (e.key.startsWith("Arrow")) {
+        e.preventDefault();
+        if (!cursor) return;
+        const i = cursor.i;
+        if (e.key === "ArrowRight") moveCursor(i + 1, col, e.shiftKey);
+        else if (e.key === "ArrowLeft") moveCursor(i - 1, col, e.shiftKey);
+        else if (e.key === "ArrowDown") moveCursor(i + 16, col, e.shiftKey);
+        else if (e.key === "ArrowUp") moveCursor(i - 16, col, e.shiftKey);
+        return;
+      }
+      if (e.key === "Home" || e.key === "End") {
+        e.preventDefault();
+        if (!cursor) return;
+        const rowStart = cursor.i - (cursor.i % 16);
+        moveCursor(e.key === "Home" ? rowStart : rowStart + 15, col, e.shiftKey);
+        return;
+      }
+      if (e.key === "Tab") {
+        e.preventDefault();
+        if (!cursor) return;
+        cursor.col = col === "hex" ? "ascii" : "hex";
+        cursor.nib = 0;
+        renderRows();
+        return;
+      }
+      if (e.key === "Backspace") {
+        e.preventDefault();
+        if (deleteSel()) { afterEdit(); return; }
+        if (!cursor || cursor.i === 0) return;
+        splice(cursor.i - 1, 1, []);
+        cursor = buf.length
+          ? { i: Math.min(cursor.i - 1, buf.length - 1), nib: 0, col }
+          : null;
+        afterEdit();
+        return;
+      }
+      if (e.key === "Delete") {
+        e.preventDefault();
+        if (deleteSel()) { afterEdit(); return; }
+        if (!cursor || cursor.i >= buf.length) return;
+        splice(cursor.i, 1, []);
+        cursor = buf.length
+          ? { i: Math.min(cursor.i, buf.length - 1), nib: 0, col }
+          : null;
+        afterEdit();
+        return;
+      }
+      if (e.key.length !== 1) return;
+      e.preventDefault();
+      if (col === "hex") {
+        if (/^[0-9a-fA-F]$/.test(e.key)) applyHexDigit(parseInt(e.key, 16));
       } else {
-        const ch = cell.textContent.slice(-1);
-        const code = ch.charCodeAt(0);
-        if (ch && code >= 32 && code < 256) {
-          buf[i] = code;
-          markMod(i);
-          cell.textContent = ch;
-          cell.classList.add("mod");
-          const h = findCell(i, true);
-          if (h) { h.textContent = hexByte(i); h.classList.add("mod"); }
-          updStatus();
-          stage(false);
-          focusCell(findCell(i + 1, false));
-        } else {
-          cell.textContent = ascText(i);   // 无效输入回弹
-        }
+        const code = e.key.charCodeAt(0);
+        if (e.key.length === 1 && code >= 32 && code <= 255) applyAsciiChar(code);
       }
     });
 
-    spacer.addEventListener("keydown", (e) => {
-      const cell = e.target.closest?.("[contenteditable]");
-      if (!cell) return;
-      if (e.key === "Enter" || ((e.ctrlKey || e.metaKey) && e.key === "Enter")) {
-        e.preventDefault();
-        stage(true);
-        return;
-      }
+    vp.addEventListener("mousedown", (e) => {
+      const cell = e.target.closest?.(".hexed-c, .hexed-a");
+      if (!cell || cell.dataset.i === undefined) return;
+      e.preventDefault();
+      vp.focus();
+      dragging = true;
       const i = Number(cell.dataset.i);
-      const isHex = cell.classList.contains("hexed-c");
-      const nav = (ni, nh) => { e.preventDefault(); focusCell(findCell(ni, nh)); };
-      if (e.key === "ArrowRight") nav(i + 1, isHex);
-      else if (e.key === "ArrowLeft") nav(i - 1, isHex);
-      else if (e.key === "ArrowDown") nav(i + 16, isHex);
-      else if (e.key === "ArrowUp") nav(i - 16, isHex);
-      else if (e.key === "Tab") { e.preventDefault(); focusCell(findCell(i, !isHex)); }
+      const cellCol = cell.classList.contains("hexed-c") ? "hex" : "ascii";
+      moveCursor(i, cellCol, e.shiftKey);
+    });
+    vp.addEventListener("mousemove", (e) => {
+      if (!dragging) return;
+      const cell = e.target.closest?.(".hexed-c, .hexed-a");
+      if (!cell || cell.dataset.i === undefined) return;
+      const i = Number(cell.dataset.i);
+      if (cursor && i === cursor.i) return;
+      moveCursor(i, cursor?.col ?? "hex", true);
+    });
+    const onWinMouseUp = () => {
+      dragging = false;
+      if (!vp.isConnected) window.removeEventListener("mouseup", onWinMouseUp);
+    };
+    window.addEventListener("mouseup", onWinMouseUp);
+
+    vp.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const t = e.clipboardData?.getData("text") ?? "";
+      if (!t) return;
+      let arr;
+      const stripped = t.replace(/^0x/gi, "").replace(/[\s,:;-]/g, "");
+      if (/^[0-9a-fA-F]+$/.test(stripped) && stripped.length % 2 === 0) {
+        arr = new Uint8Array(stripped.length / 2);
+        for (let k = 0; k < arr.length; k++)
+          arr[k] = parseInt(stripped.slice(k * 2, k * 2 + 2), 16);
+      } else {
+        arr = new Uint8Array([...t].map((c) => c.charCodeAt(0) & 0xff));
+      }
+      if (!arr.length) return;
+      const sel = selRange();
+      let at;
+      if (sel) { at = sel[0]; splice(sel[0], sel[1] - sel[0] + 1, arr); }
+      else { at = cursor ? cursor.i : 0; splice(at, 0, arr); }
+      anchor = null;
+      cursor = buf.length
+        ? { i: Math.min(at + arr.length, buf.length - 1), nib: 0, col: "hex" }
+        : null;
+      afterEdit();
+    });
+    vp.addEventListener("copy", (e) => {
+      const sel = selRange();
+      if (!sel) return;
+      e.preventDefault();
+      const parts = [];
+      for (let i = sel[0]; i <= sel[1]; i++) parts.push(hexByte(i));
+      e.clipboardData?.setData("text/plain", parts.join(" "));
+    });
+    vp.addEventListener("cut", (e) => {
+      const sel = selRange();
+      if (!sel) return;
+      e.preventDefault();
+      const parts = [];
+      for (let i = sel[0]; i <= sel[1]; i++) parts.push(hexByte(i));
+      e.clipboardData?.setData("text/plain", parts.join(" "));
+      deleteSel();
+      afterEdit();
     });
 
     // 首渲染时机：挂载前 clientHeight 为 0，rAF 在无头/后台标签下也可能过早；

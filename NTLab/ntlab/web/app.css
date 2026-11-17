@@ -249,6 +249,7 @@ html, body {
   font-weight: 700;
   color: #ffcc44;
   background: rgba(255, 204, 68, 0.12);
+  animation: imged-pop calc(220ms * var(--motion-scale, 1)) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
 }
 
 .resed-ops {
@@ -441,6 +442,7 @@ html, body {
   font-family: var(--ntlab-font-mono, "Cascadia Code", Consolas, "Microsoft YaHei", monospace);
   font-size: 12.5px;
   line-height: 20px;
+  user-select: none; /* 选区为自定义模型，禁用原生文本选择 */
 }
 
 .hexed-spacer {
@@ -492,10 +494,33 @@ html, body {
   background: rgba(255, 204, 68, 0.16);
 }
 
-.hexed-c:focus,
-.hexed-a:focus {
+.hexed:focus,
+.hexed:focus-visible { outline: none; }
+
+/* 光标格与选区（自定义模型，键事件挂在 .hexed 上） */
+.hexed-c.cur,
+.hexed-a.cur {
   outline: 1px solid var(--ui-accent, #66ccff);
   background: rgba(102, 204, 255, 0.12);
+}
+
+.hexed-c.sel,
+.hexed-a.sel {
+  background: rgba(102, 204, 255, 0.22);
+  border-radius: 3px;
+}
+
+.hexed-c.cur.sel { background: rgba(102, 204, 255, 0.12); }
+
+/* hex 光标的 nibble 指示：当前 nibble 下划线加亮 */
+.hexed-c .nib.caret {
+  text-decoration: underline;
+  color: #fff;
+}
+
+.hexed-empty {
+  color: var(--ui-text-muted, #888);
+  font-style: italic;
 }
 
 .hexed-pad {
@@ -538,7 +563,9 @@ html, body {
 }
 
 .imged-overlay.closing .imged-backdrop {
-  animation: imged-fade calc(500ms * var(--motion-scale, 1)) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) reverse both;
+  /* 退场必须用独立 keyframes：同名动画按 animation-name 持久化，
+     改参数不会重启——打开时播完后 finished，reverse 只会填充到 from（瞬隐） */
+  animation: imged-fade-out calc(500ms * var(--motion-scale, 1)) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
 }
 
 .imged-root {
@@ -554,12 +581,17 @@ html, body {
 }
 
 .imged-overlay.closing .imged-root {
-  animation: imged-fade calc(500ms * var(--motion-scale, 1)) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) reverse both;
+  animation: imged-fade-out calc(500ms * var(--motion-scale, 1)) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
 }
 
 @keyframes imged-fade {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes imged-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 /* header 卡片：双层圆角 14（ShearedOverlayHeader），入场 MoveToY(0) */
@@ -667,12 +699,17 @@ html, body {
 }
 
 .imged-overlay.closing .imged-plate {
-  animation: imged-plate-in calc(500ms * var(--motion-scale, 1)) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) reverse both;
+  animation: imged-plate-out calc(500ms * var(--motion-scale, 1)) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
 }
 
 @keyframes imged-plate-in {
   from { opacity: 0; transform: skewX(-11.3deg) translateY(700px); }
   to { opacity: 1; transform: skewX(-11.3deg) translateY(0); }
+}
+
+@keyframes imged-plate-out {
+  from { opacity: 1; transform: skewX(-11.3deg) translateY(0); }
+  to { opacity: 0; transform: skewX(-11.3deg) translateY(700px); }
 }
 
 /* 直立分区区块：内容本身不斜切，窄窗口下不会被裁 */
@@ -695,12 +732,18 @@ html, body {
 }
 
 .imged-overlay.closing .imged-section {
-  animation: imged-section-in calc(500ms * var(--motion-scale, 1)) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) reverse both;
+  animation: imged-section-out calc(500ms * var(--motion-scale, 1)) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  animation-delay: calc((2 - var(--i, 0)) * 30ms * var(--motion-scale, 1));
 }
 
 @keyframes imged-section-in {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes imged-section-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(30px); }
 }
 
 .imged-tools { flex: none; width: 176px; }
@@ -828,6 +871,15 @@ html, body {
 @keyframes imged-viewport-in {
   from { opacity: 0; transform: scale(0.965); }
   to { opacity: 1; transform: scale(1); }
+}
+
+.imged-overlay.closing .imged-viewport {
+  animation: imged-viewport-out calc(500ms * var(--motion-scale, 1)) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
+}
+
+@keyframes imged-viewport-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.965); }
 }
 
 .imged-viewport.dragging { border-color: var(--ui-accent, #66ccff); }
@@ -1655,6 +1707,7 @@ html, body {
   background: rgba(237, 17, 33, 0.08);
   border-radius: 8px; padding: 12px 14px; color: #ff8899;
   font-size: 13px; margin-top: 14px;
+  animation: ntl-fade-in-up calc(240ms * var(--motion-scale, 1)) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
 }
 .error-box .code { font-family: var(--ntlab-font-mono); opacity: 0.8; }
 
