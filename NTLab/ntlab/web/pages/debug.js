@@ -6,10 +6,11 @@
  * - 浏览器模式：设置落盘，重启 NTLab 后生效
  *
  * 终端镜像：SSE(/api/app/logs/stream) 拉取 ANSI 彩色日志行 → 渲染成彩色 span，
- * 等宽代码字体、回放最近 200 行后实时追加。
+ * 等宽代码字体、回放最近 200 行后实时追加。文案走 i18n（语言切换由 app.js 重挂本页）。
  */
 
 import { apiGet, apiSend } from "../api.js";
+import { t } from "../i18n.js";
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) => ({
@@ -60,45 +61,45 @@ export async function mount(el) {
   const frag = document.createElement("div");
   frag.innerHTML = `
     <div class="page-head">
-      <h1>调试<span class="page-hint" title="${esc(HINT)}">?</span></h1>
-      <p>客户端 / 服务器运行参数。内嵌客户端内保存即热应用；浏览器模式重启 NTLab 后生效。</p>
+      <h1>${t("dbg.title")}<span class="page-hint" title="${esc(HINT)}">?</span></h1>
+      <p>${t("dbg.sub")}</p>
     </div>
     <div class="panel dbg-panel">
       <div class="dbg-row">
-        <div class="dbg-label">服务器端口</div>
+        <div class="dbg-label">${t("dbg.port")}</div>
         <div class="dbg-ctl">
           <input id="dbg-port" class="dbg-input" inputmode="numeric" maxlength="5" spellcheck="false">
           <span class="dbg-note" id="dbg-port-note"></span>
         </div>
       </div>
       <div class="dbg-row">
-        <div class="dbg-label">程序终端</div>
+        <div class="dbg-label">${t("dbg.console")}</div>
         <div class="dbg-ctl">
-          <label class="dbg-switch"><input type="checkbox" id="dbg-console"><i></i><span id="dbg-console-txt">开</span></label>
-          <span class="dbg-note">开 = python.exe 带控制台；关 = pythonw.exe 无终端静默运行（切换时程序会自动重启）</span>
+          <label class="dbg-switch"><input type="checkbox" id="dbg-console"><i></i><span id="dbg-console-txt"></span></label>
+          <span class="dbg-note">${t("dbg.console.note")}</span>
         </div>
       </div>
       <div class="dbg-row">
-        <div class="dbg-label">自动打开浏览器</div>
+        <div class="dbg-label">${t("dbg.browser")}</div>
         <div class="dbg-ctl">
-          <label class="dbg-switch"><input type="checkbox" id="dbg-browser"><i></i><span>开</span></label>
-          <span class="dbg-note">仅纯服务器模式（main.py）启动时生效；内嵌客户端忽略</span>
+          <label class="dbg-switch"><input type="checkbox" id="dbg-browser"><i></i><span>${t("dbg.on")}</span></label>
+          <span class="dbg-note">${t("dbg.browser.note")}</span>
         </div>
       </div>
       <div class="dbg-row">
-        <div class="dbg-label">终端输出镜像</div>
+        <div class="dbg-label">${t("dbg.mirror")}</div>
         <div class="dbg-ctl">
-          <label class="dbg-switch"><input type="checkbox" id="dbg-mirror"><i></i><span>实时</span></label>
-          <span class="dbg-note">在下方以等宽代码字体实时显示服务端日志（颜色与终端一致）</span>
+          <label class="dbg-switch"><input type="checkbox" id="dbg-mirror"><i></i><span>${t("dbg.live")}</span></label>
+          <span class="dbg-note">${t("dbg.mirror.note")}</span>
         </div>
       </div>
       <div class="dbg-actions">
-        <button id="dbg-save" class="dbg-save">保存并应用</button>
+        <button id="dbg-save" class="dbg-save">${t("dbg.save")}</button>
         <span id="dbg-msg" class="dbg-msg"></span>
       </div>
       <div class="dbg-info" id="dbg-info"></div>
       <div class="dbg-term-wrap" id="dbg-term-wrap">
-        <div class="dbg-term-head">服务输出<span class="live-dot"></span>实时 · 回放最近 200 行</div>
+        <div class="dbg-term-head">${t("dbg.term.head")}<span class="live-dot"></span></div>
         <div class="dbg-term" id="dbg-term"></div>
       </div>
     </div>`;
@@ -117,7 +118,7 @@ export async function mount(el) {
   const term = frag.querySelector("#dbg-term");
 
   consoleChk.addEventListener("change", () => {
-    consoleTxt.textContent = consoleChk.checked ? "开" : "关";
+    consoleTxt.textContent = consoleChk.checked ? t("dbg.off") : t("dbg.on");
   });
 
   function pushLine(text) {
@@ -152,15 +153,17 @@ export async function mount(el) {
     const s = data.settings;
     port.value = String(s.port);
     consoleChk.checked = !!s.no_console;
-    consoleTxt.textContent = consoleChk.checked ? "关" : "开";
+    consoleTxt.textContent = consoleChk.checked ? t("dbg.off") : t("dbg.on");
     browser.checked = !!s.open_browser;
     mirror.checked = s.mirror_terminal !== false;
     portNote.textContent = data.effective?.current_port != null
-      ? `当前监听 ${data.effective.current_port}` : "";
+      ? t("dbg.port.listening", { port: data.effective.current_port }) : "";
     info.innerHTML =
-      `控制台：<b>${data.effective?.console_attached ? "已附加" : "未附加"}</b>` +
-      ` · 运行形态：<b>${data.effective?.is_client ? "内嵌客户端" : "浏览器/服务器"}</b>` +
-      ` · 设置文件：<code>data/settings.json</code>`;
+      `${t("dbg.info.console")}：<b>${data.effective?.console_attached
+        ? t("dbg.info.attached") : t("dbg.info.detached")}</b>` +
+      ` · ${t("dbg.info.mode")}：<b>${data.effective?.is_client
+        ? t("dbg.info.client") : t("dbg.info.server")}</b>` +
+      ` · ${t("dbg.info.settingsfile")}：<code>data/settings.json</code>`;
     if (mirror.checked) startMirror(); else stopMirror();
   };
 
@@ -168,14 +171,14 @@ export async function mount(el) {
     apply(await apiGet("/api/app/settings"));
   } catch (err) {
     msg.className = "dbg-msg err";
-    msg.textContent = `读取失败：${err?.message ?? err}（若为 404：当前服务是旧版本，重启 NTLab 后即可）`;
+    msg.textContent = t("dbg.readfail", { err: err?.message ?? err });
   }
 
   async function save() {
     const p = Number(port.value);
     if (!Number.isInteger(p) || p < 1 || p > 65535) {
       msg.className = "dbg-msg err";
-      msg.textContent = "端口必须是 1-65535 的整数";
+      msg.textContent = t("dbg.port.bad");
       return;
     }
     const payload = {
@@ -191,18 +194,18 @@ export async function mount(el) {
       if (!mirror.checked) stopMirror(); else startMirror();
       const api = window.pywebview?.api;
       if (api?.applySettings) {
-        msg.textContent = "已保存，客户端热应用中…";
+        msg.textContent = t("dbg.saved.applying");
         const r = await api.applySettings(JSON.stringify(payload));
         msg.className = r?.ok === false ? "dbg-msg err" : "dbg-msg ok";
-        msg.textContent = r?.message ?? "已应用";
+        msg.textContent = r?.message ?? t("dbg.saved.applying");
       } else {
         msg.className = "dbg-msg ok";
-        msg.textContent = "已保存——浏览器模式下重启 NTLab 后生效";
+        msg.textContent = t("dbg.saved.browser");
       }
     } catch (err) {
       msg.className = "dbg-msg err";
-      msg.textContent = `保存失败：${err?.message ?? err}`
-        + (/404/.test(err?.message ?? "") ? "（当前服务是旧版本代码，重启 NTLab 即可）" : "");
+      msg.textContent = t("dbg.savefail", { err: err?.message ?? err })
+        + (/404/.test(err?.message ?? "") ? t("dbg.savefail404") : "");
     } finally {
       saveBtn.disabled = false;
     }
