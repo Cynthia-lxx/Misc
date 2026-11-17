@@ -160,26 +160,21 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
     headerCard.append(titleBox, closeBtn);
     header.append(headerUnder, headerCard);
 
-    // 主区：工具列 | 画布 | 右列（图层 + 调色盘）
-    // 面板三层：wrap（±700px 错峰入场动画）→ card（SHEAR=0.2 斜切）→ inner（反斜切内容）
+    // 主区：一块大的 sheared 底板（纯装饰，允许出血）+ 内部直立小分区区块。
+    // 不给小面板各自斜切：垂直排布下窄窗口的可用安全宽度趋近零，斜切角必越界被裁。
     const main = el('div', 'imged-main');
-    const mkPanel = (cls, fromY, pi) => {
-      const wrap = el('div', 'imged-panel-wrap');
-      wrap.style.setProperty('--from-y', fromY);
-      wrap.style.setProperty('--pi', String(pi));
-      const card = el('div', `imged-panel ${cls}`);
-      const inner = el('div', 'imged-panel-inner');
-      card.append(inner);
-      wrap.append(card);
-      return { wrap, card, inner };
-    };
-    const { wrap: toolsPanel, inner: toolsInner } = mkPanel('imged-tools', '-700px', 0);
+    const plate = el('div', 'imged-plate');
+    const toolsSection = el('div', 'imged-section imged-tools');
+    toolsSection.style.setProperty('--i', '0');
     const viewport = el('div', 'imged-viewport');
+    viewport.style.setProperty('--i', '1');
     const rightCol = el('div', 'imged-rightcol');
-    const { wrap: layersPanel, inner: layersInner } = mkPanel('imged-layers', '700px', 1);
-    const { wrap: palettePanel, inner: paletteInner } = mkPanel('imged-palette', '-700px', 2);
-    rightCol.append(layersPanel, palettePanel);
-    main.append(toolsPanel, viewport, rightCol);
+    const layersSection = el('div', 'imged-section imged-layers');
+    layersSection.style.setProperty('--i', '1');
+    const paletteSection = el('div', 'imged-section imged-palette');
+    paletteSection.style.setProperty('--i', '2');
+    rightCol.append(layersSection, paletteSection);
+    main.append(plate, toolsSection, viewport, rightCol);
 
     // footer
     const footer = el('div', 'imged-footer');
@@ -517,7 +512,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
     solidBtn.addEventListener('click', () => { shapeSolid = true; solidBtn.classList.add('sel'); hollowBtn.classList.remove('sel'); });
     shapeModeBox.append(hollowBtn, solidBtn);
 
-    toolsInner.append(
+    toolsSection.append(
       el('div', 'imged-panel-title', '工具'),
       toolGrid,
       shapeModeBox,
@@ -542,7 +537,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
     const layerOpacityLabel = el('div', 'imged-slider-label');
     const layerBtnRow = el('div', 'imged-btn-row');
     layerBtnRow.append(addBtn, importBtn, mergeBtn, delBtn);
-    layersInner.append(
+    layersSection.append(
       el('div', 'imged-panel-title', '图层'),
       listEl,
       layerOpacitySlider, layerOpacityLabel,
@@ -556,7 +551,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
     previewRow.append(swatchPreview, transparentBtn, screenPickBtn);
     const rgbRow = el('div', 'imged-rgb-row');
     for (const { box } of rgbInputs) rgbRow.appendChild(box);
-    paletteInner.append(
+    paletteSection.append(
       el('div', 'imged-panel-title', '颜色'),
       colorTop,
       previewRow,
