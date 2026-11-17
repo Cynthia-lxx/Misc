@@ -1706,6 +1706,9 @@ html, body {
 
 .loadbar > i.indet {
   width: 30%;
+  /* 基态必须与 loadbar-indet 的 from 一致：动画采样晚于首次绘制一帧时，
+     否则会先以 margin-left:0 贴左缘画出一帧再跳回起点（闪现）。 */
+  margin-left: -30%;
   animation: loadbar-indet 1.2s var(--ease-out, ease-out) infinite;
 }
 
@@ -1730,5 +1733,5 @@ html, body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .loadbar > i.indet { animation: none; }
+  .loadbar > i.indet { animation: none; margin-left: 0; }
 }
