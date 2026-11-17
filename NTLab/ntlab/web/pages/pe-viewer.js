@@ -1,6 +1,7 @@
 /* PE Viewer page: path input + drag-drop upload + tabbed detail. */
 
 import { apiGet, apiPost, apiUpload, apiSend } from "../api.js";
+import { t } from "../i18n.js";
 import { swapContent } from "../motion.js";
 
 /** WinAPI 试验台白名单（模块级缓存）；导出/导入表据此提供「试验台」跳转。 */
@@ -38,20 +39,20 @@ export async function mount(el) {
   el.innerHTML = `
     <div id="pe-top">
       <div class="page-head pe-top-extra">
-        <h1>PE 分析器<span class="page-hint" title="输入本地 PE 文件路径，或直接拖一个 exe/dll/sys 进来">?</span></h1>
+        <h1><span data-i18n-key="PE 分析器">PE 分析器</span><span class="page-hint" data-i18n-title="输入本地 PE 文件路径，或直接拖一个 exe/dll/sys 进来">?</span></h1>
       </div>
       <div class="panel">
         <div style="display:flex; gap:10px; align-items:center">
           <ui-textbox id="pe-path" style="flex:1" placeholder="C:\\Windows\\System32\\kernel32.dll"></ui-textbox>
-          <ui-button id="pe-go" variant="accent">解析</ui-button>
-          <ui-button id="pe-fold" title="收起文件选择区">▲</ui-button>
+          <ui-button id="pe-go" variant="accent" data-i18n-key="解析"></ui-button>
+          <ui-button id="pe-fold" data-i18n-title="收起文件选择区">▲</ui-button>
         </div>
         <div class="pe-top-extra">
           <div class="chips" id="pe-chips"></div>
           <div class="chips" id="pe-recent"></div>
         </div>
       </div>
-      <div class="drop-zone pe-top-extra" id="pe-drop" style="margin-top:14px">
+      <div class="drop-zone pe-top-extra" id="pe-drop" style="margin-top:14px" data-i18n-key="或把 PE 文件拖到这里（≤ 64 MB）">
         或把 PE 文件拖到这里（≤ 64 MB）
       </div>
     </div>
@@ -90,7 +91,7 @@ export async function mount(el) {
       const label = document.createElement("span");
       label.className = "table-meta";
       label.style.margin = "0 6px 0 0";
-      label.textContent = "最近：";
+      label.textContent = t("最近：");
       recent.appendChild(label);
       for (const p of rec) addChip(recent, p, true);
     }
@@ -125,7 +126,7 @@ export async function mount(el) {
       }, 260);
     }
     foldBtn.setAttribute("label", collapsed ? "▼" : "▲");
-    foldBtn.setAttribute("title", collapsed ? "展开文件选择区" : "收起文件选择区");
+    foldBtn.setAttribute("title", t(collapsed ? "展开文件选择区" : "收起文件选择区"));
   }
   foldBtn.addEventListener("click", () => setTopCollapsed(!topArea.classList.contains("collapsed")));
 
@@ -139,7 +140,7 @@ export async function mount(el) {
   drop.addEventListener("drop", async (e) => {
     const file = e.dataTransfer?.files?.[0];
     if (!file) return;
-    if (file.size > 64 * 1024 * 1024) return showErr("文件超过 64 MB 上限，请直接输入路径解析");
+    if (file.size > 64 * 1024 * 1024) return showErr(t("文件超过 64 MB 上限，请直接输入路径解析"));
     setLoading(true);
     try {
       const r = await apiUpload("/api/pe/upload", file);
@@ -158,7 +159,7 @@ export async function mount(el) {
 
   function setLoading(on) {
     drop.style.opacity = on ? "0.4" : "";
-    if (on) result.innerHTML = `<div class="loading-row"><ui-spinner></ui-spinner> 正在解析…</div>`;
+    if (on) result.innerHTML = `<div class="loading-row"><ui-spinner></ui-spinner> ${t("正在解析…")}</div>`;
   }
 
   /* ---------- 导航历史（跨 PE / 跨标签，Alt+← / Alt+→ 返回与前进） ---------- */
@@ -223,7 +224,7 @@ export async function mount(el) {
     try {
       const r = await apiGet(`/api/pe/resolve?name=${encodeURIComponent(name)}`);
       if (!r.path) {
-        showErr({ code: "not-found", message: `系统目录中未找到模块 ${name}（api-ms-* 转发 DLL 无实体文件，可分析其宿主 DLL）` });
+        showErr({ code: "not-found", message: t("系统目录中未找到模块 {name}（api-ms-* 转发 DLL 无实体文件，可分析其宿主 DLL）", { name }) });
         return;
       }
       pathBox.value = r.path;
@@ -263,6 +264,13 @@ export async function mount(el) {
       tab("summary", "概览"), tab("headers", "DOS/文件头"), tab("imports", "导入表"),
       tab("exports", "导出表"), tab("resources", "资源"), tab("signature", "签名/PDB"),
       tab("strings", "Strings"), tab("hex", "Hex"), tab("disasm", "反汇编"));
+
+    function tab(value, label) {
+      const el = document.createElement("span");
+      el.setAttribute("data-value", value);
+      el.setAttribute("data-i18n-key", label);   // label 由 ui-tabs 经词典解析（zh=恒等）
+      return el;
+    }
     const views = { summary: () => summaryView(s), headers: () => headersView(path) };
 
     function onCellActivate(e) {
@@ -303,7 +311,7 @@ export async function mount(el) {
     function showTab(v, addr = null) {
       tabs.setAttribute("value", v);
       if (views[v]) { swapContent(body, views[v]()); return; }
-      swapContent(body, spinnerRow("加载中…"));
+      swapContent(body, spinnerRow(t("加载中…")));
       (async () => {
         let t = null;
         const url = (ep) => `/api/pe/${ep}?path=${encodeURIComponent(path)}`;
@@ -338,13 +346,6 @@ export async function mount(el) {
     wrap.append(navBar, tabs, body);
     swapContent(result, wrap, { outMs: 80, inMs: 380 });
   }
-}
-
-function tab(value, label) {
-  const t = document.createElement("span");
-  t.setAttribute("data-value", value);
-  t.setAttribute("label", label);
-  return t;
 }
 
 function entryRva(s) {
@@ -395,27 +396,30 @@ function esc(s) {
 
 function summaryView(s) {
   const wrap = document.createElement("div");
-  wrap.appendChild(kvPanel("基本信息", [
-    ["文件", s.file.path],
-    ["大小", `${(s.file.size / 1024).toFixed(1)} KB`],
-    ["架构", `${s.machine.name} (0x${s.machine.value.toString(16)})`],
-    ["格式", s.magic.name],
-    ["类型", s.is_dll ? "DLL" : "EXE"],
-    ["子系统", `${s.subsystem.name}`],
-    ["入口点 RVA", `0x${s.entry_point.toString(16).toUpperCase()}`],
-    ["镜像基址", `0x${s.image_base.toString(16).toUpperCase()}`],
-    ["链接器", `${s.linker.major}.${s.linker.minor}`],
-    ["OS 版本", s.os_version],
-    ["校验和", `声明 0x${s.checksum.stated.toString(16).toUpperCase()} / 实际 0x${(s.checksum.actual ?? 0).toString(16).toUpperCase()}${s.checksum.stated === s.checksum.actual ? " ✓" : " ✗"}`],
+  wrap.appendChild(kvPanel(t("基本信息"), [
+    [t("文件"), s.file.path],
+    [t("大小"), `${(s.file.size / 1024).toFixed(1)} KB`],
+    [t("架构"), `${s.machine.name} (0x${s.machine.value.toString(16)})`],
+    [t("格式"), s.magic.name],
+    [t("类型"), s.is_dll ? "DLL" : "EXE"],
+    [t("子系统"), `${s.subsystem.name}`],
+    [t("入口点 RVA"), `0x${s.entry_point.toString(16).toUpperCase()}`],
+    [t("镜像基址"), `0x${s.image_base.toString(16).toUpperCase()}`],
+    [t("链接器"), `${s.linker.major}.${s.linker.minor}`],
+    [t("OS 版本"), s.os_version],
+    [t("校验和"), t("声明 {stated} / 实际 {actual}", {
+      stated: `0x${s.checksum.stated.toString(16).toUpperCase()}`,
+      actual: `0x${(s.checksum.actual ?? 0).toString(16).toUpperCase()}`,
+    }) + (s.checksum.stated === s.checksum.actual ? " ✓" : " ✗")],
   ]));
   const table = document.createElement("ui-table");
   table.columns = [
-    { key: "name", label: "节" },
+    { key: "name", label: t("节") },
     { key: "virtual_size", label: "VirtualSize", type: "hex" },
     { key: "virtual_address", label: "VirtualAddress", type: "hex" },
     { key: "raw_size", label: "RawSize", type: "hex" },
-    { key: "entropy", label: "熵", type: "num" },
-    { key: "flags", label: "属性" },
+    { key: "entropy", label: t("熵"), type: "num" },
+    { key: "flags", label: t("属性") },
   ];
   table.rows = s.sections.map((sec) => ({ ...sec, flags: sec.flags.join(" · ") }));
   wrap.appendChild(table);
@@ -425,8 +429,8 @@ function summaryView(s) {
 async function headersView(path) {
   const h = await apiGet("/api/pe/headers", { path });
   const wrap = document.createElement("div");
-  wrap.appendChild(kvPanel("DOS 头", Object.entries(h.dos_header).map(([k, v]) => [k, typeof v === "number" ? `0x${v.toString(16).toUpperCase()} (${v})` : v])));
-  wrap.appendChild(kvPanel("文件头 (FILE_HEADER)", Object.entries(h.file_header)));
+  wrap.appendChild(kvPanel(t("DOS 头"), Object.entries(h.dos_header).map(([k, v]) => [k, typeof v === "number" ? `0x${v.toString(16).toUpperCase()} (${v})` : v])));
+  wrap.appendChild(kvPanel(t("文件头 (FILE_HEADER)"), Object.entries(h.file_header)));
   return wrap;
 }
 
@@ -457,14 +461,14 @@ async function tableView(url, pageLimit, cols, onRowActivate, onCellActivate) {
     table.rows = q
       ? items.filter((row) => Object.values(row).some((v) => v != null && norm(v).includes(q)))
       : items;
-    meta.textContent = q ? `匹配 ${table.rows.length} 条` : "";
+    meta.textContent = q ? t("匹配 {n} 条", { n: table.rows.length }) : "";
   };
   cs._box.addEventListener("change", applyFilter);
 
   const input = document.createElement("input");
   input.className = "filter-input";
   input.type = "search";
-  input.placeholder = "过滤（名称 / DLL / RVA…）";
+  input.placeholder = t("过滤（名称 / DLL / RVA…）");
   input.addEventListener("input", applyFilter);
 
   // 增量分页：滚动到底自动取下一页（onLoadMore 契约见 ui-table）
@@ -509,7 +513,7 @@ function toolInput(placeholder, value, { mono = true, width = "180px" } = {}) {
 
 function toolBtn(label, onClick, variant) {
   const b = document.createElement("ui-button");
-  b.setAttribute("label", label);
+  b.setAttribute("data-i18n-key", label);   // 走词典（zh 恒等 / en 翻译），ui-i18n-change 自刷新
   if (variant) b.setAttribute("variant", variant);
   b.addEventListener("click", onClick);
   return b;
@@ -521,9 +525,10 @@ function peNavBtn(dir, label, onClick) {
   b.type = "button";
   b.className = "ntl-action-btn pe-nav-btn";
   b.dataset.dir = dir < 0 ? "back" : "forward";
-  b.title = dir < 0 ? "返回历史 (Alt+←)" : "前进历史 (Alt+→)";
+  b.title = t(dir < 0 ? "返回历史 (Alt+←)" : "前进历史 (Alt+→)");
   const chevron = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="${dir < 0 ? "M10 3L5 8l5 5" : "M6 3l5 5-5 5"}"/></svg>`;
-  b.innerHTML = dir < 0 ? `${chevron}<span>${label}</span>` : `<span>${label}</span>${chevron}`;
+  const text = `<span data-i18n-key="${label}">${esc(t(label))}</span>`;
+  b.innerHTML = dir < 0 ? `${chevron}${text}` : `${text}${chevron}`;
   b.addEventListener("click", onClick);
   return b;
 }
@@ -537,7 +542,10 @@ function caseToggle() {
   const box = document.createElement("input");
   box.type = "checkbox";
   label._box = box;
-  label.append(box, document.createTextNode("Aa 区分大小写"));
+  const text = document.createElement("span");
+  text.setAttribute("data-i18n-key", "Aa 区分大小写");
+  text.textContent = "Aa 区分大小写";
+  label.append(box, text);
   return label;
 }
 
@@ -558,10 +566,10 @@ async function stringsView(path, navigate = null) {
   table.columns = [
     { key: "file_offset", label: "File Offset", type: "hex" },
     { key: "rva", label: "RVA", type: "hex" },
-    { key: "section", label: "节" },
-    { key: "size", label: "长度", type: "num" },
-    { key: "encoding", label: "编码" },
-    { key: "text", label: "内容", type: "mono" },
+    { key: "section", label: t("节") },
+    { key: "size", label: t("长度"), type: "num" },
+    { key: "encoding", label: t("编码") },
+    { key: "text", label: t("内容"), type: "mono" },
   ];
 
   const meta = document.createElement("p");
@@ -574,13 +582,13 @@ async function stringsView(path, navigate = null) {
     table.rows = q
       ? items.filter((r) => norm(r.text).includes(q))
       : items;
-    meta.textContent = q ? `匹配 ${table.rows.length} 条` : "";
+    meta.textContent = q ? t("匹配 {n} 条", { n: table.rows.length }) : "";
   };
   cs._box.addEventListener("change", applyFilter);
   const input = document.createElement("input");
   input.className = "filter-input";
   input.type = "search";
-  input.placeholder = "搜索字符串内容…";
+  input.placeholder = t("搜索字符串内容…");
   input.addEventListener("input", applyFilter);
 
   table.onLoadMore = async () => {
@@ -615,9 +623,9 @@ function hexView(path, startRva = 0) {
   let nextOff = 0;    // 下一段的 file offset；-1 表示到底
   const fsize = (v) => `0x${v.toString(16).toUpperCase()}`;
 
-  const offInput = toolInput("File Offset / RVA（hex）", Math.max(0, startRva | 0).toString(16), { width: "180px" });
-  const searchInput = toolInput("搜索文本…", "", { mono: false, width: "180px" });
-  const hexInput = toolInput("或字节序列（hex）", "", { width: "160px" });
+  const offInput = toolInput(t("File Offset / RVA（hex）"), Math.max(0, startRva | 0).toString(16), { width: "180px" });
+  const searchInput = toolInput(t("搜索文本…"), "", { mono: false, width: "180px" });
+  const hexInput = toolInput(t("或字节序列（hex）"), "", { width: "160px" });
   const meta = document.createElement("p");
   meta.className = "table-meta";
 
@@ -639,8 +647,9 @@ function hexView(path, startRva = 0) {
     view._currentRva = r.file_offset;
     view.resetRows(r.rows, { currentRva: r.file_offset });
     offInput.value = r.file_offset.toString(16);
-    meta.textContent = `RVA ${fsize(r.rva)} · File Offset ${fsize(r.file_offset)} · 节 ${r.section ?? "—"}`
-      + ` · 滚动到底自动续载 · 点击左侧地址跳转`;
+    meta.textContent = t("RVA {rva} · File Offset {off} · 节 {sec} · 滚动到底自动续载 · 点击左侧地址跳转", {
+      rva: fsize(r.rva), off: fsize(r.file_offset), sec: r.section ?? "—",
+    });
     if (push) view.dispatchEvent(new CustomEvent("ui-pe-nav", { bubbles: true, detail: { tab: "hex", addr: off } }));
   }
 
@@ -671,13 +680,13 @@ function hexView(path, startRva = 0) {
     const r = await apiGet(`/api/pe/search?path=${encodeURIComponent(path)}&q=${encodeURIComponent(q)}&mode=${mode}`
       + `&start=${startAt}&limit=100&case_sensitive=${searchCs._box.checked}`);
     if (!r.matches.length) {
-      meta.textContent = `从 ${fsize(startAt)} 起未找到 “${q}”`;
+      meta.textContent = t("从 {start} 起未找到 “{q}”", { start: fsize(startAt), q });
       return;
     }
     searchState = r.matches;
     searchIdx = 0;
     await jump(searchState[0].file_offset);
-    meta.textContent = `命中 ${searchState.length} 处（第 1 处，点「下一个」继续）`;
+    meta.textContent = t("命中 {n} 处（第 1 处，点「下一个」继续）", { n: searchState.length });
   }
 
   const bar = toolbarRow(
@@ -695,7 +704,7 @@ function hexView(path, startRva = 0) {
       searchIdx = (searchIdx + 1) % searchState.length;
       const m = searchState[searchIdx];
       jump(m.file_offset)
-        .then(() => { meta.textContent = `命中 ${searchState.length} 处 · 第 ${searchIdx + 1} 处`; })
+        .then(() => { meta.textContent = t("命中 {n} 处 · 第 {i} 处", { n: searchState.length, i: searchIdx + 1 }); })
         .catch((err) => { meta.textContent = err.message; });
     }),
   );
@@ -719,7 +728,7 @@ async function disasmView(path, startRva = 0, { onOpenDll = null } = {}) {
   const PAGE = 200;
   let nextRva = Math.max(0, startRva | 0);
 
-  const rvaInput = toolInput("RVA（hex）", nextRva.toString(16), { width: "160px" });
+  const rvaInput = toolInput(t("RVA（hex）"), nextRva.toString(16), { width: "160px" });
   const xrefBox = document.createElement("div");
   xrefBox.className = "table-meta";
   xrefBox.style.marginBottom = "6px";
@@ -751,7 +760,7 @@ async function disasmView(path, startRva = 0, { onOpenDll = null } = {}) {
     view.resetRows(r.items, { currentRva: target });
     rvaInput.value = target.toString(16);
     meta.textContent = `ImageBase 0x${r.image_base.toString(16).toUpperCase()}`
-      + ` · 滚动到底自动续载 · 点击行内地址跳转 · Alt+← 返回`;
+      + ` · ${t("滚动到底自动续载 · 点击行内地址跳转 · Alt+← 返回")}`;
     updateXrefs(target);
     if (push) view.dispatchEvent(new CustomEvent("ui-pe-nav", { bubbles: true, detail: { tab: "disasm", addr: target } }));
   }
@@ -759,15 +768,15 @@ async function disasmView(path, startRva = 0, { onOpenDll = null } = {}) {
   async function updateXrefs(rva) {
     xrefBox.replaceChildren();
     const label = document.createElement("span");
-    label.textContent = "交叉引用：查询中…";
+    label.textContent = t("交叉引用：查询中…");
     xrefBox.appendChild(label);
     try {
       const x = await apiGet(`/api/pe/xrefs?path=${encodeURIComponent(path)}&rva=${rva}`);
       xrefBox.replaceChildren();
       const hint = document.createElement("span");
       hint.textContent = x.total_refs
-        ? `交叉引用：被 ${x.total_refs} 处 call/jmp（点击跳到调用处）：`
-        : "交叉引用：此地址没有已知的 call/jmp 落点";
+        ? t("交叉引用：被 {n} 处 call/jmp（点击跳到调用处）：", { n: x.total_refs })
+        : t("交叉引用：此地址没有已知的 call/jmp 落点");
       hint.style.color = "var(--ui-text-muted)";
       xrefBox.appendChild(hint);
       x.callers.slice(0, 12).forEach((c) => {
@@ -817,12 +826,12 @@ function importCols(names) {
     : { kind: "playground-dyn", value: r.function };
   return [
     { key: "dll", label: "DLL", type: "link", linkOf: (r) => ({ kind: "dll", value: r.dll }) },
-    { key: "function", label: "函数", type: "link", linkOf: goto },
-    { key: "demangled", label: "反修饰名", type: "mono" },
+    { key: "function", label: t("函数"), type: "link", linkOf: goto },
+    { key: "demangled", label: t("反修饰名"), type: "mono" },
     { key: "ordinal", label: "Ordinal", type: "num" },
     { key: "hint", label: "Hint", type: "hex" },
     { key: "iat_rva", label: "IAT RVA", type: "link", linkOf: (r) => ({ kind: "hex", value: r.iat_rva }) },
-    { key: "function", label: "试验台", type: "link", linkOf: goto },
+    { key: "function", label: t("试验台"), type: "link", linkOf: goto },
   ];
 }
 
@@ -833,23 +842,23 @@ function exportCols(names) {
     : { kind: "playground-dyn", value: r.name };
   return [
     { key: "ordinal", label: "Ordinal", type: "num" },
-    { key: "name", label: "导出名", type: "link", linkOf: goto },
-    { key: "demangled", label: "反修饰名", type: "mono" },
+    { key: "name", label: t("导出名"), type: "link", linkOf: goto },
+    { key: "demangled", label: t("反修饰名"), type: "mono" },
     { key: "rva", label: "RVA", type: "link", linkOf: (r) => ({ kind: "disasm", value: r.rva }) },
-    { key: "forwarder", label: "转发" },
-    { key: "name", label: "试验台", type: "link", linkOf: goto },
+    { key: "forwarder", label: t("转发") },
+    { key: "name", label: t("试验台"), type: "link", linkOf: goto },
   ];
 }
 
 function resCols() {
   return [
-    { key: "type", label: "类型" },
-    { key: "name", label: "名称" },
-    { key: "language", label: "语言", type: "num" },
-    { key: "size", label: "大小", type: "num" },
+    { key: "type", label: t("类型") },
+    { key: "name", label: t("名称") },
+    { key: "language", label: t("语言"), type: "num" },
+    { key: "size", label: t("大小"), type: "num" },
     { key: "rva", label: "RVA", type: "link", linkOf: (r) => ({ kind: "hex", value: r.rva }) },
-    { key: "dl", label: "下载", type: "link", linkOf: (r) => ({ kind: "res-dl", value: r.rva }) },
-    { key: "rep", label: "替换", type: "link", linkOf: (r) => ({ kind: "res-rep", value: r.rva }) },
+    { key: "dl", label: t("下载"), type: "link", linkOf: (r) => ({ kind: "res-dl", value: r.rva }) },
+    { key: "rep", label: t("替换"), type: "link", linkOf: (r) => ({ kind: "res-rep", value: r.rva }) },
   ];
 }
 
@@ -885,13 +894,14 @@ async function replaceResourceFlow(path, row, onDone) {
     if (!file) return;
     try {
       const data_b64 = await fileToBase64(file);
-      const label = `${row.type}/${row.name}/lang${row.lang_id}（原 ${row.size} 字节）`;
+      const label = t("{type}/{name}/lang{lang}（原 {size} 字节）",
+        { type: row.type, name: row.name, lang: row.lang_id, size: row.size });
       const inPlace = confirm(
-        `用 ${file.name}（${file.size} 字节）替换资源 ${label}？\n\n`
-        + "确定 = 原地保存（自动生成 .bak 备份）\n取消 = 另存为新文件");
+        t("用 {file}（{bytes} 字节）替换资源 {label}？\n\n确定 = 原地保存（自动生成 .bak 备份）\n取消 = 另存为新文件",
+          { file: file.name, bytes: file.size, label }));
       let out_path = null;
       if (!inPlace) {
-        out_path = prompt("另存为路径：",
+        out_path = prompt(t("另存为路径："),
           path.replace(/\.(exe|dll|sys|ocx|scr|cpl|efi|mui|drv)$/i, ".patched$1"));
         if (!out_path) return;
       }
@@ -902,14 +912,15 @@ async function replaceResourceFlow(path, row, onDone) {
         in_place: inPlace,
         out_path,
       });
-      alert(`替换完成：${r.replaced.length} 项\n输出：${r.path}\n`
-        + `.rsrc ${r.old_rsrc_size} → ${r.rsrc_size} 字节\n`
-        + `PE CheckSum: ${r.checksum}`
-        + (r.backup ? `\n备份：${r.backup}` : "")
-        + (r.grew ? "\n（文件已扩展，后续节已平移）" : ""));
+      alert(t("替换完成：{n} 项\n输出：{out}\n.rsrc {old} → {new} 字节\nPE CheckSum: {sum}", {
+        n: r.replaced.length, out: r.path,
+        old: r.old_rsrc_size, new: r.rsrc_size, sum: r.checksum,
+      })
+        + (r.backup ? t("\n备份：{path}", { path: r.backup }) : "")
+        + (r.grew ? t("\n（文件已扩展，后续节已平移）") : ""));
       onDone && onDone();
     } catch (err) {
-      alert(`替换失败：${err.message ?? err}`);
+      alert(t("替换失败：{err}", { err: err.message ?? err }));
     }
   });
   document.body.appendChild(input);
@@ -921,27 +932,29 @@ async function refreshArchives(listEl) {
     const r = await apiGet("/api/pe/resources/archives");
     const list = r.archives ?? [];
     if (!list.length) {
-      listEl.innerHTML = '<p class="table-meta">数据库中还没有资源存档。</p>';
+      listEl.innerHTML = `<p class="table-meta">${t("数据库中还没有资源存档。")}</p>`;
       return;
     }
     listEl.replaceChildren(...list.map((a) => {
       const rowEl = document.createElement("div");
       rowEl.className = "res-arch-row";
       const info = document.createElement("span");
-      info.textContent = `#${a.id} ${a.file_name}（${a.count} 项 / ${(a.size / 1024).toFixed(1)} KB / `
-        + `${new Date(a.created_at * 1000).toLocaleString()}）`;
+      info.textContent = t("#{id} {file}（{n} 项 / {kb} KB / {time}）", {
+        id: a.id, file: a.file_name, n: a.count, kb: (a.size / 1024).toFixed(1),
+        time: new Date(a.created_at * 1000).toLocaleString(),
+      });
       const ops = document.createElement("span");
       ops.className = "res-arch-ops";
       const dl = document.createElement("a");
       dl.href = `/api/pe/resources/archives/${a.id}/download`;
       dl.download = "";
-      dl.textContent = "下载";
+      dl.textContent = t("下载");
       const del = document.createElement("a");
       del.href = "#";
-      del.textContent = "删除";
+      del.textContent = t("删除");
       del.addEventListener("click", async (e) => {
         e.preventDefault();
-        if (!confirm(`删除存档 #${a.id}（${a.file_name}）？`)) return;
+        if (!confirm(t("删除存档 #{id}（{file}）？", { id: a.id, file: a.file_name }))) return;
         try { await apiSend("DELETE", `/api/pe/resources/archives/${a.id}`); }
         catch (err) { /* keep */ }
         refreshArchives(listEl);
@@ -963,14 +976,14 @@ async function resourcesView(path, onCellActivate, buildTable) {
   const packBtn = document.createElement("button");
   packBtn.type = "button";
   packBtn.className = "ntl-action-btn";
-  packBtn.textContent = "打包下载 (.zip)";
+  packBtn.textContent = t("打包下载 (.zip)");
   packBtn.addEventListener("click", () =>
     triggerDownload(`/api/pe/resources/pack?path=${encodeURIComponent(path)}`));
 
   const saveBtn = document.createElement("button");
   saveBtn.type = "button";
   saveBtn.className = "ntl-action-btn";
-  saveBtn.textContent = "存档到数据库";
+  saveBtn.textContent = t("存档到数据库");
   saveBtn.addEventListener("click", async () => {
     saveBtn.disabled = true;
     try {
@@ -986,8 +999,8 @@ async function resourcesView(path, onCellActivate, buildTable) {
   const jumpBtn = document.createElement("button");
   jumpBtn.type = "button";
   jumpBtn.className = "ntl-action-btn";
-  jumpBtn.textContent = "在资源修改器中打开 ↗";
-  jumpBtn.title = "跳转到独立的资源修改器页（树形浏览 / 预览 / 编辑 / 保存）";
+  jumpBtn.textContent = t("在资源修改器中打开 ↗");
+  jumpBtn.title = t("跳转到独立的资源修改器页（树形浏览 / 预览 / 编辑 / 保存）");
   jumpBtn.addEventListener("click", () => {
     location.hash = `#/resedit?path=${encodeURIComponent(path)}`;
   });
@@ -1005,28 +1018,28 @@ async function signatureView(path) {
   const r = await apiGet("/api/pe/signature", { path });
   const wrap = document.createElement("div");
   const sig = r.signature;
-  wrap.appendChild(kvPanel("Authenticode 签名目录", [
-    ["存在", sig.present ? "是" : "否"],
-    ["文件偏移", sig.rva_file_offset ? `0x${sig.rva_file_offset.toString(16).toUpperCase()}` : "—"],
-    ["长度", sig.size ?? "—"],
-    ["证书类型", sig.certificate_type ?? "—"],
-    ["说明", sig.present ? "仅显示 WIN_CERTIFICATE 头信息；签名链校验可用 signtool verify / WinVerifyTrust" : "该文件没有嵌入签名"],
+  wrap.appendChild(kvPanel(t("Authenticode 签名目录"), [
+    [t("存在"), sig.present ? t("是") : t("否")],
+    [t("文件偏移"), sig.rva_file_offset ? `0x${sig.rva_file_offset.toString(16).toUpperCase()}` : "—"],
+    [t("长度"), sig.size ?? "—"],
+    [t("证书类型"), sig.certificate_type ?? "—"],
+    [t("说明"), sig.present ? t("仅显示 WIN_CERTIFICATE 头信息；签名链校验可用 signtool verify / WinVerifyTrust") : t("该文件没有嵌入签名")],
   ]));
-  wrap.appendChild(kvPanel("PDB / 调试信息", r.pdb ? [
-    ["PDB 路径", r.pdb.path],
+  wrap.appendChild(kvPanel(t("PDB / 调试信息"), r.pdb ? [
+    [t("PDB 路径"), r.pdb.path],
     ["GUID", r.pdb.guid ?? "—"],
     ["Age", r.pdb.age ?? "—"],
-  ] : [["PDB", "未找到 CodeView 记录"]]));
+  ] : [["PDB", t("未找到 CodeView 记录")]]));
   if (r.debug_entries.length) {
     const table = document.createElement("ui-table");
     table.columns = [
-      { key: "type", label: "Debug 类型", type: "num" },
-      { key: "size_of_data", label: "大小", type: "num" },
+      { key: "type", label: t("Debug 类型"), type: "num" },
+      { key: "size_of_data", label: t("大小"), type: "num" },
       { key: "rva", label: "RVA", type: "hex" },
     ];
     table.rows = r.debug_entries;
     const h = document.createElement("h3");
-    h.textContent = `调试目录（${r.debug_entries.length} 项）`;
+    h.textContent = t("调试目录（{n} 项）", { n: r.debug_entries.length });
     h.style.cssText = "margin:16px 0 10px";
     wrap.append(h, table);
   }

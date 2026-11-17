@@ -1,19 +1,20 @@
 /* ObjDir — NT object-manager namespace browser: lazy tree (left) + detail (right). */
 
 import { apiGet } from "../api.js";
+import { t } from "../i18n.js";
 import { swapContent } from "../motion.js";
 
 export async function mount(el) {
   el.innerHTML = `
     <div class="page-head">
-      <h1>ObjDir<span class="page-hint" title="点击目录节点展开子目录；右侧显示所选对象详情">?</span></h1>
-      <p>NT 对象管理器命名空间</p>
+      <h1>ObjDir<span class="page-hint" data-i18n-title="点击目录节点展开子目录；右侧显示所选对象详情">?</span></h1>
+      <p data-i18n-key="NT 对象管理器命名空间">NT 对象管理器命名空间</p>
     </div>
     <div class="objdir">
-      <div class="panel objdir-left"><div class="loading-row"><ui-spinner></ui-spinner> 正在探测根目录…</div></div>
+      <div class="panel objdir-left"><div class="loading-row"><ui-spinner></ui-spinner> <span data-i18n-key="正在探测根目录…">正在探测根目录…</span></div></div>
       <div class="objdir-right">
-        <div class="crumb" id="obj-crumb"><span class="sep">在左侧选择一个对象</span></div>
-        <div class="panel" id="obj-detail">选择左侧一个对象查看详情。</div>
+        <div class="crumb" id="obj-crumb"><span class="sep" data-i18n-key="在左侧选择一个对象">在左侧选择一个对象</span></div>
+        <div class="panel" id="obj-detail" data-i18n-key="选择左侧一个对象查看详情。">选择左侧一个对象查看详情。</div>
       </div>
     </div>`;
 
@@ -62,7 +63,7 @@ export async function mount(el) {
     id: r.path,
     label: r.path,
     expandable: r.accessible,
-    badge: r.accessible ? "目录" : "受限",
+    badge: r.accessible ? t("目录") : t("受限"),
     badgeClass: r.accessible ? "directory" : "",
     accessible: r.accessible,
   }));
@@ -74,7 +75,7 @@ export async function mount(el) {
       label: e.name,
       type: e.type,
       expandable: e.is_directory,
-      badge: e.is_symlink ? "链接" : (e.is_directory ? "目录" : e.type),
+      badge: e.is_symlink ? t("链接") : (e.is_directory ? t("目录") : e.type),
       badgeClass: e.is_symlink ? "symlink" : (e.is_directory ? "directory" : "other"),
     }));
   };
@@ -99,29 +100,29 @@ export async function mount(el) {
       const badge = document.createElement("span");
       badge.className = `badge t-${(node.type ?? "other").toLowerCase().startsWith("dir") ? "directory"
         : (node.type ?? "").toLowerCase() === "symboliclink" ? "symlink" : "other"}`;
-      badge.textContent = node.type ?? "对象";
+      badge.textContent = node.type ?? t("对象");
       head.append(badge, h2);
       wrap.appendChild(head);
 
       const body = document.createElement("div");
       if ((node.type ?? "") === "SymbolicLink") {
         body.innerHTML = info.target
-          ? `<div class="panel"><div class="kv"><dt>链接目标</dt><dd>${esc(info.target)}</dd></div></div>`
-          : `<div class="error-box">无法读取链接目标：${esc(info.target_error?.message ?? "未知错误")}</div>`;
+          ? `<div class="panel"><div class="kv"><dt>${t("链接目标")}</dt><dd>${esc(info.target)}</dd></div></div>`
+          : `<div class="error-box">${t("无法读取链接目标：{err}", { err: esc(info.target_error?.message ?? t("未知错误")) })}</div>`;
       } else if (node.expandable) {
-        body.innerHTML = `<div class="loading-row"><ui-spinner></ui-spinner> 正在枚举子对象…</div>`;
+        body.innerHTML = `<div class="loading-row"><ui-spinner></ui-spinner> ${t("正在枚举子对象…")}</div>`;
         try {
           const r = await apiGet("/api/ntobj/list", { path: node.id });
           const rows = r.entries.map((e2) => ({
             ...e2,
-            kind: e2.is_directory ? "可展开" : e2.is_symlink ? "符号链接" : "叶子",
+            kind: e2.is_directory ? t("可展开") : e2.is_symlink ? t("符号链接") : t("叶子"),
           }));
           const table = document.createElement("ui-table");
           table.setAttribute("fill", "");
           table.columns = [
-            { key: "name", label: "对象名", type: "mono" },
-            { key: "type", label: "类型" },
-            { key: "kind", label: "种类" },
+            { key: "name", label: t("对象名"), type: "mono" },
+            { key: "type", label: t("类型") },
+            { key: "kind", label: t("种类") },
           ];
 
           const meta = document.createElement("p");
@@ -131,13 +132,14 @@ export async function mount(el) {
             const filtered = !q ? rows : rows.filter((row) =>
               row.name.toLowerCase().includes(q) || row.type.toLowerCase().includes(q));
             table.rows = filtered;
-            meta.textContent = q ? `匹配 ${filtered.length} / ${rows.length} 项` : `共 ${rows.length} 项${r.truncated ? "（已截断）" : ""} · 双击行可深入 · 表格内滚动`;
+            meta.textContent = q ? t("匹配 {a} / {b} 项", { a: filtered.length, b: rows.length })
+              : t("共 {n} 项{trunc} · 双击行可深入 · 表格内滚动", { n: rows.length, trunc: r.truncated ? t("（已截断）") : "" });
           };
 
           const input = document.createElement("input");
           input.className = "filter-input";
           input.type = "search";
-          input.placeholder = "按名称/类型过滤…";
+          input.placeholder = t("按名称/类型过滤…");
           input.addEventListener("input", applyFilter);
 
           table.addEventListener("ui-row-activate", (ev) => {
@@ -157,8 +159,8 @@ export async function mount(el) {
           body.innerHTML = `<div class="error-box"><span class="code">${esc(err.detail?.status ?? "")}</span> ${esc(err.message)}</div>`;
         }
       } else {
-        body.innerHTML = `<div class="panel"><div class="kv"><dt>类型</dt><dd>${esc(node.type ?? "未知")}</dd>
-          <dt>路径</dt><dd>${esc(node.id)}</dd></div></div>`;
+        body.innerHTML = `<div class="panel"><div class="kv"><dt>${t("类型")}</dt><dd>${esc(node.type ?? t("未知"))}</dd>
+          <dt>${t("路径")}</dt><dd>${esc(node.id)}</dd></div></div>`;
       }
       wrap.appendChild(body);
       swapContent(detail, wrap, { outMs: 100, inMs: 320 });
@@ -176,7 +178,7 @@ function joinPath(base, name) {
 function spinnerRow() {
   const d = document.createElement("div");
   d.className = "loading-row";
-  d.innerHTML = `<ui-spinner></ui-spinner> 加载中…`;
+  d.innerHTML = `<ui-spinner></ui-spinner> ${t("加载中…")}`;
   return d;
 }
 

@@ -8,6 +8,7 @@
  */
 
 import { apiSend } from "../api.js";
+import { t } from "../i18n.js";
 import { query } from "../router.js";
 import { openImageEditor } from "./resedit-imgedit.js";
 import { apiGetProgress, fetchBytesProgress, fetchBlobProgress, apiUploadProgress, createLoadbar } from "../progress.js";
@@ -201,7 +202,7 @@ function hexDumpHTML(bytes) {
       + `<span class="hx-bytes">${esc(hexPad)}</span><span class="hx-ascii">${esc(ascii)}</span></div>`;
   }
   if (bytes.length > LIMIT)
-    html += `<div class="resed-hexrow resed-trunc">…（其余 ${bytes.length - LIMIT} 字节省略，可导出后用外部工具查看）</div>`;
+    html += `<div class="resed-hexrow resed-trunc">${t("…（其余 {n} 字节省略，可导出后用外部工具查看）", { n: bytes.length - LIMIT })}</div>`;
   return html;
 }
 
@@ -211,21 +212,21 @@ export async function mount(el) {
   el.innerHTML = `
     <div id="resed-root">
       <div class="page-head">
-        <h1>资源修改器<span class="page-hint" title="Resource Hacker 式的 PE 资源编辑器：树形浏览，预览即编辑（文本=代码编辑器 / 二进制=Hex 表格 / 图像=涂抹画布），改动实时入暂存区，保存（原地，自动 .bak）/另存为，导出单个资源或整包 zip">?</span></h1>
-        <p>打开 PE 文件 → 树形浏览资源（类型 → 名称 → 语言）→ 在预览中直接编辑 → 保存（原地，自动 .bak 备份）/ 另存为</p>
+        <h1><span data-i18n-key="资源修改器">资源修改器</span><span class="page-hint" data-i18n-title="Resource Hacker 式的 PE 资源编辑器：树形浏览，预览即编辑（文本=代码编辑器 / 二进制=Hex 表格 / 图像=涂抹画布），改动实时入暂存区，保存（原地，自动 .bak）/另存为，导出单个资源或整包 zip">?</span></h1>
+        <p data-i18n-key="打开 PE 文件 → 树形浏览资源（类型 → 名称 → 语言）→ 在预览中直接编辑 → 保存（原地，自动 .bak 备份）/ 另存为">打开 PE 文件 → 树形浏览资源（类型 → 名称 → 语言）→ 在预览中直接编辑 → 保存（原地，自动 .bak 备份）/ 另存为</p>
       </div>
       <div class="panel">
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
           <ui-textbox id="resed-path" style="flex:1; min-width:260px"
             placeholder="C:\\Windows\\System32\\notepad.exe"></ui-textbox>
-          <ui-button id="resed-open" variant="accent">打开</ui-button>
-          <ui-button id="resed-save" disabled title="把暂存的修改写回原文件（自动生成 .bak）">保存</ui-button>
-          <ui-button id="resed-saveas" disabled title="把暂存的修改写入新文件">另存为</ui-button>
-          <button class="ntl-action-btn" id="resed-pack" title="全部资源打包为 zip 下载">打包下载 (.zip)</button>
+          <ui-button id="resed-open" variant="accent" data-i18n-key="打开"></ui-button>
+          <ui-button id="resed-save" disabled data-i18n-key="保存" data-i18n-title="把暂存的修改写回原文件（自动生成 .bak）"></ui-button>
+          <ui-button id="resed-saveas" disabled data-i18n-key="另存为" data-i18n-title="把暂存的修改写入新文件"></ui-button>
+          <button class="ntl-action-btn" id="resed-pack" data-i18n-key="打包下载 (.zip)" data-i18n-title="全部资源打包为 zip 下载">打包下载 (.zip)</button>
         </div>
         <div class="resed-meta" id="resed-meta"></div>
       </div>
-      <div class="drop-zone resed-drop" id="resed-drop" style="margin-top:14px">
+      <div class="drop-zone resed-drop" id="resed-drop" style="margin-top:14px" data-i18n-key="或把 PE 文件拖到这里（≤ 64 MB）">
         或把 PE 文件拖到这里（≤ 64 MB）
       </div>
       <div id="resed-load"></div>
@@ -233,10 +234,10 @@ export async function mount(el) {
       <div id="resed-work">
         <div class="resed-split">
           <div class="resed-left" id="resed-left">
-            <p class="table-meta">尚未打开文件。</p>
+            <p class="table-meta" data-i18n-key="尚未打开文件。">尚未打开文件。</p>
           </div>
           <div class="resed-right" id="resed-preview">
-            <p class="table-meta">从左侧树中选择一个资源。</p>
+            <p class="table-meta" data-i18n-key="从左侧树中选择一个资源。">从左侧树中选择一个资源。</p>
           </div>
         </div>
       </div>
@@ -274,7 +275,7 @@ export async function mount(el) {
     saveBtn.disabled = !currentPath || n === 0;
     saveasBtn.disabled = !currentPath || n === 0;
     metaEl.textContent = currentPath
-      ? `${currentPath} — ${manifest.length} 项资源` + (n ? ` · ${n} 项已暂存待写入` : "")
+      ? t("{path} — {n} 项资源", { path: currentPath, n: manifest.length }) + (n ? t(" · {n} 项已暂存待写入", { n }) : "")
       : "";
   }
 
@@ -303,25 +304,25 @@ export async function mount(el) {
 
   async function openPath(path) {
     if (!path || !path.trim()) return;
-    if (staged.size && !confirm("当前文件有未保存的修改，切换文件将丢弃，继续？")) return;
+    if (staged.size && !confirm(t("当前文件有未保存的修改，切换文件将丢弃，继续？"))) return;
     staged.clear();
     currentLeafId = null;
     clearErr();
-    previewEl.innerHTML = '<p class="table-meta">加载中…</p>';
+    previewEl.innerHTML = `<p class="table-meta">${t("加载中…")}</p>`;
     try {
-      const r = await runLoadbar(`读取资源表 ${path.split("\\").pop()}`,
+      const r = await runLoadbar(t("读取资源表 {name}", { name: path.split("\\").pop() }),
         (onProgress) => apiGetProgress("/api/pe/resources", { path }, onProgress));
       currentPath = path;
       manifest = r.items ?? [];
       if (!manifest.length) {
-        leftEl.innerHTML = '<p class="table-meta">该文件没有资源（无 .rsrc 节）。</p>';
+        leftEl.innerHTML = `<p class="table-meta">${t("该文件没有资源（无 .rsrc 节）。")}</p>`;
         previewEl.innerHTML = '<p class="table-meta">—</p>';
         updateDirtyUI();
         return;
       }
       buildTree();
       updateDirtyUI();
-      previewEl.innerHTML = '<p class="table-meta">从左侧树中选择一个资源。</p>';
+      previewEl.innerHTML = `<p class="table-meta">${t("从左侧树中选择一个资源。")}</p>`;
     } catch (err) {
       currentPath = null;
       manifest = [];
@@ -363,20 +364,21 @@ export async function mount(el) {
             const lid = `L:${type}|${name}|${it.lang_id}`;
             leafMeta.set(lid, { type, name, lang: it.lang_id, size: it.size, codepage: it.codepage });
             return {
-              id: lid, label: `语言 ${it.lang_id}（${it.language}/${it.sublanguage}）`,
+              id: lid, label: t("语言 {lang}（{major}/{minor}）",
+                { lang: it.lang_id, major: it.language, minor: it.sublanguage }),
               type: "leaf", badge: fsize(it.size), expandable: false,
             };
           }));
           nameNodes.push({
             id: nid, label: String(name), type: "name",
-            badge: `${items.length} 语言`, expandable: true,
+            badge: t("{n} 语言", { n: items.length }), expandable: true,
           });
         }
       }
       kidsMap.set(tid, nameNodes);
       roots.push({
         id: tid, label: type, type: "type",
-        badge: `${count} 项`, badgeClass: "directory", expandable: true,
+        badge: t("{n} 项", { n: count }), badgeClass: "directory", expandable: true,
       });
     }
     treeEl = document.createElement("ui-tree");
@@ -399,7 +401,10 @@ export async function mount(el) {
         type: meta.type, name: String(meta.name), lang: meta.lang,
         data_b64: b64FromBytes(bytes),
       },
-      label: `${meta.type}/${meta.name}/lang${meta.lang}${note ? `（${note}）` : ""}`,
+      label: t("{type}/{name}/lang{lang}{note}", {
+        type: meta.type, name: meta.name, lang: meta.lang,
+        note: note ? t("（{note}）", { note }) : "",
+      }),
     });
     updateDirtyUI();
     if (!silent && currentLeafId) showLeaf(currentLeafId);   // 刷新预览头部的暂存徽标
@@ -409,12 +414,12 @@ export async function mount(el) {
     currentLeafId = leafId;
     const meta = leafMeta.get(leafId);
     const stagedItem = staged.get(keyOf(meta));
-    previewEl.innerHTML = '<p class="table-meta">读取资源数据…</p>';
+    previewEl.innerHTML = `<p class="table-meta">${t("读取资源数据…")}</p>`;
     (async () => {
       // 暂存优先：编辑器/预览显示待写入内容，而非磁盘上的旧数据
       const bytes = stagedItem
         ? bytesFromB64(stagedItem.entry.data_b64)
-        : await runLoadbar(`读取 ${meta.type}/${meta.name}`,
+        : await runLoadbar(t("读取 {type}/{name}", { type: meta.type, name: meta.name }),
           (onProgress) => fetchResourceBytes(currentPath, meta.type, meta.name, meta.lang, onProgress));
       const view = detectView(bytes, meta.type);
       renderPreview(meta, bytes, view, stagedItem);
@@ -434,17 +439,17 @@ export async function mount(el) {
     const title = document.createElement("div");
     title.className = "resed-title";
     title.innerHTML = `<b>${esc(meta.type)}</b> / <b>${esc(String(meta.name))}</b>`
-      + ` / 语言 ${meta.lang}`
-      + (stagedItem ? '<span class="resed-dirty">已暂存修改</span>' : "");
+      + ` / ${t("语言")} ${meta.lang}`
+      + (stagedItem ? `<span class="resed-dirty">${t("已暂存修改")}</span>` : "");
     const info = document.createElement("div");
     info.className = "table-meta";
     info.textContent = `${fsize(bytes.length)} · codepage ${meta.codepage ?? 0}`
-      + (stagedItem ? ` · 暂存：${stagedItem.label}` : "");
+      + (stagedItem ? t(" · 暂存：{label}", { label: stagedItem.label }) : "");
     const ops = document.createElement("div");
     ops.className = "resed-ops";
 
     const dl = document.createElement("a");
-    dl.href = "#"; dl.textContent = "导出资源";
+    dl.href = "#"; dl.textContent = t("导出资源");
     dl.addEventListener("click", (e) => {
       e.preventDefault();
       triggerDownload(`/api/pe/resources/extract?path=${encodeURIComponent(currentPath)}`
@@ -453,14 +458,14 @@ export async function mount(el) {
     });
 
     const rep = document.createElement("a");
-    rep.href = "#"; rep.textContent = "从文件替换";
+    rep.href = "#"; rep.textContent = t("从文件替换");
     rep.addEventListener("click", (e) => {
       e.preventDefault();
       pickReplaceFile(meta);
     });
 
     const undo = document.createElement("a");
-    undo.href = "#"; undo.textContent = "撤销修改";
+    undo.href = "#"; undo.textContent = t("撤销修改");
     undo.style.display = stagedItem ? "" : "none";
     undo.addEventListener("click", (e) => {
       e.preventDefault();
@@ -474,11 +479,12 @@ export async function mount(el) {
       if (!title.querySelector(".resed-dirty")) {
         const b = document.createElement("span");
         b.className = "resed-dirty";
-        b.textContent = "已暂存修改";
+        b.textContent = t("已暂存修改");
         title.appendChild(b);
       }
       undo.style.display = "";
-      info.textContent = `${fsize(bytes.length)} · codepage ${meta.codepage ?? 0} · 暂存：${label}`;
+      info.textContent = `${fsize(bytes.length)} · codepage ${meta.codepage ?? 0}`
+        + t(" · 暂存：{label}", { label });
     };
 
     const body = document.createElement("div");
@@ -500,12 +506,12 @@ export async function mount(el) {
         body.appendChild(img);
         const note = document.createElement("p");
         note.className = "table-meta";
-        note.textContent = meta.type === "BITMAP" ? "（裸 DIB 已包上 BMP 文件头渲染）"
-          : "（资源数据按图标/位图渲染）";
+        note.textContent = meta.type === "BITMAP" ? t("（裸 DIB 已包上 BMP 文件头渲染）")
+          : t("（资源数据按图标/位图渲染）");
         body.appendChild(note);
         if (view.outFormat) {
           const ed = document.createElement("a");
-          ed.href = "#"; ed.textContent = "编辑图像";
+          ed.href = "#"; ed.textContent = t("编辑图像");
           ed.addEventListener("click", (e) => {
             e.preventDefault();
             openImageEditor({
@@ -516,7 +522,7 @@ export async function mount(el) {
           ops.appendChild(ed);
         }
       } else {
-        appendHex(body, bytes, "（无法解析为图像）");
+        appendHex(body, bytes, t("（无法解析为图像）"));
       }
     } else if (view.kind === "text") {
       // 预览即编辑：语法着色 + 行号 + 当前行高亮，输入实时暂存
@@ -525,10 +531,10 @@ export async function mount(el) {
       // 预览即编辑：虚拟滚动 Hex 表格（hex/ascii 双列就地编辑）
       body.appendChild(makeHexEditor(meta, bytes, markStaged));
     } else {
-      appendHex(body, bytes, `（${fsize(bytes.length)} 超出内联 Hex 编辑上限 64 KB，仅展示前 4 KB）`);
+      appendHex(body, bytes, t("（{size} 超出内联 Hex 编辑上限 64 KB，仅展示前 4 KB）", { size: fsize(bytes.length) }));
       const hint = document.createElement("span");
       hint.className = "resed-trunc";
-      hint.textContent = "（过大，内联 Hex 编辑仅限 ≤ 64 KB；可导出后用外部工具改，或从文件替换）";
+      hint.textContent = t("（过大，内联 Hex 编辑仅限 ≤ 64 KB；可导出后用外部工具改，或从文件替换）");
       ops.appendChild(hint);
     }
   }
@@ -567,7 +573,7 @@ export async function mount(el) {
     status.className = "resed-code-status";
     wrap.append(bodyEl, status);
 
-    const label = view.utf16 ? "UTF-16LE 文本" : "UTF-8 文本";
+    const label = view.utf16 ? t("UTF-16LE 文本") : t("UTF-8 文本");
     const byteLen = (s) => view.utf16
       ? s.length * 2
       : new TextEncoder().encode(s).length;
@@ -599,9 +605,9 @@ export async function mount(el) {
       if (prev) prev.classList.remove("cur");
       const gl = gutter.children[ln];
       if (gl) gl.classList.add("cur");
-      status.textContent = `行 ${ln + 1}，列 ${col + 1} · ${lines.length} 行`
-        + ` · ${byteLen(ta.value)} 字节（${label}）`
-        + " · 输入自动暂存，Ctrl+Enter 立即暂存（「保存/另存为」后写盘）";
+      status.textContent = t("行 {ln}，列 {col} · {lines} 行 · {bytes} 字节（{label}）· 输入自动暂存，Ctrl+Enter 立即暂存（「保存/另存为」后写盘）", {
+        ln: ln + 1, col: col + 1, lines: lines.length, bytes: byteLen(ta.value), label,
+      });
     };
 
     const applyNow = () => {
@@ -690,7 +696,7 @@ export async function mount(el) {
       const inSel = (i) => sel !== null && i >= sel[0] && i <= sel[1];
       let html = "";
       if (!rows) {
-        html = `<div class="hexed-row" style="top:0"><span class="hexed-empty">（缓冲区为空：直接输入或粘贴以插入字节）</span></div>`;
+        html = `<div class="hexed-row" style="top:0"><span class="hexed-empty">${t("（缓冲区为空：直接输入或粘贴以插入字节）")}</span></div>`;
       }
       for (let r = first; r < last; r++) {
         const off = r * 16;
@@ -813,11 +819,15 @@ export async function mount(el) {
 
     const updStatus = () => {
       const sel = selRange();
-      const selTxt = sel ? ` · 选区 ${sel[1] - sel[0] + 1} 字节` : "";
-      const mode = insMode ? "插入" : "覆写";
+      const selTxt = sel ? t(" · 选区 {n} 字节", { n: sel[1] - sel[0] + 1 }) : "";
+      const mode = insMode ? t("插入") : t("覆写");
       status.textContent = changed.size
-        ? `${changed.size} 字节已修改（总长 ${buf.length}）${selTxt} · ${mode}模式 · 已自动暂存 · Ctrl+Enter 立即暂存`
-        : `点击/方向键定位 · 直接输入覆盖 · Ins 切换${mode}模式 · Shift+方向或拖选选区 · Ctrl+V 粘贴（无选区=插入）· Backspace/Delete 删除 · 0 / ${buf.length} 已修改`;
+        ? t("{n} 字节已修改（总长 {total}）{sel} · {mode}模式 · 已自动暂存 · Ctrl+Enter 立即暂存", {
+            n: changed.size, total: buf.length, sel: selTxt, mode,
+          })
+        : t("点击/方向键定位 · 直接输入覆盖 · Ins 切换{mode}模式 · Shift+方向或拖选选区 · Ctrl+V 粘贴（无选区=插入）· Backspace/Delete 删除 · 0 / {total} 已修改", {
+            mode, total: buf.length,
+          });
     };
 
     let timer = null;
@@ -825,7 +835,7 @@ export async function mount(el) {
       if (!changed.size) return;
       clearTimeout(timer);
       const doStage = () => {
-        const note = `Hex 编辑，${changed.size} 字节改动`;
+        const note = t("Hex 编辑，{n} 字节改动", { n: changed.size });
         stageReplace(meta, buf.slice(), note, true);
         markStaged(note);
       };
@@ -988,7 +998,7 @@ export async function mount(el) {
       input.remove();
       if (!file) return;
       const buf = new Uint8Array(await file.arrayBuffer());
-      stageReplace(meta, buf, `来自 ${file.name}，${fsize(buf.length)}`);
+      stageReplace(meta, buf, t("来自 {name}，{size}", { name: file.name, size: fsize(buf.length) }));
     });
     document.body.appendChild(input);
     input.click();
@@ -1001,23 +1011,25 @@ export async function mount(el) {
     if (!entries.length || !currentPath) return;
     let outPath = null;
     if (!inPlace) {
-      outPath = prompt("另存为路径：",
+      outPath = prompt(t("另存为路径："),
         currentPath.replace(/\.(exe|dll|sys|ocx|scr|cpl|efi|mui|drv)$/i, ".patched$1"));
       if (!outPath) return;
     }
     saveBtn.disabled = saveasBtn.disabled = true;
     try {
-      const r = await runLoadbar(inPlace ? "写回原文件（自动 .bak）" : "另存为新文件",
+      const r = await runLoadbar(inPlace ? t("写回原文件（自动 .bak）") : t("另存为新文件"),
         async () => apiSend("POST", "/api/pe/resources/replace", {
           path: currentPath, entries, in_place: inPlace, out_path: outPath,
         }));
-      alert(`已写入 ${r.replaced.length} 项资源\n输出：${r.path}\n`
-        + `.rsrc ${r.old_rsrc_size} → ${r.rsrc_size} 字节\nPE CheckSum: ${r.checksum}`
-        + (r.backup ? `\n备份：${r.backup}` : "")
-        + (r.grew ? "\n（文件已扩展，后续节已平移）" : ""));
+      alert(t("已写入 {n} 项资源\n输出：{out}\n.rsrc {old} → {new} 字节\nPE CheckSum: {sum}", {
+        n: r.replaced.length, out: r.path,
+        old: r.old_rsrc_size, new: r.rsrc_size, sum: r.checksum,
+      })
+        + (r.backup ? t("\n备份：{path}", { path: r.backup }) : "")
+        + (r.grew ? t("\n（文件已扩展，后续节已平移）") : ""));
       staged.clear();
       if (inPlace) await openPath(currentPath);
-      else { metaEl.textContent = `已另存为 ${r.path}`; updateDirtyUI(); }
+      else { metaEl.textContent = t("已另存为 {path}", { path: r.path }); updateDirtyUI(); }
     } catch (err) {
       showErr(err);
       updateDirtyUI();
@@ -1032,7 +1044,7 @@ export async function mount(el) {
   packBtn.addEventListener("click", async () => {
     if (!currentPath) return;
     try {
-      const blob = await runLoadbar("打包下载全部资源",
+      const blob = await runLoadbar(t("打包下载全部资源"),
         (onProgress) => fetchBlobProgress(`/api/pe/resources/pack?path=${encodeURIComponent(currentPath)}`, onProgress));
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -1054,9 +1066,9 @@ export async function mount(el) {
   drop.addEventListener("drop", async (e) => {
     const file = e.dataTransfer?.files?.[0];
     if (!file) return;
-    if (file.size > 64 * 1024 * 1024) return showErr({ message: "文件超过 64 MB 上限，请直接输入路径打开" });
+    if (file.size > 64 * 1024 * 1024) return showErr({ message: t("文件超过 64 MB 上限，请直接输入路径打开") });
     try {
-      const r = await runLoadbar(`上传 ${file.name}（${fsize(file.size)}）`,
+      const r = await runLoadbar(t("上传 {name}（{size}）", { name: file.name, size: fsize(file.size) }),
         (onProgress) => apiUploadProgress("/api/pe/upload", file, onProgress));
       pathBox.value = r.path;
       openPath(r.path);

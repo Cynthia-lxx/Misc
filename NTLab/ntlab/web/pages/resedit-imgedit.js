@@ -12,6 +12,8 @@
  * 画布自动适配尺寸，滚轮缩放（指向光标）/ 空格或中键平移；撤销栈。
  */
 
+import { t } from "../i18n.js";
+
 const QUART_IN = 'cubic-bezier(0.55, 0.055, 0.675, 0.19)';  // Easing.InQuad
 
 /* ---------------- 小工具 ---------------- */
@@ -114,7 +116,7 @@ function loadImageEl(blob) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error('图像解码失败'));
+    img.onerror = () => reject(new Error(t('图像解码失败')));
     img.src = URL.createObjectURL(blob);
   });
 }
@@ -138,7 +140,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
   return new Promise((resolve) => {
     const overlay = el('div', 'imged-overlay');
     overlay.setAttribute('role', 'dialog');
-    overlay.setAttribute('aria-label', '图像编辑器');
+    overlay.setAttribute('aria-label', t('图像编辑器'));
 
     /* ---------- 骨架 ---------- */
     const backdrop = el('div', 'imged-backdrop');
@@ -150,12 +152,13 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
     const headerCard = el('div', 'imged-header-card');
     const titleBox = el('div', 'imged-header-title');
     titleBox.append(
-      el('h2', null, '图像编辑器'),
-      el('p', null, `${meta.type} / ${meta.name}（${meta.lang}）— 修改实时绘制在图层上，「应用」后进入暂存区`),
+      el('h2', null, t('图像编辑器')),
+      el('p', null, t('{type} / {name}（{lang}）— 修改实时绘制在图层上，「应用」后进入暂存区',
+        { type: meta.type, name: meta.name, lang: meta.lang })),
     );
     const closeBtn = el('button', 'imged-close');
     closeBtn.type = 'button';
-    closeBtn.setAttribute('aria-label', '关闭');
+    closeBtn.setAttribute('aria-label', t('关闭'));
     closeBtn.append(svg('M6 6l12 12M18 6 6 18'));
     headerCard.append(titleBox, closeBtn);
     header.append(headerUnder, headerCard);
@@ -230,14 +233,14 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
       ghostCanvas.width = docW; ghostCanvas.height = docH;
       strokeLayer.width = docW; strokeLayer.height = docH;
       strokeCtx = strokeLayer.getContext('2d');
-      addLayerFromImage(img, '原图', true);
+      addLayerFromImage(img, t('原图'), true);
       previewCtx = previewCanvas.getContext('2d');
       ghostCtx = ghostCanvas.getContext('2d');
       overlay.classList.add('open');           // PopIn：400ms OutQuint
       // 适配视图必须在 overlay 可见（display 恢复）且布局完成之后，否则 rect=0
       requestAnimationFrame(() => requestAnimationFrame(fitView));
     })().catch((err) => {
-      headerCard.querySelector('p').textContent = `加载失败：${err.message}`;
+      headerCard.querySelector('p').textContent = t('加载失败：{err}', { err: err.message });
     });
 
     let previewCtx = null;
@@ -260,7 +263,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
       } else {
         layers.splice(activeIdx + 1, 0, layer);
         activeIdx += 1;
-        layer.name = `图层 ${++layerSeq}`;
+        layer.name = t('图层 {n}', { n: ++layerSeq });
       }
       syncLayerDOM();
       renderLayerPanel();
@@ -269,16 +272,16 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
     function addLayerFromBlob(blob2, name) {
       loadImageEl(blob2).then((img) => {
         addLayerFromImage(img, name);
-        pushToast(`已导入贴图 ${img.naturalWidth}×${img.naturalHeight}`);
-      }).catch(() => pushToast('图像解码失败'));
+        pushToast(t('已导入贴图 {w}×{h}', { w: img.naturalWidth, h: img.naturalHeight }));
+      }).catch(() => pushToast(t('图像解码失败')));
     }
 
     function addEmptyLayer() {
-      addLayerFromImage(null, `图层 ${++layerSeq}`);
+      addLayerFromImage(null, t('图层 {n}', { n: ++layerSeq }));
     }
 
     function deleteActiveLayer() {
-      if (layers.length <= 1) return pushToast('至少保留一个图层');
+      if (layers.length <= 1) return pushToast(t('至少保留一个图层'));
       snapshotForUndo();
       layers.splice(activeIdx, 1);
       activeIdx = Math.min(activeIdx, layers.length - 1);
@@ -296,7 +299,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
     }
 
     function mergeDown() {
-      if (activeIdx === 0) return pushToast('底层无法向下合并');
+      if (activeIdx === 0) return pushToast(t('底层无法向下合并'));
       snapshotForUndo();
       const top = layers[activeIdx];
       const low = layers[activeIdx - 1];
@@ -329,7 +332,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
         item.style.setProperty('--i', String(layers.length - 1 - i));
         const eye = el('button', 'imged-eye' + (layer.visible ? ' on' : ''));
         eye.type = 'button';
-        eye.title = layer.visible ? '隐藏图层' : '显示图层';
+        eye.title = layer.visible ? t('隐藏图层') : t('显示图层');
         eye.append(svg(layer.visible
           ? 'M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6zM12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z'
           : 'M3 3l18 18M10 5.3A9.8 9.8 0 0 1 12 5c6.5 0 10 7 10 7a15 15 0 0 1-3.2 3.9M6.6 6.6A15 15 0 0 0 2 12s3.5 7 10 7c1.5 0 2.9-.3 4.1-.9M9.9 9.9a2.5 2.5 0 0 0 3.5 3.5'));
@@ -355,7 +358,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
       }
       // 选中层不透明度
       layerOpacitySlider.setAttribute('value', String(Math.round(activeLayer().opacity * 100)));
-      layerOpacityLabel.textContent = `图层不透明度 ${Math.round(activeLayer().opacity * 100)}%`;
+      layerOpacityLabel.textContent = t('图层不透明度 {n}%', { n: Math.round(activeLayer().opacity * 100) });
       // 按钮禁用态
       mergeBtn.classList.toggle('disabled', activeIdx === 0);
       delBtn.classList.toggle('disabled', layers.length <= 1);
@@ -393,13 +396,13 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
 
     const transparentBtn = el('button', 'imged-transparent-swatch');
     transparentBtn.type = 'button';
-    transparentBtn.title = '透明色（橡皮）：涂抹处 alpha 清零，用于抠图';
-    transparentBtn.append(el('span', null, '透明'));
+    transparentBtn.title = t('透明色（橡皮）：涂抹处 alpha 清零，用于抠图');
+    transparentBtn.append(el('span', null, t('透明')));
 
     const screenPickBtn = el('button', 'imged-mini-btn');
     screenPickBtn.type = 'button';
-    screenPickBtn.textContent = '屏幕取色';
-    screenPickBtn.title = window.EyeDropper ? '从屏幕任意位置取色' : '需要 Chromium/Edge 的 EyeDropper API';
+    screenPickBtn.textContent = t('屏幕取色');
+    screenPickBtn.title = window.EyeDropper ? t('从屏幕任意位置取色') : t('需要 Chromium/Edge 的 EyeDropper API');
 
     const rgbInputs = ['r', 'g', 'b', 'a'].map((k) => {
       const box = el('label', 'imged-num');
@@ -434,7 +437,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
     hexInput.spellcheck = false;
     hexInput.addEventListener('change', () => {
       const m = /^#?([0-9a-f]{6})([0-9a-f]{2})?$/i.exec(hexInput.value.trim());
-      if (!m) { pushToast('色号格式：#RRGGBB 或 #RRGGBBAA'); return; }
+      if (!m) { pushToast(t('色号格式：#RRGGBB 或 #RRGGBBAA')); return; }
       const r = parseInt(m[1].slice(0, 2), 16);
       const g = parseInt(m[1].slice(2, 4), 16);
       const b = parseInt(m[1].slice(4, 6), 16);
@@ -466,11 +469,11 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
         radiusSlider.style.display = '';
         radiusLabel.style.display = '';
         radiusSlider.setAttribute('value', String(st.radius));
-        radiusLabel.textContent = `笔刷半径 ${st.radius}px`;
+        radiusLabel.textContent = t('笔刷半径 {n}px', { n: st.radius });
         alphaSlider.style.display = '';
         alphaLabel.style.display = '';
         alphaSlider.setAttribute('value', String(Math.round(st.alpha * 100)));
-        alphaLabel.textContent = `不透明度 ${Math.round(st.alpha * 100)}%`;
+        alphaLabel.textContent = t('不透明度 {n}%', { n: Math.round(st.alpha * 100) });
         alphaLabel.style.display = tool === 'binary' || tool === 'pencil' ? 'none' : '';
         alphaSlider.style.display = tool === 'binary' || tool === 'pencil' ? 'none' : '';
       } else {
@@ -482,15 +485,15 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
     /* ---------- DOM 装配 ---------- */
     // 工具列
     const toolGrid = el('div', 'imged-tool-grid');
-    for (const t of TOOLS) {
-      const b = el('button', 'imged-tool' + (t.id === tool ? ' active' : ''));
+    for (const tl of TOOLS) {
+      const b = el('button', 'imged-tool' + (tl.id === tool ? ' active' : ''));
       b.type = 'button';
-      b.title = t.label;
-      b.style.setProperty('--i', String(TOOLS.indexOf(t)));
-      b.append(svg(t.icon));
-      b.appendChild(el('span', 'imged-tool-tip', t.label));
+      b.title = t(tl.label);
+      b.style.setProperty('--i', String(TOOLS.indexOf(tl)));
+      b.append(svg(tl.icon));
+      b.appendChild(el('span', 'imged-tool-tip', t(tl.label)));
       b.addEventListener('click', () => {
-        tool = t.id;
+        tool = tl.id;
         shapeStart = null;
         previewCtx?.clearRect(0, 0, docW, docH);
         toolGrid.querySelectorAll('.imged-tool').forEach((x) => x.classList.remove('active'));
@@ -499,21 +502,21 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
         syncToolSliders();
         updateRingSize();
       });
-      toolButtons.set(t.id, b);
+      toolButtons.set(tl.id, b);
       toolGrid.appendChild(b);
     }
     const shapeModeBox = el('div', 'imged-shape-mode');
     const hollowBtn = el('button', 'imged-mini-btn');
-    hollowBtn.type = 'button'; hollowBtn.textContent = '空心';
+    hollowBtn.type = 'button'; hollowBtn.textContent = t('空心');
     const solidBtn = el('button', 'imged-mini-btn sel');
-    solidBtn.type = 'button'; solidBtn.textContent = '实心';
+    solidBtn.type = 'button'; solidBtn.textContent = t('实心');
     let shapeSolid = true;
     hollowBtn.addEventListener('click', () => { shapeSolid = false; hollowBtn.classList.add('sel'); solidBtn.classList.remove('sel'); });
     solidBtn.addEventListener('click', () => { shapeSolid = true; solidBtn.classList.add('sel'); hollowBtn.classList.remove('sel'); });
     shapeModeBox.append(hollowBtn, solidBtn);
 
     toolsSection.append(
-      el('div', 'imged-panel-title', '工具'),
+      el('div', 'imged-panel-title', t('工具')),
       toolGrid,
       shapeModeBox,
       radiusLabel, radiusSlider,
@@ -523,13 +526,13 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
     // 图层面板
     const listEl = el('div', 'imged-layer-list');
     const addBtn = el('button', 'imged-mini-btn');
-    addBtn.type = 'button'; addBtn.textContent = '新建图层';
+    addBtn.type = 'button'; addBtn.textContent = t('新建图层');
     const importBtn = el('button', 'imged-mini-btn');
-    importBtn.type = 'button'; importBtn.textContent = '导入贴图';
+    importBtn.type = 'button'; importBtn.textContent = t('导入贴图');
     const mergeBtn = el('button', 'imged-mini-btn');
-    mergeBtn.type = 'button'; mergeBtn.textContent = '向下合并';
+    mergeBtn.type = 'button'; mergeBtn.textContent = t('向下合并');
     const delBtn = el('button', 'imged-mini-btn');
-    delBtn.type = 'button'; delBtn.textContent = '删除图层';
+    delBtn.type = 'button'; delBtn.textContent = t('删除图层');
     const layerOpacitySlider = document.createElement('ui-slider');
     layerOpacitySlider.setAttribute('min', '0');
     layerOpacitySlider.setAttribute('max', '100');
@@ -538,7 +541,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
     const layerBtnRow = el('div', 'imged-btn-row');
     layerBtnRow.append(addBtn, importBtn, mergeBtn, delBtn);
     layersSection.append(
-      el('div', 'imged-panel-title', '图层'),
+      el('div', 'imged-panel-title', t('图层')),
       listEl,
       layerOpacitySlider, layerOpacityLabel,
       layerBtnRow,
@@ -552,24 +555,24 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
     const rgbRow = el('div', 'imged-rgb-row');
     for (const { box } of rgbInputs) rgbRow.appendChild(box);
     paletteSection.append(
-      el('div', 'imged-panel-title', '颜色'),
+      el('div', 'imged-panel-title', t('颜色')),
       colorTop,
       previewRow,
       rgbRow, hexInput,
-      el('div', 'imged-slider-label', '最近使用'),
+      el('div', 'imged-slider-label', t('最近使用')),
       recentRow,
     );
 
     // footer
     const undoBtn = el('button', 'imged-mini-btn');
-    undoBtn.type = 'button'; undoBtn.textContent = '撤销 (Ctrl+Z)';
+    undoBtn.type = 'button'; undoBtn.textContent = t('撤销 (Ctrl+Z)');
     const fitBtn = el('button', 'imged-mini-btn');
-    fitBtn.type = 'button'; fitBtn.textContent = '适配视图';
+    fitBtn.type = 'button'; fitBtn.textContent = t('适配视图');
     const zoomLabel = el('span', 'imged-zoom-label', '100%');
     const cancelBtn = el('button', 'imged-cancel');
-    cancelBtn.type = 'button'; cancelBtn.textContent = '取消';
+    cancelBtn.type = 'button'; cancelBtn.textContent = t('取消');
     const applyBtn = el('button', 'imged-apply');
-    applyBtn.type = 'button'; applyBtn.textContent = '应用为资源内容';
+    applyBtn.type = 'button'; applyBtn.textContent = t('应用为资源内容');
     footerLeft.append(undoBtn, fitBtn, zoomLabel);
     footerRight.append(cancelBtn, applyBtn);
 
@@ -582,7 +585,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
 
     function undo() {
       const s = undoStack.pop();
-      if (!s) return pushToast('没有可撤销的操作');
+      if (!s) return pushToast(t('没有可撤销的操作'));
       layers[s.idx].ctx.putImageData(s.data, 0, 0);
       refreshThumbs();
     }
@@ -848,7 +851,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
       const d = mctx.getImageData(clamp(Math.floor(p.x), 0, docW - 1), clamp(Math.floor(p.y), 0, docH - 1), 1, 1).data;
       if (d[3] === 0) {
         color.erase = true;
-        pushToast('取到透明像素 — 已切换到透明色');
+        pushToast(t('取到透明像素 — 已切换到透明色'));
       } else {
         const hsl = rgbToHsl(d[0], d[1], d[2]);
         color.h = hsl.h; color.s = hsl.s; color.l = hsl.l; color.a = d[3] / 255;
@@ -894,7 +897,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
 
     function zoomOutBtn() { const b = el('button', 'imged-zoom-btn', '−'); b.type = 'button'; b.addEventListener('click', () => setZoom(zoom / 1.25)); return b; }
     function zoomInBtn() { const b = el('button', 'imged-zoom-btn', '+'); b.type = 'button'; b.addEventListener('click', () => setZoom(zoom * 1.25)); return b; }
-    function fitBtn2() { const b = el('button', 'imged-zoom-btn', '适配'); b.type = 'button'; b.addEventListener('click', fitView); return b; }
+    function fitBtn2() { const b = el('button', 'imged-zoom-btn', t('适配')); b.type = 'button'; b.addEventListener('click', fitView); return b; }
     function zoom100Btn() { const b = el('button', 'imged-zoom-btn', '1:1'); b.type = 'button'; b.addEventListener('click', () => setZoom(1)); return b; }
 
     function setZoom(nz) {
@@ -953,7 +956,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
       const item = [...(e.clipboardData?.items ?? [])].find((x) => x.type.startsWith('image/'));
       if (item) {
         e.preventDefault();
-        addLayerFromBlob(item.getAsFile(), `贴图 ${++layerSeq}`);
+        addLayerFromBlob(item.getAsFile(), t('贴图 {n}', { n: ++layerSeq }));
       }
     };
     document.addEventListener('paste', onPaste);
@@ -963,12 +966,12 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
       e.preventDefault();
       viewport.classList.remove('dragging');
       const file = e.dataTransfer?.files?.[0];
-      if (file && file.type.startsWith('image/')) addLayerFromBlob(file, `贴图 ${++layerSeq}`);
+      if (file && file.type.startsWith('image/')) addLayerFromBlob(file, t('贴图 {n}', { n: ++layerSeq }));
     });
 
     /* ---------- 屏幕取色 ---------- */
     screenPickBtn.addEventListener('click', async () => {
-      if (!window.EyeDropper) return pushToast('当前浏览器不支持 EyeDropper，请用画布内吸管工具');
+      if (!window.EyeDropper) return pushToast(t('当前浏览器不支持 EyeDropper，请用画布内吸管工具'));
       try {
         const res = await new EyeDropper().open();
         const r = parseInt(res.sRGBHex.slice(1, 3), 16);
@@ -978,7 +981,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
         color.h = hsl.h; color.s = hsl.s; color.l = hsl.l;
         color.erase = false;
         syncPalette();
-        pushToast(`取色 ${res.sRGBHex.toUpperCase()}`);
+        pushToast(t('取色 {color}', { color: res.sRGBHex.toUpperCase() }));
       } catch { /* 用户取消 */ }
     });
 
@@ -1080,7 +1083,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
     transparentBtn.addEventListener('click', () => {
       color.erase = !color.erase;
       syncPalette();
-      pushToast(color.erase ? '已选透明色：涂抹将清除 alpha（抠图）' : '已回到普通颜色');
+      pushToast(color.erase ? t('已选透明色：涂抹将清除 alpha（抠图）') : t('已回到普通颜色'));
     });
 
     function syncPalette() {
@@ -1129,19 +1132,19 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
       const st = toolState.get(tool);
       if (!st) return;
       st.radius = clamp(Math.round(e.detail?.value ?? st.radius), 1, 64);
-      radiusLabel.textContent = `笔刷半径 ${st.radius}px`;
+      radiusLabel.textContent = t('笔刷半径 {n}px', { n: st.radius });
       updateRingSize();
     });
     alphaSlider.addEventListener('ui-change', (e) => {
       const st = toolState.get(tool);
       if (!st) return;
       st.alpha = clamp((e.detail?.value ?? st.alpha * 100) / 100, 0.02, 1);
-      alphaLabel.textContent = `不透明度 ${Math.round(st.alpha * 100)}%`;
+      alphaLabel.textContent = t('不透明度 {n}%', { n: Math.round(st.alpha * 100) });
     });
     layerOpacitySlider.addEventListener('ui-change', (e) => {
       const layer = activeLayer();
       layer.opacity = clamp((e.detail?.value ?? 0) / 100, 0, 1);
-      layerOpacityLabel.textContent = `图层不透明度 ${Math.round(layer.opacity * 100)}%`;
+      layerOpacityLabel.textContent = t('图层不透明度 {n}%', { n: Math.round(layer.opacity * 100) });
       syncLayerDOM();
       renderLayerPanel();
     });
@@ -1150,9 +1153,9 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
     addBtn.addEventListener('click', addEmptyLayer);
     delBtn.addEventListener('click', deleteActiveLayer);
     mergeBtn.addEventListener('click', mergeDown);
-    const upBtn = el('button', 'imged-mini-btn', '上移'); upBtn.type = 'button';
+    const upBtn = el('button', 'imged-mini-btn', t('上移')); upBtn.type = 'button';
     upBtn.addEventListener('click', () => moveLayer(1));
-    const downBtn = el('button', 'imged-mini-btn', '下移'); downBtn.type = 'button';
+    const downBtn = el('button', 'imged-mini-btn', t('下移')); downBtn.type = 'button';
     downBtn.addEventListener('click', () => moveLayer(-1));
     layerBtnRow.append(upBtn, downBtn);
 
@@ -1164,29 +1167,29 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
     fileInput.addEventListener('change', () => {
       const file = fileInput.files?.[0];
       fileInput.value = '';
-      if (file) addLayerFromBlob(file, `贴图 ${++layerSeq}`);
+      if (file) addLayerFromBlob(file, t('贴图 {n}', { n: ++layerSeq }));
     });
     overlay.appendChild(fileInput);
 
     /* ---------- toast ---------- */
     let toastTimer = 0;
     function pushToast(msg) {
-      let t = overlay.querySelector('.imged-toast');
-      if (!t) {
-        t = el('div', 'imged-toast');
-        overlay.appendChild(t);
+      let toastEl = overlay.querySelector('.imged-toast');
+      if (!toastEl) {
+        toastEl = el('div', 'imged-toast');
+        overlay.appendChild(toastEl);
       }
-      t.textContent = msg;
-      t.classList.remove('show');
-      void t.offsetWidth;      // 重启动画
-      t.classList.add('show');
+      toastEl.textContent = msg;
+      toastEl.classList.remove('show');
+      void toastEl.offsetWidth;      // 重启动画
+      toastEl.classList.add('show');
       window.clearTimeout(toastTimer);
-      toastTimer = window.setTimeout(() => t.classList.remove('show'), 1800);
+      toastTimer = window.setTimeout(() => toastEl.classList.remove('show'), 1800);
     }
 
     /* ---------- 关闭 / 应用 ---------- */
     function requestClose() {
-      if (undoStack.length && !applied && !confirm('有未应用的修改，确定关闭编辑器？')) return;
+      if (undoStack.length && !applied && !confirm(t('有未应用的修改，确定关闭编辑器？'))) return;
       closeOverlay(null);
     }
 
@@ -1217,12 +1220,12 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
       }
       mctx.globalAlpha = 1;
       let bytes2;
-      const note = `图层编辑（${layers.length} 层）`;
+      const note = t('图层编辑（{n} 层）', { n: layers.length });
       if (outFormat === 'png') {
         merged.toBlob((b) => {
           b.arrayBuffer().then((buf) => {
             applied = true;
-            onApply(new Uint8Array(buf), `${note} → PNG`);
+            onApply(new Uint8Array(buf), t('{note} → PNG', { note }));
             closeOverlay(new Uint8Array(buf));
           });
         }, 'image/png');
@@ -1234,7 +1237,7 @@ export function openImageEditor({ meta, blob, outFormat, origBytes, onApply }) {
         ? concatBytes(origBytes.subarray(0, 4), dib)   // 保留 hotspot 2 word
         : dib;
       applied = true;
-      onApply(bytes2, `${note} → 32bpp DIB`);
+      onApply(bytes2, t('{note} → 32bpp DIB', { note }));
       closeOverlay(bytes2);
     });
 

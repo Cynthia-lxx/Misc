@@ -1,6 +1,7 @@
 /* Tiny hash router with page exit/enter orchestration (motion.js). */
 
 import { enterPage, exitPage } from "./motion.js";
+import { applyDom } from "./i18n.js";
 
 const routes = new Map();
 
@@ -39,6 +40,7 @@ export async function render(content) {
   el.className = `page page--${name} page-entering page-waiting page-hidden`;
   content.appendChild(el);
   await page.mount(el);
+  applyDom(el);   // 挂载后立即按当前语言刷新 [data-i18n-*]（静态骨架直接出译文）
   enterPage(el);
 }
 

@@ -1,4 +1,5 @@
 import { apiGet, apiPost, apiSend } from "../api.js";
+import { t as translate } from "../i18n.js";
 import { query } from "../router.js";
 import { swapContent, motionScale, assignIndices } from "../motion.js";
 
@@ -275,7 +276,7 @@ function programToAsm(prog, specOf) {
       const toks = asmTokenize(s);
       const ast = toks && asmParseExpr(toks, refLabel);
       if (ast && genExpr(ast, reg)) return;
-      emit("; [!] 该引用/表达式无法在汇编中表达，按 0 处理");
+      emit(translate("; [!] 该引用/表达式无法在汇编中表达，按 0 处理"));
       emit(`xor ${reg}, ${reg}`);
       return;
     }
@@ -324,16 +325,16 @@ function programToAsm(prog, specOf) {
     for (const p of params) {
       if (p.type.startsWith("out:")) dataLines.push(`slot_${m.n}_out_${asmIdent(p.name)}: dq 0   ; $${m.n}.out.${p.name}`);
       else if (p.type === "buf") dataLines.push(`slot_${m.n}_out_${asmIdent(p.name)}_len: dq 0   ; $${m.n}.out.${p.name}.len_chars`,
-        `buf_${m.n}_${asmIdent(p.name)}: times 512 db 0   ; $${m.n}.out.${p.name}（wchar 缓冲区指针）`);
+        `buf_${m.n}_${asmIdent(p.name)}: times 512 db 0   ; $${m.n}.out.${p.name}${translate("（wchar 缓冲区指针）")}`);
       else if (p.type === "bin") dataLines.push(`slot_${m.n}_out_${asmIdent(p.name)}_size: dq 0   ; $${m.n}.out.${p.name}.size`,
-        `buf_${m.n}_${asmIdent(p.name)}: times 256 db 0   ; $${m.n}.out.${p.name}（字节缓冲区指针）`);
+        `buf_${m.n}_${asmIdent(p.name)}: times 256 db 0   ; $${m.n}.out.${p.name}${translate("（字节缓冲区指针）")}`);
     }
   }
 
   function emitRepeat(node) {
     const k = ++lblN;
     loopStack.push(k);
-    emit(`; [块] repeat ${node.times ?? "?"}`);
+    emit(translate("; [块] repeat {times}", { times: node.times ?? "?" }));
     emit("push rbx");
     emitValue(node.times ?? 3, "rbx");
     emit(`.L${k}_loop:`);
@@ -350,7 +351,7 @@ function programToAsm(prog, specOf) {
 
   function emitAtom(a, target, jumpOnTrue) {
     if (!genExpr(a.l, "rax")) {
-      emit("; [!] 条件原子无法表达，按恒假处理");
+      emit(translate("; [!] 条件原子无法表达，按恒假处理"));
       emit("xor rax, rax");
       emit("test rax, rax");
       emit(`${(jumpOnTrue ? JUMP_TRUE : JUMP_FALSE)[a.op]} ${target}`);
@@ -361,7 +362,7 @@ function programToAsm(prog, specOf) {
       emit("push rax");
       if (!genExpr(a.r, "rax")) {
         emit("pop rax");
-        emit("; [!] 条件原子无法表达，按恒假处理");
+        emit(translate("; [!] 条件原子无法表达，按恒假处理"));
         emit("xor rax, rax");
         emit("test rax, rax");
         emit(`${(jumpOnTrue ? JUMP_TRUE : JUMP_FALSE)[a.op]} ${target}`);
@@ -377,10 +378,10 @@ function programToAsm(prog, specOf) {
   function emitIf(node) {
     const k = ++lblN;
     const elseEmpty = !(Array.isArray(node.else) && node.else.length);
-    emit(`; [块] if ${node.cond ?? ""}`);
+    emit(translate("; [块] if {cond}", { cond: node.cond ?? "" }));
     const parsed = asmParseCond(node.cond, refLabel);
     if (!parsed) {
-      emit("; [!] 条件无法表达，按恒假处理（原条件：" + String(node.cond ?? "") + "）");
+      emit(translate("; [!] 条件无法表达，按恒假处理（原条件：{cond}）", { cond: String(node.cond ?? "") }));
       emit("xor rax, rax");
       emit("test rax, rax");
       emit(`je ${elseEmpty ? `.L${k}_end` : `.L${k}_else`}`);
@@ -411,7 +412,7 @@ function programToAsm(prog, specOf) {
       else if (kind === "repeat") emitRepeat(nd);
       else if (kind === "if") emitIf(nd);
       else if (kind === "break" || kind === "continue") {
-        if (!loopStack.length) emit(`; [!] ${kind} 不在任何循环内，已忽略`);
+        if (!loopStack.length) emit(translate("; [!] {kind} 不在任何循环内，已忽略", { kind }));
         else emit(`jmp .L${loopStack[loopStack.length - 1]}_${kind === "break" ? "end" : "next"}`);
       }
     }
@@ -428,10 +429,10 @@ function programToAsm(prog, specOf) {
   });
 
   const header = [
-    "; NTLab 编排 ⇄ 汇编（同一程序的两种形态，自动同步）",
-    "; 积木侧任何改动会自动重写本文本；编辑本文本会自动尝试还原为积木，",
-    "; 超出规范子集则暂时脱钩（改回可解析状态即自动复联）。",
-    "; Windows x64 调用约定：rcx/rdx/r8/r9 + 栈；$N → slot_N；字符串 → str_K（UTF-16LE）。",
+    translate("; NTLab 编排 ⇄ 汇编（同一程序的两种形态，自动同步）"),
+    translate("; 积木侧任何改动会自动重写本文本；编辑本文本会自动尝试还原为积木，"),
+    translate("; 超出规范子集则暂时脱钩（改回可解析状态即自动复联）。"),
+    translate("; Windows x64 调用约定：rcx/rdx/r8/r9 + 栈；$N → slot_N；字符串 → str_K（UTF-16LE）。"),
     "BITS 64",
     "default rel",
     "",
@@ -521,9 +522,9 @@ function asmToProgram(text, specOf) {
   function interp(t, st) {
     let m = t.match(/^mov\s+([a-z][a-z0-9]*),\s*(.+)$/);
     if (m && !/^qword/.test(m[2])) {
-      if (!ASM_REG_OK.has(m[1])) return `无法识别的寄存器：${m[1]}（超出规范子集）`;
+      if (!ASM_REG_OK.has(m[1])) return translate("无法识别的寄存器：{reg}（超出规范子集）", { reg: m[1] });
       const v = operandSym(m[2].trim(), st);
-      if (!v) return `无法识别的操作数：${m[2]}`;
+      if (!v) return translate("无法识别的操作数：{op}", { op: m[2] });
       st[m[1]] = v;
       return null;
     }
@@ -531,38 +532,38 @@ function asmToProgram(text, specOf) {
     if (t === "pop rax") { st.rax = st.stack.pop() ?? ASM_ZERO; return null; }
     m = t.match(/^xor\s+([a-z][a-z0-9]*),\s*\1$/);
     if (m) {
-      if (!ASM_REG_OK.has(m[1])) return `无法识别的寄存器：${m[1]}（超出规范子集）`;
+      if (!ASM_REG_OK.has(m[1])) return translate("无法识别的寄存器：{reg}（超出规范子集）", { reg: m[1] });
       st[m[1]] = ASM_ZERO;
       return null;
     }
     m = t.match(/^lea\s+([a-z][a-z0-9]*),\s*\[(.+)\]$/);
     if (m) {
-      if (!ASM_REG_OK.has(m[1])) return `无法识别的寄存器：${m[1]}（超出规范子集）`;
+      if (!ASM_REG_OK.has(m[1])) return translate("无法识别的寄存器：{reg}（超出规范子集）", { reg: m[1] });
       const v = labelSym(m[2].trim());
-      if (!v) return `无法识别的标签：${m[2]}`;
+      if (!v) return translate("无法识别的标签：{label}", { label: m[2] });
       st[m[1]] = v;
       return null;
     }
     m = t.match(/^imul\s+([a-z][a-z0-9]*),\s*([a-z][a-z0-9]*),\s*(.+)$/);
     if (m) {
-      if (!ASM_REG_OK.has(m[1])) return `无法识别的寄存器：${m[1]}（超出规范子集）`;
+      if (!ASM_REG_OK.has(m[1])) return translate("无法识别的寄存器：{reg}（超出规范子集）", { reg: m[1] });
       const b = operandSym(m[3].trim(), st);
-      if (!b) return `无法识别的操作数：${m[3]}`;
+      if (!b) return translate("无法识别的操作数：{op}", { op: m[3] });
       st[m[1]] = { t: "bin", op: "*", l: st[m[2]] ?? ASM_ZERO, r: b };
       return null;
     }
     m = t.match(/^(add|sub|imul)\s+(?!rsp\b)([a-z][a-z0-9]*),\s*(.+)$/);
     if (m) {
-      if (!ASM_REG_OK.has(m[2])) return `无法识别的寄存器：${m[2]}（超出规范子集）`;
+      if (!ASM_REG_OK.has(m[2])) return translate("无法识别的寄存器：{reg}（超出规范子集）", { reg: m[2] });
       const b = operandSym(m[3].trim(), st);
-      if (!b) return `无法识别的操作数：${m[3]}`;
+      if (!b) return translate("无法识别的操作数：{op}", { op: m[3] });
       const op = m[1] === "imul" ? "*" : (m[1] === "add" ? "+" : "-");
       st[m[2]] = { t: "bin", op, l: st[m[2]] ?? ASM_ZERO, r: b };
       return null;
     }
     m = t.match(/^neg\s+([a-z][a-z0-9]*)$/);
     if (m) {
-      if (!ASM_REG_OK.has(m[1])) return `无法识别的寄存器：${m[1]}（超出规范子集）`;
+      if (!ASM_REG_OK.has(m[1])) return translate("无法识别的寄存器：{reg}（超出规范子集）", { reg: m[1] });
       st[m[1]] = { t: "neg", e: st[m[1]] ?? ASM_ZERO };
       return null;
     }
@@ -570,7 +571,7 @@ function asmToProgram(text, specOf) {
     m = t.match(/^idiv\s+(.+)$/);
     if (m) {
       const b = operandSym(m[1].trim(), st);
-      if (!b) return `无法识别的操作数：${m[1]}`;
+      if (!b) return translate("无法识别的操作数：{op}", { op: m[1] });
       const a = st.rax ?? ASM_ZERO;
       st.rax = { t: "bin", op: "/", l: a, r: b };
       st.rdx = { t: "bin", op: "%", l: a, r: b };
@@ -578,12 +579,12 @@ function asmToProgram(text, specOf) {
     }
     m = t.match(/^mov\s+qword\s*\[rsp\+(0x[0-9a-f]+|\d+)\],\s*([a-z][a-z0-9]*)$/);
     if (m) {
-      if (!ASM_REG_OK.has(m[2])) return `无法识别的寄存器：${m[2]}（超出规范子集）`;
+      if (!ASM_REG_OK.has(m[2])) return translate("无法识别的寄存器：{reg}（超出规范子集）", { reg: m[2] });
       st.stk.set(parseInt(m[1], 0), st[m[2]] ?? ASM_ZERO);
       return null;
     }
     if (/^(sub|add)\s+rsp,\s*(0x[0-9a-f]+|\d+)$/.test(t)) return null;
-    return `无法识别的指令：${t}`;
+    return translate("无法识别的指令：{line}", { line: t });
   }
 
   const newSymState = () => ({ stack: [], stk: new Map() });
@@ -654,25 +655,25 @@ function asmToProgram(text, specOf) {
       const e = interp(t, st);
       if (e) return err(lines[j].ln, t, e);
     }
-    if (!api) return err(lines[i].ln, lines[i].t, "调用语句缺少 call 指令");
+    if (!api) return err(lines[i].ln, lines[i].t, translate("调用语句缺少 call 指令"));
     while (j < lines.length && !lines[j].t) j++;
     if (lines[j] && /^(add|sub)\s+rsp,/.test(lines[j].t)) j++;
     while (j < lines.length && !lines[j].t) j++;
     const m = lines[j] && lines[j].t.match(/^mov\s*\[slot_(\d+)\],\s*rax$/);
-    if (!m) return err(lines[i].ln, lines[i].t, "call 之后缺少 mov [slot_N], rax");
+    if (!m) return err(lines[i].ln, lines[i].t, translate("call 之后缺少 mov [slot_N], rax"));
     const n = +m[1];
-    if (n !== callCount + 1) return err(lines[j].ln, lines[j].t, `slot 编号应为 ${callCount + 1}，却是 ${n}`);
+    if (n !== callCount + 1) return err(lines[j].ln, lines[j].t, translate("slot 编号应为 {want}，却是 {got}", { want: callCount + 1, got: n }));
     callCount++;
     const module = modBySlot.get(`mod_${n}`) || null;
     const spec = specOf(api, module);
-    if (!spec) return err(lines[j].ln, lines[j].t, `${api} 不在白名单或动态库中`);
+    if (!spec) return err(lines[j].ln, lines[j].t, translate("{api} 不在白名单或动态库中", { api }));
     const syms = [st.rcx, st.rdx, st.r8, st.r9];
     const args = {};
     const params = spec.params;
     for (let idx = 0; idx < params.length; idx++) {
       const p = params[idx];
       const v = idx < 4 ? syms[idx] : st.stk.get(0x20 + 8 * (idx - 4));
-      if (v == null) return err(lines[j].ln, lines[j].t, `第 ${idx + 1} 个参数（${p.name}）缺少装载指令`);
+      if (v == null) return err(lines[j].ln, lines[j].t, translate("第 {i} 个参数（{name}）缺少装载指令", { i: idx + 1, name: p.name }));
       if (AUTO_PARAM(p)) continue;
       const txt = valStr(v);
       if (!defaultEqual(txt, p.default)) args[p.name] = txt;
@@ -715,14 +716,14 @@ function asmToProgram(text, specOf) {
       if (mm) {
         l = operandSym(mm[1].trim(), st);
         r = operandSym(mm[2].trim(), st);
-        if (!l || !r) return err(lines[h.cmpIdx].ln, cmpT, "比较的操作数无法识别");
+        if (!l || !r) return err(lines[h.cmpIdx].ln, cmpT, translate("比较的操作数无法识别"));
       } else {
         l = st.rax ?? ASM_ZERO;
         r = ASM_ZERO;
       }
       const opMap = { je: "==", jne: "!=", jl: "<", jle: "<=", jg: ">", jge: ">=", jb: "<", jae: ">=", jbe: "<=", ja: ">", jnae: "<", jnb: ">=", jnbe: ">", jna: "<=" };
       const direct = opMap[h.jmp];
-      if (!direct) return err(lines[h.jccIdx].ln, lines[h.jccIdx].t, `无法识别的跳转助记符 ${h.jmp}`);
+      if (!direct) return err(lines[h.jccIdx].ln, lines[h.jccIdx].t, translate("无法识别的跳转助记符 {jmp}", { jmp: h.jmp }));
       atoms.push({
         op: asmInvertCmp(direct),   // 代码生成统一「条件为假则跳」，原子真值 = 落空条件
         l, r,
@@ -731,7 +732,7 @@ function asmToProgram(text, specOf) {
       if (k == null) k = h.k;
       j = h.next;
     }
-    if (!atoms.length) return err(lines[i].ln, lines[i].t, "条件结构缺失（cmp/test + jcc）");
+    if (!atoms.length) return err(lines[i].ln, lines[i].t, translate("条件结构缺失（cmp/test + jcc）"));
     // 跳过 || 形态的结构标记
     while (j < lines.length) {
       const t = lines[j].t;
@@ -749,7 +750,7 @@ function asmToProgram(text, specOf) {
       node.else = b2.nodes;
       idx = b2.idx;
       if (lines[idx] && lines[idx].t === `.L${k}_end:`) idx++;
-      else return err(lines[idx]?.ln ?? idx, lines[idx]?.t ?? "", "缺少 .Lk_end 收尾");
+      else return err(lines[idx]?.ln ?? idx, lines[idx]?.t ?? "", translate("缺少 .Lk_end 收尾"));
     } else if (stopT === `jmp .L${k}_end`) {
       idx++;
       while (idx < lines.length && !lines[idx].t) idx++;
@@ -759,13 +760,13 @@ function asmToProgram(text, specOf) {
         node.else = b2.nodes;
         idx = b2.idx;
         if (lines[idx] && lines[idx].t === `.L${k}_end:`) idx++;
-        else return err(lines[idx]?.ln ?? idx, lines[idx]?.t ?? "", "缺少 .Lk_end 收尾");
+        else return err(lines[idx]?.ln ?? idx, lines[idx]?.t ?? "", translate("缺少 .Lk_end 收尾"));
       } else if (lines[idx] && lines[idx].t === `.L${k}_end:`) idx++;
-      else return err(lines[idx]?.ln ?? idx, lines[idx]?.t ?? "", "条件块未闭合");
+      else return err(lines[idx]?.ln ?? idx, lines[idx]?.t ?? "", translate("条件块未闭合"));
     } else if (stopT === `.L${k}_end:`) {
       idx++;
     } else {
-      return err(lines[idx]?.ln ?? idx, lines[idx]?.t ?? "", "条件块未闭合");
+      return err(lines[idx]?.ln ?? idx, lines[idx]?.t ?? "", translate("条件块未闭合"));
     }
     return { node, idx };
   }
@@ -781,16 +782,16 @@ function asmToProgram(text, specOf) {
       const e = interp(t, st);
       if (e) return err(lines[j].ln, t, e);
     }
-    if (loopIdx < 0) return err(lines[i].ln, lines[i].t, "push rbx 之后缺少 .Lk_loop 循环头");
+    if (loopIdx < 0) return err(lines[i].ln, lines[i].t, translate("push rbx 之后缺少 .Lk_loop 循环头"));
     const k = +lines[loopIdx].t.match(/^\.L(\d+)_loop:$/)[1];
-    if (!st.rbx) return err(lines[loopIdx].ln, lines[loopIdx].t, "循环计数缺少 mov rbx, …");
+    if (!st.rbx) return err(lines[loopIdx].ln, lines[loopIdx].t, translate("循环计数缺少 mov rbx, …"));
     const times = valStr(st.rbx);
     j = loopIdx + 1;
     while (j < lines.length && !lines[j].t) j++;
-    if (!lines[j] || lines[j].t !== "test rbx, rbx") return err(lines[j]?.ln ?? j, lines[j]?.t ?? "", "循环头缺少 test rbx, rbx");
+    if (!lines[j] || lines[j].t !== "test rbx, rbx") return err(lines[j]?.ln ?? j, lines[j]?.t ?? "", translate("循环头缺少 test rbx, rbx"));
     j++;
     while (j < lines.length && !lines[j].t) j++;
-    if (!lines[j] || lines[j].t !== `je .L${k}_end`) return err(lines[j]?.ln ?? j, lines[j]?.t ?? "", "循环头缺少 je .Lk_end");
+    if (!lines[j] || lines[j].t !== `je .L${k}_end`) return err(lines[j]?.ln ?? j, lines[j]?.t ?? "", translate("循环头缺少 je .Lk_end"));
     repStack.push(k);
     const b = parseBlock(j + 1, (t) => t === `.L${k}_next:`);
     repStack.pop();
@@ -801,7 +802,7 @@ function asmToProgram(text, specOf) {
     for (const want of expect) {
       while (idx < lines.length && !lines[idx].t) idx++;
       if (!lines[idx] || lines[idx].t !== want) {
-        return err(lines[idx]?.ln ?? idx, lines[idx]?.t ?? "", `循环尾结构破损：应为 ${want}`);
+        return err(lines[idx]?.ln ?? idx, lines[idx]?.t ?? "", translate("循环尾结构破损：应为 {want}", { want }));
       }
       idx++;
     }
@@ -819,16 +820,16 @@ function asmToProgram(text, specOf) {
       if (/^[\w.]+:\s*(dq|du|dw|times)\b/.test(t)) { i++; continue; }
       if (/^\.L\d+_(loop|next|end|then|else|chk_\d+):$/.test(t)) {
         if (stopTest && stopTest(t)) return { nodes, idx: i };
-        return err(lines[i].ln, t, `意外的标签 ${t}（块未按规范闭合）`);
+        return err(lines[i].ln, t, translate("意外的标签 {label}（块未按规范闭合）", { label: t }));
       }
       if (stopTest && stopTest(t)) return { nodes, idx: i };
       const anc = firstAnchor(i);
       if (anc.type === "eof") {
-        if (anc.q > i) return err(lines[i].ln, t, "语句不完整（超出积木可还原的规范子集）");
+        if (anc.q > i) return err(lines[i].ln, t, translate("语句不完整（超出积木可还原的规范子集）"));
         return { nodes, idx: anc.q };
       }
-      if (anc.type === "bad") return err(lines[anc.q]?.ln ?? lines[i].ln, lines[anc.q]?.t ?? t, "无法识别的语句（超出积木可还原的规范子集）");
-      if (anc.type === "label") return err(lines[anc.q].ln, lines[anc.q].t, "意外的标签/指令");
+      if (anc.type === "bad") return err(lines[anc.q]?.ln ?? lines[i].ln, lines[anc.q]?.t ?? t, translate("无法识别的语句（超出积木可还原的规范子集）"));
+      if (anc.type === "label") return err(lines[anc.q].ln, lines[anc.q].t, translate("意外的标签/指令"));
       let r;
       if (anc.type === "cond") r = parseIfStmt(i);
       else if (anc.type === "call") r = parseCallStmt(i);
@@ -836,7 +837,7 @@ function asmToProgram(text, specOf) {
       else if (anc.type === "brk") {
         const m = lines[anc.q].t.match(/^jmp\s+\.L(\d+)_(end|next)$/);
         if (!enclosingRepeat(+m[1])) {
-          return err(lines[anc.q].ln, lines[anc.q].t, "break/continue 指向的循环不在当前嵌套内");
+          return err(lines[anc.q].ln, lines[anc.q].t, translate("break/continue 指向的循环不在当前嵌套内"));
         }
         nodes.push({ kind: m[2] === "end" ? "break" : "continue" });
         i = anc.q + 1;
@@ -858,19 +859,19 @@ function asmToProgram(text, specOf) {
 export async function mount(el) {
   el.innerHTML = `
     <div class="page-head">
-      <h1>WinAPI 试验台<span class="page-hint" title="白名单内的 API 在本服务器进程中执行；编排区支持循环/条件/跳出块；参数可写 $N / $N.ret / $N.out.字段 引用第 N 个调用块；「编排」与「汇编」是同一程序的两种形态，自动双向同步（汇编超出规范子集时暂时脱钩）">?</span></h1>
-      <p>白名单调用 · 积木编排（循环 / 条件 / 跳出） · NTSTATUS / GetLastError 渲染 · 编排 ⇄ 汇编 实时同步</p>
+      <h1><span data-i18n-key="WinAPI 试验台">WinAPI 试验台</span><span class="page-hint" data-i18n-title="白名单内的 API 在本服务器进程中执行；编排区支持循环/条件/跳出块；参数可写 $N / $N.ret / $N.out.字段 引用第 N 个调用块；「编排」与「汇编」是同一程序的两种形态，自动双向同步（汇编超出规范子集时暂时脱钩）">?</span></h1>
+      <p data-i18n-key="白名单调用 · 积木编排（循环 / 条件 / 跳出） · NTSTATUS / GetLastError 渲染 · 编排 ⇄ 汇编 实时同步">白名单调用 · 积木编排（循环 / 条件 / 跳出） · NTSTATUS / GetLastError 渲染 · 编排 ⇄ 汇编 实时同步</p>
     </div>
     <div class="playground">
       <div class="pg-left panel">
-        <input class="filter-input" id="pg-search" placeholder="搜索 API / 模块…">
+        <input class="filter-input" id="pg-search" placeholder="搜索 API / 模块…" data-i18n-ph="搜索 API / 模块…">
         <div class="pg-catalog" id="pg-catalog"></div>
       </div>
       <div class="pg-right">
         <ui-tabs id="pg-tabs" strip>
-          <span data-value="call" label="调用卡"></span>
-          <span data-value="queue" label="编排"></span>
-          <span data-value="asm" label="汇编"></span>
+          <span data-value="call" data-i18n-key="调用卡"></span>
+          <span data-value="queue" data-i18n-key="编排"></span>
+          <span data-value="asm" data-i18n-key="汇编"></span>
         </ui-tabs>
         <div class="pg-body" id="pg-body"></div>
       </div>
@@ -924,11 +925,11 @@ export async function mount(el) {
   /** 自动发现导出的通用签名：4 个指针宽度参数，子进程隔离执行。 */
   function dynSpec(name, module) {
     return {
-      name, module: module || "?", desc: `通用调用 ${module}!${name}`,
+      name, module: module || "?", desc: translate("通用调用 {module}!{name}", { module: module || "?", name }),
       side: "dynamic", ret: "int", _dynamic: true,
       params: [1, 2, 3, 4].map((i) => ({
         name: `arg${i}`, type: "int", default: "0",
-        desc: `第 ${i} 个参数（整数地址 / 文本 / null）`,
+        desc: translate("第 {i} 个参数（整数地址 / 文本 / null）", { i }),
       })),
     };
   }
@@ -988,17 +989,16 @@ export async function mount(el) {
   function updateAsmStatus() {
     const chip = document.getElementById("pg-asm-chip");
     if (chip) {
-      chip.textContent = asmDirty ? "已脱钩" : "已同步";
+      chip.textContent = asmDirty ? translate("已脱钩") : translate("已同步");
       chip.className = "pg-sync-chip" + (asmDirty ? " off" : "");
-      chip.title = asmDirty && asmErr ? `第 ${asmErr.ln} 行：${asmErr.msg}` : "积木与汇编是同一程序的两种形态";
+      chip.title = asmDirty && asmErr ? translate("第 {ln} 行：{msg}", { ln: asmErr.ln, msg: asmErr.msg }) : translate("积木与汇编是同一程序的两种形态");
     }
     const banner = document.getElementById("pg-asm-banner");
     if (banner) {
       if (asmDirty && asmErr) {
         banner.style.display = "";
-        banner.innerHTML = `汇编第 ${asmErr.ln} 行无法还原为积木：${esc(asmErr.line)}<br>`
-          + `<span class="pg-dim">原因：${esc(asmErr.msg)}。继续编辑至可解析即自动复联；`
-          + `也可回「编排」做任意修改（以积木为准重新生成汇编）。</span>`;
+        banner.innerHTML = translate("汇编第 {ln} 行无法还原为积木：{line}", { ln: asmErr.ln, line: esc(asmErr.line) }) + "<br>"
+          + `<span class="pg-dim">${translate("原因：{msg}。继续编辑至可解析即自动复联；也可回「编排」做任意修改（以积木为准重新生成汇编）。", { msg: esc(asmErr.msg) })}</span>`;
       } else banner.style.display = "none";
     }
   }
@@ -1023,8 +1023,8 @@ export async function mount(el) {
   }
 
   function paramTooltip(p) {
-    const def = p.default != null ? `默认 ${p.default}` : "无默认值";
-    return `${p.name} (${p.type}) — ${p.desc || "无说明"}；${def}；可写 $N / $N.ret / $N.out.字段 引用第 N 个调用块`;
+    const def = p.default != null ? translate("默认 {v}", { v: p.default }) : translate("无默认值");
+    return `${p.name} (${p.type}) — ${p.desc || translate("无说明")}；${def}；${translate("可写 $N / $N.ret / $N.out.字段 引用第 N 个调用块")}`;
   }
 
   /* ---- 编排树操作：path = [idx, "body", idx, "then", idx, ...] ---- */
@@ -1154,7 +1154,7 @@ export async function mount(el) {
     let entry = moduleCache.get(m.name);
     if (!entry) {
       inner.replaceChildren(Object.assign(document.createElement("div"),
-        { className: "table-meta", textContent: "读取导出表…" }));
+        { className: "table-meta", textContent: translate("读取导出表…") }));
       loadModulePage(m.name, 0).then(() => {
         if (expanded.has(key)) fillModule(wrap, m);
       });
@@ -1170,8 +1170,8 @@ export async function mount(el) {
       btn.type = "button";
       btn.className = "pg-more-btn";
       btn.textContent = entry.loading
-        ? "加载中…"
-        : `加载更多（${entry.rows.length}/${entry.total}）`;
+        ? translate("加载中…")
+        : translate("加载更多（{a}/{b}）", { a: entry.rows.length, b: entry.total });
       btn.disabled = entry.loading;
       btn.addEventListener("click", () => {
         loadModulePage(m.name, entry.rows.length).then(() => {
@@ -1189,12 +1189,12 @@ export async function mount(el) {
     d.innerHTML = `<span class="nm">${esc(ex.name)}</span>`
       + `<span class="mod">#${ex.ordinal}</span>`
       + `<span class="pg-badge${ex.trust === "restricted" ? " warn" : ""}">`
-      + (ex.trust === "blocked" ? "拦截" : ex.trust === "restricted" ? "谨慎" : "通用")
+      + (ex.trust === "blocked" ? translate("拦截") : ex.trust === "restricted" ? translate("谨慎") : translate("通用"))
       + "</span>";
     d.title = ex.trust === "blocked"
-      ? `${module}!${ex.name}：命中高危名称黑名单，后端拒绝执行`
-      : `${module}!${ex.name}：通用指针签名（最多 4 个参数），在独立子进程执行`
-        + (ex.trust === "restricted" ? "；名称无法确认只读，请谨慎" : "");
+      ? translate("{module}!{name}：命中高危名称黑名单，后端拒绝执行", { module, name: ex.name })
+      : translate("{module}!{name}：通用指针签名（最多 4 个参数），在独立子进程执行", { module, name: ex.name })
+        + (ex.trust === "restricted" ? translate("；名称无法确认只读，请谨慎") : "");
     if (ex.trust !== "blocked") {
       d.draggable = true;
       d.addEventListener("dragstart", (e) => {
@@ -1211,14 +1211,15 @@ export async function mount(el) {
 
     // 1) 控制流积木
     catalogEl.replaceChildren(
-      groupEl("control", "控制流", `${CF_BLOCKS.length} 块`, null, (inner) => {
+      groupEl("control", translate("控制流"), translate("{n} 块", { n: CF_BLOCKS.length }), null, (inner) => {
         for (const [kind, label, desc] of CF_BLOCKS) {
-          if (q && !label.includes(q) && !kind.includes(q)) continue;
+          const lb = translate(label), ds = translate(desc);
+          if (q && !lb.includes(q) && !kind.includes(q)) continue;
           const d = document.createElement("div");
           d.className = `pg-item pg-cf pg-cf-${kind}`;
-          d.innerHTML = `<span class="nm">${label}</span><span class="mod">${desc}</span>`
-            + '<span class="pg-badge">积木</span>';
-          d.title = "拖到右侧编排画布；也可在画布内拖动排序、拖回左栏删除";
+          d.innerHTML = `<span class="nm">${lb}</span><span class="mod">${ds}</span>`
+            + `<span class="pg-badge">${translate("积木")}</span>`;
+          d.title = translate("拖到右侧编排画布；也可在画布内拖动排序、拖回左栏删除");
           d.draggable = true;
           d.addEventListener("dragstart", (e) => {
             e.dataTransfer.setData("text/pg-block", kind);
@@ -1233,13 +1234,13 @@ export async function mount(el) {
     // 2) 已声明签名的 Windows API
     const curated = q ? apis.filter((a) =>
       a.name.toLowerCase().includes(q) || a.module.toLowerCase().includes(q)) : apis;
-    catalogEl.appendChild(groupEl("curated", "Windows API", `${curated.length} 个可执行`, null, (inner) => {
+    catalogEl.appendChild(groupEl("curated", "Windows API", translate("{n} 个可执行", { n: curated.length }), null, (inner) => {
       for (const a of curated) {
         const d = document.createElement("div");
         d.className = "pg-item" + (selected && selected.name === a.name ? " sel" : "");
         d.innerHTML = `<span class="nm">${esc(a.name)}</span><span class="mod">${esc(a.module)}</span>`
           + `<span class="pg-badge${a.side === "observable" ? " warn" : ""}">`
-          + `${a.side === "observable" ? "有副作用" : "safe"}</span>`;
+          + `${a.side === "observable" ? translate("有副作用") : "safe"}</span>`;
         d.addEventListener("click", () => {
           selected = a;
           renderCatalog(searchEl.value);
@@ -1260,19 +1261,19 @@ export async function mount(el) {
     const cap = q ? 40 : MODULE_CAP;
     const pct = libProgress.total ? Math.round((libProgress.done / libProgress.total) * 100) : 0;
     const meta = libStatus === "scanning"
-      ? `扫描中 ${libProgress.done}/${libProgress.total}`
-      : `${libModules.length} DLL · ${libTotalExports} 导出`;
+      ? translate("扫描中 {a}/{b}", { a: libProgress.done, b: libProgress.total })
+      : translate("{n} DLL · {m} 导出", { n: libModules.length, m: libTotalExports });
     catalogEl.appendChild(groupEl("dlls", "DLLs", meta, libStatus === "scanning" ? pct : null, (inner) => {
       if (!libModules.length && libStatus === "scanning") {
         inner.appendChild(Object.assign(document.createElement("div"),
-          { className: "table-meta", textContent: "正在扫描 System32 的 PE 导出表…" }));
+          { className: "table-meta", textContent: translate("正在扫描 System32 的 PE 导出表…") }));
         return;
       }
       for (const m of mods.slice(0, cap)) inner.appendChild(moduleEl(m));
       if (mods.length > cap) {
         inner.appendChild(Object.assign(document.createElement("div"),
           { className: "table-meta pg-more-hint",
-            textContent: `还有 ${mods.length - cap} 个 DLL，输入名称搜索可定位。` }));
+            textContent: translate("还有 {n} 个 DLL，输入名称搜索可定位。", { n: mods.length - cap }) }));
       }
     }));
   }
@@ -1283,7 +1284,7 @@ export async function mount(el) {
     if (!h) return;
     const pct = libProgress.total ? Math.round((libProgress.done / libProgress.total) * 100) : 0;
     h.querySelector(".pg-group-meta").textContent =
-      `扫描中 ${libProgress.done}/${libProgress.total}`;
+      translate("扫描中 {a}/{b}", { a: libProgress.done, b: libProgress.total });
     const bar = h.querySelector(".pg-scan-bar > i");
     if (bar) bar.style.width = `${pct}%`;
   }
@@ -1318,7 +1319,7 @@ export async function mount(el) {
         hint.className = "table-meta pg-more-hint";
         dllsInner.appendChild(hint);
       }
-      hint.textContent = `还有 ${overflow} 个 DLL，输入名称搜索可定位。`;
+      hint.textContent = translate("还有 {n} 个 DLL，输入名称搜索可定位。", { n: overflow });
     } else if (hint) hint.remove();
   }
   /** 拉取库状态；since 增量，扫描中随到随显示。 */
@@ -1388,7 +1389,7 @@ export async function mount(el) {
     if (typeof part !== "object") return esc(String(part));
     let s = `${esc(String(part.value))} <span class="dim">(${esc(part.hex ?? "")})</span>`;
     if (part.ntstatus) {
-      s += ` · ${part.success ? "STATUS_SUCCESS" : "失败"}`;
+      s += ` · ${part.success ? "STATUS_SUCCESS" : translate("失败")}`;
       if (part.ntstatus.message) s += ` — ${esc(part.ntstatus.message)}`;
     }
     if (part.last_error) s += ` · GetLastError=${esc(String(part.last_error))}`;
@@ -1410,7 +1411,7 @@ export async function mount(el) {
     for (const [k, v] of Object.entries(step.args ?? {})) {
       rows.push(`<tr><td class="k">${esc(k)}</td><td class="v">${esc(v == null ? "null" : String(v))}</td></tr>`);
     }
-    rows.push(`<tr><td class="k">返回</td><td class="v">${renderRet(step.ret)}</td></tr>`);
+    rows.push(`<tr><td class="k">${translate("返回值")}</td><td class="v">${renderRet(step.ret)}</td></tr>`);
     for (const [k, fields] of Object.entries(step.out ?? {})) {
       for (const [fk, fv] of Object.entries(fields)) {
         rows.push(`<tr><td class="k">${esc(k)}.${esc(fk)}</td><td class="v">${esc(String(fv))}</td></tr>`);
@@ -1423,11 +1424,13 @@ export async function mount(el) {
   function renderSession(session) {
     const wrap = document.createElement("div");
     if (!session) {
-      wrap.innerHTML = '<p class="table-meta">尚无执行结果。选择左侧 API，或在编排区搭好后执行。</p>';
+      wrap.innerHTML = `<p class="table-meta">${translate("尚无执行结果。选择左侧 API，或在编排区搭好后执行。")}</p>`;
       return wrap;
     }
     const h = document.createElement("h3");
-    h.textContent = `会话 ${session.id} · 成功 ${session.ok} / 失败 ${session.failed}`;
+    h.textContent = translate("会话 {id} · 成功 {ok} / 失败 {failed}", {
+      id: session.id, ok: session.ok, failed: session.failed,
+    });
     h.style.margin = "0 0 10px";
     wrap.append(h, ...session.steps.map((s, i) => renderStepCard(s, i)));
     wrap.classList.add("motion-stagger");   // 步骤卡按 --ui-index 依次浮入
@@ -1438,7 +1441,7 @@ export async function mount(el) {
   function renderCallCard(result = null) {
     const wrap = document.createElement("div");
     if (!selected) {
-      wrap.innerHTML = '<p class="table-meta">从左侧选择一个 API 构建调用。</p>';
+      wrap.innerHTML = `<p class="table-meta">${translate("从左侧选择一个 API 构建调用。")}</p>`;
       return wrap;
     }
     const a = selected;
@@ -1447,8 +1450,8 @@ export async function mount(el) {
     panel.style.marginBottom = "12px";
     const head = document.createElement("h3");
     const badge = a._dynamic
-      ? '<span class="pg-badge warn">动态 · 子进程隔离</span>'
-      : `<span class="pg-badge${a.side === "observable" ? " warn" : ""}">${a.side === "observable" ? "有副作用" : "safe"}</span>`;
+      ? `<span class="pg-badge warn">${translate("动态 · 子进程隔离")}</span>`
+      : `<span class="pg-badge${a.side === "observable" ? " warn" : ""}">${a.side === "observable" ? translate("有副作用") : "safe"}</span>`;
     head.innerHTML = `${esc(a.module)}!<b>${esc(a.name)}</b> ${badge}`;
     const desc = document.createElement("p");
     desc.className = "table-meta";
@@ -1460,23 +1463,23 @@ export async function mount(el) {
     else {
       const noArgs = document.createElement("p");
       noArgs.className = "table-meta";
-      noArgs.textContent = "（无输入参数，出参自动生成）";
+      noArgs.textContent = translate("（无输入参数，出参自动生成）");
       panel.appendChild(noArgs);
     }
 
     const btns = document.createElement("div");
     btns.style.cssText = "display:flex;gap:8px;margin:10px 0";
     const runBtn = document.createElement("ui-button");
-    runBtn.setAttribute("label", "立即执行");
+    runBtn.setAttribute("data-i18n-key", "立即执行");
     runBtn.setAttribute("variant", "accent");
     const addBtn = document.createElement("ui-button");
-    addBtn.setAttribute("label", "加入编排");
+    addBtn.setAttribute("data-i18n-key", "加入编排");
     btns.append(runBtn, addBtn);
     panel.appendChild(btns);
 
     const hint = document.createElement("p");
     hint.className = "table-meta";
-    hint.textContent = "参数可写 $N / $N.ret / $N.out.字段 引用第 N 个调用块";
+    hint.textContent = translate("参数可写 $N / $N.ret / $N.out.字段 引用第 N 个调用块");
     panel.appendChild(hint);
 
     const out = document.createElement("div");
@@ -1514,7 +1517,7 @@ export async function mount(el) {
     ed.className = "pg-edit";
     const h = document.createElement("span");
     h.className = "pg-edit-h";
-    h.textContent = `编辑调用 #${slotNo} ${node.api}`;
+    h.textContent = translate("编辑调用 #{no} {api}", { no: slotNo, api: node.api });
     ed.appendChild(h);
     for (const p of spec.params.filter((p) => !AUTO_PARAM(p))) {
       const fld = document.createElement("span");
@@ -1652,7 +1655,7 @@ export async function mount(el) {
 
     if (kind === "call") {
       hd.innerHTML = `<span class="no">#${node._no}</span><span class="sig">${esc(node.sig)}</span>`;
-      hd.title = "点击编辑参数 · 拖动调整位置 · 拖回左侧列表移除";
+      hd.title = translate("点击编辑参数 · 拖动调整位置 · 拖回左侧列表移除");
       hd.addEventListener("click", () => {
         editingPath = isEditing ? null : JSON.stringify(path);
         refreshCompose();
@@ -1662,11 +1665,11 @@ export async function mount(el) {
     }
 
     if (kind === "repeat") {
-      hd.innerHTML = `<span class="kw">重复</span>`;
+      hd.innerHTML = `<span class="kw">${translate("重复")}</span>`;
       const inp = document.createElement("input");
       inp.className = "pg-cond";
       inp.value = String(node.times ?? 3);
-      inp.title = "循环次数：整数或表达式，可用 $N 引用（如 $2.ret.value）";
+      inp.title = translate("循环次数：整数或表达式，可用 $N 引用（如 $2.ret.value）");
       inp.addEventListener("input", () => { node.times = inp.value.trim(); programChanged(); });
       hd.append(inp, mkText("次"));
       blk.appendChild(mkContainer(node, path, "body"));
@@ -1674,11 +1677,11 @@ export async function mount(el) {
     }
 
     if (kind === "if") {
-      hd.innerHTML = `<span class="kw">如果</span>`;
+      hd.innerHTML = `<span class="kw">${translate("如果")}</span>`;
       const inp = document.createElement("input");
       inp.className = "pg-cond";
       inp.value = String(node.cond ?? "");
-      inp.title = "条件表达式：比较/逻辑运算（支持 && ||），$N.path 引用，如 $1.ret.value == 1";
+      inp.title = translate("条件表达式：比较/逻辑运算（支持 && ||），$N.path 引用，如 $1.ret.value == 1");
       inp.addEventListener("input", () => { node.cond = inp.value; programChanged(); });
       hd.appendChild(inp);
       const thenWrap = document.createElement("div");
@@ -1694,7 +1697,7 @@ export async function mount(el) {
         blk.appendChild(elseWrap);
       } else {
         const addElse = document.createElement("ui-button");
-        addElse.setAttribute("label", "+ 否则");
+        addElse.setAttribute("data-i18n-key", "+ 否则");
         addElse.addEventListener("click", () => { node.else = []; programChanged(); refreshCompose(); });
         blk.appendChild(addElse);
       }
@@ -1702,8 +1705,8 @@ export async function mount(el) {
     }
 
     // break / continue
-    hd.innerHTML = `<span class="kw">${kind === "break" ? "跳出循环" : "下一轮"}</span>`;
-    hd.title = "只能出现在循环块内部";
+    hd.innerHTML = `<span class="kw">${kind === "break" ? translate("跳出循环") : translate("下一轮")}</span>`;
+    hd.title = translate("只能出现在循环块内部");
     return blk;
   }
 
@@ -1716,7 +1719,7 @@ export async function mount(el) {
   function mkText(s) {
     const span = document.createElement("span");
     span.className = "kw";
-    span.textContent = s;
+    span.textContent = translate(s);
     return span;
   }
 
@@ -1728,7 +1731,7 @@ export async function mount(el) {
     if (!arr.length) {
       const empty = document.createElement("p");
       empty.className = "table-meta";
-      empty.textContent = "（把块拖到这里）";
+      empty.textContent = translate("（把块拖到这里）");
       body.appendChild(empty);
     }
     attachDropZone(body, () => ({ arr, idx: arr.length, mark: "pg-into", markEl: body }));
@@ -1746,7 +1749,7 @@ export async function mount(el) {
     panel.className = "panel pg-steps";
     panel.style.marginBottom = "12px";
     const h = document.createElement("h3");
-    h.textContent = `编排（${program.length} 个顶层块）`;
+    h.textContent = translate("编排（{n} 个顶层块）", { n: program.length });
     panel.appendChild(h);
 
     const list = document.createElement("div");
@@ -1755,7 +1758,7 @@ export async function mount(el) {
     if (!program.length) {
       const empty = document.createElement("p");
       empty.className = "table-meta";
-      empty.textContent = "编排为空：从左侧积木库拖入 API 或控制流块。";
+      empty.textContent = translate("编排为空：从左侧积木库拖入 API 或控制流块。");
       list.appendChild(empty);
     }
     panel.appendChild(list);
@@ -1766,7 +1769,7 @@ export async function mount(el) {
     const btns = document.createElement("div");
     btns.style.cssText = "display:flex;gap:8px;margin:10px 0;flex-wrap:wrap";
     const runBtn = document.createElement("ui-button");
-    runBtn.setAttribute("label", "执行");
+    runBtn.setAttribute("data-i18n-key", "执行");
     runBtn.setAttribute("variant", "accent");
     runBtn.addEventListener("click", async () => {
       if (!program.length) return;
@@ -1778,7 +1781,7 @@ export async function mount(el) {
       refreshCompose();
     });
     const clrBtn = document.createElement("ui-button");
-    clrBtn.setAttribute("label", "清空");
+    clrBtn.setAttribute("data-i18n-key", "清空");
     clrBtn.addEventListener("click", () => {
       program = []; session = null; editingPath = null;
       programChanged(); refreshCompose();
@@ -1786,21 +1789,21 @@ export async function mount(el) {
     const nameInput = document.createElement("input");
     nameInput.className = "filter-input";
     nameInput.type = "text";
-    nameInput.placeholder = "编排名称（保存到 SQLite）";
+    nameInput.placeholder = translate("编排名称（保存到 SQLite）");
     nameInput.style.cssText = "width:180px;margin:0";
     const saveBtn = document.createElement("ui-button");
-    saveBtn.setAttribute("label", "保存");
+    saveBtn.setAttribute("label", translate("保存"));
     saveBtn.addEventListener("click", async () => {
       const name = (nameInput.value || "").trim()
-        || `编排 ${new Date().toLocaleString("zh-CN", { hour12: false })}`;
+        || translate("编排 {time}", { time: new Date().toLocaleString("zh-CN", { hour12: false }) });
       try {
         await apiPost("/api/winapi/programs", { name, program, asm_text: asmText });
         nameInput.value = name;
-        saveBtn.setAttribute("label", "已保存");
-        setTimeout(() => saveBtn.setAttribute("label", "保存"), 1600);
+        saveBtn.setAttribute("label", translate("已保存"));
+        setTimeout(() => saveBtn.setAttribute("label", translate("保存")), 1600);
       } catch (err) {
-        saveBtn.setAttribute("label", "保存失败");
-        setTimeout(() => saveBtn.setAttribute("label", "保存"), 1600);
+        saveBtn.setAttribute("label", translate("保存失败"));
+        setTimeout(() => saveBtn.setAttribute("label", translate("保存")), 1600);
       }
     });
     btns.append(runBtn, clrBtn, nameInput, saveBtn);
@@ -1811,13 +1814,15 @@ export async function mount(el) {
     if (asmDirty) {
       const bn = document.createElement("div");
       bn.className = "pg-desync-banner";
-      bn.innerHTML = `汇编侧与积木已脱钩${asmErr ? `（第 ${asmErr.ln} 行：${esc(asmErr.msg)}）` : ""}`
-        + ` — 此处任意修改将以积木为准并重新生成汇编；去「汇编」页继续编辑至可解析则自动复联。`;
+      bn.innerHTML = translate("汇编侧与积木已脱钩{detail}", {
+        detail: asmErr ? translate("（第 {ln} 行：{msg}）", { ln: asmErr.ln, msg: esc(asmErr.msg) }) : "",
+      })
+        + ` — ${translate("此处任意修改将以积木为准并重新生成汇编；去「汇编」页继续编辑至可解析则自动复联。")}`;
       wrap.appendChild(bn);
     }
     if (session) {
       const h2 = document.createElement("h3");
-      h2.textContent = "最近一次执行";
+      h2.textContent = translate("最近一次执行");
       h2.style.margin = "0 0 10px";
       wrap.append(h2, renderSession(session));
     }
@@ -1833,7 +1838,7 @@ export async function mount(el) {
     const headRow = document.createElement("div");
     headRow.style.cssText = "display:flex;align-items:center;gap:10px;flex-wrap:wrap";
     const h = document.createElement("h3");
-    h.textContent = "汇编 ⇄ 编排（同一程序的两种形态，自动同步）";
+    h.textContent = translate("汇编 ⇄ 编排（同一程序的两种形态，自动同步）");
     h.style.margin = "0";
     const chip = document.createElement("span");
     chip.id = "pg-asm-chip";
@@ -1846,8 +1851,7 @@ export async function mount(el) {
     panel.appendChild(banner);
     const hint = document.createElement("p");
     hint.className = "table-meta";
-    hint.textContent = "x86-64（Intel 语法）：参数装 rcx/rdx/r8/r9 + call + mov [slot_N], rax；循环/条件以标签与跳转表达。"
-      + "积木改动会自动重写此处；编辑此处会自动尝试还原为积木（超出规范子集则脱钩，改回可解析即复联）。仅展示与组装校验，绝不执行。";
+    hint.textContent = translate("x86-64（Intel 语法）：参数装 rcx/rdx/r8/r9 + call + mov [slot_N], rax；循环/条件以标签与跳转表达。积木改动会自动重写此处；编辑此处会自动尝试还原为积木（超出规范子集则脱钩，改回可解析即复联）。仅展示与组装校验，绝不执行。");
     panel.appendChild(hint);
     const ta = document.createElement("textarea");
     ta.id = "pg-asm-ta";
@@ -1879,7 +1883,7 @@ export async function mount(el) {
     const btnRow = document.createElement("div");
     btnRow.style.cssText = "display:flex;gap:8px;margin:10px 0;flex-wrap:wrap";
     const checkBtn = document.createElement("ui-button");
-    checkBtn.setAttribute("label", "组装校验");
+    checkBtn.setAttribute("data-i18n-key", "组装校验");
     const out = document.createElement("div");
     out.style.marginTop = "8px";
     checkBtn.addEventListener("click", async () => {
@@ -1889,13 +1893,12 @@ export async function mount(el) {
           && !/\b(dq|du|dw|times)\b/.test(l))
         .map((l) => l.replace(/^(j\w+|call)\s+\S+$/, "$1 0").replace(/\[(slot|buf|str)[^\]]*\]/g, "[rip]"));
       if (!body.length) {
-        out.innerHTML = '<p class="table-meta">（没有可校验的指令）</p>';
+        out.innerHTML = `<p class="table-meta">${translate("（没有可校验的指令）")}</p>`;
         return;
       }
       try {
         const r = await apiPost("/api/winapi/asm", { text: body.join("\n") });
-        out.innerHTML = `<p class="table-meta">组装校验通过：${r.roundtrip.length} 条指令 / ${r.size} 字节`
-          + `（占位地址组装，仅验证每条都是合法 x86-64）</p>`;
+        out.innerHTML = `<p class="table-meta">${translate("组装校验通过：{n} 条指令 / {size} 字节（占位地址组装，仅验证每条都是合法 x86-64）", { n: r.roundtrip.length, size: r.size })}</p>`;
       } catch (err) {
         out.innerHTML = `<div class="error-box"><span class="code">${esc(err.code)}</span> — ${esc(err.message)}</div>`;
       }
@@ -1963,7 +1966,7 @@ export async function mount(el) {
   histToggle.type = "button";
   histToggle.className = "ntl-action-btn ntl-toggle-btn";
   histToggle.setAttribute("aria-expanded", "false");
-  histToggle.innerHTML = '历史会话 <svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg>';
+  histToggle.innerHTML = `${translate("历史会话")} <svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg>`;
   const histPanel = document.createElement("div");
   histPanel.className = "ntl-collapse";
   const histInner = document.createElement("div");
@@ -1974,15 +1977,15 @@ export async function mount(el) {
     histToggle.setAttribute("aria-expanded", String(open));
     histPanel.classList.toggle("open", open);
     if (!open) return;
-    histInner.innerHTML = '<div class="loading-row"><ui-spinner></ui-spinner> 读取会话…</div>';
+    histInner.innerHTML = `<div class="loading-row"><ui-spinner></ui-spinner> ${translate("读取会话…")}</div>`;
     try {
       const r = await apiGet("/api/winapi/sessions");
       sessions = r.sessions ?? [];
       if (!sessions.length) {
-        histInner.innerHTML = '<p class="table-meta">服务器内存中还没有历史会话。</p>';
+        histInner.innerHTML = `<p class="table-meta">${translate("服务器内存中还没有历史会话。")}</p>`;
       } else {
         const h = document.createElement("h3");
-        h.textContent = `历史会话（最近 ${sessions.length} 次，仅存内存）`;
+        h.textContent = translate("历史会话（最近 {n} 次，仅存内存）", { n: sessions.length });
         h.style.margin = "0 0 10px";
         histInner.replaceChildren(h, ...sessions.map((s) => renderSession(s)));
       }
@@ -2000,7 +2003,7 @@ export async function mount(el) {
   myToggle.type = "button";
   myToggle.className = "ntl-action-btn ntl-toggle-btn";
   myToggle.setAttribute("aria-expanded", "false");
-  myToggle.innerHTML = '我的编排 <svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg>';
+  myToggle.innerHTML = `${translate("我的编排")} <svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6l5 5 5-5"/></svg>`;
   const myPanel = document.createElement("div");
   myPanel.className = "ntl-collapse";
   const myInner = document.createElement("div");
@@ -2011,28 +2014,28 @@ export async function mount(el) {
     myToggle.setAttribute("aria-expanded", String(open));
     myPanel.classList.toggle("open", open);
     if (!open) return;
-    myInner.innerHTML = '<div class="loading-row"><ui-spinner></ui-spinner> 读取保存的编排…</div>';
+    myInner.innerHTML = `<div class="loading-row"><ui-spinner></ui-spinner> ${translate("读取保存的编排…")}</div>`;
     try {
       const r = await apiGet("/api/winapi/programs");
       const list = r.programs ?? [];
       if (!list.length) {
-        myInner.innerHTML = '<p class="table-meta">还没有保存的编排。在「编排」页输入名称并点「保存」。</p>';
+        myInner.innerHTML = `<p class="table-meta">${translate("还没有保存的编排。在「编排」页输入名称并点「保存」。")}</p>`;
         return;
       }
       const h = document.createElement("h3");
-      h.textContent = `我的编排（${list.length} 份，SQLite 持久化）`;
+      h.textContent = translate("我的编排（{n} 份，SQLite 持久化）", { n: list.length });
       h.style.margin = "0 0 10px";
       const rows = list.map((p) => {
         const row = document.createElement("div");
         row.className = "pg-item my-program-row";
-        const t = new Date(p.updated_at * 1000).toLocaleString();
+        const tm = new Date(p.updated_at * 1000).toLocaleString();
         row.innerHTML = `<span class="nm">${esc(p.name)}</span>`
-          + `<span class="mod">${p.program.length} 块 · ${esc(t)}</span>`;
-        row.title = `asm 同步文本 ${p.asm_text ? "已存" : "未存"} · id ${p.id}`;
+          + `<span class="mod">${translate("{n} 块", { n: p.program.length })} · ${esc(tm)}</span>`;
+        row.title = translate("asm 同步文本 {state} · id {id}", { state: p.asm_text ? translate("已存") : translate("未存"), id: p.id });
         const btns = document.createElement("span");
         btns.style.cssText = "display:flex;gap:6px";
         const loadBtn = document.createElement("ui-button");
-        loadBtn.setAttribute("label", "载入");
+        loadBtn.setAttribute("label", translate("载入"));
         loadBtn.addEventListener("click", () => {
           program = p.program.map((n) => JSON.parse(JSON.stringify(n)));
           if (p.asm_text) { asmText = p.asm_text; asmDirty = false; }
@@ -2041,7 +2044,7 @@ export async function mount(el) {
           showTab("queue");
         });
         const delBtn = document.createElement("ui-button");
-        delBtn.setAttribute("label", "删除");
+        delBtn.setAttribute("label", translate("删除"));
         delBtn.setAttribute("variant", "danger");
         delBtn.addEventListener("click", async () => {
           try {

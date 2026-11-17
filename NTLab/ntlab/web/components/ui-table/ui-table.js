@@ -68,6 +68,12 @@ export class UiTableElement extends HTMLElement {
     this._wrap.className = "wrap";
     this._wrap.addEventListener("scroll", () => this._maybeLoadMore());
     this.shadowRoot.append(style, this._wrap);
+    this._onI18nChange = () => this._render();          // 语言切换时刷新空态文案
+    document.addEventListener("ui-i18n-change", this._onI18nChange);
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener("ui-i18n-change", this._onI18nChange);
   }
 
   set columns(cols) { this._columns = cols ?? []; this._render(); }
@@ -122,7 +128,7 @@ export class UiTableElement extends HTMLElement {
     if (!this._rows.length) {
       const empty = document.createElement("div");
       empty.className = "empty";
-      empty.textContent = "（无数据）";
+      empty.textContent = globalThis.UIReference?.i18n?.["（无数据）"] ?? "（无数据）";
       this._wrap.replaceChildren(empty);
       return;
     }
