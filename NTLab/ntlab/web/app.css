@@ -301,10 +301,11 @@ html, body {
   resize: vertical;
 }
 
-/* ---- 预览内联：高亮叠层编辑器（透明 textarea + 高亮层实时重染） ---- */
+/* ---- 预览即编辑：代码编辑器（行号槽 + 高亮 pre + 透明 textarea，同字体同行高保证对齐） ---- */
 
-.resed-hlwrap {
-  position: relative;
+.resed-code {
+  display: flex;
+  flex-direction: column;
   margin-top: 10px;
   border: 1px solid var(--ui-border, #2a2a2a);
   border-radius: 6px;
@@ -312,19 +313,56 @@ html, body {
   overflow: hidden;
 }
 
-.resed-hlwrap pre,
-.resed-hlwrap textarea {
+.resed-code-body {
+  display: flex;
+  height: 420px;
+  min-height: 0;
+}
+
+.resed-gutter {
+  flex: 0 0 auto;
+  width: 48px;
+  padding: 10px 6px 10px 0;
+  overflow: hidden;
+  text-align: right;
+  border-right: 1px solid var(--ui-border, #2a2a2a);
+  color: var(--ui-text-muted, #888);
+  user-select: none;
+}
+
+.resed-gutter .gline {
+  font-family: var(--ntlab-font-mono, "Cascadia Code", Consolas, "Microsoft YaHei", monospace);
+  font-size: 12.5px;
+  line-height: 1.55;
+  border-radius: 3px;
+}
+
+.resed-gutter .gline.cur {
+  color: var(--ui-accent, #66ccff);
+  background: rgba(102, 204, 255, 0.14);
+  font-weight: 600;
+}
+
+.resed-code-main {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.resed-code-main pre,
+.resed-code-main textarea {
   margin: 0;
   padding: 10px 12px;
   font-family: var(--ntlab-font-mono, "Cascadia Code", Consolas, "Microsoft YaHei", monospace);
   font-size: 12.5px;
   line-height: 1.55;
-  white-space: pre-wrap;
-  word-break: break-all;
+  white-space: pre;
+  word-wrap: normal;
   tab-size: 4;
+  box-sizing: border-box;
 }
 
-.resed-hlwrap pre {
+.resed-code-main pre {
   position: absolute;
   inset: 0;
   overflow: hidden;
@@ -332,24 +370,121 @@ html, body {
   color: var(--ui-text, #ddd);
 }
 
-.resed-hlwrap textarea {
-  position: relative;
-  display: block;
+.resed-code-main textarea {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  min-height: 220px;
-  max-height: 38vh;
-  overflow-y: auto;
+  height: 100%;
+  overflow: auto;
   background: transparent;
   color: transparent;
   caret-color: var(--ui-accent, #66ccff);
   border: 0;
   outline: none;
-  resize: vertical;
+  resize: none;
 }
 
-.resed-hlwrap textarea::selection {
+.resed-code-main textarea::selection {
   background: rgba(102, 204, 255, 0.25);
   color: transparent;
+}
+
+.resed-code-status {
+  flex: 0 0 auto;
+  padding: 6px 12px;
+  border-top: 1px solid var(--ui-border, #2a2a2a);
+  font-size: 11.5px;
+  color: var(--ui-text-muted, #888);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- 预览即编辑：虚拟滚动 Hex 表格（hex/ascii 双列 contenteditable 就地编辑） ---- */
+
+.hexed-wrap {
+  margin-top: 10px;
+  border: 1px solid var(--ui-border, #2a2a2a);
+  border-radius: 6px;
+  background: var(--ui-surface-sunken, #101010);
+  overflow: hidden;
+}
+
+.hexed {
+  height: 420px;
+  overflow: auto;
+  font-family: var(--ntlab-font-mono, "Cascadia Code", Consolas, "Microsoft YaHei", monospace);
+  font-size: 12.5px;
+  line-height: 20px;
+}
+
+.hexed-spacer {
+  position: relative;
+  min-width: max-content;
+}
+
+.hexed-row {
+  position: absolute;
+  left: 0;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  white-space: pre;
+}
+
+.hexed-off {
+  color: var(--ui-text-muted, #888);
+  margin-right: 12px;
+  user-select: none;
+}
+
+.hexed-c {
+  display: inline-block;
+  width: 24px;
+  text-align: center;
+  color: #66ccff;
+  border-radius: 3px;
+  cursor: text;
+}
+
+.hexed-a {
+  display: inline-block;
+  width: 13px;
+  text-align: center;
+  color: var(--ui-text, #ccc);
+  border-radius: 3px;
+  cursor: text;
+}
+
+.hexed-gap {
+  flex: 0 0 10px;
+}
+
+.hexed-c.mod,
+.hexed-a.mod {
+  color: #ffcc44;
+  background: rgba(255, 204, 68, 0.16);
+}
+
+.hexed-c:focus,
+.hexed-a:focus {
+  outline: 1px solid var(--ui-accent, #66ccff);
+  background: rgba(102, 204, 255, 0.12);
+}
+
+.hexed-pad {
+  visibility: hidden;
+}
+
+.hexed-status {
+  padding: 6px 12px;
+  border-top: 1px solid var(--ui-border, #2a2a2a);
+  font-size: 11.5px;
+  color: var(--ui-text-muted, #888);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ---- 图像编辑器（Mask Editor 式画布涂抹） ---- */
@@ -404,16 +539,6 @@ html, body {
   width: 100%;
   height: 100%;
   cursor: crosshair;
-}
-  font-family: var(--ntlab-font-mono, "Cascadia Code", Consolas, "Microsoft YaHei", monospace);
-  font-size: 12.5px;
-  line-height: 1.55;
-  background: var(--ui-surface-sunken, #101010);
-  color: var(--ui-text, #ddd);
-  border: 1px solid var(--ui-border, #2a2a2a);
-  border-radius: 6px;
-  padding: 10px 12px;
-  resize: vertical;
 }
 
 .page-head h1 { margin: 0 0 4px; font-size: 22px; font-weight: 700; }

@@ -1,9 +1,10 @@
 /* 资源修改器 — 独立页（与 PE 分析器同级）。
  *
  * 打开 PE → ui-tree 树形浏览资源（类型 → 名称 → 语言，带缩进）→
- * 右侧预览/编辑（文本带语法高亮、图标/位图渲染、二进制 hex）→
- * 修改先入暂存区，「保存」（原地，自动 .bak）/「另存为」一次性重建 .rsrc。
- * 文件管理体系独立：自己的路径输入 / 拖放上传 / 打包下载。
+ * 右侧预览即编辑（Resource Hacker 式）：文本直接是带行号/语法着色/当前行高亮的
+ * 代码编辑器；二进制是虚拟滚动的 Hex 表格（hex/ascii 双列就地编辑，改动字节高亮）；
+ * 图像是 Mask Editor 式画布。修改实时入暂存区，「保存」（原地，自动 .bak）/
+ * 「另存为」一次性重建 .rsrc。文件管理体系独立：路径输入 / 拖放上传 / 打包下载。
  */
 
 import { apiGet, apiUpload, apiSend } from "../api.js";
@@ -151,26 +152,6 @@ function dibToIcoBlob(b) {
 
 const IMAGE_TYPES = new Set(["ICON", "BITMAP", "GROUP_ICON", "CURSOR", "GROUP_CURSOR"]);
 
-/** 字节 → hex 文本（16 字节/行，空格分隔）。 */
-function hexLines(bytes, limit = 4096) {
-  const n = Math.min(bytes.length, limit);
-  const rows = [];
-  for (let off = 0; off < n; off += 16) {
-    const slice = bytes.subarray(off, Math.min(off + 16, n));
-    rows.push([...slice].map((x) => x.toString(16).padStart(2, "0")).join(" "));
-  }
-  return rows.join("\n");
-}
-
-/** 宽松解析 hex 文本（容忍空白/冒号/逗号）；字节数为奇数时返回 null。 */
-function parseHexText(text) {
-  const h = String(text).toLowerCase().replace(/[^0-9a-f]/g, "");
-  if (!h.length || h.length % 2) return null;
-  const out = new Uint8Array(h.length / 2);
-  for (let i = 0; i < out.length; i++) out[i] = parseInt(h.substr(i * 2, 2), 16);
-  return out;
-}
-
 /** 加载 Blob 为 HTMLImageElement。 */
 function loadImageEl(blob) {
   return new Promise((resolve, reject) => {
@@ -260,7 +241,7 @@ function highlightMarkup(text, hl) {
   return e;
 }
 
-/* ---------------- hex 视图（客户端渲染，截断 4 KB） ---------------- */
+/* ---------------- hex 只读视图（截断 4 KB，> 64 KB 时兜底） ---------------- */
 
 function hexDumpHTML(bytes) {
   const LIMIT = 4096;
@@ -285,8 +266,8 @@ export async function mount(el) {
   el.innerHTML = `
     <div id="resed-root">
       <div class="page-head">
-        <h1>资源修改器<span class="page-hint" title="Resource Hacker 式的 PE 资源编辑器：树形浏览、预览、编辑，保存/另存为，导出单个资源或整包 zip">?</span></h1>
-        <p>打开 PE 文件 → 树形浏览资源（类型 → 名称 → 语言）→ 预览或编辑 → 保存（原地，自动 .bak 备份）/ 另存为</p>
+        <h1>资源修改器<span class="page-hint" title="Resource Hacker 式的 PE 资源编辑器：树形浏览，预览即编辑（文本=代码编辑器 / 二进制=Hex 表格 / 图像=涂抹画布），改动实时入暂存区，保存（原地，自动 .bak）/另存为，导出单个资源或整包 zip">?</span></h1>
+        <p>打开 PE 文件 → 树形浏览资源（类型 → 名称 → 语言）→ 在预览中直接编辑 → 保存（原地，自动 .bak 备份）/ 另存为</p>
       </div>
       <div class="panel">
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
@@ -449,7 +430,7 @@ export async function mount(el) {
 
   function keyOf(m) { return `${m.type}\u0001${m.name}\u0001${m.lang}`; }
 
-  function stageReplace(meta, bytes, note) {
+  function stageReplace(meta, bytes, note, silent) {
     staged.set(keyOf(meta), {
       entry: {
         type: meta.type, name: String(meta.name), lang: meta.lang,
@@ -458,7 +439,7 @@ export async function mount(el) {
       label: `${meta.type}/${meta.name}/lang${meta.lang}${note ? `（${note}）` : ""}`,
     });
     updateDirtyUI();
-    if (currentLeafId) showLeaf(currentLeafId);   // 刷新预览头部的暂存徽标
+    if (!silent && currentLeafId) showLeaf(currentLeafId);   // 刷新预览头部的暂存徽标
   }
 
   function showLeaf(leafId) {
@@ -467,7 +448,10 @@ export async function mount(el) {
     const stagedItem = staged.get(keyOf(meta));
     previewEl.innerHTML = '<p class="table-meta">读取资源数据…</p>';
     (async () => {
-      const bytes = await fetchResourceBytes(currentPath, meta.type, meta.name, meta.lang);
+      // 暂存优先：编辑器/预览显示待写入内容，而非磁盘上的旧数据
+      const bytes = stagedItem
+        ? bytesFromB64(stagedItem.entry.data_b64)
+        : await fetchResourceBytes(currentPath, meta.type, meta.name, meta.lang);
       const view = detectView(bytes, meta.type);
       renderPreview(meta, bytes, view, stagedItem);
     })().catch((err) => {
@@ -521,6 +505,18 @@ export async function mount(el) {
       showLeaf(currentLeafId);
     });
 
+    // 编辑器静默暂存后就地更新头部徽标（不重渲染，避免编辑器光标/焦点丢失）
+    const markStaged = (label) => {
+      if (!title.querySelector(".resed-dirty")) {
+        const b = document.createElement("span");
+        b.className = "resed-dirty";
+        b.textContent = "已暂存修改";
+        title.appendChild(b);
+      }
+      undo.style.display = "";
+      info.textContent = `${fsize(bytes.length)} · codepage ${meta.codepage ?? 0} · 暂存：${label}`;
+    };
+
     const body = document.createElement("div");
     const enterEdit = (builder) => {
       const orig = [...body.children];
@@ -561,33 +557,17 @@ export async function mount(el) {
         appendHex(body, bytes, "（无法解析为图像）");
       }
     } else if (view.kind === "text") {
-      const pre = document.createElement("pre");
-      pre.className = "resed-hl";
-      pre.innerHTML = highlightMarkup(view.text, view.hl);
-      body.appendChild(pre);
-      const ed = document.createElement("a");
-      ed.href = "#"; ed.textContent = "编辑文本";
-      ed.addEventListener("click", (e) => {
-        e.preventDefault();
-        enterEdit((cancel) => makeTextEditor(meta, view.text, view.utf16, view.hl, cancel));
-      });
-      ops.appendChild(ed);
+      // 预览即编辑：语法着色 + 行号 + 当前行高亮，输入实时暂存
+      body.appendChild(makeCodeEditor(meta, view, markStaged));
+    } else if (bytes.length <= 65536) {
+      // 预览即编辑：虚拟滚动 Hex 表格（hex/ascii 双列就地编辑）
+      body.appendChild(makeHexEditor(meta, bytes, markStaged));
     } else {
-      appendHex(body, bytes);
-      if (bytes.length <= 4096) {
-        const ed = document.createElement("a");
-        ed.href = "#"; ed.textContent = "Hex 编辑";
-        ed.addEventListener("click", (e) => {
-          e.preventDefault();
-          enterEdit((cancel) => makeHexEditor(meta, bytes, cancel));
-        });
-        ops.appendChild(ed);
-      } else {
-        const hint = document.createElement("span");
-        hint.className = "resed-trunc";
-        hint.textContent = "（二进制过大，Hex 编辑仅限 ≤ 4 KB；可导出后用外部工具改，或从文件替换）";
-        ops.appendChild(hint);
-      }
+      appendHex(body, bytes, `（${fsize(bytes.length)} 超出内联 Hex 编辑上限 64 KB，仅展示前 4 KB）`);
+      const hint = document.createElement("span");
+      hint.className = "resed-trunc";
+      hint.textContent = "（过大，内联 Hex 编辑仅限 ≤ 64 KB；可导出后用外部工具改，或从文件替换）";
+      ops.appendChild(hint);
     }
   }
 
@@ -621,73 +601,263 @@ export async function mount(el) {
     return bar;
   }
 
-  function makeTextEditor(meta, text, utf16, hl, cancel) {
+  /* ---------- 代码编辑器（预览即编辑）：行号槽 + 高亮层 + 透明 textarea ---------- */
+
+  function makeCodeEditor(meta, view, markStaged) {
     const wrap = document.createElement("div");
-    const hlWrap = document.createElement("div");
-    hlWrap.className = "resed-hlwrap";
+    wrap.className = "resed-code";
+    const bodyEl = document.createElement("div");
+    bodyEl.className = "resed-code-body";
+    const gutter = document.createElement("div");
+    gutter.className = "resed-gutter";
+    const main = document.createElement("div");
+    main.className = "resed-code-main";
     const pre = document.createElement("pre");
-    pre.innerHTML = highlightMarkup(text, hl);
     const ta = document.createElement("textarea");
-    ta.value = text;
+    ta.value = view.text;
     ta.spellcheck = false;
-    const sync = () => {
+    main.append(pre, ta);
+    bodyEl.append(gutter, main);
+    const status = document.createElement("div");
+    status.className = "resed-code-status";
+    wrap.append(bodyEl, status);
+
+    const label = view.utf16 ? "UTF-16LE 文本" : "UTF-8 文本";
+    const byteLen = (s) => view.utf16
+      ? s.length * 2
+      : new TextEncoder().encode(s).length;
+    let lines = [""];
+    let timer = null;
+
+    const layout = () => {
+      lines = ta.value.split("\n");
+      let g = "";
+      for (let i = 1; i <= lines.length; i++) g += `<div class="gline">${i}</div>`;
+      gutter.innerHTML = g;
+      // 末尾补一个换行：textarea 的尾随换行也占一行，pre 不补会矮一行
+      pre.innerHTML = highlightMarkup(ta.value, view.hl) + "\n";
+    };
+
+    const caret = () => {
+      const p = ta.selectionStart;
+      let acc = 0;
+      for (let i = 0; i < lines.length; i++) {
+        if (p <= acc + lines[i].length) return { ln: i, col: p - acc };
+        acc += lines[i].length + 1;
+      }
+      return { ln: lines.length - 1, col: 0 };
+    };
+
+    const updateStatus = () => {
+      const { ln, col } = caret();
+      const prev = gutter.querySelector(".gline.cur");
+      if (prev) prev.classList.remove("cur");
+      const gl = gutter.children[ln];
+      if (gl) gl.classList.add("cur");
+      status.textContent = `行 ${ln + 1}，列 ${col + 1} · ${lines.length} 行`
+        + ` · ${byteLen(ta.value)} 字节（${label}）`
+        + " · 输入自动暂存，Ctrl+Enter 立即暂存（「保存/另存为」后写盘）";
+    };
+
+    const applyNow = () => {
+      clearTimeout(timer);
+      timer = null;
+      stageReplace(meta,
+        view.utf16 ? utf16leEncode(ta.value) : new TextEncoder().encode(ta.value),
+        label, true);
+      markStaged(label);
+    };
+
+    ta.addEventListener("input", () => {
+      layout();
+      updateStatus();
+      clearTimeout(timer);
+      timer = setTimeout(applyNow, 600);
+    });
+    ta.addEventListener("scroll", () => {
       pre.scrollTop = ta.scrollTop;
       pre.scrollLeft = ta.scrollLeft;
-    };
-    ta.addEventListener("input", () => {
-      pre.innerHTML = highlightMarkup(ta.value, hl);
-      sync();
+      gutter.scrollTop = ta.scrollTop;
     });
-    ta.addEventListener("scroll", sync);
-    hlWrap.append(pre, ta);
-    const note = document.createElement("p");
-    note.className = "table-meta";
-    note.textContent = "应用后进入暂存区，仍需「保存」或「另存为」才写盘。";
-    wrap.append(hlWrap, editBarEl("应用为资源内容", () => {
-      const bytes = utf16 ? utf16leEncode(ta.value)
-        : new TextEncoder().encode(ta.value);
-      stageReplace(meta, bytes, utf16 ? "UTF-16LE 文本" : "UTF-8 文本");
-    }, cancel), note);
+    ["keyup", "click", "focus"].forEach((ev) => ta.addEventListener(ev, updateStatus));
+    ta.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+        e.preventDefault();
+        applyNow();
+      }
+    });
+
+    layout();
+    updateStatus();
     return wrap;
   }
 
-  function makeHexEditor(meta, bytes, cancel) {
+  /* ---------- Hex 编辑器（预览即编辑）：虚拟滚动表格，hex/ascii 双列就地编辑 ---------- */
+
+  function makeHexEditor(meta, bytes, markStaged) {
+    const ROWH = 20;
+    const buf = bytes.slice();                 // 可写副本
+    const mod = new Uint8Array(buf.length);    // 1 = 该字节已修改（高亮）
+    let modCount = 0;
+    const rows = Math.ceil(buf.length / 16);
+
     const wrap = document.createElement("div");
-    const ta = document.createElement("textarea");
-    ta.className = "resed-editor";
-    ta.style.display = "block";
-    ta.value = hexLines(bytes);
-    ta.spellcheck = false;
-    const mirror = document.createElement("div");
-    mirror.className = "resed-hl";
-    const stat = document.createElement("p");
-    stat.className = "table-meta";
-    const refresh = () => {
-      const parsed = parseHexText(ta.value);
-      if (parsed) {
-        stat.textContent = `解析：${parsed.length} 字节（原 ${bytes.length}；字节数允许变化）`;
-        const LIMIT = 512;
-        const n = Math.min(parsed.length, LIMIT);
-        let s = "";
-        for (let i = 0; i < n; i++) {
-          const c = parsed[i];
-          s += (c >= 32 && c < 127) ? String.fromCharCode(c) : ".";
-          if ((i & 63) === 63) s += "\n";
-        }
-        mirror.textContent = s + (parsed.length > LIMIT ? `\n…（共 ${parsed.length} 字节）` : "");
-        mirror.style.display = "";
-      } else {
-        stat.textContent = "解析失败：hex 字符数为奇数或不含有效 hex";
-        mirror.style.display = "none";
-      }
+    wrap.className = "hexed-wrap";
+    const vp = document.createElement("div");
+    vp.className = "hexed";
+    const spacer = document.createElement("div");
+    spacer.className = "hexed-spacer";
+    spacer.style.height = `${rows * ROWH}px`;
+    vp.appendChild(spacer);
+    const status = document.createElement("div");
+    status.className = "hexed-status";
+    wrap.append(vp, status);
+
+    const hexByte = (i) => buf[i].toString(16).padStart(2, "0");
+    const ascText = (i) => {
+      const c = buf[i];
+      return c >= 32 && c < 127 ? String.fromCharCode(c) : ".";
     };
-    ta.addEventListener("input", refresh);
-    refresh();
-    wrap.append(ta, stat, mirror, editBarEl("应用为资源内容", () => {
-      const parsed = parseHexText(ta.value);
-      if (!parsed) return alert("hex 解析失败：请检查格式（每字节两位十六进制）");
-      stageReplace(meta, parsed, "Hex 编辑");
-    }, cancel));
+
+    // 只渲染可视 ±3 行，绝对定位行容器由 spacer 撑出真实滚动高度；
+    // clientHeight 为 0（尚未布局）时按默认 420px 兜底，避免首屏下方空白
+    const renderRows = () => {
+      const vis = Math.ceil((vp.clientHeight || 420) / ROWH) + 1;
+      const first = Math.max(0, Math.floor(vp.scrollTop / ROWH) - 3);
+      const last = Math.min(rows, first + vis + 6);
+      let html = "";
+      for (let r = first; r < last; r++) {
+        const off = r * 16;
+        html += `<div class="hexed-row" style="top:${r * ROWH}px">`
+          + `<span class="hexed-off">${off.toString(16).padStart(8, "0")}</span>`;
+        for (let c = 0; c < 16; c++) {
+          const i = off + c;
+          html += i < buf.length
+            ? `<span class="hexed-c${mod[i] ? " mod" : ""}" contenteditable="plaintext-only"`
+              + ` spellcheck="false" data-i="${i}">${hexByte(i)}</span>`
+            : `<span class="hexed-pad"></span>`;
+        }
+        html += `<span class="hexed-gap"></span>`;
+        for (let c = 0; c < 16; c++) {
+          const i = off + c;
+          html += i < buf.length
+            ? `<span class="hexed-a${mod[i] ? " mod" : ""}" contenteditable="plaintext-only"`
+              + ` spellcheck="false" data-i="${i}">${esc(ascText(i))}</span>`
+            : `<span class="hexed-pad"></span>`;
+        }
+        html += `</div>`;
+      }
+      spacer.innerHTML = html;
+    };
+
+    let raf = 0;
+    vp.addEventListener("scroll", () => {
+      if (!raf) raf = requestAnimationFrame(() => { raf = 0; renderRows(); });
+    });
+
+    const findCell = (i, hexCls) =>
+      spacer.querySelector(`${hexCls ? ".hexed-c" : ".hexed-a"}[data-i="${i}"]`);
+
+    const focusCell = (el) => {
+      if (!el) return;
+      el.focus();
+      const r = document.createRange();
+      r.selectNodeContents(el);
+      r.collapse(false);
+      const sel = getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+    };
+
+    const markMod = (i) => {
+      if (!mod[i]) { mod[i] = 1; modCount++; }
+    };
+
+    const updStatus = () => {
+      status.textContent = modCount
+        ? `${modCount} / ${buf.length} 字节已修改 · 已自动暂存`
+        + " · Ctrl+Enter 立即暂存（「保存/另存为」后写盘）"
+        : `点击任意 Hex 或 ASCII 单元格直接修改（字节数不变，0 / ${buf.length} 已修改）`;
+    };
+
+    let timer = null;
+    const stage = (immediate) => {
+      if (!modCount) return;
+      clearTimeout(timer);
+      const doStage = () => {
+        const note = `Hex 编辑，${modCount} 字节改动`;
+        stageReplace(meta, buf.slice(), note, true);
+        markStaged(note);
+      };
+      if (immediate) doStage();
+      else timer = setTimeout(doStage, 400);
+    };
+
+    // 事件委托：单元格 input → 清洗/写回 buf → 同步镜像列 → 焦点右移
+    spacer.addEventListener("input", (e) => {
+      const cell = e.target.closest?.("[contenteditable]");
+      if (!cell) return;
+      const i = Number(cell.dataset.i);
+      if (Number.isNaN(i)) return;
+      if (cell.classList.contains("hexed-c")) {
+        const t = cell.textContent.toLowerCase().replace(/[^0-9a-f]/g, "").slice(-2);
+        cell.textContent = t;
+        if (t.length === 2) {
+          buf[i] = parseInt(t, 16);
+          markMod(i);
+          cell.classList.add("mod");
+          const a = findCell(i, false);
+          if (a) { a.textContent = ascText(i); a.classList.add("mod"); }
+          updStatus();
+          stage(false);
+          focusCell(findCell(i + 1, true));
+        }
+      } else {
+        const ch = cell.textContent.slice(-1);
+        const code = ch.charCodeAt(0);
+        if (ch && code >= 32 && code < 256) {
+          buf[i] = code;
+          markMod(i);
+          cell.textContent = ch;
+          cell.classList.add("mod");
+          const h = findCell(i, true);
+          if (h) { h.textContent = hexByte(i); h.classList.add("mod"); }
+          updStatus();
+          stage(false);
+          focusCell(findCell(i + 1, false));
+        } else {
+          cell.textContent = ascText(i);   // 无效输入回弹
+        }
+      }
+    });
+
+    spacer.addEventListener("keydown", (e) => {
+      const cell = e.target.closest?.("[contenteditable]");
+      if (!cell) return;
+      if (e.key === "Enter" || ((e.ctrlKey || e.metaKey) && e.key === "Enter")) {
+        e.preventDefault();
+        stage(true);
+        return;
+      }
+      const i = Number(cell.dataset.i);
+      const isHex = cell.classList.contains("hexed-c");
+      const nav = (ni, nh) => { e.preventDefault(); focusCell(findCell(ni, nh)); };
+      if (e.key === "ArrowRight") nav(i + 1, isHex);
+      else if (e.key === "ArrowLeft") nav(i - 1, isHex);
+      else if (e.key === "ArrowDown") nav(i + 16, isHex);
+      else if (e.key === "ArrowUp") nav(i - 16, isHex);
+      else if (e.key === "Tab") { e.preventDefault(); focusCell(findCell(i, !isHex)); }
+    });
+
+    // 首渲染时机：挂载前 clientHeight 为 0，rAF 在无头/后台标签下也可能过早；
+    // ResizeObserver 首次布局回调 + rAF 兜底
+    const ro = new ResizeObserver(() => {
+      if (!vp.isConnected) { ro.disconnect(); return; }
+      renderRows();
+    });
+    ro.observe(vp);
+    requestAnimationFrame(() => renderRows());
+    updStatus();
     return wrap;
   }
 
