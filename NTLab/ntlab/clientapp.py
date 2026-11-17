@@ -26,6 +26,7 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]   # 项目根（ntlab/ 的上一级）
+ICON = Path(__file__).resolve().parent / "resources" / "app.ico"
 
 import uvicorn
 
@@ -58,6 +59,45 @@ def _console_attached() -> bool:
         return ctypes.windll.kernel32.GetConsoleWindow() != 0
     except Exception:
         return True
+
+
+def _set_console(show: bool) -> None:
+    """冻结版（EXE）的终端开/关：AllocConsole / FreeConsole，无需重启进程。
+
+    EXE 本体是 windowed 构建（默认无黑框）；「终端开」即现场分配一个控制台
+    （UTF-8 代码页 + VT 转义序列以支持彩色日志），「终端关」把标准流引到
+    os.devnull 后释放控制台。
+    """
+    if not _IS_FROZEN:
+        return   # 开发模式走 _relaunch（python.exe / pythonw.exe）
+    k32 = ctypes.windll.kernel32
+    if show:
+        if _console_attached() or not k32.AllocConsole():
+            return
+        k32.SetConsoleOutputCP(65001)   # UTF-8 输出
+        k32.SetConsoleCP(65001)
+        try:
+            h = k32.GetStdHandle(-11)
+            mode = ctypes.c_uint32()
+            if k32.GetConsoleMode(h, ctypes.byref(mode)):
+                k32.SetConsoleMode(h, mode.value | 0x0004)   # ENABLE_VIRTUAL_TERMINAL_PROCESSING
+        except Exception:
+            pass
+        try:
+            sys.stdout = open("CONOUT$", "w", encoding="utf-8", errors="replace", buffering=1)
+            sys.stderr = sys.stdout
+            sys.stdin = open("CONIN$", "r", encoding="utf-8", errors="replace")
+        except OSError:
+            pass
+    else:
+        if not _console_attached():
+            return
+        try:
+            null = open(os.devnull, "w", encoding="utf-8", buffering=1)
+            sys.stdout = sys.stderr = null
+        except OSError:
+            pass
+        k32.FreeConsole()
 
 
 def _port_is_ntlab(port: int) -> bool:
@@ -157,19 +197,30 @@ class ClientApi:
         old = appsettings.load()
         messages: list[str] = []
 
-        # 1) 终端开/关：需要以 pythonw / python 重启整个进程（最后执行）
-        if bool(payload.get("no_console")) != bool(old.get("no_console")):
-            threading.Timer(0.8, _relaunch, args=(bool(payload["no_console"]),)).start()
-            messages.append("终端模式已切换，程序即将自动重启")
+        # 1) 终端开/关：冻结版现场 Alloc/Free 控制台；开发模式以 pythonw / python 重启进程
+        console_changed = bool(payload.get("no_console")) != bool(old.get("no_console"))
+        if console_changed:
+            want_console = not bool(payload["no_console"])
+            if _IS_FROZEN:
+                _set_console(want_console)
+                messages.append(f"终端已{'开启' if want_console else '关闭'}")
+            else:
+                threading.Timer(0.8, _relaunch, args=(bool(payload["no_console"]),)).start()
+                messages.append("终端模式已切换，程序即将自动重启")
 
         # 2) 端口变更 → 进程内重启服务线程；彩色立即生效到新服务线程
         want_port = int(payload.get("port", old["port"]))
         want_color = bool(payload.get("color_terminal", old["color_terminal"]))
+        restarted = False
         if want_port != self._runner.port or want_color != self._runner._color:
             ok, msg = self._runner.restart(want_port, want_color)
             messages.append(msg)
+            restarted = True
             if not ok:
                 return {"ok": False, "message": "；".join(messages)}
+        elif _IS_FROZEN and console_changed:
+            # 终端开/关改变了 use_colors 的前提，静默重启服务线程刷新
+            self._runner.restart(self._runner.port, want_color)
 
         return {"ok": True, "message": "；".join(messages) or "已应用", "port": self._runner.port}
 
@@ -187,6 +238,30 @@ def _relaunch(no_console: bool) -> None:
     os._exit(0)
 
 
+def _hide_titlebar_icon(window) -> None:
+    """窗口显示后在 UI 线程隐藏标题栏图标（任务栏图标保留 Form.Icon）。"""
+    window.events.shown.wait(10)
+    form = window.native
+    if form is None:
+        return
+
+    def _hide() -> None:
+        try:
+            form.ShowIcon = False
+        except Exception:
+            pass
+
+    try:
+        from System import Func, Type
+
+        if form.InvokeRequired:
+            form.Invoke(Func[Type](_hide))
+        else:
+            _hide()
+    except Exception:
+        _hide()
+
+
 def main(port: int | None = None) -> None:
     """客户端入口；port 用于 CLI --port 覆盖（仅本次运行，不写回设置文件）。"""
     import webview
@@ -196,6 +271,11 @@ def main(port: int | None = None) -> None:
     settings = appsettings.load()
     port = int(port) if port is not None else int(settings["port"])
 
+    # EXE（windowed 构建）按设置决定是否现场分配控制台
+    if _IS_FROZEN:
+        _set_console(not bool(settings["no_console"]))
+
+    icon = str(ICON) if ICON.is_file() else None
     runner = ServerRunner(port, bool(settings["color_terminal"]))
     attached = False
     if _port_in_use(port):
@@ -210,7 +290,7 @@ def main(port: int | None = None) -> None:
                          f"再启动客户端；或直接重启旧实例的终端进程。</p></body>",
                     width=560, height=300,
                 )
-                webview.start()
+                webview.start(gui="edgechromium", icon=icon)
                 return
             attached = True   # 已有新版本 NTLab 在跑：直接附着，不重复起服务
         else:
@@ -221,7 +301,7 @@ def main(port: int | None = None) -> None:
                      f"<p>请在「调试」页更换端口，或排查占用该端口的进程。</p></body>",
                 width=520, height=280,
             )
-            webview.start()
+            webview.start(gui="edgechromium", icon=icon)
             return
     else:
         runner.start()
@@ -232,13 +312,13 @@ def main(port: int | None = None) -> None:
     os.environ["NTLAB_PORT"] = str(runner.port)
     url = f"http://127.0.0.1:{runner.port}/"
     title = "NTLab — Windows 系统底层实验室"
-    webview.create_window(
+    window = webview.create_window(
         title, url,
         js_api=ClientApi(runner),
         width=1360, height=860, min_size=(980, 640),
         background_color="#141414",
     )
-    webview.start(gui="edgechromium")
+    webview.start(_hide_titlebar_icon, window, gui="edgechromium", icon=icon)
     # 窗口关闭：附着模式不动别人的服务；自起模式随 daemon 线程退出
     if not attached and runner._server is not None:
         runner.stop()

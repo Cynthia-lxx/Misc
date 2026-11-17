@@ -4,7 +4,8 @@
 字段：
   port            服务器端口（默认 8765；CLI --port 优先于该值）
   color_terminal  终端彩色输出（uvicorn 日志与横幅颜色）
-  no_console      程序终端开关：false=带终端（python.exe），true=无终端（pythonw.exe）
+  no_console      程序终端开关：true=默认无黑框（EXE 窗口版 / pythonw.exe），
+                  false=带终端（python.exe；冻结版则现场 AllocConsole）
   open_browser    以纯服务器方式启动时是否自动开浏览器（客户端模式忽略）
 """
 
@@ -21,7 +22,7 @@ _PATH = Path(__file__).resolve().parents[2] / "data" / "settings.json"
 _DEFAULTS: dict = {
     "port": 8765,
     "color_terminal": True,
-    "no_console": False,
+    "no_console": True,   # 默认无终端（EXE 不出黑框；开发模式以 python.exe 启动时不受此限）
     "open_browser": True,
     "mirror_terminal": True,
 }
