@@ -485,7 +485,7 @@ const DICTS = {
   },
 };
 
-let lang = localStorage.getItem("ntlab-lang") === "en" ? "en" : "zh";
+let lang = localStorage.getItem("ntlab-lang") === "zh" ? "zh" : "en";
 
 /* 大页面（pe/objdir/resedit/playground/imgedit）的条目直接以**中文原文作 key**，
  * 词典只需维护 en 映射；这里给 zh 自动补恒等映射（t() 回退亦如此），

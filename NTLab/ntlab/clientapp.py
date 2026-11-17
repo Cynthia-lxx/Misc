@@ -311,7 +311,7 @@ def main(port: int | None = None) -> None:
 
     os.environ["NTLAB_PORT"] = str(runner.port)
     url = f"http://127.0.0.1:{runner.port}/"
-    title = "NTLab — Windows 系统底层实验室"
+    title = "NTLab"
     window = webview.create_window(
         title, url,
         js_api=ClientApi(runner),

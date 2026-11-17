@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="data:,">
-  <title>NTLab — Windows 系统底层实验室</title>
+  <title>NTLab</title>
   <script>
-    // 防闪引导：在样式表应用前恢复上次选择的主题与语言
+    // 防闪引导：在样式表应用前恢复上次选择的主题与语言（默认英文）
     document.documentElement.dataset.theme = localStorage.getItem("ntlab-theme") || "blue";
-    if (localStorage.getItem("ntlab-lang") === "en") document.documentElement.lang = "en";
+    if (localStorage.getItem("ntlab-lang") !== "zh") document.documentElement.lang = "en";
   </script>
   <link rel="stylesheet" href="/vendor/tokens.css">
   <link rel="stylesheet" href="/vendor/themes.css">
