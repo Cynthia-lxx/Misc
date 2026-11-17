@@ -11,6 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from ntlab.core.errors import NtlabError
 from ntlab.core.errors import NotFoundError
 
+from . import app as app_api
 from . import ntobj
 from . import pe
 from . import system
@@ -30,6 +31,7 @@ def create_app() -> FastAPI:
     app.include_router(pe.router, prefix="/api/pe", tags=["pe"])
     app.include_router(ntobj.router, prefix="/api/ntobj", tags=["ntobj"])
     app.include_router(winapi.router, prefix="/api/winapi", tags=["winapi"])
+    app.include_router(app_api.router, prefix="/api/app", tags=["app"])
 
     @app.exception_handler(NtlabError)
     async def ntlab_error_handler(_: Request, exc: NtlabError) -> JSONResponse:

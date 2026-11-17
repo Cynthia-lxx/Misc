@@ -19,12 +19,14 @@ import * as peViewer from "./pages/pe-viewer.js";
 import * as objdir from "./pages/objdir.js";
 import * as playground from "./pages/playground.js";
 import * as resedit from "./pages/resedit.js";
+import * as debug from "./pages/debug.js";
 
 register("home", home);
 register("pe", peViewer);
 register("objdir", objdir);
 register("playground", playground);
 register("resedit", resedit);
+register("debug", debug);
 
 const content = document.getElementById("content");
 start(content);
