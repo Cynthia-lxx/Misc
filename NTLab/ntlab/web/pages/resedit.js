@@ -9,6 +9,7 @@
 
 import { apiGet, apiUpload, apiSend } from "../api.js";
 import { query } from "../router.js";
+import { openImageEditor } from "./resedit-imgedit.js";
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) => ({
@@ -36,13 +37,6 @@ function bytesFromB64(b64) {
   const bin = atob(b64);
   const out = new Uint8Array(bin.length);
   for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
-  return out;
-}
-
-function concatBytes(a, b) {
-  const out = new Uint8Array(a.length + b.length);
-  out.set(a, 0);
-  out.set(b, a.length);
   return out;
 }
 
@@ -148,51 +142,6 @@ function dibToIcoBlob(b) {
   dv.setUint32(14, b.length, true);                                  // bytesInRes
   dv.setUint32(18, 22, true);                                        // imageOffset
   return new Blob([head, b], { type: "image/x-icon" });
-}
-
-const IMAGE_TYPES = new Set(["ICON", "BITMAP", "GROUP_ICON", "CURSOR", "GROUP_CURSOR"]);
-
-/** 加载 Blob 为 HTMLImageElement。 */
-function loadImageEl(blob) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error("图像解码失败"));
-    img.src = URL.createObjectURL(blob);
-  });
-}
-
-/** ImageData(RGBA) → 32bpp 自底向上 DIB；withMask 时附 AND mask（ICON/CURSOR）。 */
-function encodeDib(imageData, withMask) {
-  const W = imageData.width, H = imageData.height, d = imageData.data;
-  const stride = ((W + 31) >> 5) << 2;             // AND mask 行宽（4B 对齐）
-  const maskBytes = withMask ? stride * H : 0;
-  const buf = new ArrayBuffer(40 + W * 4 * H + maskBytes);
-  const dv = new DataView(buf);
-  dv.setUint32(0, 40, true);                        // biSize
-  dv.setInt32(4, W, true);
-  dv.setInt32(8, withMask ? H * 2 : H, true);       // ICON/CURSOR 的 DIB 高 = 像素 + mask
-  dv.setUint16(12, 1, true);                        // planes
-  dv.setUint16(14, 32, true);                       // bitcount（统一 32bpp BGRA）
-  dv.setUint32(16, 0, true);                        // BI_RGB
-  dv.setUint32(20, W * 4 * H + maskBytes, true);    // sizeImage
-  const u8 = new Uint8Array(buf);
-  let p = 40;
-  for (let y = H - 1; y >= 0; y--) {                // 自底向上
-    for (let x = 0; x < W; x++) {
-      const i = (y * W + x) * 4;
-      u8[p++] = d[i + 2]; u8[p++] = d[i + 1]; u8[p++] = d[i]; u8[p++] = d[i + 3];
-    }
-  }
-  if (withMask) {                                   // AND mask：alpha<128 → 位 1
-    for (let y = H - 1; y >= 0; y--) {
-      for (let x = 0; x < W; x++) {
-        if (d[(y * W + x) * 4 + 3] < 128) u8[p + (x >> 3)] |= (0x80 >> (x & 7));
-      }
-      p += stride;
-    }
-  }
-  return new Uint8Array(buf);
 }
 
 /** 内容形态：image / text(xml|ini|plain) / hex。outFormat = 内联编辑的重编码目标。 */
@@ -518,11 +467,6 @@ export async function mount(el) {
     };
 
     const body = document.createElement("div");
-    const enterEdit = (builder) => {
-      const orig = [...body.children];
-      const cancel = () => body.replaceChildren(...orig);
-      body.replaceChildren(builder(cancel));
-    };
     ops.append(dl, rep, undo);
     head.append(title, info, ops);
     previewEl.appendChild(head);
@@ -549,7 +493,10 @@ export async function mount(el) {
           ed.href = "#"; ed.textContent = "编辑图像";
           ed.addEventListener("click", (e) => {
             e.preventDefault();
-            enterEdit((cancel) => makeImageEditor(meta, blob, view.outFormat, bytes, cancel));
+            openImageEditor({
+              meta, blob, outFormat: view.outFormat, origBytes: bytes,
+              onApply: (bytes2, note) => stageReplace(meta, bytes2, note),
+            });
           });
           ops.appendChild(ed);
         }
@@ -582,23 +529,6 @@ export async function mount(el) {
     box.className = "resed-hex";
     box.innerHTML = hexDumpHTML(bytes);
     container.appendChild(box);
-  }
-
-  function editBarEl(applyLabel, onApply, cancel) {
-    const bar = document.createElement("div");
-    bar.className = "resed-editbar";
-    const apply = document.createElement("button");
-    apply.type = "button";
-    apply.className = "ntl-action-btn";
-    apply.textContent = applyLabel;
-    apply.addEventListener("click", onApply);
-    const cancelBtn = document.createElement("button");
-    cancelBtn.type = "button";
-    cancelBtn.className = "ntl-action-btn";
-    cancelBtn.textContent = "取消";
-    cancelBtn.addEventListener("click", cancel);
-    bar.append(apply, cancelBtn);
-    return bar;
   }
 
   /* ---------- 代码编辑器（预览即编辑）：行号槽 + 高亮层 + 透明 textarea ---------- */
@@ -858,148 +788,6 @@ export async function mount(el) {
     ro.observe(vp);
     requestAnimationFrame(() => renderRows());
     updStatus();
-    return wrap;
-  }
-
-  /** 图像编辑器（Mask Editor 式）：画布叠加涂抹层，左键画 / 右键擦。 */
-  function makeImageEditor(meta, blob, outFormat, origBytes, cancel) {
-    const wrap = document.createElement("div");
-    const base = document.createElement("canvas");
-    const ovl = document.createElement("canvas");
-    ovl.className = "ovl";
-    const wrapBox = document.createElement("div");
-    wrapBox.className = "resed-canvas-wrap";
-    wrapBox.append(base, ovl);
-    let brush = 6;
-    let color = "#ff4455";
-    const undoStack = [];
-    const tools = document.createElement("div");
-    tools.className = "resed-imgtools";
-    const swatches = ["#ff4455", "#ffffff", "#000000", "#44ff88"];
-    const swEls = swatches.map((c, i) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "swatch" + (i === 0 ? " sel" : "");
-      b.style.background = c;
-      b.title = c;
-      b.addEventListener("click", () => {
-        color = c;
-        swEls.forEach((x) => x.classList.remove("sel"));
-        b.classList.add("sel");
-      });
-      return b;
-    });
-    const sizeLabel = document.createElement("span");
-    sizeLabel.textContent = `笔刷 ${brush}px`;
-    const size = document.createElement("input");
-    size.type = "range";
-    size.min = 2; size.max = 48; size.value = brush;
-    size.addEventListener("input", () => {
-      brush = Number(size.value);
-      sizeLabel.textContent = `笔刷 ${brush}px`;
-    });
-    const undoBtn = document.createElement("button");
-    undoBtn.type = "button";
-    undoBtn.className = "ntl-action-btn";
-    undoBtn.textContent = "撤销";
-    const clearBtn = document.createElement("button");
-    clearBtn.type = "button";
-    clearBtn.className = "ntl-action-btn";
-    clearBtn.textContent = "清空涂抹";
-    tools.append(...swEls, sizeLabel, size, undoBtn, clearBtn);
-
-    (async () => {
-      const img = await loadImageEl(blob);
-      base.width = ovl.width = img.naturalWidth;
-      base.height = ovl.height = img.naturalHeight;
-      base.getContext("2d").drawImage(img, 0, 0);
-    })().catch((err) => {
-      wrap.replaceChildren(errBoxEl(err.message));
-    });
-
-    const pos = (e) => {
-      const r = ovl.getBoundingClientRect();
-      return {
-        x: (e.clientX - r.left) * (ovl.width / r.width),
-        y: (e.clientY - r.top) * (ovl.height / r.height),
-      };
-    };
-    const snapshot = () => {
-      undoStack.push(ovl.getContext("2d").getImageData(0, 0, ovl.width, ovl.height));
-      if (undoStack.length > 25) undoStack.shift();
-    };
-    const stroke = (from, to, erase) => {
-      const ctx = ovl.getContext("2d");
-      ctx.save();
-      ctx.globalCompositeOperation = erase ? "destination-out" : "source-over";
-      const paint = erase ? "rgba(0,0,0,1)" : color + "8c";
-      ctx.strokeStyle = paint;
-      ctx.lineWidth = brush;
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.beginPath();
-      ctx.moveTo(from.x, from.y);
-      ctx.lineTo(to.x, to.y);
-      ctx.stroke();
-      ctx.restore();
-    };
-    let drawing = false;
-    let eraseMode = false;
-    let last = null;
-    ovl.addEventListener("pointerdown", (e) => {
-      if (!ovl.width) return;
-      drawing = true;
-      eraseMode = e.button === 2;
-      ovl.setPointerCapture(e.pointerId);
-      snapshot();
-      last = pos(e);
-      stroke(last, last, eraseMode);
-    });
-    ovl.addEventListener("pointermove", (e) => {
-      if (!drawing) return;
-      const p = pos(e);
-      stroke(last, p, eraseMode);
-      last = p;
-    });
-    ovl.addEventListener("pointerup", () => { drawing = false; });
-    ovl.addEventListener("contextmenu", (e) => e.preventDefault());
-    undoBtn.addEventListener("click", () => {
-      const s = undoStack.pop();
-      if (s) ovl.getContext("2d").putImageData(s, 0, 0);
-    });
-    clearBtn.addEventListener("click", () => {
-      snapshot();
-      ovl.getContext("2d").clearRect(0, 0, ovl.width, ovl.height);
-    });
-
-    const note = document.createElement("p");
-    note.className = "table-meta";
-    note.textContent = "左键涂抹 / 右键擦除；应用时合并进原图。"
-      + (outFormat.startsWith("dib") ? "保存时重编码为 32bpp BGRA DIB（原位深不保留）。" : "");
-
-    const onApply = async () => {
-      if (!ovl.width) return alert("图像尚未加载完成");
-      const merged = document.createElement("canvas");
-      merged.width = ovl.width;
-      merged.height = ovl.height;
-      const ctx = merged.getContext("2d");
-      ctx.drawImage(base, 0, 0);
-      ctx.drawImage(ovl, 0, 0);
-      let bytes2;
-      if (outFormat === "png") {
-        const blob2 = await new Promise((res) => merged.toBlob(res, "image/png"));
-        bytes2 = new Uint8Array(await blob2.arrayBuffer());
-      } else {
-        const data = ctx.getImageData(0, 0, merged.width, merged.height);
-        const dib = encodeDib(data, outFormat !== "dib-bmp");
-        bytes2 = outFormat === "dib-cursor"
-          ? concatBytes(origBytes.subarray(0, 4), dib)   // 保留 hotspot 2 word
-          : dib;
-      }
-      stageReplace(meta, bytes2,
-        outFormat === "png" ? "画布编辑 → PNG" : "画布编辑 → 32bpp DIB");
-    };
-    wrap.append(tools, wrapBox, note, editBarEl("应用为资源内容", onApply, cancel));
     return wrap;
   }
 
