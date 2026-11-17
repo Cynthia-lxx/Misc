@@ -27,6 +27,7 @@ from pathlib import Path
 from typing import Any
 
 from ntlab.core import winapi_library
+from ntlab.core.apppaths import fspack_dist_root
 from ntlab.core.errors import NtlabError
 
 # ---------------------------------------------------------------- structures
@@ -386,8 +387,21 @@ def _run_dynamic_call(api: str, args: dict[str, Any], refs: list[dict],
     payload = {"path": dll_path, "name": hit["name"] if hit else api, "args": values}
     t0 = time.perf_counter()
     try:
+        if getattr(sys, "frozen", False):
+            # PyInstaller EXE：以自身 exe + worker 标志拉起（main.py 拦截该标志）
+            cmd = [sys.executable, "--ntlab-worker"]
+        else:
+            dist = fspack_dist_root()
+            py = dist / "runtime" / "python.exe" if dist else None
+            if py is not None and py.is_file():
+                # fspack：loader exe 是 GUI 子系统（stdin 已被 wrapper 换成 devnull，
+                # JSON 协议无法经 stdin 传入），worker 必须经 runtime 解释器
+                # 走入口脚本拉起（console 子系统，stdin 正常）
+                cmd = [str(py), str(dist / "_entry_ntlab.py"), "--ntlab-worker"]
+            else:
+                cmd = [sys.executable, str(Path(__file__).with_name("winapi_worker.py"))]
         proc = subprocess.run(
-            [sys.executable, str(Path(__file__).with_name("winapi_worker.py"))],
+            cmd,
             input=json.dumps(payload), text=True, encoding="utf-8",
             capture_output=True, timeout=2.0,
             creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),

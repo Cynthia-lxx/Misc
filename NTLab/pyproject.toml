@@ -1,27 +1,30 @@
 [project]
 name = "ntlab"
 version = "0.1.0"
-description = "NTLab - Windows system internals play/test/research toolkit (local server + web UI)"
-readme = "README.md"
+description = "NTLab — Windows system internals lab (PE analyzer / ObjDir / Resource editor / WinAPI playground)"
+authors = [{ name = "CynthiaLx_" }]
 requires-python = ">=3.12"
-license = { text = "GPL-3.0-or-later" }
-authors = [{ name = "wjz-s" }]
+
 dependencies = [
-    "fastapi>=0.110",
-    "uvicorn[standard]>=0.29",
-    "python-multipart>=0.0.9",
-    "pefile>=2023.2.7",
-    "pywin32>=306",
-    "websockets>=12.0",
+    "fastapi>=0.163",
+    "uvicorn>=0.54",
+    "python-multipart>=0.0.20",   # fastapi UploadFile 隐式依赖（AST 扫不到，须显式声明）
+    "pywebview>=6.2",
+    "pythonnet>=3.2 ; sys_platform == 'win32'",
+    "pywin32>=310 ; sys_platform == 'win32'",
+    "pefile>=2024.8",
+    "capstone>=5.0",
+    "keystone-engine>=0.9.2",
 ]
 
-[project.optional-dependencies]
-dev = ["pytest>=8.0"]
+# fspack 打包：唯一入口 main:main（client.pyw 是开发期双击入口，不参与打包）
+[project.scripts]
+ntlab = "main:main"
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "-q"
-
-[build-system]
-requires = ["setuptools>=68"]
-build-backend = "setuptools.build_meta"
+[tool.fspack]
+icon = "ntlab/resources/app.ico"
+description = "NTLab"
+author = "CynthiaLx_"
+# 不进包的目录：legacy（旧演示脚本）/ scripts（构建期工具）/ tests / data（运行时自建）
+# 注意：fspack 的 parsing.py 读取的键名是 exclude（不是 exclude-dirs）
+exclude = ["legacy", "scripts", "tests", "data", ".venv", "dist", "build"]

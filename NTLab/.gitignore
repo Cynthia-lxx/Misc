@@ -4,6 +4,10 @@ __pycache__/
 .venv/
 *.egg-info/
 
+# fspack 打包产物与构建中间目录
+dist/
+build/
+
 # Runtime logs / temp
 *.log
 _logs/

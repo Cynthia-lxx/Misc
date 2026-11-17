@@ -10,12 +10,14 @@ import json
 import sqlite3
 import threading
 import time
-from pathlib import Path
 from typing import Any
 
 from ntlab.core.errors import NtlabError
 
-_DB_PATH = Path(__file__).resolve().parents[2] / "data" / "user.db"
+# 打包（PyInstaller EXE / fspack dist）：数据库放 exe 旁边（portable）；开发模式放项目根
+from ntlab.core.apppaths import base_dir as _base_dir
+
+_DB_PATH = _base_dir() / "data" / "user.db"
 _LOCK = threading.Lock()
 _CONN: sqlite3.Connection | None = None
 

@@ -17,7 +17,11 @@ import tempfile
 from pathlib import Path
 from threading import Lock
 
-_PATH = Path(__file__).resolve().parents[2] / "data" / "settings.json"
+# 打包（PyInstaller EXE / fspack dist）：数据文件放 exe 旁边（portable）；开发模式放项目根
+from ntlab.core.apppaths import base_dir as _base_dir
+
+_BASE = _base_dir()
+_PATH = _BASE / "data" / "settings.json"
 
 _DEFAULTS: dict = {
     "port": 8765,

@@ -16,6 +16,7 @@ import sys
 import webbrowser
 
 import uvicorn
+import webview  # noqa: F401  # 顶层导入：fspack AppType 推断需见 webview → GUI（无控制台 loader）
 
 from ntlab.api import create_app
 from ntlab.core import appsettings
@@ -39,6 +40,13 @@ def run_server(host: str, port: int, color: bool, open_browser: bool) -> None:
 
 
 def main() -> None:
+    # PyInstaller EXE 的 worker 模式：core/winapi.py 以 [exe, "--ntlab-worker"] 拉起，
+    # stdin/stdout 各一行 JSON（协议见 ntlab/core/winapi_worker.py）
+    if "--ntlab-worker" in sys.argv:
+        from ntlab.core.winapi_worker import main as worker_main
+        worker_main()
+        return
+
     parser = argparse.ArgumentParser(description="NTLab local server / client")
     parser.add_argument("--host", default=DEFAULT_HOST)
     parser.add_argument("--port", type=int, default=None,

@@ -25,7 +25,11 @@ import threading
 import time
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]   # 项目根（ntlab/ 的上一级）
+# 打包（PyInstaller EXE / fspack dist）：ROOT 取 exe/dist 所在目录（数据/重启都落在旁边）；
+# 开发模式：项目根
+from ntlab.core.apppaths import base_dir, is_frozen
+
+ROOT = base_dir()
 ICON = Path(__file__).resolve().parent / "resources" / "app.ico"
 
 import uvicorn
@@ -34,7 +38,7 @@ from ntlab.api import create_app
 from ntlab.core import appsettings
 from ntlab.core.loghub import build_log_config
 
-_IS_FROZEN = getattr(sys, "frozen", False)
+_IS_FROZEN = is_frozen()
 
 
 # ---- 高 DPI：进程级 Per-Monitor DPI Aware（必须在创建任何窗口之前） ----
