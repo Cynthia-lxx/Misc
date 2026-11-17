@@ -7,9 +7,10 @@
  * 「另存为」一次性重建 .rsrc。文件管理体系独立：路径输入 / 拖放上传 / 打包下载。
  */
 
-import { apiGet, apiUpload, apiSend } from "../api.js";
+import { apiSend } from "../api.js";
 import { query } from "../router.js";
 import { openImageEditor } from "./resedit-imgedit.js";
+import { apiGetProgress, fetchBytesProgress, fetchBlobProgress, apiUploadProgress, createLoadbar } from "../progress.js";
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) => ({
@@ -54,15 +55,10 @@ function utf16leEncode(text) {
   return out;
 }
 
-async function fetchResourceBytes(path, type, name, lang) {
+async function fetchResourceBytes(path, type, name, lang, onProgress) {
   const url = `/api/pe/resources/extract?path=${encodeURIComponent(path)}`
     + `&type=${encodeURIComponent(String(type))}&name=${encodeURIComponent(String(name))}&lang=${lang}`;
-  const res = await fetch(url);
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new Error(data?.error?.message || `HTTP ${res.status}`);
-  }
-  return new Uint8Array(await res.arrayBuffer());
+  return fetchBytesProgress(url, onProgress);
 }
 
 /* ---------------- 格式检测 ---------------- */
@@ -232,6 +228,7 @@ export async function mount(el) {
       <div class="drop-zone resed-drop" id="resed-drop" style="margin-top:14px">
         或把 PE 文件拖到这里（≤ 64 MB）
       </div>
+      <div id="resed-load"></div>
       <div id="resed-error"></div>
       <div id="resed-work">
         <div class="resed-split">
@@ -252,6 +249,7 @@ export async function mount(el) {
   const packBtn = el.querySelector("#resed-pack");
   const metaEl = el.querySelector("#resed-meta");
   const drop = el.querySelector("#resed-drop");
+  const loadHost = el.querySelector("#resed-load");
   const errBox = el.querySelector("#resed-error");
   const workEl = el.querySelector("#resed-work");
   const leftEl = el.querySelector("#resed-left");
@@ -286,6 +284,21 @@ export async function mount(el) {
     document.body.appendChild(a); a.click(); a.remove();
   }
 
+  /** 在 #resed-load 容器里跑一个带进度的加载条；fn(报告进度的回调) 执行加载。 */
+  async function runLoadbar(label, fn) {
+    const bar = createLoadbar(label);
+    loadHost.replaceChildren(bar.el);
+    bar.indeterminate();                       // 进度上报前先以不定长模式展示
+    try {
+      const result = await fn((loaded, total) => bar.set(loaded, total));
+      bar.finish();
+      return result;
+    } catch (err) {
+      bar.el.remove();
+      throw err;
+    }
+  }
+
   /* ---------- 打开 / 树形构建 ---------- */
 
   async function openPath(path) {
@@ -296,7 +309,8 @@ export async function mount(el) {
     clearErr();
     previewEl.innerHTML = '<p class="table-meta">加载中…</p>';
     try {
-      const r = await apiGet("/api/pe/resources", { path });
+      const r = await runLoadbar(`读取资源表 ${path.split("\\").pop()}`,
+        (onProgress) => apiGetProgress("/api/pe/resources", { path }, onProgress));
       currentPath = path;
       manifest = r.items ?? [];
       if (!manifest.length) {
@@ -400,7 +414,8 @@ export async function mount(el) {
       // 暂存优先：编辑器/预览显示待写入内容，而非磁盘上的旧数据
       const bytes = stagedItem
         ? bytesFromB64(stagedItem.entry.data_b64)
-        : await fetchResourceBytes(currentPath, meta.type, meta.name, meta.lang);
+        : await runLoadbar(`读取 ${meta.type}/${meta.name}`,
+          (onProgress) => fetchResourceBytes(currentPath, meta.type, meta.name, meta.lang, onProgress));
       const view = detectView(bytes, meta.type);
       renderPreview(meta, bytes, view, stagedItem);
     })().catch((err) => {
@@ -819,9 +834,10 @@ export async function mount(el) {
     }
     saveBtn.disabled = saveasBtn.disabled = true;
     try {
-      const r = await apiSend("POST", "/api/pe/resources/replace", {
-        path: currentPath, entries, in_place: inPlace, out_path: outPath,
-      });
+      const r = await runLoadbar(inPlace ? "写回原文件（自动 .bak）" : "另存为新文件",
+        async () => apiSend("POST", "/api/pe/resources/replace", {
+          path: currentPath, entries, in_place: inPlace, out_path: outPath,
+        }));
       alert(`已写入 ${r.replaced.length} 项资源\n输出：${r.path}\n`
         + `.rsrc ${r.old_rsrc_size} → ${r.rsrc_size} 字节\nPE CheckSum: ${r.checksum}`
         + (r.backup ? `\n备份：${r.backup}` : "")
@@ -840,9 +856,20 @@ export async function mount(el) {
   pathBox.addEventListener("keydown", (e) => { if (e.key === "Enter") openPath(pathBox.value); });
   saveBtn.addEventListener("click", () => commit(true));
   saveasBtn.addEventListener("click", () => commit(false));
-  packBtn.addEventListener("click", () => {
+  packBtn.addEventListener("click", async () => {
     if (!currentPath) return;
-    triggerDownload(`/api/pe/resources/pack?path=${encodeURIComponent(currentPath)}`);
+    try {
+      const blob = await runLoadbar("打包下载全部资源",
+        (onProgress) => fetchBlobProgress(`/api/pe/resources/pack?path=${encodeURIComponent(currentPath)}`, onProgress));
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = currentPath.split("\\").pop().replace(/\.[^.]+$/, "") + ".zip";
+      document.body.appendChild(a); a.click(); a.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 5000);
+    } catch (err) {
+      showErr(err);
+    }
   });
 
   ["dragover", "dragenter"].forEach((ev) => drop.addEventListener(ev, (e) => {
@@ -856,7 +883,8 @@ export async function mount(el) {
     if (!file) return;
     if (file.size > 64 * 1024 * 1024) return showErr({ message: "文件超过 64 MB 上限，请直接输入路径打开" });
     try {
-      const r = await apiUpload("/api/pe/upload", file);
+      const r = await runLoadbar(`上传 ${file.name}（${fsize(file.size)}）`,
+        (onProgress) => apiUploadProgress("/api/pe/upload", file, onProgress));
       pathBox.value = r.path;
       openPath(r.path);
     } catch (err) { showErr(err); }
