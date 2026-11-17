@@ -100,7 +100,12 @@ export class UiTabsElement extends HTMLElement {
     this._tabs = [...this.querySelectorAll(':scope > ui-tab, :scope > [data-value]')].map((el) => {
       const value = el.getAttribute('value') ?? el.dataset.value ?? '';
       const key = el.getAttribute('data-i18n-key');
-      const label = el.getAttribute('label') ?? el.textContent?.trim() ?? (key && dictionary?.[key]) ?? value;
+      // 用 || 而非 ??：textContent 可能是空串（标签只写在 data-i18n-key 里），
+      // ?? 不会跳过空串导致 label 落空（tab bar 整条变空白的根因）
+      const label = el.getAttribute('label')
+        || el.textContent?.trim()
+        || (key && dictionary?.[key])
+        || value;
       return { value, label };
     });
   }

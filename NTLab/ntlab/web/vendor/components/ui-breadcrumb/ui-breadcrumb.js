@@ -99,7 +99,11 @@ export class UiBreadcrumbElement extends HTMLElement {
     this._items = [...this.querySelectorAll(':scope > ui-crumb, :scope > [data-value]')].map((el) => {
       const value = el.getAttribute('value') ?? el.dataset.value ?? '';
       const key = el.getAttribute('data-i18n-key');
-      const label = el.getAttribute('label') ?? el.textContent?.trim() ?? (key && dictionary?.[key]) ?? value;
+      // 用 || 而非 ??：textContent 可能是空串（标签只写在 data-i18n-key 里），?? 不会跳过空串
+      const label = el.getAttribute('label')
+        || el.textContent?.trim()
+        || (key && dictionary?.[key])
+        || value;
       return { value, label };
     });
   }
