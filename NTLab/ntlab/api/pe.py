@@ -7,6 +7,7 @@ import binascii
 import os
 import tempfile
 import urllib.parse
+import uuid
 from typing import Annotated
 
 from fastapi import APIRouter, Query, Response, UploadFile
@@ -234,7 +235,11 @@ def resolve(name: str) -> dict:
 
 @router.post("/upload")
 async def upload(file: UploadFile) -> dict:
-    """Save an uploaded PE file to a temp dir and return its server-side path."""
+    """Save an uploaded PE file to a temp dir and return its server-side path.
+
+    每次上传落盘为唯一文件名：解析器缓存中的 pefile.PE 持有旧上传文件的 mmap，
+    Windows 下同名覆盖会报 OSError errno 22（文件被锁），必须避开同名路径。
+    """
     name = os.path.basename(file.filename or "uploaded.bin")
     ext = os.path.splitext(name)[1].lower()
     if ext not in _ALLOWED_EXT:
@@ -243,14 +248,20 @@ async def upload(file: UploadFile) -> dict:
             {"allowed": sorted(_ALLOWED_EXT)},
         )
     os.makedirs(_UPLOAD_DIR, exist_ok=True)
-    dest = os.path.join(_UPLOAD_DIR, name)
+    stem = os.path.splitext(name)[0]
+    dest = os.path.join(_UPLOAD_DIR, f"{stem}_{uuid.uuid4().hex[:8]}{ext}")
     size = 0
-    with open(dest, "wb") as out:
-        while chunk := await file.read(1024 * 1024):
-            size += len(chunk)
-            if size > 64 * 1024 * 1024:
-                out.close()
-                os.remove(dest)
-                raise InvalidPathError("upload exceeds 64 MB limit")
-            out.write(chunk)
+    try:
+        with open(dest, "wb") as out:
+            while chunk := await file.read(1024 * 1024):
+                size += len(chunk)
+                if size > 64 * 1024 * 1024:
+                    raise InvalidPathError("upload exceeds 64 MB limit")
+                out.write(chunk)
+    except InvalidPathError:
+        os.remove(dest)
+        raise
+    except OSError as exc:
+        os.remove(dest)
+        raise InvalidPathError(f"cannot write upload to temp dir: {exc}") from exc
     return {"path": dest, "size": size, "name": name}
