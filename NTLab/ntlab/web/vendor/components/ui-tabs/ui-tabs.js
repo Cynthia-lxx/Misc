@@ -64,11 +64,18 @@ export class UiTabsElement extends HTMLElement {
     this._render();
     this._row.addEventListener('keydown', this._onRowKeyDown);
     document.addEventListener('ui-i18n-change', this._onI18nChange);
+    // 字体异步加载（Comfortaa）会改变文字宽度，strip 的绝对定位不会自动跟随，
+    // 必须在字体就绪后重测；行宽变化（容器 resize）同理。
+    document.fonts?.ready.then(() => this._paintStrip(true));
+    this._ro = new ResizeObserver(() => this._paintStrip(true));
+    this._ro.observe(this._row);
   }
 
   disconnectedCallback() {
     this._row.removeEventListener('keydown', this._onRowKeyDown);
     document.removeEventListener('ui-i18n-change', this._onI18nChange);
+    this._ro?.disconnect();
+    this._ro = null;
   }
 
   attributeChangedCallback() {
@@ -147,10 +154,12 @@ export class UiTabsElement extends HTMLElement {
     const activeButton = [...this._row.children].find((b) => b.dataset.active === 'true')
       ?? this._row.children[0];
     if (!activeButton) return;
-    const rowRect = this._row.getBoundingClientRect();
+    // strip 的包含块是 :host 的 padding box（原点 = 宿主边框盒左缘 + 左边框），
+    // 而非 .tabs 行——宿主带水平 padding（如 #pg-tabs 14px）时按行原点算会整体偏左。
+    const hostRect = this.getBoundingClientRect();
     const rect = activeButton.getBoundingClientRect();
     this._strip.style.transitionDuration = instant ? '0ms' : '';
-    this._strip.style.left = `${Math.round(rect.left - rowRect.left)}px`;
+    this._strip.style.left = `${Math.round(rect.left - hostRect.left - this.clientLeft)}px`;
     this._strip.style.width = `${Math.round(rect.width)}px`;
     if (instant) requestAnimationFrame(() => { this._strip.style.transitionDuration = ''; });
   }
