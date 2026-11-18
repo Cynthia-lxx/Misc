@@ -84,6 +84,9 @@ async function runCode() {
     return;
   }
   runAbort = new AbortController();
+  let hardTimedOut = false;
+  // 硬超时兜底：服务端 45s 无响应就中断请求（正常编译+运行 < 30s）
+  const hardTimer = setTimeout(() => { hardTimedOut = true; runAbort.abort(); }, 45000);
   setRunBadge(t('运行中…'), 'warn');
   showDockTab('stdout');
   byId('dock-stdout').textContent = t('（编译中…）');
@@ -123,14 +126,21 @@ async function runCode() {
     if (data.stderr) showDockTab('stderr');
   } catch (err) {
     if (err.name === 'AbortError') {
-      setRunBadge(t('已停止'), 'warn');
-      byId('dock-stdout').textContent += `\n${t('（已手动停止）')}`;
-      S.log(t('运行已手动停止'), 'warn');
+      if (hardTimedOut) {
+        setRunBadge(t('失败'), 'err');
+        byId('dock-stdout').textContent += `\n${t('（服务端 45s 无响应，已中断；请看服务端控制台的 [toolchain] 日志）')}`;
+        S.warn(t('服务端 45s 无响应，已中断请求'));
+      } else {
+        setRunBadge(t('已停止'), 'warn');
+        byId('dock-stdout').textContent += `\n${t('（已手动停止）')}`;
+        S.log(t('运行已手动停止'), 'warn');
+      }
     } else {
       setRunBadge(t('失败'), 'err');
       S.warn(t('运行失败: {msg}', { msg: err.message }));
     }
   } finally {
+    clearTimeout(hardTimer);
     runAbort = null;
   }
 }

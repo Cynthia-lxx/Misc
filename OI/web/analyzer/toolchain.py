@@ -33,6 +33,15 @@ RUN_CACHE_LIMIT = 16                # cached executables per mode
 RUN_CACHE = Path(tempfile.gettempdir()) / "oi-run-cache"
 DEBUG_CACHE = Path(tempfile.gettempdir()) / "oi-debug-cache"
 
+# VERBOSE 大法：默认把编译/运行关键节点实时打到服务端控制台（flush=True），
+# OI_QUIET=1 关闭。排查「卡在 compiling」就看最后一行日志停在哪。
+VERBOSE = os.environ.get("OI_QUIET", "") != "1"
+
+
+def _vlog(msg: str) -> None:
+    if VERBOSE:
+        print("[toolchain] %s" % msg, flush=True)
+
 
 def _clip(text: str) -> str:
     text = text or ""
@@ -249,6 +258,7 @@ def _prune_cache(cache_dir: Path) -> None:
 
 def _compile_to(exe: Path, source: Path, opts: list, env: dict, flags: int) -> tuple:
     """Return (ok, stderr_text, compile_ms). Never raises."""
+    _vlog("compile start: %s" % source)
     start = time.perf_counter()
     try:
         res = subprocess.run(
@@ -257,11 +267,15 @@ def _compile_to(exe: Path, source: Path, opts: list, env: dict, flags: int) -> t
             cwd=str(source.parent), env=env, creationflags=flags,
         )
     except subprocess.TimeoutExpired:
+        _vlog("compile TIMEOUT after %.0fs: %s" % (MAX_COMPILE_SECONDS, source))
         return False, "compile timeout", MAX_COMPILE_SECONDS * 1000
     except Exception as exc:
+        _vlog("compile LAUNCH ERROR %s: %s" % (type(exc).__name__, source))
         return False, f"compile error: {type(exc).__name__}", 0.0
     ok = res.returncode == 0 and exe.is_file()
-    return ok, ("" if ok else res.stderr), round((time.perf_counter() - start) * 1000, 1)
+    ms = round((time.perf_counter() - start) * 1000, 1)
+    _vlog("compile done: rc=%s ms=%.1f ok=%s%s" % (res.returncode, ms, ok, "" if ok else " | " + (res.stderr or "")[:200]))
+    return ok, ("" if ok else res.stderr), ms
 
 
 def _cached_build(code: str, cache_root: Path, opts: list, source_name: str,
@@ -322,6 +336,7 @@ def run_program(code: str, stdin: str = "", timeout: float = DEFAULT_RUN_SECONDS
         code, RUN_CACHE, ["-O2", "-static-libgcc", "-static-libstdc++"],
         "main.cpp", "main.exe", env, flags,
     )
+    _vlog("run build: cached=%s ms=%.1f exe=%s" % (cached, compile_ms, exe))
     if not ok:
         return {
             "status": "failed", "reason": "compile_error", "phase": "compile",
@@ -358,7 +373,7 @@ def run_program(code: str, stdin: str = "", timeout: float = DEFAULT_RUN_SECONDS
         sampler.join(timeout=0.2)
     wall_ms = round((time.perf_counter() - start) * 1000, 1)
 
-    return {
+    result = {
         "status": "ok" if not timed_out and exit_code == 0 else ("timeout" if timed_out else "failed"),
         "reason": "" if not timed_out and exit_code == 0 else ("wall timeout" if timed_out else f"exit code {exit_code}"),
         "phase": "run",
@@ -375,3 +390,5 @@ def run_program(code: str, stdin: str = "", timeout: float = DEFAULT_RUN_SECONDS
         "stdin_bytes": len(stdin.encode("utf-8", "replace")),
         "digest": hashlib.sha256(code.encode("utf-8", "replace")).hexdigest(),
     }
+    _vlog("run done: status=%s exit=%s wall=%.1fms peak=%s" % (result["status"], exit_code, wall_ms, peak[0]))
+    return result

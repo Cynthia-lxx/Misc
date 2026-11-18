@@ -22,6 +22,9 @@ const DICTS = {
     '已载入上次生成的代码': 'Last generated code loaded',
     '清空历史：等待二次确认': 'Clear history: waiting for confirmation',
     '（暂无输出）': '(no output yet)',
+    '（服务端 45s 无响应，已中断；请看服务端控制台的 [toolchain] 日志）':
+      '(server unresponsive for 45s, request aborted; check the [toolchain] log in the server console)',
+    '服务端 45s 无响应，已中断请求': 'Server unresponsive for 45s — request aborted',
     '（新增）': '(new)',
     '文件名（保存/读取基于工作区解析）': 'Filename (resolved against the workspace for save/open)',
     '变量': 'Variable',

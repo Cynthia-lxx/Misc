@@ -21,6 +21,7 @@ import mimetypes
 import os
 import sys
 import threading
+import time
 import traceback
 import webbrowser
 from collections import OrderedDict
@@ -526,6 +527,8 @@ class ConsoleHandler(BaseHTTPRequestHandler):
         return engine.resolve_code(body)  # raises ValueError on bad path
 
     def _run(self, body: dict):
+        t0 = time.perf_counter()
+        print("[server] /api/run arrive (len=%d)" % len(body.get("code") or ""), flush=True)
         try:
             code, source = self._resolve_run_code(body)
         except ValueError as exc:
@@ -536,6 +539,7 @@ class ConsoleHandler(BaseHTTPRequestHandler):
             timeout=float(body.get("timeout") or toolchain.DEFAULT_RUN_SECONDS),
             memory_limit=int(body.get("memory_limit") or toolchain.DEFAULT_MEMORY_BYTES),
         )
+        print("[server] /api/run done status=%s %.1fs" % (result.get("status"), time.perf_counter() - t0), flush=True)
         return self._json({"ok": True, "source": source, **result})
 
     def _debug_start(self, body: dict):
