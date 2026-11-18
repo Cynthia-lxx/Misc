@@ -475,3 +475,16 @@ export function applyDom(root = document) {
     el.title = t(el.dataset.i18nTitle);
   });
 }
+
+/* 初始同步：静态 HTML 里的 ui-button 等组件会先于本模块（经 console.js 的模块图
+ * 延迟加载）完成首帧渲染，此刻 globalThis.UIReference.i18n 尚未就位，按
+ * data-i18n-key 解析会落空成空白。词典就位后补发一次变更事件 + 刷新标记 DOM。 */
+const bootstrapI18n = () => {
+  applyDom();
+  document.dispatchEvent(new CustomEvent('ui-i18n-change'));
+};
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootstrapI18n, { once: true });
+} else {
+  bootstrapI18n();
+}
