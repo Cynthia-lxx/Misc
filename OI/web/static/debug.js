@@ -2,6 +2,8 @@
    Syncs breakpoint gutter ↔ session, renders variables/watch, highlights the
    current line, streams live stdout/stderr into the dock panes. */
 
+import { t } from './i18n.js';
+
 const byId = (id) => document.getElementById(id);
 const S = () => window.__oiConsole;
 
@@ -42,18 +44,18 @@ async function callDebug(action, extra = {}) {
 async function startDebug() {
   const s = S();
   if (sid) {
-    s.warn('已有调试会话在运行，先结束（Esc 或「结束调试」）');
+    s.warn(t('已有调试会话在运行，先结束（Esc 或「结束调试」）'));
     return;
   }
   const ide = window.__oiIde;
   const code = ide.getCode();
   if (!code.trim()) {
-    s.warn('编辑器没有代码');
+    s.warn(t('编辑器没有代码'));
     return;
   }
   const breakpoints = ide.editor.getBreakpoints();
   const stdin = byId('dock-stdin').value;
-  dbgBadge('编译+附加中…', 'warn');
+  dbgBadge(t('编译+附加中…'), 'warn');
   setBusy(true);
   window.__ideShowDockTab('debug');
   try {
@@ -64,11 +66,11 @@ async function startDebug() {
     sid = data.session;
     render(data.state);
     byId('ide-stop').removeAttribute('disabled');
-    s.log(`调试会话 ${sid} 启动：${data.state.reason || data.state.status}`, 'ok');
+    s.log(t('调试会话 {sid} 启动：{reason}', { sid, reason: data.state.reason || data.state.status }), 'ok');
   } catch (err) {
-    dbgBadge('启动失败', 'err');
+    dbgBadge(t('启动失败'), 'err');
     setBusy(false);
-    s.warn(`调试启动失败: ${err.message}`);
+    s.warn(t('调试启动失败: {msg}', { msg: err.message }));
   }
 }
 
@@ -76,7 +78,7 @@ function render(state) {
   if (!state) return;
   lastState = state;
   const st = state.status;
-  dbgBadge(STATUS_TEXT[st] || st, st === 'stopped' ? 'ok' : st === 'running' ? 'warn' : st === 'exited' ? '' : st === 'error' ? 'err' : '');
+  dbgBadge(t(STATUS_TEXT[st] || st) || st, st === 'stopped' ? 'ok' : st === 'running' ? 'warn' : st === 'exited' ? '' : st === 'error' ? 'err' : '');
   byId('dbg-reason').textContent = state.reason || '';
 
   // current line highlight
@@ -95,8 +97,8 @@ function render(state) {
   if (!state.variables || !state.variables.length) {
     const dt = document.createElement('dt');
     const dd = document.createElement('dd');
-    dt.textContent = '（无局部变量）';
-    dd.textContent = '运行到断点处后显示';
+    dt.textContent = t('（无局部变量）');
+    dd.textContent = t('运行到断点处后显示');
     vars.append(dt, dd);
   }
 
@@ -120,11 +122,11 @@ function render(state) {
   });
 
   // live output panes
-  if (state.stdout) byId('dock-stdout').textContent = state.stdout || '（暂无输出）';
+  if (state.stdout) byId('dock-stdout').textContent = state.stdout || t('（暂无输出）');
   if (state.stderr) byId('dock-stderr').textContent = state.stderr || '';
   byId('dock-meta').textContent = st === 'exited'
-    ? `exit ${state.exit_code ?? '—'} · 调试结束`
-    : `行 ${state.line || '—'} · ${STATUS_TEXT[st] || st}`;
+    ? `exit ${state.exit_code ?? '—'} · ${t('调试结束')}`
+    : t('行 {line} · {status}', { line: state.line || '—', status: t(STATUS_TEXT[st] || st) });
 
   // gutter sync (server-side truth after adds/deletes)
   if (state.breakpoints) {
@@ -166,16 +168,16 @@ async function stopDebug() {
   sid = null;
   setBusy(false);
   window.__oiIde.editor.setDebugLine(0);
-  dbgBadge('未调试', '');
+  dbgBadge(t('未调试'), '');
   byId('ide-stop').setAttribute('disabled', '');
   try {
     await S().api('/api/debug/stop', {
       method: 'POST',
       body: JSON.stringify({ session: current }),
     });
-    S().log('调试会话已结束', 'ok');
+    S().log(t('调试会话已结束'), 'ok');
   } catch (err) {
-    S().log(`结束调试时出错: ${err.message}`, 'warn');
+    S().log(t('结束调试时出错: {msg}', { msg: err.message }), 'warn');
   }
 }
 
@@ -212,7 +214,7 @@ function init() {
       // keep polling while hidden; no-op
     }
   });
-  s.log('调试台就绪（gdbserver + GDB/MI）', 'ok');
+  s.log(t('调试台就绪（gdbserver + GDB/MI）'), 'ok');
 }
 
 if (window.__oiConsole) init();

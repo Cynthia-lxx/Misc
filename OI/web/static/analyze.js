@@ -2,6 +2,8 @@
    through window.__oiConsole; renders the local report, the optional run
    measurement and the budgeted one-shot AI summary. No framework. */
 
+import { t } from './i18n.js';
+
 const $ = (sel) => document.querySelector(sel);
 const byId = (id) => document.getElementById(id);
 
@@ -64,7 +66,7 @@ function fmtValue(f) {
 }
 
 function evidenceButtons(f) {
-  return f.evidence.map((n) => `<button type="button" class="an-evbtn" data-ln="${n}" title="跳到第 ${n} 行">${n}</button>`).join('');
+  return f.evidence.map((n) => `<button type="button" class="an-evbtn" data-ln="${n}" title="${t('跳到第 {n} 行', { n })}">${n}</button>`).join('');
 }
 
 function findingsOf(dimension) {
@@ -86,10 +88,10 @@ async function refreshFiles() {
       select.appendChild(option);
     });
     const ok = view.toolchain.available;
-    byId('an-toolchain-badge').textContent = ok ? '内置 GCC 可用' : '工具链缺失';
+    byId('an-toolchain-badge').textContent = ok ? t('内置 GCC 可用') : t('工具链缺失');
     byId('an-toolchain-badge').className = `oc-badge ${ok ? 'ok' : 'bad'}`;
   } catch (err) {
-    host().warn?.(`题解列表载入失败: ${err.message}`);
+    host().warn?.(t('题解列表载入失败: {msg}', { msg: err.message }));
   }
 }
 
@@ -97,11 +99,11 @@ async function refreshBudget() {
   try {
     const data = await api('/api/analyze/enabled');
     view.budget = data;
-    byId('an-ai-toggle').setAttribute('label', `AI: ${data.enabled ? '开' : '关'}`);
+    byId('an-ai-toggle').setAttribute('label', t(data.enabled ? 'AI: 开' : 'AI: 关'));
     byId('an-ai-toggle').dataset.active = data.enabled ? 'true' : 'false';
     renderBudgetLine();
   } catch (err) {
-    host().warn?.(`预算状态载入失败: ${err.message}`);
+    host().warn?.(t('预算状态载入失败: {msg}', { msg: err.message }));
   }
 }
 
@@ -111,17 +113,17 @@ function renderBudgetLine() {
   const fill = byId('an-budget-fill');
   const ratio = budget.cap ? Math.min(1, budget.used / budget.cap) : 0;
   fill.style.width = `${(ratio * 100).toFixed(1)}%`;
-  byId('an-budget').textContent = `额度 ${budget.used}/${budget.cap} 当量`;
+  byId('an-budget').textContent = t('额度 {used}/{cap} 当量', { used: budget.used, cap: budget.cap });
   const status = view.report?.ai_summary?.status;
   const note = {
-    ok: `本次消耗 ${budget.per_summary} 当量 · 已用 ${budget.used}/${budget.cap}`,
-    cached: '同一份代码与报告已汇总过，未消耗额度',
-    disabled: 'AI 汇总已关闭，本地报告不受影响',
-    skipped: budget.state || '没有 API Key，AI 汇总已跳过',
-    budget_exhausted: '额度已耗尽；可在设置中调高或清空后重试',
-    failed: 'AI 调用失败，本地报告不受影响',
-    pending: '等待汇总…',
-  }[status] || `单次汇总消耗 ${budget.per_summary} 当量，上限 ${budget.cap} 当量`;
+    ok: t('本次消耗 {a} 当量 · 已用 {b}/{c}', { a: budget.per_summary, b: budget.used, c: budget.cap }),
+    cached: t('同一份代码与报告已汇总过，未消耗额度'),
+    disabled: t('AI 汇总已关闭，本地报告不受影响'),
+    skipped: budget.state || t('没有 API Key，AI 汇总已跳过'),
+    budget_exhausted: t('额度已耗尽；可在设置中调高或清空后重试'),
+    failed: t('AI 调用失败，本地报告不受影响'),
+    pending: t('等待汇总…'),
+  }[status] || t('单次汇总消耗 {a} 当量，上限 {b} 当量', { a: budget.per_summary, b: budget.cap });
   byId('an-budget-note').textContent = note;
 }
 
@@ -151,15 +153,15 @@ function currentBody() {
   const body = { run: byId('an-measure').checked, stdin: byId('an-stdin').value, limits: currentLimits() };
   if (kind === 'output') {
     const code = (window.__oiIde && window.__oiIde.getCode()) || '';
-    if (!code) throw new Error('编辑器还没有代码，先写代码或让 AI 生成');
+    if (!code) throw new Error(t('编辑器还没有代码，先写代码或让 AI 生成'));
     body.code = code;
   } else if (kind === 'workspace') {
     const file = byId('an-file').value;
-    if (!file) throw new Error('工作区没有可选的 .cpp 题解');
+    if (!file) throw new Error(t('工作区没有可选的 .cpp 题解'));
     body.path = file;
   } else {
     const path = byId('an-path').value.trim();
-    if (!path) throw new Error('请填写文件路径');
+    if (!path) throw new Error(t('请填写文件路径'));
     body.path = path;
   }
   return body;
@@ -176,21 +178,21 @@ async function analyze() {
   }
   view.busy = true;
   byId('an-run').toggleAttribute('disabled', true);
-  byId('an-cache-badge').textContent = '分析中…';
+  byId('an-cache-badge').textContent = t('分析中…');
   byId('an-cache-badge').className = 'oc-badge info';
-  host().log?.(`analyze → ${byId('an-source').value}${body.run ? ' · 实测' : ''}`);
+  host().log?.(`analyze → ${byId('an-source').value}${body.run ? ` · ${t('实测')}` : ''}`);
   try {
     const data = await api('/api/analyze', { method: 'POST', body: JSON.stringify(body) });
     view.report = data.report;
     view.code = data.code || '';
     view.budget = data.budget || view.budget;
     renderAll(Boolean(data.cached));
-    host().log?.(`报告 ${data.report.verdict} · ${data.report.findings.length} findings · ${data.cached ? '缓存命中' : '新分析'}`, 'ok');
+    host().log?.(`报告 ${data.report.verdict} · ${data.report.findings.length} findings · ${data.cached ? t('缓存命中') : t('新分析')}`, 'ok');
     await autoSummary(data.report.digest);
   } catch (err) {
-    byId('an-cache-badge').textContent = '失败';
+    byId('an-cache-badge').textContent = t('失败');
     byId('an-cache-badge').className = 'oc-badge bad';
-    host().warn?.(`分析失败: ${err.message}`);
+    host().warn?.(t('分析失败: {msg}', { msg: err.message }));
   } finally {
     view.busy = false;
     byId('an-run').removeAttribute('disabled');
@@ -200,9 +202,9 @@ async function analyze() {
 async function reanalyze() {
   try {
     const data = await api('/api/analyze/cache', { method: 'DELETE' });
-    host().log?.(`缓存已清空 (${data.cleared} 份)`);
+    host().log?.(t('缓存已清空 ({n} 份)', { n: data.cleared }));
   } catch (err) {
-    host().warn?.(`清缓存失败: ${err.message}`);
+    host().warn?.(t('清缓存失败: {msg}', { msg: err.message }));
   }
   await analyze();
 }
@@ -224,11 +226,11 @@ function renderVerdict(cached) {
   const badge = byId('an-verdict-badge');
   badge.textContent = mark;
   badge.className = `an-verdict-badge ${report.verdict}`;
-  byId('an-verdict-title').textContent = `${label} · ${report.source.name || report.source.kind}`;
+  byId('an-verdict-title').textContent = `${t(label)} · ${report.source.name || report.source.kind}`;
   const meta = [];
   meta.push(report.verdict_reason);
-  if (report.unknown_count) meta.push(`${report.unknown_count} 项 unknown`);
-  if (cached) meta.push('缓存命中');
+  if (report.unknown_count) meta.push(`${report.unknown_count} unknown`);
+  if (cached) meta.push(t('缓存命中'));
   byId('an-verdict-reason').textContent = meta.join(' · ');
 
   const memory = findingsOf('memory').find((f) => f.key === 'memory.peak_bytes');
@@ -238,8 +240,8 @@ function renderVerdict(cached) {
   const overview = byId('an-overview');
   overview.replaceChildren();
   [
-    ['峰值内存', memory && memory.value != null ? fmtBytes(memory.value) : '未知'],
-    ['复杂度', complexity?.value ?? '未知'],
+    ['峰值内存', memory && memory.value != null ? fmtBytes(memory.value) : t('未知')],
+    ['复杂度', complexity?.value ?? t('未知')],
     ['风格问题', style?.value ?? '—'],
     ['性能提示', perf.length],
   ].forEach(([labelText, value]) => {
@@ -247,13 +249,13 @@ function renderVerdict(cached) {
     const strong = document.createElement('b');
     const caption = document.createElement('span');
     strong.textContent = String(value);
-    caption.textContent = labelText;
+    caption.textContent = t(labelText);
     cell.append(strong, caption);
     overview.appendChild(cell);
   });
 
   const cacheBadge = byId('an-cache-badge');
-  cacheBadge.textContent = cached ? '缓存命中' : '新分析';
+  cacheBadge.textContent = cached ? t('缓存命中') : t('新分析');
   cacheBadge.className = `oc-badge ${cached ? '' : 'ok'}`;
 }
 
@@ -263,7 +265,7 @@ function renderDims() {
   DIM_ORDER.forEach((dimension) => {
     const items = findingsOf(dimension);
     const worst = ['red', 'yellow', 'green', 'unknown'].find((v) => items.some((f) => f.verdict === v)) || 'unknown';
-    const [title, subtitle] = DIM_META[dimension];
+    const [title, subtitle] = DIM_META[dimension].map((s) => t(s));
     const details = document.createElement('details');
     details.className = 'an-dim-card';
     details.open = true;
@@ -274,12 +276,12 @@ function renderDims() {
     if (!items.length) {
       const empty = document.createElement('div');
       empty.className = 'an-empty';
-      empty.textContent = '无发现';
+      empty.textContent = t('无发现');
       body.appendChild(empty);
     } else {
       const table = document.createElement('table');
       table.className = 'an-table';
-      table.innerHTML = '<thead><tr><th>指标</th><th>判定</th><th>值</th><th>依据</th></tr></thead>';
+      table.innerHTML = `<thead><tr><th>${t('指标')}</th><th>${t('判定')}</th><th>${t('值')}</th><th>${t('依据')}</th></tr></thead>`;
       const tbody = document.createElement('tbody');
       items.forEach((f) => {
         const row = document.createElement('tr');
@@ -331,47 +333,47 @@ function renderMeasurements() {
   };
 
   if (measure.status === 'ok') {
-    badge.textContent = measure.limit_verdict === 'fail' ? '超出题目限制' : '实测完成';
+    badge.textContent = measure.limit_verdict === 'fail' ? t('超出题目限制') : t('实测完成');
     badge.className = 'oc-badge ' + (measure.limit_verdict === 'fail' ? 'bad' : 'ok');
-    addRow('编译耗时', `${measure.compile_ms} ms`);
-    addRow('运行耗时', `${measure.wall_ms} ms`);
-    addRow('峰值内存', measure.peak_bytes ? fmtBytes(measure.peak_bytes) : '未采样到');
-    addRow('退出码', measure.exit_code);
-    if (measure.limit_verdict === 'fail') addRow('限制判定', measure.limit_reason || 'TLE/MLE');
+    addRow(t('编译耗时'), `${measure.compile_ms} ms`);
+    addRow(t('运行耗时'), `${measure.wall_ms} ms`);
+    addRow(t('峰值内存'), measure.peak_bytes ? fmtBytes(measure.peak_bytes) : t('未采样到'));
+    addRow(t('退出码'), measure.exit_code);
+    if (measure.limit_verdict === 'fail') addRow(t('限制判定'), measure.limit_reason || 'TLE/MLE');
     if (measure.time_limit_ms) {
-      addRow(`时限判定`, `${measure.wall_ms} / ${measure.time_limit_ms} ms`
-        + (measure.time_exceeded ? '（超时）' : '（通过）'));
+      addRow(t('时限判定'), `${measure.wall_ms} / ${measure.time_limit_ms} ms`
+        + (measure.time_exceeded ? t('（超时）') : t('（通过）')));
     }
     if (measure.memory_limit_mb && measure.peak_bytes) {
-      addRow('空间判定', `${fmtBytes(measure.peak_bytes)} / ${measure.memory_limit_mb} MiB`
-        + (measure.memory_exceeded ? '（超限）' : '（通过）'));
+      addRow(t('空间判定'), `${fmtBytes(measure.peak_bytes)} / ${measure.memory_limit_mb} MiB`
+        + (measure.memory_exceeded ? t('（超限）') : t('（通过）')));
     }
     if (measure.segments?.status === 'ok') {
       addRow('text/data/bss', `${measure.segments.text} / ${measure.segments.data} / ${measure.segments.bss} B`);
     }
-    addRow('编译器', measure.compiler);
+    addRow(t('编译器'), measure.compiler);
   } else if (measure.status === 'timeout') {
-    badge.textContent = '运行超时';
+    badge.textContent = t('运行超时');
     badge.className = 'oc-badge bad';
-    addRow('说明', measure.reason || 'wall timeout');
-    addRow('编译耗时', `${measure.compile_ms} ms`);
+    addRow(t('说明'), measure.reason || 'wall timeout');
+    addRow(t('编译耗时'), `${measure.compile_ms} ms`);
   } else if (measure.status === 'failed') {
-    badge.textContent = '实测失败';
+    badge.textContent = t('实测失败');
     badge.className = 'oc-badge bad';
-    addRow('阶段', measure.phase || '—');
-    addRow('原因', measure.reason || '—');
+    addRow(t('阶段'), measure.phase || '—');
+    addRow(t('原因'), measure.reason || '—');
   } else {
-    badge.textContent = measure.status === 'skipped' ? '未启用实测' : '—';
+    badge.textContent = measure.status === 'skipped' ? t('未启用实测') : '—';
     badge.className = 'oc-badge';
-    addRow('说明', measure.reason || '勾选「实测」后重新分析');
+    addRow(t('说明'), measure.reason || t('勾选「实测」后重新分析'));
   }
   if (measure.stdout) log.textContent += `stdout:\n${measure.stdout}\n`;
   if (measure.stderr) log.textContent += `stderr:\n${measure.stderr}\n`;
-  if (!log.textContent) log.textContent = '（无输出）';
+  if (!log.textContent) log.textContent = t('（无输出）');
 }
 
 async function autoSummary(digest) {
-  byId('an-ai-badge').textContent = '汇总中…';
+  byId('an-ai-badge').textContent = t('汇总中…');
   byId('an-ai-badge').className = 'oc-badge info';
   try {
     const data = await api('/api/analyze/summary', { method: 'POST', body: JSON.stringify({ digest }) });
@@ -392,20 +394,20 @@ function renderAi(summary) {
       li.textContent = line.replace(/^[\d.、\-)\s]+/, '');
       list.appendChild(li);
     });
-    badge.textContent = summary.status === 'cached' ? '缓存汇总' : 'AI 汇总';
+    badge.textContent = summary.status === 'cached' ? t('缓存汇总') : t('AI 汇总');
     badge.className = 'oc-badge ok';
   } else {
     const empty = document.createElement('li');
     empty.className = 'an-empty';
     empty.style.cssText = 'list-style:none;margin-left:-18px;';
     empty.textContent = {
-      disabled: 'AI 汇总已关闭（仅本地报告）',
-      skipped: '没有 API Key，已跳过 AI 汇总',
-      budget_exhausted: 'AI 额度已耗尽',
-      pending: '等待汇总…',
-    }[summary.status] || `AI 汇总不可用（${summary.reason || summary.status}）`;
+      disabled: t('AI 汇总已关闭（仅本地报告）'),
+      skipped: t('没有 API Key，已跳过 AI 汇总'),
+      budget_exhausted: t('AI 额度已耗尽'),
+      pending: t('等待汇总…'),
+    }[summary.status] || t('AI 汇总不可用（{reason}）', { reason: summary.reason || summary.status });
     list.appendChild(empty);
-    badge.textContent = summary.status === 'disabled' ? '已关闭' : summary.status === 'skipped' ? '已跳过' : summary.status === 'budget_exhausted' ? '额度耗尽' : '失败';
+    badge.textContent = summary.status === 'disabled' ? t('已关闭') : summary.status === 'skipped' ? t('已跳过') : summary.status === 'budget_exhausted' ? t('额度耗尽') : t('失败');
     badge.className = 'oc-badge';
   }
   if (summary.budget) view.budget = summary.budget;
@@ -418,7 +420,7 @@ function renderEvidence() {
   const pre = byId('an-code');
   const badge = byId('an-evidence-badge');
   if (!code) {
-    pre.innerHTML = '<span class="oc-line"><span class="oc-lc">（无代码）</span></span>';
+    pre.innerHTML = `<span class="oc-line"><span class="oc-lc">${t('（无代码）')}</span></span>`;
     badge.textContent = '';
     return;
   }
@@ -428,7 +430,7 @@ function renderEvidence() {
     const hit = hits.has(index + 1) ? ' is-hit' : '';
     return `<span class="oc-line${hit}" data-ln="${index + 1}"><i class="oc-ln">${index + 1}</i><span class="oc-lc">${host().highlightCpp?.(line) || ' '}</span></span>`;
   }).join('');
-  badge.textContent = hits.size ? `${hits.size} 行命中` : '';
+  badge.textContent = hits.size ? t('{n} 行命中', { n: hits.size }) : '';
   badge.className = `oc-badge ${hits.size ? 'info' : ''}`;
 }
 
@@ -461,9 +463,9 @@ function init() {
       });
       view.budget = data;
       renderBudgetLine();
-      host().log?.(`AI 汇总 ${data.enabled ? '开启' : '关闭'}`);
+      host().log?.(t('AI 汇总 {state}', { state: data.enabled ? '开启' : '关闭' }));
     } catch (err) {
-      host().warn?.(`切换 AI 失败: ${err.message}`);
+      host().warn?.(t('切换 AI 失败: {msg}', { msg: err.message }));
     }
   });
   byId('an-cache-clear').addEventListener('click', reanalyze);

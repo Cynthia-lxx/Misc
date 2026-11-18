@@ -2,6 +2,8 @@
    goto-line and the command palette. One shared layer; Esc closes it via
    'oi-overlay-close' dispatched by console.js. */
 
+import { t } from './i18n.js';
+
 const byId = (id) => document.getElementById(id);
 const S = () => window.__oiConsole;
 
@@ -47,20 +49,20 @@ function closeOverlay() {
 /* ------------------------------------------------------------ file open */
 async function openFileOverlay() {
   const s = S();
-  s.log('打开文件列表…');
+  s.log(t('打开文件列表…'));
   let files = [];
   try {
     const data = await s.api('/api/analyze/files');
     files = data.files || [];
   } catch (err) {
-    s.warn(`读取工作区文件列表失败: ${err.message}`);
+    s.warn(t('读取工作区文件列表失败: {msg}', { msg: err.message }));
     return;
   }
-  openOverlay('打开文件', `工作区 .cpp × ${files.length}（Esc 关闭）`, (body, done) => {
+  openOverlay(t('打开文件'), t('工作区 .cpp × {n}（Esc 关闭）', { n: files.length }), (body, done) => {
     const search = document.createElement('input');
     search.type = 'text';
     search.className = 'ov-input';
-    search.placeholder = '筛选文件名…';
+    search.placeholder = t('筛选文件名…');
     const list = document.createElement('div');
     list.className = 'ov-file-list';
 
@@ -77,7 +79,7 @@ async function openFileOverlay() {
           const span = document.createElement('span');
           span.textContent = name;
           const meta = document.createElement('small');
-          meta.textContent = '载入 → 编辑器';
+          meta.textContent = t('载入 → 编辑器');
           btn.append(span, meta);
           btn.addEventListener('click', () => loadFile(name, done));
           list.appendChild(btn);
@@ -85,7 +87,7 @@ async function openFileOverlay() {
       if (!list.children.length) {
         const empty = document.createElement('p');
         empty.className = 'oc-empty';
-        empty.textContent = '没有匹配的文件';
+        empty.textContent = t('没有匹配的文件');
         list.appendChild(empty);
       }
     }
@@ -105,18 +107,18 @@ async function loadFile(path, done) {
     });
     window.dispatchEvent(new CustomEvent('oi-load-code', { detail: { code: data.code } }));
     byId('ide-filename').value = path;
-    s.log(`已载入 ${path}（${(data.code || '').split('\n').length} 行）`, 'ok');
+    s.log(t('已载入 {path}（{n} 行）', { path, n: (data.code || '').split('\n').length }), 'ok');
     s.pulse('LOADED', 'info');
     location.hash = 'ide';
     done();
   } catch (err) {
-    s.warn(`读取 ${path} 失败: ${err.message}`);
+    s.warn(t('读取 {path} 失败: {msg}', { path, msg: err.message }));
   }
 }
 
 /* ------------------------------------------------------------ save as */
 function saveOverlay() {
-  openOverlay('保存代码', '相对路径基于工作区；自动补 .cpp', (body, done) => {
+  openOverlay(t('保存代码'), t('相对路径基于工作区；自动补 .cpp'), (body, done) => {
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'ov-input';
@@ -126,7 +128,7 @@ function saveOverlay() {
     const save = document.createElement('button');
     save.type = 'button';
     save.className = 'oc-btn sheared';
-    save.textContent = '保存';
+    save.textContent = t('保存');
     const saveAndClose = async () => {
       byId('ide-filename').value = input.value.trim() || 'solution.cpp';
       await window.__oiIde.saveCode();
@@ -143,10 +145,10 @@ function saveOverlay() {
 /* ------------------------------------------------------------ AI prompt */
 function promptOverlay() {
   const s = S();
-  openOverlay('AI 生成题解', '必用 AI · 题面 → 流式写入编辑器（1 次生成 ≈ 1 次代码生成用量，不带历史）', (body, done) => {
+  openOverlay(t('AI 生成题解'), t('必用 AI · 题面 → 流式写入编辑器（1 次生成 ≈ 1 次代码生成用量，不带历史）'), (body, done) => {
     const area = document.createElement('textarea');
     area.className = 'ov-prompt-area';
-    area.placeholder = '粘贴题目描述（可含样例输入输出）…';
+    area.placeholder = t('粘贴题目描述（可含样例输入输出）…');
     const status = document.createElement('span');
     status.className = 'ov-generating';
     const row1 = document.createElement('div');
@@ -154,19 +156,19 @@ function promptOverlay() {
     const clipBtn = document.createElement('button');
     clipBtn.type = 'button';
     clipBtn.className = 'oc-btn';
-    clipBtn.textContent = '读剪贴板';
+    clipBtn.textContent = t('读剪贴板');
     clipBtn.addEventListener('click', async () => {
       try {
         const text = await navigator.clipboard.readText();
         if (text) area.value = text;
       } catch {
-        s.warn('无法读取剪贴板（浏览器权限）');
+        s.warn(t('无法读取剪贴板（浏览器权限）'));
       }
     });
     const sampleBtn = document.createElement('button');
     sampleBtn.type = 'button';
     sampleBtn.className = 'oc-btn';
-    sampleBtn.textContent = '示例题面';
+    sampleBtn.textContent = t('示例题面');
     sampleBtn.addEventListener('click', () => {
       area.value = [
         '【题目】数列求和',
@@ -183,7 +185,7 @@ function promptOverlay() {
     const clearBtn = document.createElement('button');
     clearBtn.type = 'button';
     clearBtn.className = 'oc-btn';
-    clearBtn.textContent = '清空';
+    clearBtn.textContent = t('清空');
     clearBtn.addEventListener('click', () => { area.value = ''; area.focus(); });
     row1.append(clipBtn, sampleBtn, clearBtn);
 
@@ -192,23 +194,23 @@ function promptOverlay() {
     const go = document.createElement('button');
     go.type = 'button';
     go.className = 'oc-btn sheared';
-    go.textContent = '生成 ⌃⏎';
+    go.textContent = t('生成 ⌃⏎');
     const stop = document.createElement('button');
     stop.type = 'button';
     stop.className = 'oc-btn';
-    stop.textContent = '停止';
+    stop.textContent = t('停止');
     stop.style.display = 'none';
     row2.append(go, stop, status);
 
     const controller = { abort: null };
     go.addEventListener('click', async () => {
       const prompt = area.value.trim();
-      if (!prompt) { s.warn('题面是空的'); return; }
+      if (!prompt) { s.warn(t('题面是空的')); return; }
       const ac = new AbortController();
       controller.abort = () => ac.abort();
       go.disabled = true;
       stop.style.display = '';
-      status.textContent = '生成中…';
+      status.textContent = t('生成中…');
       done(); // close overlay; streaming continues into the editor
       await window.__oiIde.generate(prompt, ac.signal);
     });
@@ -225,11 +227,11 @@ function promptOverlay() {
 
 /* ------------------------------------------------------------ goto line */
 function gotoOverlay() {
-  openOverlay('跳转到行', 'Ctrl+G', (body, done) => {
+  openOverlay(t('跳转到行'), 'Ctrl+G', (body, done) => {
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'ov-input';
-    input.placeholder = '行号';
+    input.placeholder = t('行号');
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         const n = parseInt(input.value, 10);
@@ -248,18 +250,18 @@ function gotoOverlay() {
 function paletteOverlay() {
   const s = S();
   const commands = [
-    { label: '运行代码', hint: 'F5', run: () => window.dispatchEvent(new CustomEvent('oi-run')) },
-    { label: '启动调试', hint: 'F9', run: () => window.dispatchEvent(new CustomEvent('oi-debug')) },
-    { label: '保存代码', hint: 'Ctrl+S', run: () => window.dispatchEvent(new CustomEvent('oi-save')) },
-    { label: '打开文件…', hint: '', run: () => openFileOverlay() },
-    { label: 'AI 生成题解…', hint: 'Ctrl+Enter', run: () => promptOverlay() },
-    { label: '分析当前代码', hint: 'A', run: () => window.dispatchEvent(new CustomEvent('oi-analyze-request')) },
-    { label: '查看完整报告', hint: '', run: () => { location.hash = 'analysis'; } },
-    { label: '复制代码', hint: '', run: () => window.dispatchEvent(new CustomEvent('oi-copy')) },
-    { label: '跳转到行…', hint: 'Ctrl+G', run: () => gotoOverlay() },
-    { label: '打开会话历史', hint: 'H', run: () => { location.hash = 'history'; } },
-    { label: '打开设置', hint: 'S', run: () => { location.hash = 'settings'; } },
-    { label: '切换主题…', hint: '', run: () => {
+    { label: t('运行代码'), hint: 'F5', run: () => window.dispatchEvent(new CustomEvent('oi-run')) },
+    { label: t('启动调试'), hint: 'F9', run: () => window.dispatchEvent(new CustomEvent('oi-debug')) },
+    { label: t('保存代码'), hint: 'Ctrl+S', run: () => window.dispatchEvent(new CustomEvent('oi-save')) },
+    { label: t('打开文件…'), hint: '', run: () => openFileOverlay() },
+    { label: t('AI 生成题解…'), hint: 'Ctrl+Enter', run: () => promptOverlay() },
+    { label: t('分析当前代码'), hint: 'A', run: () => window.dispatchEvent(new CustomEvent('oi-analyze-request')) },
+    { label: t('查看完整报告'), hint: '', run: () => { location.hash = 'analysis'; } },
+    { label: t('复制代码'), hint: '', run: () => window.dispatchEvent(new CustomEvent('oi-copy')) },
+    { label: t('跳转到行…'), hint: 'Ctrl+G', run: () => gotoOverlay() },
+    { label: t('打开会话历史'), hint: 'H', run: () => { location.hash = 'history'; } },
+    { label: t('打开设置'), hint: 'S', run: () => { location.hash = 'settings'; } },
+    { label: t('切换主题…'), hint: '', run: () => {
       const current = document.documentElement.dataset.theme;
       const themes = ['red', 'orange', 'lime', 'green', 'aquamarine', 'blue', 'purple', 'plum', 'pink'];
       const next = themes[(themes.indexOf(current) + 1) % themes.length];
@@ -267,14 +269,14 @@ function paletteOverlay() {
       document.getElementById('theme-select').dispatchEvent(new Event('change'));
       s.log(`theme → ${next}`);
     } },
-    { label: '清空编辑器', hint: '', run: () => window.dispatchEvent(new CustomEvent('oi-load-code', { detail: { code: '' } })) },
+    { label: t('清空编辑器'), hint: '', run: () => window.dispatchEvent(new CustomEvent('oi-load-code', { detail: { code: '' } })) },
   ];
 
-  openOverlay('命令面板', 'Ctrl+K · ↑↓ 选择 · Enter 执行', (body, done) => {
+  openOverlay(t('命令面板'), t('Ctrl+K · ↑↓ 选择 · Enter 执行'), (body, done) => {
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'ov-input';
-    input.placeholder = '输入命令…';
+    input.placeholder = t('输入命令…');
     const list = document.createElement('div');
     list.className = 'ov-palette-list';
     let active = 0;
@@ -331,7 +333,7 @@ function init() {
   window.addEventListener('oi-goto', gotoOverlay);
   const isOpen = () => !byId('ov-layer').classList.contains('is-hidden');
   window.__oiOverlays = { openOverlay, closeOverlay, isOpen, promptOverlay };
-  window.__oiConsole.log('overlay 层就绪', 'ok');
+  window.__oiConsole.log(t('overlay 层就绪'), 'ok');
 }
 
 if (window.__oiConsole) init();

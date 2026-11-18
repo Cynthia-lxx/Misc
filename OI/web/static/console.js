@@ -6,6 +6,8 @@ const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 const byId = (id) => document.getElementById(id);
 
+import { applyDom, getLang, setLang, t } from './i18n.js';
+
 const THEMES = ['red', 'orange', 'lime', 'green', 'aquamarine', 'blue', 'purple', 'plum', 'pink'];
 const THEME_HUE = { red: 0, orange: 45, lime: 90, green: 125, aquamarine: 160, blue: 200, purple: 255, plum: 320, pink: 333 };
 const VIEW_META = {
@@ -54,7 +56,7 @@ function log(message, level = '') {
   const list = byId('log-list');
   list.scrollTop = list.scrollHeight;
   state.logCount += 1;
-  byId('log-btn').setAttribute('label', `日志 ${state.logCount}`);
+  byId('log-btn').setAttribute('label', t('日志 {n}', { n: state.logCount }));
   setStatus(message);
 }
 
@@ -93,13 +95,15 @@ function setTheme(name, quiet = false) {
   localStorage.setItem('oi-theme', name);
   byId('theme-select').value = name;
   $$('.oc-swatch').forEach((b) => b.classList.toggle('is-active', b.dataset.theme === name));
+  $$('.oc-theme-dot').forEach((d) => d.classList.toggle('active', d.dataset.theme === name));
   if (!quiet) log(`theme → ${name}`);
 }
 
 function setReducedMotion(on, quiet = false) {
+  state.reduceMotion = on;
   document.documentElement.dataset.reduceMotion = on ? 'true' : 'false';
   localStorage.setItem('oi-reduce', on ? '1' : '0');
-  const label = `动效: ${on ? '关' : '开'}`;
+  const label = t(on ? '动效: 关' : '动效: 开');
   byId('reduce-btn').setAttribute('label', label);
   byId('theme-reduce').setAttribute('label', label);
   if (!quiet) log(`reduced motion → ${on ? 'on' : 'off'}`);
@@ -127,8 +131,8 @@ function setView(name) {
   if (!VIEW_META[name]) name = 'ide';
   $$('.oc-nav a').forEach((a) => a.classList.toggle('is-active', a.dataset.view === name));
   $$('.oc-view-panel').forEach((p) => p.classList.toggle('is-hidden', p.dataset.panel !== name));
-  byId('view-title').textContent = VIEW_META[name][0];
-  byId('view-desc').textContent = VIEW_META[name][1];
+  byId('view-title').textContent = t(VIEW_META[name][0]);
+  byId('view-desc').textContent = t(VIEW_META[name][1]);
   byId('foot-right').textContent = `${state.config.model || 'deepseek-chat'} · ${state.messages.length} msgs · hash-route`;
   if (name === 'history') loadHistory();
   if (name === 'settings') fillConfigForm();
@@ -181,14 +185,14 @@ async function refreshStatus() {
   state.status = data;
   state.config = data.config;
   byId('api-dot').className = `oc-dot ${data.config.api_key_set ? 'ok' : 'warn'}`;
-  byId('api-status').textContent = data.config.api_key_set ? 'API Key 已配置' : 'API Key 未设置';
+  byId('api-status').textContent = data.config.api_key_set ? t('API Key 已配置') : t('API Key 未设置');
   byId('model-status').textContent = `model: ${data.config.model || '—'}`;
-  byId('history-status').textContent = `history: ${data.history_count} 条`;
+  byId('history-status').textContent = t('history: {n} 条', { n: data.history_count });
   byId('foot-right').textContent = `${data.config.model || 'deepseek-chat'} · ${data.history_count} msgs · hash-route`;
   if (data.last_code && !state.codeLoaded) {
     state.codeLoaded = true;
     window.dispatchEvent(new CustomEvent('oi-load-code', { detail: { code: extractCode(data.last_code) || '' } }));
-    log('已载入上次生成的代码', 'ok');
+    log(t('已载入上次生成的代码'), 'ok');
   }
   fillConfigForm();
   return data;
@@ -233,13 +237,13 @@ function messageCard(msg, index, full = false) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'oc-btn';
-    btn.textContent = '载入到编辑器';
+    btn.textContent = t('载入到编辑器');
     btn.addEventListener('click', () => {
       setView('ide');
       location.hash = 'ide';
       const code = extractCode(msg.content) || '';
       window.dispatchEvent(new CustomEvent('oi-load-code', { detail: { code } }));
-      log(`载入历史消息 #${index + 1} → 编辑器 (${code.split('\n').length} 行)`, 'ok');
+      log(t('载入历史消息 #{n} → 编辑器 ({m} 行)', { n: index + 1, m: code.split('\n').length }), 'ok');
       pulse('LOADED', 'info');
     });
     row.appendChild(btn);
@@ -256,12 +260,12 @@ async function loadHistory() {
   if (!data.messages.length) {
     const empty = document.createElement('div');
     empty.className = 'oc-empty';
-    empty.textContent = '暂无会话历史。';
+    empty.textContent = t('暂无会话历史。');
     list.appendChild(empty);
   } else {
     data.messages.forEach((msg, i) => list.appendChild(messageCard(msg, i, true)));
   }
-  byId('history-status').textContent = `history: ${data.messages.length} 条`;
+  byId('history-status').textContent = t('history: {n} 条', { n: data.messages.length });
 }
 
 /* ------------------------------------------------------------ settings */
@@ -279,31 +283,31 @@ async function saveConfig(event) {
     state.config = data.config;
     fillConfigForm();
     await refreshStatus();
-    setStatus('设置已保存', 'ok');
-    log('配置已写入 ~/.oicoder_config.json', 'ok');
+    setStatus(t('设置已保存'), 'ok');
+    log(t('配置已写入 ~/.oicoder_config.json'), 'ok');
     pulse('SAVED');
-  } catch (err) { warn(`保存设置失败: ${err.message}`); }
+  } catch (err) { warn(t('保存设置失败: {msg}', { msg: err.message })); }
 }
 
 async function clearHistory() {
   const btn = byId('history-clear');
   if (!state.clearArmed) {
     state.clearArmed = true;
-    btn.setAttribute('label', '再点一次确认');
+    btn.setAttribute('label', t('再点一次确认'));
     setTimeout(() => {
       state.clearArmed = false;
-      btn.setAttribute('label', '清空历史');
+      btn.setAttribute('label', t('清空历史'));
     }, 3500);
-    log('清空历史：等待二次确认', 'warn');
+    log(t('清空历史：等待二次确认'), 'warn');
     return;
   }
   state.clearArmed = false;
-  btn.setAttribute('label', '清空历史');
+  btn.setAttribute('label', t('清空历史'));
   await api('/api/history', { method: 'DELETE' });
   await Promise.allSettled([loadHistory(), refreshStatus()]);
   window.dispatchEvent(new CustomEvent('oi-load-code', { detail: { code: '' } }));
-  setStatus('会话历史已清空', 'ok');
-  log('会话历史已清空', 'ok');
+  setStatus(t('会话历史已清空'), 'ok');
+  log(t('会话历史已清空'), 'ok');
   pulse('CLEARED', 'warning');
 }
 
@@ -313,8 +317,59 @@ function bind(id, handler) {
   if (el) el.addEventListener('click', handler);
 }
 
+/* ---- 侧栏底部：主题色点 + 语言切换（与 NTLab 同款） ---- */
+function initSideControls() {
+  const dots = byId('theme-dots');
+  const langBtn = byId('lang-btn');
+  if (!dots || !langBtn) return;
+  THEMES.forEach((name) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'oc-theme-dot';
+    dot.dataset.theme = name;
+    dot.title = name[0].toUpperCase() + name.slice(1);
+    dot.style.background = `linear-gradient(135deg, hsl(${THEME_HUE[name]} 100% 70%), hsl(${THEME_HUE[name]} 60% 40%))`;
+    dot.addEventListener('click', () => setTheme(name));
+    dots.appendChild(dot);
+  });
+  const syncLang = () => { langBtn.textContent = getLang() === 'zh' ? 'EN' : '中'; };
+  langBtn.addEventListener('click', () => setLang(getLang() === 'zh' ? 'en' : 'zh'));
+  document.addEventListener('ui-i18n-change', () => {
+    syncLang();
+    // 语言切换后：重刷视图标题/描述与动态标签（applyDom 已由 setLang 触发）
+    setView(location.hash.slice(1) || 'ide');
+    byId('log-btn').setAttribute('label', t('日志 {n}', { n: state.logCount }));
+    setReducedMotion(state.reduceMotion === true, true);
+  });
+  syncLang();
+}
+
+/* ---- 服务器设置（端口/浏览器，独立配置文件，重启生效） ---- */
+async function loadSrvSettings() {
+  const d = await api('/api/app/settings');
+  byId('srv-port').value = d.port;
+  byId('srv-browser').checked = Boolean(d.open_browser);
+}
+
+async function saveSrvSettings(event) {
+  if (event) event.preventDefault();
+  const body = {
+    port: Number(byId('srv-port').value),
+    open_browser: byId('srv-browser').checked,
+  };
+  try {
+    await api('/api/app/settings', { method: 'POST', body: JSON.stringify(body) });
+    setStatus(t('服务器设置已保存'), 'ok');
+    log(t('服务器设置已保存'), 'ok');
+    pulse('SAVED');
+  } catch (err) {
+    warn(t('保存服务器设置失败: {msg}', { msg: err.message }));
+  }
+}
+
 function init() {
   initSwatches();
+  initSideControls();
   setTheme(localStorage.getItem('oi-theme') || 'blue', true);
   setReducedMotion(localStorage.getItem('oi-reduce') === '1', true);
 
@@ -336,14 +391,23 @@ function init() {
   bind('log-clear', () => {
     byId('log-list').replaceChildren();
     state.logCount = 0;
-    byId('log-btn').setAttribute('label', '日志 0');
+    byId('log-btn').setAttribute('label', t('日志 {n}', { n: 0 }));
   });
 
   byId('config-form').addEventListener('submit', saveConfig);
   bind('config-save', saveConfig);
-  bind('config-reload', async () => { await refreshStatus(); log('配置已重新载入'); });
+  bind('config-reload', async () => { await refreshStatus(); log(t('配置已重新载入')); });
   bind('history-refresh', loadHistory);
   bind('history-clear', clearHistory);
+
+  // ---- 服务器设置（端口 / 自动打开浏览器） ----
+  byId('srv-form').addEventListener('submit', saveSrvSettings);
+  bind('srv-save', saveSrvSettings);
+  bind('srv-reload', async () => {
+    await loadSrvSettings();
+    log(t('服务器设置已重新载入'));
+  });
+  loadSrvSettings().catch((err) => log(t('保存服务器设置失败: {msg}', { msg: err.message }), 'warn'));
 
   // ---- global shortcuts (letters only outside inputs; F-keys always) ----
   window.addEventListener('keydown', (event) => {
@@ -394,12 +458,12 @@ function init() {
   });
 
   (async () => {
-    log('OI Code Console 启动（IDE 布局）', 'ok');
+    log(t('OI Code Console 启动（IDE 布局）'), 'ok');
     try {
       await refreshStatus();
       byId('api-dot').classList.add('ok');
     } catch (err) {
-      warn(`服务状态获取失败: ${err.message}`);
+      warn(t('服务状态获取失败: {msg}', { msg: err.message }));
       byId('api-dot').classList.add('err');
     }
   })();

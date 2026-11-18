@@ -37,6 +37,7 @@ sys.path.insert(1, str(ROOT_DIR))
 import OI as oi  # noqa: E402  (project CLI: config / history / prompt / helpers)
 from openai import OpenAI  # noqa: E402
 
+import appsettings  # noqa: E402  (web 服务器自身设置：端口/浏览器)
 import prompt_store  # noqa: E402  (style template store)
 from analyzer import ai_summary, debugger, engine, toolchain  # noqa: E402
 
@@ -164,6 +165,8 @@ class ConsoleHandler(BaseHTTPRequestHandler):
         try:
             if path == "/api/status":
                 return self._json({"ok": True, **status_payload()})
+            if path == "/api/app/settings":
+                return self._json({"ok": True, **appsettings.load()})
             if path == "/api/history":
                 with STATE_LOCK:
                     messages = [dict(m) for m in oi.history.messages]
@@ -239,6 +242,8 @@ class ConsoleHandler(BaseHTTPRequestHandler):
                 return self._analyze_summary(body)
             if path == "/api/prompts":
                 return self._prompts(body)
+            if path == "/api/app/settings":
+                return self._json({"ok": True, **appsettings.save(body)})
             if path == "/api/analyze/enabled":
                 return self._json({"ok": True, **ai_summary.set_enabled(body.get("enabled"))})
             if path == "/api/analyze/budget":
@@ -565,20 +570,26 @@ class ConsoleHandler(BaseHTTPRequestHandler):
 def main():
     parser = argparse.ArgumentParser(description="OI Code Console")
     parser.add_argument("--host", default="127.0.0.1")
-    parser.add_argument("--port", type=int, default=8765)
+    parser.add_argument("--port", type=int, default=None, help="覆盖设置文件里的端口")
     parser.add_argument("--no-browser", action="store_true")
     args = parser.parse_args()
 
-    url = "http://%s:%d" % (args.host, args.port)
-    server = ThreadingHTTPServer((args.host, args.port), ConsoleHandler)
+    # 端口/浏览器：CLI --port 优先于设置文件，--no-browser 强制关（与 NTLab 同款优先级）
+    settings = appsettings.load()
+    port = args.port if args.port is not None else settings["port"]
+    open_browser = settings["open_browser"] and not args.no_browser
+
+    url = "http://%s:%d" % (args.host, port)
+    server = ThreadingHTTPServer((args.host, port), ConsoleHandler)
     server.daemon_threads = True
     print("OI Code Console  ->  %s" % url)
     print("Workspace        ->  %s" % ROOT_DIR)
     print("Toolchain        ->  %s" % ("vendored" if toolchain.available()["available"] else "MISSING"))
     print("Config           ->  %s" % oi.CONFIG_FILE)
     print("History          ->  %s" % oi.HISTORY_FILE)
+    print("Server settings  ->  %s" % appsettings._PATH)
     print("Press Ctrl+C to stop.")
-    if not args.no_browser:
+    if open_browser:
         threading.Timer(0.8, lambda: webbrowser.open(url)).start()
     try:
         server.serve_forever()

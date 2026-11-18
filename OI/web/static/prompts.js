@@ -7,8 +7,11 @@
    Built-ins ("standard", "original") remain immutable — recoverability is
    guaranteed by design, so no override/reset layer is needed. */
 
+import * as i18n from './i18n.js';
+
 const byId = (id) => document.getElementById(id);
 const S = () => window.__oiConsole;
+// 注意：本模块大量使用局部变量 `t` 表示当前模板，i18n 取词一律走 i18n.t() 命名空间
 
 const TOKEN_RE = /\{\{\s*([A-Za-z_][A-Za-z0-9_]*)\s*(?:\|\s*([\s\S]*?)\s*)?\}\}/g;
 
@@ -73,7 +76,7 @@ function buildVarPanel(t) {
   if (!vars.length) {
     const hint = document.createElement('span');
     hint.className = 'an-limit-hint';
-    hint.textContent = '此模板没有变量';
+    hint.textContent = i18n.t('此模板没有变量');
     wrap.appendChild(hint);
     return;
   }
@@ -82,11 +85,11 @@ function buildVarPanel(t) {
     label.className = 'prompt-var';
     const name = document.createElement('code');
     name.textContent = v.name;
-    name.title = v.desc || `变量 ${v.name}`;
+    name.title = v.desc || `${i18n.t('变量')} ${v.name}`;
     const input = document.createElement('input');
     input.type = 'text';
     input.value = varValues[v.name] || '';
-    input.placeholder = v.desc || '留空 = 内联默认值';
+    input.placeholder = v.desc || i18n.t('留空 = 内联默认值');
     input.dataset.var = v.name;
     input.addEventListener('input', () => {
       varValues[v.name] = input.value;   // local for live preview
@@ -117,10 +120,10 @@ function renderPreview() {
   }
   const note = byId('prompt-preview-note');
   if (missing.length) {
-    note.textContent = `缺失变量：${[...new Set(missing)].join(', ')}（生成时将原样保留）`;
+    note.textContent = i18n.t('缺失变量：{list}（生成时将原样保留）', { list: [...new Set(missing)].join(', ') });
     note.style.color = 'var(--state-warning, #ffcc22)';
   } else {
-    note.textContent = '全部变量已解析';
+    note.textContent = i18n.t('全部变量已解析');
     note.style.color = '';
   }
 }
@@ -137,8 +140,8 @@ function fillEditor() {
   name.readOnly = Boolean(t.builtin);
   const isActive = t.id === activeId;
   hint.textContent = t.builtin
-    ? '内置模板不可编辑；可「另存为新模板」后修改副本'
-    : `自定义模板${isActive ? ' · 当前激活' : ''}`;
+    ? i18n.t('内置模板不可编辑；可「另存为新模板」后修改副本')
+    : i18n.t(isActive ? '自定义模板 · 当前激活' : '自定义模板');
   buildVarPanel(t);
   renderPreview();
 }
@@ -164,7 +167,7 @@ function scheduleSaveVars() {
       const data = await post({ action: 'save_vars', values: varValues });
       varValues = data.var_values || varValues;
     } catch (err) {
-      S().warn(`变量保存失败: ${err.message}`);
+      S().warn(i18n.t('变量保存失败: {msg}', { msg: err.message }));
     }
   }, 400);
 }
@@ -174,8 +177,8 @@ async function onActivate() {
   if (!t) return;
   await post({ action: 'activate', id: t.id });
   await reload();
-  S().setStatus(`已激活模板「${t.name}」`, 'ok');
-  S().log(`提示词模板切换 → ${t.name}（新生成即生效）`, 'ok');
+  S().setStatus(i18n.t('已激活模板「{name}」', { name: t.name }), 'ok');
+  S().log(i18n.t('提示词模板切换 → {name}（新生成即生效）', { name: t.name }), 'ok');
 }
 
 async function onSave() {
@@ -190,14 +193,14 @@ async function onSave() {
       base_revision: t.revision,
     });
     await reload();
-    S().setStatus('模板已保存', 'ok');
+    S().setStatus(i18n.t('模板已保存'), 'ok');
     if (data && data.revision) { /* revision refreshed via reload */ }
   } catch (err) {
     if (String(err.message).includes('409') || String(err.message).includes('冲突')) {
-      S().warn('保存冲突：模板已被其他窗口修改。已为你重新载入最新内容，请合并后再保存。');
+      S().warn(i18n.t('保存冲突：模板已被其他窗口修改。已为你重新载入最新内容，请合并后再保存。'));
       await reload();
     } else {
-      S().warn(`保存失败: ${err.message}`);
+      S().warn(i18n.t('保存失败: {msg}', { msg: err.message }));
     }
   }
 }
@@ -205,14 +208,14 @@ async function onSave() {
 async function onNew() {
   const text = byId('prompt-text').value.trim();
   if (!text) {
-    S().warn('模板内容为空');
+    S().warn(i18n.t('模板内容为空'));
     return;
   }
-  const name = byId('prompt-name').value.trim() || `自定义 ${new Date().toLocaleString()}`;
+  const name = byId('prompt-name').value.trim() || `${i18n.t('自定义模板')} ${new Date().toLocaleString()}`;
   await post({ action: 'save_new', name, text });
   await reload();
-  S().setStatus(`已另存并激活「${name}」`, 'ok');
-  S().log(`新提示词模板「${name}」已保存并激活`, 'ok');
+  S().setStatus(i18n.t('已另存并激活「{name}」', { name }), 'ok');
+  S().log(i18n.t('新提示词模板「{name}」已保存并激活', { name }), 'ok');
 }
 
 async function onDelete() {
@@ -220,16 +223,16 @@ async function onDelete() {
   if (!t || t.builtin) return;
   await post({ action: 'delete', id: t.id });
   await reload();
-  S().log(`模板「${t.name}」已删除`, 'ok');
+  S().log(i18n.t('模板「{name}」已删除', { name: t.name }), 'ok');
 }
 
 async function onCopy() {
   const { rendered } = renderText(byId('prompt-text').value, varValues);
   try {
     await navigator.clipboard.writeText(rendered);
-    S().setStatus('渲染结果已复制到剪贴板', 'ok');
+    S().setStatus(i18n.t('渲染结果已复制到剪贴板'), 'ok');
   } catch {
-    S().warn('剪贴板不可用');
+    S().warn(i18n.t('剪贴板不可用'));
   }
 }
 
@@ -242,7 +245,7 @@ function init() {
   byId('prompt-new').addEventListener('click', () => onNew().catch((e) => S().warn(e.message)));
   byId('prompt-delete').addEventListener('click', () => onDelete().catch((e) => S().warn(e.message)));
   byId('prompt-copy').addEventListener('click', () => onCopy().catch((e) => S().warn(e.message)));
-  reload().catch((e) => S().warn(`提示词模板载入失败: ${e.message}`));
+  reload().catch((e) => S().warn(i18n.t('提示词模板载入失败: {msg}', { msg: e.message })));
 }
 
 if (window.__oiConsole) init();
