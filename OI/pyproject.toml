@@ -11,6 +11,9 @@ dependencies = [
     "click>=8.0",
     "rich>=13.0",
     "pyperclip>=1.8",
+    "pywebview>=6.2 ; sys_platform == 'win32'",
+    "pythonnet>=3.2 ; sys_platform == 'win32'",   # pywebview EdgeChromium 后端
+    "pywin32>=310 ; sys_platform == 'win32'",
 ]
 
 # fspack 打包：发行入口 oi_assistant:main（OI.py 是 CLI，保持不动，不参与发行入口）
@@ -18,10 +21,15 @@ dependencies = [
 oi-assistant = "oi_assistant:main"
 
 [tool.fspack]
-# 应用图标：下一步再配（icon = "web/static/assets/app.ico"）
+# 应用图标：由头像 3.jpg 生成（PIL 多尺寸），GUI 窗口与 EXE 共用
+icon = "web/static/assets/app.ico"
 description = "OI Code Console"
 author = "CynthiaLx_"
 # 不进包的目录/文件：OIenv（venv）/ refs（参考资料）/ 工具配置与缓存
 # 注意：fspack 的 parsing.py 读取的键名是 exclude（不是 exclude-dirs）
-# P*.cpp 是工作区题解、toolchain/ 是运行/调试必需的 MinGW64 —— 都必须进包
-exclude = ["OIenv", "refs", ".playwright-cli", ".codebuddy", "__pycache__", "build", "dist"]
+# toolchain/ 是运行/调试必需的 MinGW64，必须进包
+# P*.cpp 等工作区题解与 icon-preview.png 是开发期个人文件，不进发行包
+exclude = [
+    "OIenv", "refs", ".playwright-cli", ".codebuddy", "__pycache__", "build", "dist",
+    "*.cpp", "icon-preview.png",
+]

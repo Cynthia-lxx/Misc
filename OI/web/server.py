@@ -571,6 +571,13 @@ class ConsoleHandler(BaseHTTPRequestHandler):
         return self._json(debugger.stop(str(body.get("session") or "")))
 
 
+def build_server(host: str, port: int) -> ThreadingHTTPServer:
+    """构造但并不 serve —— GUI 客户端把返回值丢进后台线程；main() 自己 serve。"""
+    srv = ThreadingHTTPServer((host, port), ConsoleHandler)
+    srv.daemon_threads = True
+    return srv
+
+
 def main():
     parser = argparse.ArgumentParser(description="OI Code Console")
     parser.add_argument("--host", default="127.0.0.1")
@@ -584,8 +591,7 @@ def main():
     open_browser = settings["open_browser"] and not args.no_browser
 
     url = "http://%s:%d" % (args.host, port)
-    server = ThreadingHTTPServer((args.host, port), ConsoleHandler)
-    server.daemon_threads = True
+    server = build_server(args.host, port)
     print("OI Code Console  ->  %s" % url)
     print("Workspace        ->  %s" % ROOT_DIR)
     print("Toolchain        ->  %s" % ("vendored" if toolchain.available()["available"] else "MISSING"))
